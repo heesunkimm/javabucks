@@ -102,4 +102,9 @@ public class UserController {
 	public String userPaynow() {
 		return "/user/user_paynow";
 	}
+	
+	@RequestMapping("/user_paycharge")
+	public String userPaycharge() {
+		return "/user/user_paycharge";
+	}
 }

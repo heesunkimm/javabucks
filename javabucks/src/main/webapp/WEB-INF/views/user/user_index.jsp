@@ -57,7 +57,7 @@
                     <li>
                         <a class="link_btn" href="user_cpnhistory">
                             <div class="img_box">
-                                <img src="../images/icons/li_pay_coupon.png" alt="">
+                                <img src="../images/icons/pay_coupon.png" alt="">
                             </div>
                             <span>Coupon</span>
                         </a>
