@@ -1,0 +1,234 @@
+.inner_wrap {width: 1140px; margin: 0 auto;}
+.inner_wrap .tit_box {margin: 20px 0; font-size: 24px;}
+.inner_wrap .tab-content {display: none;}
+.inner_wrap input[type="checkbox"] {width: 14px; height: 14px;}
+.inner_wrap input[tbody="text"] {padding: 0 6px;}
+.inner_wrap label, 
+.inner_wrap input, 
+.inner_wrap select {height: 27px; font-size: 18px;}
+.inner_wrap input:focus, 
+.inner_wrap select:focus, 
+.inner_wrap textarea:focus {border-color: #006241;}
+
+/* header 공통 */
+header {height: 140px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;}
+header .logo_box a {display: flex; align-items: center; gap: 20px;}
+header .logo_box .img_box {width: 80px; height: 80px;}
+header .logo_box span {display: inline-block; font-size: 38px; font-family: 'Santana_bold'; font-weight: 700;}
+
+header .nav_list {display: flex;}
+header .nav_list .nav_item {position: relative;}
+header .nav_list .nav_item a {display: block; text-align: center; padding: 14px 20px; text-decoration: none;}
+header .nav_list .nav_item a:hover {color: #006241;}
+header .nav_list .nav_item .dropdown_content {display: none; position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px;}
+header .nav_list .nav_item .dropdown_content a {color: #555; padding: 12px 16px; text-decoration: none; display: block; text-align: left;}
+header .nav_list .nav_item .dropdown_content a:hover {background-color: #f1f1f1;}
+header .nav_item:hover .dropdown_content {display: block;}
+
+/* admin_login */
+#admin_login {display: grid; place-items: center; min-height: 100dvh;}
+#admin_login input {border: 1px solid #ccc; border-radius: 2px;}
+#admin_login input[type="text"]:focus {border-color: #006241;}
+#admin_login .login_box .input_box label + label, 
+#admin_login .popup_box .input_box > label + label {margin-top: 6px;}
+#admin_login .login_box .input_box input {width: 312px; height: 36px; padding: 0 6px; font-size: 18px;}
+
+#admin_login .login_box {padding: 30px 20px; border: 1px solid #eee; border-radius: 4px; box-shadow: 0 3px 7px #ccc;}
+#admin_login .login_box .top_box {display: flex; align-items: center; justify-content: center; gap: 20px;}
+#admin_login .login_box .top_box .img_box {width: 50px; height: 50px;}
+#admin_login .login_box .top_box p {font-size: 24px; font-family: 'Santana_bold'; text-align: center;}
+#admin_login .login_box form {margin-top: 10px;}
+#admin_login .login_box .input_box, #admin_login .login_box .input_box label {width: 326px;}
+
+#admin_login .login_box .login_btn {margin-top: 10px; width: 100%; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
+
+#admin_login .login_box .find_box {margin-top: 14px; text-align: center;}
+#admin_login .login_box .find_box label {margin-right: 16px; font-size: 14px;}
+#admin_login .login_box .find_box a {font-size: 14px; line-height: 18px; color: #555; border-bottom: 1px solid #555;}
+
+#admin_login .popup_box > p {font-size: 20px; font-weight: 700; color: #006241; text-align: left;}
+#admin_login .popup_box .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
+#admin_login .popup_box .input_box {width: 320px;}
+
+#admin_login .popup_box .input_box > label {width: 312px; height: 38px;}
+#admin_login .popup_box .input_box > label input {width: 100%; height: 100%; padding: 0 6px; font-size: 16px;}
+#admin_login .popup_box .email_box {width: 312px; display: flex; align-items: center; justify-content: space-between;}
+#admin_login .popup_box .email_box label {width: 154px; display: flex; align-items: center;}
+#admin_login .popup_box .email_box input {width: 100%; height: 36px; padding: 0 6px; font-size: 16px;}
+#admin_login .popup_box .email_box select {width: 100%; height: 36px; font-size: 16px;}
+#admin_login .popup_box .submit_btn {width: 80px; height: 32px; border-radius: 2px; background-color: #006241; font-size: 18px; color: #fff;}
+
+#admin_login .popup_box .confirm_box {margin-top: 10px;}
+#admin_login .popup_box .confirm_box label {position: relative;}
+#admin_login .popup_box .confirm_box input { width: 200px; height: 36px; padding: 0 6px; font-size: 14px;}
+#admin_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;}
+#admin_login .popup_box .confirm_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
+#admin_login .popup_box .btn_box {text-align: center;}
+#admin_login .popup_box .btn_box .setting_btn {position: relative; font-size: 14px; line-height: 18px; color: #555;}
+#admin_login .popup_box .btn_box .setting_btn::after {content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background-color: #555;}
+
+/* admin_adminmanage, admin_usermanage, admin_storemanage */
+.accountmanage .select_box form {padding: 20px; border: 1px solid #ccc; border-radius: 4px;}
+.accountmanage .select_box form label + label {margin: 5px 8px;}
+.accountmanage .select_box form input[type="checkbox"] {margin-left: 6px;}
+.accountmanage .select_box form select {padding: 0 10px;}
+.accountmanage .select_box form button {margin-left: 8px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+.accountmanage .select_box .search_box {display: flex; flex-wrap: wrap; align-items: center;}
+.accountmanage .select_box .search_box .email_box {margin-left: 8px;}
+
+.accountmanage .select_box .list_box {margin-top: 20px;}
+.accountmanage .select_box .list_box thead {background-color: #006241; color: #fff;}
+
+/* admin_storelist, admin_storemanage */
+.managelist .search_box {border: 1px solid #ccc; border-radius: 4px; padding: 20px;}
+.managelist .search_box label, 
+.managelist .search_box input, 
+.managelist .search_box select {margin-left: 6px; height: 27px; padding: 0 10px; font-size: 18px;}
+.managelist .search_box button {margin-left: 8px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.managelist .search_box form {display: flex; flex-wrap: wrap; align-content: center;}
+.managelist .search_box form > div {margin-bottom: 10px;}
+
+.managelist .list_box {margin-top: 20px;}
+.managelist .list_box .btn_box {padding: 0 20px 20px 0; text-align: right;}
+.managelist .list_box button {width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.managelist .list_box .search_list {padding: 20px;}
+.managelist .list_box .search_list > li + li {margin-top: 12px;}
+.managelist .list_box .search_list .search_item {display: flex; flex-wrap: wrap; align-items: center; border-radius: 2px; border: 1px solid #ccc; background-color: #fefefe;}
+.managelist .list_box .search_list .search_item {font-size: 18px; text-align: center;}
+.managelist .list_box .search_list .search_item .search_toolbar {width: 100%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 10px 0;}
+.managelist .list_box .search_list .search_item .search_cont {width: 100%; display: flex; align-items: center; padding: 10px 0;}
+.managelist .list_box .search_list .search_item .search_cont button {width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.managelist .list_box .search_list .search_item .search_cont button:last-child {background-color: transparent; border: 1px solid #006241; color: #006241;}
+
+/* admin_addstore, admin_editstore */
+.store_info .insert_box {margin-top: 20px;}
+.store_info .insert_box form {padding: 0 20px 20px;}
+.store_info .insert_box form > p {margin-bottom: 20px; padding: 20px 0; border-bottom: 1px solid #ccc; font-size: 22px;}
+.store_info .insert_box form .info_wrap {display: flex; align-items: center; gap: 20px;}
+.store_info .insert_box form .info_wrap button {width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.store_info .insert_box form .info_box {display: flex; flex-direction: column;}
+.store_info .insert_box form .info_box div, 
+.store_info .insert_box form .info_box > label:not(:first-child) {margin-top: 10px;}
+.store_info .insert_box form .info_box input {padding: 0 6px;}
+.store_info .insert_box form .info_box select {width: 200px;}
+.store_info .insert_box form .info_box span {display: inline-block; width: 100px;}
+.store_info .insert_box form .info_box > p {margin-top: 6px; font-size: 14px; color: #555;}
+.store_info .insert_box form .info_box button {margin-top: 10px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+.store_info .insert_box form .btn_box {margin-top: 20px; text-align: center;}
+.store_info .insert_box form .add_btn {width: 100px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.store_info .insert_box form .del_btn {margin-left: 10px; width: 100px; padding: 4px 0; border-radius: 2px; border: 1px solid #006241; font-size: 16px; color: #006241;}
+
+/* admin_storeorder */
+#admin_storeorder .search_box {padding: 20px; border-radius: 4px; border: 1px solid #ccc;}
+#admin_storeorder .search_box label {margin: 5px 0; display: inline-flex; align-items: center;} 
+
+#admin_storeorder .search_box input {margin-right: 6px;}
+#admin_storeorder .search_box select {margin: 0 6px; width: 80px;}
+#admin_storeorder .search_box button {margin-left: 6px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+#admin_storeorder .search_list {margin-top: 20px;}
+
+/* admin_dailysales */
+#admin_dailysales .select_box .tab_box {display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid #ccc;}
+#admin_dailysales .select_box .tab_box .tab_btn {display: inline-block; width: 110px; padding: 6px 0; border-radius: 4px; background: #ddd; font-size: 18px; text-align: center; color: #fefefe;}
+#admin_dailysales .select_box .tab_box .tab_btn.s_active {background-color: #006241;}
+
+#admin_dailysales .search_box {margin-top: 20px;}
+#admin_dailysales .search_box select {width: 80px; padding: 2px 0; font-size: 18px;}
+#admin_dailysales .search_box label + label {margin-left: 10px;}
+#admin_dailysales .search_box label {font-size: 18px;}
+#admin_dailysales .select_list {display: flex; align-items: center; flex-wrap: wrap; gap: 10px 0; padding: 20px 30px; border: 1px solid #ccc; border-radius: 4px;}
+#admin_dailysales .select_list label {width: calc(100%/6); display: flex; align-items: center;}
+#admin_dailysales .search_box {display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 10px 0; padding: 20px 30px; border-radius: 4px; border: 1px solid #ccc; font-size: 18px;}
+#admin_dailysales input[type="text"] {margin-left: 10px; padding: 2px 6px; font-size: 18px;}
+#admin_dailysales input[type="checkbox"] {margin-right: 6px; width: 14px; height: 14px;}
+#admin_dailysales button {margin-left: 10px; width: 60px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+#admin_dailysales .list_box .totabl_sales {margin: 20px 0; font-size: 22px; font-weight: 700; text-align: right;}
+#admin_dailysales .list_box .totabl_sales span{display: inline-block; width: 160px;}
+
+#admin_dailysales .list_box .search_list thead {background-color: #006241; color: #fefefe;}
+
+/* admin_monthlysales, admin_storeordersales */
+.tab_management .select_box form {padding: 20px; border: 1px solid #ccc; border-radius: 4px;}
+.tab_management .select_box .count_box {display: flex; align-items: center; gap: 4px;}
+.tab_management .select_box .count_box span {font-size: 18px; margin-right: 10px;}
+.tab_management .select_box .count_box .img_box {width: 20px; height: 20px; filter: brightness(0) saturate(100%) invert(33%) sepia(2%) saturate(13%) hue-rotate(115deg) brightness(99%) contrast(96%);}
+.tab_management .select_box .count_box input {width: 80px; border: none; font-size: 18px; text-align: center;}
+.tab_management .select_box .count_box select {margin-left: 10px; padding: 0 10px;}
+.tab_management .select_box .count_box button {margin-left: 10px; width: 60px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+.tab_management .list_box {margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between;}
+
+.tab_management .list_box .search_list, 
+.tab_management .list_box .tab-content {width: 540px;}
+.tab_management .list_box .search_list {position: relative;}
+.tab_management .list_box .search_list::after {content: ''; position: absolute; top: 50%; right: -35px; transform: translateY(-50%) rotate(45deg); display: block; width: 14px; height: 14px; border-top: 2px solid #555; border-right: 2px solid #555;}
+.tab_management .list_box .tab-content .cont_toolbar, 
+.tab_management .list_box .tab-content .cont_details {width: 100%; display: flex; align-items: center; justify-content: space-between;}
+.tab_management .list_box .tab-content .cont_toolbar {padding: 4px 0; background-color: #006241; color: #fefefe;}
+.tab_management .list_box .tab-content .cont_details li {border: 1px solid #ccc; box-sizing: border-box;}
+.tab_management .list_box .tab-content .cont_toolbar li, 
+.tab_management .list_box .tab-content .cont_details li {font-size: 18px; text-align: center;}
+.tab_management .list_box .tab-content .cont_details li + li {border-left: none;}
+
+#admin_monthlysales .list_box .tab-content .cont_toolbar li, 
+#admin_monthlysales .list_box .tab-content .cont_details li {width: calc(100%/3);}
+#admin_storeordersales .list_box .tab-content .cont_toolbar li, 
+#admin_storeordersales .list_box .tab-content .cont_details li {width: calc(100%/4);}
+
+/* admin_cpnmange */
+#admin_cpnmange .btn_box {margin-bottom: 20px; text-align: right;}
+#admin_cpnmange .btn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+#addcpn .popup_title {font-size: 20px;}
+#addcpn .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
+#addcpn .input_box {display: flex; flex-direction: column;}
+#addcpn .input_box label + label {margin-top: 10px;}
+#addcpn .input_box label:not(:nth-child(2)) {display: flex; align-items: center;}
+#addcpn .input_box label:nth-child(2) {height: 100px; display: flex; flex-direction: column;}
+#addcpn .input_box input {margin-left: 6px; padding: 0 6px;}
+#addcpn .input_box textarea {margin-top: 4px; padding: 3px 6px; font-size: 18px;}
+#addcpn .input_box select {margin-left: 6px; width: 80px;}
+#addcpn .pbtn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
+
+/* admin_adddrink */
+#admin_adddrink button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#admin_adddrink .search_box {border: 1px solid #ccc; padding: 20px;}
+#admin_adddrink .search_box form > div {margin-bottom: 6px;}
+#admin_adddrink .search_box label + label {margin-left: 16px;}
+#admin_adddrink .search_box label, #admin_adddrink .search_box select {font-size: 18px;}
+#admin_adddrink .search_box select {padding: 0 10px;}
+#admin_adddrink .search_box input {padding: 0 6px; font-size: 18px;}
+#admin_adddrink .list_box .btn_box {margin: 20px 0; text-align: right;}
+
+
+/*  */
+.addmenu_cont .insert_box {margin-top: 20px;}
+.addmenu_cont .insert_box form {padding: 20px;}
+.addmenu_cont .insert_box form > p {margin-bottom: 20px; padding: 20px 0; border-bottom: 1px solid #ccc; font-size: 22px;}
+.addmenu_cont .insert_box form .info_box {display: flex; flex-direction: column;}
+.addmenu_cont .insert_box form .info_box > div, 
+.addmenu_cont .insert_box form .info_box > label:not(:first-child) {margin-top: 10px;}
+.addmenu_cont .insert_box form .info_box input {padding: 0 6px;}
+.addmenu_cont .insert_box form .info_box input[type="checkbox"] {margin-right: 6px;}
+.addmenu_cont .insert_box form .info_box select {width: 200px;}
+.addmenu_cont .insert_box form .info_box span {display: inline-block; width: 100px; font-size: 18px;}
+.addmenu_cont .insert_box form .info_box > p {margin-top: 6px; font-size: 14px; color: #555;}
+.addmenu_cont .insert_box form .info_box .menu_desc {margin-top: 10px; height: 100px; display: flex;}
+.addmenu_cont .insert_box form .info_box .menu_desc textarea {margin-left: 7px; padding: 3px 6px; font-size: 18px;}
+.addmenu_cont .insert_box form .info_box button {margin-top: 10px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+
+.addmenu_cont .insert_box .info_box .upload_box {display: flex;}
+.addmenu_cont .insert_box .info_box .upload_box .img_box {margin-left: 7px; width: 100px; height: 100px; border-radius: 2px; border: 1px solid #eee; box-shadow: 0px 2px 5px #ccc;}
+.addmenu_cont .insert_box .info_box .upload_box .img_box img {width: 100%; height: 100%;}
+.addmenu_cont .insert_box .info_box .upload_box .file_box {margin: 10px 0 0 7px; display: flex; align-items: center;}
+.addmenu_cont .insert_box .info_box .upload_box .file_box input[type="file"] {position: absolute; width: 0; height: 0; padding: 0; overflow: hidden; border: 0;}
+.addmenu_cont .insert_box .info_box .upload_box .file_box .file_name {display: inline-block; padding: 0 10px; vertical-align: middle; width: 190px; border: 1px solid #dddddd; border-radius: 4px; font-size: 16px; color: #555;}
+.addmenu_cont .insert_box .info_box .upload_box .file_box label {margin-left: 6px; display: inline-block; width: 80px; line-height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff; text-align: center; cursor: pointer;}
+
+.addmenu_cont .insert_box form .btn_box {margin-top: 20px; text-align: center;}
+.addmenu_cont .insert_box form .add_btn {width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.addmenu_cont .insert_box form .del_btn {margin-left: 10px; width: 80px; padding: 3px 0; border-radius: 2px; border: 1px solid #006241; font-size: 16px; color: #006241;}
