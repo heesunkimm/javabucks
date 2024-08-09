@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -22,17 +23,21 @@
                 <form name="" action="" method="post">
                     <div class="read_box">
                         <label>아이디
-                            <input type="text" name="" value="" readonly>
+                            <input type="text" name="userId" value="${inUser.userId}" readonly>
                         </label>
                         <label>이름
-                            <input type="text" name="" value="" readonly>
+                            <input type="text" name="userName" value="${inUser.userName}" readonly>
                         </label>
                         <label>생년월일
-                            <input type="text" name="" value="" readonly>
+                            <input type="text" name="userBirth" value="${inUser.userBirth}" readonly>
                         </label>
                         <div class="gender_box">
-                            <span>여자</span>
-                            <span>남자</span>
+                        	<c:if test="${inUser.userGender == 'F' }">
+                            <span>♀ 여자</span>
+                            </c:if>
+                            <c:if test="${inUser.userGender == 'M' }">
+                            <span>♂ 남자</span>
+                            </c:if>
                         </div>
                     </div>
 
