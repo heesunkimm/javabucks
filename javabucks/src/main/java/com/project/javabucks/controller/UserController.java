@@ -17,17 +17,17 @@ public class UserController {
 		dto.setUserPasswd("inUser");
 		dto.setUserName("이용중");
 		dto.setUserNickname("별며어엉");
-		dto.setUserGender("남");
+		dto.setUserGender("M");
 		dto.setUserBirth("920606");
 		dto.setUserEmail1("sky2464");
 		dto.setUserEmail2("naver.com");
 		dto.setUserTel1("010");
 		dto.setUserTel2("6859");
 		dto.setUserTel3("4432");
-		dto.setGradeCode("골드");
+		dto.setGradeCode("gold");
 		dto.setUserGradedate("24-08-06");
 		dto.setUserJoindate("24-06-06");
-		dto.setUserEnable("y");
+		dto.setUserEnable("Y");
 		dto.setUserFrequencyCount("500");
 		req.getSession().setAttribute("inUser", dto);
 		
@@ -101,5 +101,10 @@ public class UserController {
 	@RequestMapping("/user_paynow")
 	public String userPaynow() {
 		return "/user/user_paynow";
+	}
+	
+	@RequestMapping("/user_paycharge")
+	public String userPaycharge() {
+		return "/user/user_paycharge";
 	}
 }

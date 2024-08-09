@@ -64,7 +64,7 @@
                 <!-- e: 내용 작성 -->
                 <div class="pbtn_box">
                     <button type="submit">결제하기</button>
-                    <button type="button">충전하기</button>
+                    <button type="button" onclick="window.location='user_paycharge'">충전하기</button>
                 </div>
             </form>
         </div>

@@ -13,11 +13,11 @@ public class UserDTO {
 	private String userTel1;
 	private String userTel2;
 	private String userTel3;
-	private String gradeCode;
-	private String userGradedate;
-	private String userJoindate;
-	private String userEnable;
-	private String userFrequencyCount;
+	private String gradeCode; // 등급코드 
+	private String userGradedate; // 등급변경일자
+	private String userJoindate; // 가입일 
+	private String userEnable; // 탈퇴여부 
+	private String userFrequencyCount; // 적립누적갯수 
 
 	public String getUserId() {
 		return userId;
