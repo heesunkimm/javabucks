@@ -21,7 +21,7 @@
 
             <div class="addcard_box">
                 <form name="" action="" method="post">
-                	<input type="hidden" name="userId" value="">
+                	<input type="hidden" name="userId" value="${inUser.userId}">
                     <label>카드명
                         <input type="text" name="cardName" value="" placeholder="카드명 최대 20자 (선택)">
                     </label>

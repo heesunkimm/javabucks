@@ -25,7 +25,7 @@
                     <c:if test="${empty inUser.userNickname}">
                     ${inUser.userId}님,
                     </c:if>
-                    <br/> 랜덤문구
+                    <br/> 오늘도 힘찬 하루★ 반가워요!
                     </p>
                 </div>
                 <div class="reward_box div_box"> 
@@ -37,7 +37,7 @@
                     <div class="progress_box">
                         <progress class="progress_bar"  min="0" max="100" value="50"></progress>
                         <p class="total_count">
-                            <span>17</span>/<span class="font_green">15</span>
+                            <span>11</span>/<span class="font_green">15</span>
                             <span class="star_icon star_icon--02"></span>
                         </p>
                     </div>
