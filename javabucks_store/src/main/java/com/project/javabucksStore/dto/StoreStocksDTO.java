@@ -4,7 +4,7 @@ public class StoreStocksDTO {
 
 	private int stocksNum; // 지점별 재고번호
 	private String bucksId; // 지점아이디
-	private String stocklistCode; // 재고코드
+	private String stockListCode; // 재고코드
 	private int stocksCount; // 지점별 재고수량
 
 	public int getStocksNum() {
@@ -19,11 +19,11 @@ public class StoreStocksDTO {
 	public void setBucksId(String bucksId) {
 		this.bucksId = bucksId;
 	}
-	public String getStocklistCode() {
-		return stocklistCode;
+	public String getStockListCode() {
+		return stockListCode;
 	}
-	public void setStocklistCode(String stocklistCode) {
-		this.stocklistCode = stocklistCode;
+	public void setStockListCode(String stockListCode) {
+		this.stockListCode = stockListCode;
 	}
 	public int getStocksCount() {
 		return stocksCount;
@@ -31,5 +31,38 @@ public class StoreStocksDTO {
 	public void setStocksCount(int stocksCount) {
 		this.stocksCount = stocksCount;
 	}
+	
+	// StockList와 JOIN한 컬럼
+	private String stockCateCode;
+	private String stockListName;
+	private String stockListImage;
+	private int stockListPrice;
+
+	public String getStockCateCode() {
+		return stockCateCode;
+	}
+	public void setStockCateCode(String stockCateCode) {
+		this.stockCateCode = stockCateCode;
+	}
+	public String getStockListName() {
+		return stockListName;
+	}
+	public void setStockListName(String stockListName) {
+		this.stockListName = stockListName;
+	}
+	public String getStockListImage() {
+		return stockListImage;
+	}
+	public void setStockListImage(String stockListImage) {
+		this.stockListImage = stockListImage;
+	}
+	public int getStockListPrice() {
+		return stockListPrice;
+	}
+	public void setStockListPrice(int stockListPrice) {
+		this.stockListPrice = stockListPrice;
+	}
+
+	
 	
 }
