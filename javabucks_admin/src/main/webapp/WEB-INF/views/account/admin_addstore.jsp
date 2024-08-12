@@ -16,10 +16,10 @@
                     <div class="info_wrap">
                         <div class="info_box">
                             <label><span>아이디</span>
-							    <input type="text" name="userId" class="userId" value="" readonly>
+							    <input type="text" name="bucksId" class="userId" value="" readonly>
 							</label>
 							<label><span>패스워드</span>
-							    <input type="password" name="password" class="password" value="" readonly>
+							    <input type="password" name="bucksPasswd" class="password" value="" readonly>
 							</label>
                             <p>* 초기 패스워드는 아이디와 동일</p>
                         </div>
@@ -29,10 +29,10 @@
                     <p>지점정보</p>
                     <div class="info_box">
                         <label><span>지점명</span>
-                            <input type="text" name="storeName" value="" required>
+                            <input type="text" name="bucksName" value="" required>
                         </label>
                         <label><span>점주명</span>
-                            <input type="text" name="ownerName" value="" required>
+                            <input type="text" name="bucksOwner" value="" required>
                         </label>
                         <div class="loca_box">
                             <label><span>지점위치</span>
@@ -48,19 +48,19 @@
                         </div>
                         <div class="tel_box">
                             <label><span>지점번호</span>
-                                <input type="text" name="storePhone1" size="3" maxlength="3" value="" required> 
+                                <input type="text" name="bucksTel1" size="3" maxlength="3" value="" required> 
                                 -
-                                <input type="text" name="storePhone2" size="4" maxlength="4" value="" required> 
+                                <input type="text" name="bucksTel2" size="4" maxlength="4" value="" required> 
                                 -
-                                <input type="text" name="storePhone3" size="4" maxlength="4" value="" required>
+                                <input type="text" name="bucksTel3" size="4" maxlength="4" value="" required>
                             </label>
                             
                         </div>
                         <div class="email_box">
                             <label><span>지점이메일</span>
-                                <input type="text" name="storeEmail" value="" required>
+                                <input type="text" name="bucksEmail1" value="" required>
                             </label>
-                            <select name="emailDomain">
+                            <select name="bucksEmail2">
                                 <option value="naver.com">@naver.com</option>
                                 <option value="nate.com">@nate.com</option>
                                 <option value="gmail.com">@gmail.com</option>
@@ -131,7 +131,29 @@
 	            }
 	        }).open();
 	    }
-		
+		//이메일 중복 확인 
+		function checkEmail() {
+	        var email1 = document.querySelector('input[name="bucksEmail1"]').value;
+	        var email2 = document.querySelector('select[name="bucksEmail2"]').value;
+	
+	        // AJAX 요청 생성
+	        var xhr = new XMLHttpRequest();
+	        xhr.open("GET", "/checkEmail?email1=" + encodeURIComponent(email1) + "&email2=" + encodeURIComponent(email2), true);
+	        xhr.onreadystatechange = function () {
+	            if (xhr.readyState === 4 && xhr.status === 200) {
+	                // 서버로부터의 응답 처리
+	            	 var response = xhr.responseText;
+	                 if (response === 'ok') {
+	                     alert("이미 사용 중인 이메일입니다.");
+	                 } else if (response === 'nok') {
+	                     alert("사용 가능한 이메일입니다.");
+	                 }
+	             }
+	         };
+	         xhr.send();
+	    }
+
+
 		
 					
 </script>

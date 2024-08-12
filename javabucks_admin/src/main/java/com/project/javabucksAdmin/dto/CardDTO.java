@@ -2,16 +2,18 @@ package com.project.javabucksAdmin.dto;
 
 public class CardDTO {
 
-	private int cardRegNum;
+	private String cardRegNum;
 	private String userId;
 	private String cardName;
 	private int cardPrice;
 
-	public int getCardRegNum() {
+	
+
+	public String getCardRegNum() {
 		return cardRegNum;
 	}
 
-	public void setCardRegNum(int cardRegNum) {
+	public void setCardRegNum(String cardRegNum) {
 		this.cardRegNum = cardRegNum;
 	}
 
