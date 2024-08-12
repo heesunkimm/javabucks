@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,14 +23,17 @@
             <div class="card_box div_box">
                 <p>JavaBucks Card</p>
                 <ul class="card_list div_box">
-                    <li>
-                        <a class="popup_btn" href="javascript:;" data-popup="cardpay">
-                            <div class="img_box">
-                                <img src="../images/icons/starbucksCard.png" alt="">
-                            </div>
-                        </a>
-                    </li>
-
+                	<c:if test="${not empty listCard}">
+						<c:forEach var="card" items="${listCard}">
+		                    <li>
+		                        <a class="popup_btn" href="javascript:;" data-popup="cardpay" data-cardregnum="${card.cardRegNum}" data-cardname="${card.cardName}" data-cardprice="${card.cardPrice}" >
+		                            <div class="img_box">
+		                                <img src="../images/icons/starbucksCard.png" alt="">
+		                            </div>
+		                        </a>
+		                    </li>
+	                    </c:forEach>
+                    </c:if>
                 </ul>
                 <!-- 카드등록 페이지 이동 -->
                 <div class="addcard_box div_box">
@@ -46,19 +50,21 @@
         <!-- 카드결제 팝업 -->
         <div class="popup_box pay_card" id="cardpay" style="display: none;">
             <div class="tit_box">
-                <p class="txt_tit">JavaBucks e카드</p>
-                <a class="popup_btn edit_btn" href="javascript:;" data-popup="cardedit">
+                <p class="txt_tit">카드이름</p>
+                <a class="popup_btn edit_btn" href="javascript:;" data-popup="cardedit" >
                     <img src="../images/icons/edit.png" alt="">
                 </a>
+            	<p class="card_num">카드번호</p>
             </div>
             <a class="close_btn" href="javascript:;" data-popup="cardpay">
                 <img src="../images/icons/close.png" alt="">
             </a>
-            <p class="card_price">잔액: <span>50,000</span>원</p>
+            <p class="card_price">잔액: <span>0</span>원</p>
             <div class="card_img img_box">
                 <img src="../images/icons/starbucksCard.png" alt="">
             </div>
             <form name="f" action="user_paynow" method="post">
+            	<input type="hidden" name="cardRegNum" value="">
                 <!-- s: 내용 작성 -->
                 
                 <!-- e: 내용 작성 -->
@@ -70,12 +76,13 @@
         </div>
         <!-- 카드명 수정 -->
         <div class="popup_box edit_card" id="cardedit" style="display: none;">
-            <form name="f" action="" method="post">
+            <form name="f" action="modifyCardName" method="POST">
                 <!-- s: 내용 작성 -->
                  <div class="insert_box">
-                     <p>카드 이름을 입력해주세요.</p>
+                     <p>변경할 이름을 입력해주세요.</p>
                      <label>카드 이름
-                         <input type="text" name="" value="">
+                         <input type="text" name="cardName" value="" placeholder="카드명 최대 20자" maxlength="20">
+                         <input type="hidden" name="cardRegNum" value="">
                      </label>
                  </div>
                 <!-- e: 내용 작성 -->
@@ -94,9 +101,14 @@
             if(!$(".edit_card").hasClass("s_active")) {
                 $(".pay_card").removeClass("s_active");
             }
+            
+            let cardRegNum = $(".card_num").text().trim();
+            
+            $("#cardedit input[name='cardRegNum']").val(cardRegNum);
         })
         $(".edit_card .close_btn").on("click",function () {
             $(".pay_card").addClass("s_active");
         })
+   
      </script>
 <%@ include file="user_bottom.jsp" %>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="mybatis.mapper.user-mapper">
+ 	<insert id="addNewCard" parameterType="CardDTO">
+ 		INSERT INTO javabucks_card (
+ 			cardRegNum, userId, cardName, cardPrice
+ 		)
+ 		VALUES (
+ 			#{cardRegNum}, #{userId}, #{cardName}, 0
+ 		)
+ 	</insert>
+ 
+ 	<select id="listRegCardById" parameterType="String" resultType="CardDTO">
+ 		SELECT * FROM javabucks_card WHERE userId=#{userId}
+ 	</select>
+ 	
+ 	<select id="checkCardDupl" parameterType="String" resultType="CardDTO">
+ 		SELECT * FROM javabucks_card WHERE cardRegNum=#{cardRegNum}
+ 	</select>
+ 
+ 	<select id="compareCardNum" parameterType="String" resultType="CardListDTO">
+ 		SELECT * FROM javabucks_cardList
+ 		WHERE cardListRegNum = #{cardRegNum} 
+ 	</select>
+ 	
+ 	<update id="modifyCardStatus" parameterType="String">
+ 		UPDATE javabucks_cardList SET
+ 		cardListStatus='Y',
+ 		cardListRegDate=SYSDATE
+ 		WHERE cardListRegNum=#{cardRegNum}
+ 	</update>
+ 	
+ 	<update id="updateCardName" parameterType="java.util.Map">
+ 		UPDATE javabucks_card SET cardName=#{cardName} WHERE cardRegNum=#{cardRegNum}
+ 	</update> 
+ </mapper>
