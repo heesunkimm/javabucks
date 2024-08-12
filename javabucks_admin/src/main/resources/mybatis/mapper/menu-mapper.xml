@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="mybatis.mapper.menu-mapper">
+  	<insert id="insertDrink" parameterType="MenuDTO">
+	    insert into javabucks_menu (menuCode, menuName, menuImages, menuPrice, menuDesc, menuEnable, menuoptCode)
+	    values (#{menuCode}, #{menuName}, #{menuImages}, #{menuPrice}, #{menuDesc}, #{menuEnable}, #{menuoptCode})
+	</insert>
+	
+	<!-- <select id="listDrink" resultType="MenuDTO">
+    	select * from javabucks_menu where menuCode like concat('B', '%') order by menuName asc
+    </select> -->
+    
+    <select id="getDrinkPage" parameterType="String" resultType="Integer">
+		select count(*) from javabucks_menu where menuCode = #{menuCode}
+	</select>
+	
+	<select id="searchDrink" parameterType="java.util.Map" resultType="MenuDTO">
+	    SELECT * FROM javabucks_menu
+	    WHERE (menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || '%' OR COALESCE(#{menu_cate}, '') = '')
+	    AND (menuCode LIKE '%' || COALESCE(#{menu_base}, '') || '%' OR COALESCE(#{menu_base}, '') = '')
+	    AND (menuName LIKE '%' || COALESCE(#{menuName}, '') || '%' OR COALESCE(#{menuName}, '') = '')
+	    AND (COALESCE(#{menuEnable}, 'N') = 'N' OR EXISTS (SELECT 1 FROM javabucks_menu m WHERE m.menuCode = javabucks_menu.menuCode AND m.menuEnable = COALESCE(#{menuEnable}, 'N')))
+	</select>
+
+
+
+
+
+
+
+  </mapper>

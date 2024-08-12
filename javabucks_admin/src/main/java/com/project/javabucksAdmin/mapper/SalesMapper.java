@@ -1,5 +1,7 @@
 package com.project.javabucksAdmin.mapper;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
@@ -37,7 +39,30 @@ public class SalesMapper {
         return uuid.substring(0, Math.min(length, uuid.length()));
     }
     
+	//이메일 중복 확인	
+    public boolean checkEmail(BucksDTO dto) {
+		 int count = sqlSession.selectOne("checkEmail", dto);
+		 return count > 0;
+	 }
     
+    //지점 등록
+    public int addBucks(BucksDTO dto) {
+    	return sqlSession.insert("addBucks", dto);
+    }
+    
+    //특정 검색 지점 리스트 
+    public List<BucksDTO> searchBucks(Map<String, Object> params){
+    	return sqlSession.selectList("searchBucks", params);
+    }
+    
+    //지점 상세보기
+    public BucksDTO editbucks(String bucksId) {
+    	return sqlSession.selectOne("editbucks",bucksId);
+    }
+    
+    
+    
+ 
     
 	
     
