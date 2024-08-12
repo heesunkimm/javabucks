@@ -62,7 +62,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="user_join.do" method="post">
+            <form name="f" action="user_join" method="post">
                 <div class="input_box">
                     <label>
                         <input type="text" class="userName" name="userName" value="" placeholder="이름 입력" required>
@@ -86,10 +86,10 @@
                     </div>
                     <div class="pw_box">
                         <label>
-                            <input type="password" name="userPasswd" value="" placeholder="비밀번호" required>
+                            <input type="password" class="userPasswd" name="userPasswd" value="" placeholder="비밀번호" required>
                         </label>
                         <label>
-                            <input type="password" name="userPasswdConfirm" value="" placeholder="비밀번호 확인" required>
+                            <input type="password" class="userPasswdConfirm" name="userPasswdConfirm" value="" placeholder="비밀번호 확인" required>
                         </label>
                     </div>
                     <div class="hp_box">
@@ -103,10 +103,10 @@
                             </select>
                         </label>
                         <label>
-                            <input type="text" name="userTel2" value="" required>
+                            <input type="text" class="userTel2" name="userTel2" value="" required>
                         </label>
                         <label>
-                            <input type="text" name="userTel3" value="" required>
+                            <input type="text" class="userTel3" name="userTel3" value="" required>
                         </label>
                     </div>
                     <div class="email_box">
@@ -120,13 +120,13 @@
                                 <option value="">@gmail.com</option>
                             </select>
                         </label>
-                        <button type="button" class="confirm_btn" onclick="sendEmail()">인증번호 발송</button>
+                        <button type="button" class="dupcate_btn" onclick="duplicateCheck()">중복체크</button>
+                        <button type="button" class="confirm_btn" style="display:none;" onclick="sendEmail()">인증번호 발송</button>
                     </div>
-                    <!-- <div class="confirm_box" style="display: none;"> -->
-                     <div class="confirm_box" style="opacity:0">
+                    <div class="confirm_box" style="display: none;"> 
                         <label>
                             <input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
-                            <span>00:00</span>
+                            <span id="timer">00:00</span>
                         </label>
                         <button type="button" onclick="codeCheck()">인증확인</button>
                     </div>
@@ -143,19 +143,32 @@
 	// 이메일 인증 상태를 추적하는 변수
 	let mck = false;
 	
+// 중복확인 버튼 유효성검사 	
 function idCheck() {
     // 입력된 아이디 값을 가져옵니다
+    let name = $(".userName").val();
+    let birth = $(".userBirth").val();
     let id = $(".id").val();
-    // 아이디가 비어있는 경우
-    if (id === "") {
-        alert("아이디를 입력해 주세요"); // 사용자에게 알림
-        $(".id").focus(); // 아이디 입력 필드에 포커스
+    
+    if(name === ""){
+    	alert("이름을 입력해 주세요");
+    	$(".userName").focus();
+    	return;
+    }
+    if (birth === "") {
+        alert("생년월일을 입력해 주세요");  
+        $(".userBirth").focus();  
         return; // 함수 종료
+    }
+    if (id === "") {
+        alert("아이디를 입력해 주세요");  
+        $(".id").focus();  
+        return;  
     }
 
     // AJAX 요청을 통해 아이디 중복 확인을 서버에 요청
     $.ajax({
-        url: "idCheck.do", // 요청을 보낼 서버 URL
+        url: "idCheck", // 요청을 보낼 서버 URL
         type: "POST", // POST 방식으로 데이터 전송
         data: { "id": id }, // 서버에 전송할 데이터
         success: function(res) {
@@ -178,101 +191,119 @@ function idCheck() {
         }
     });
 }
-function sendEmail() {
-    let email1 = $('.userEmail1').val();
+
+function duplicateCheck() {
+    // 인증번호 발송 버튼의 display 속성을 변경하여 보이도록 설정합니다.
+    let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
     let email2 = $('.userEmail2').val();
-    let mode = "join";
-
-    if (email1 === "") {
-        alert("이메일주소를 입력해 주세요");
-        $('.userEmail1').focus();
-        return;
-    }else if(email !== ""){
-    	$('.confirm_btn').text("재전송");
-    	$('.confirm_box').show();
-    }
-
-    $.ajax({
-        url: 'emailCheck.do',
-        type: 'POST',
-        data: {
-            "user_email1": email1,
-            "user_email2": email2,
-            "mode": mode
-        },
-        success: function(res) {
-            if (res === 'OK') {
-                $.ajax({
-                    url: 'sendEmail.do',
-                    type: 'POST',
-                    data: {
-                        "user_email1": email1,
-                        "user_email2": email2
-                    },
-                    success: function(res) {
-                        if (res === 'OK') {
-                            alert("인증메일을 발송하였습니다.");
-                            $('.confirm_box').css('opacity', 1);
-                        } else {
-                            alert("인증메일 발송 실패");
-                        }
-                    },
-                    error: function(err) {
-                        console.error(err);
-                    }
-                });
-            } else if (res === 'SNS') {
-                alert("소셜 로그인으로 등록된 메일 주소입니다. 확인 후 로그인해 주세요.");
-                window.location.replace('login.do');
-            } else {
-                alert("이미 등록된 이메일입니다.");
-            }
-        },
-        error: function(err) {
-            console.error(err);
-        }
-    });
+    
+    if(email1 ==""){
+		alert("이메일 주소를 입력해주세요")
+		return $('.userEmail1').focus();
+	}else if(email2 == ""){
+		// $('.confirm_box').show();
+		// $('.confirm_box').style.display="block";
+	}
+    document.querySelector('.confirm_btn').style.display = 'block';
+    document.querySelector('.dupcate_btn').style.display = 'none';
 }
 
-function codeCheck() {
-    let code = $('.code').val(); // 입력한 코드 가져오기
-    $.ajax({
-        url: 'codeCheck.do',
-        type: 'POST',
-        data: { "code": code },
-        success: function(res) {
-            if (res === 'OK') {
-                alert("인증 성공!");
-                mck = true;
-            } else {
-                alert("인증 실패! 다시 입력해 주세요.");
-                $(".code").val("");
-                $(".code").focus();
-                mck = false;
-            }
-        },
-        error: function(err) {
-            console.error(err);
-            mck = false;
-        }
-    });
+
+// 이메일인증 버튼 클릭시 유효성검사
+function sendEmail(){
+	let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
+	let email2 = $('.userEmail2').val();
+	
+	// 인증번호 입력box 활성화 
+	document.querySelector('.confirm_box').style.display = 'block';
+	// 이메일 입력이 안되어있으면 focus
+	if(email1 ==""){
+		alert("이메일 주소를 입력해주세요")
+		return $('.userEmail1').focus();
+	}else if(email2 == ""){
+		// $('.confirm_box').show();
+		// $('.confirm_box').style.display="block";
+	}
+	$.ajax({
+		url : 'sendEmail',
+		type : 'POST',
+		data : { "email1" : email1,
+				"email2" : email2	
+		},
+		success : function(res){
+			if(res == 'OK'){
+				alert("인증메일을 발송하였습니다.");
+			}else{
+				alert("인증메일 발송실패!")
+			}
+		},
+		error : function(err){
+			console.log(err);
+		}
+	})
 }
 
+function codeCheck(){
+	
+}
+
+
+
+// 회원가입 버튼 클릭시 유효성검사
 function check() {
+	let name = $(".userName").val();
+    let birth = $(".userBirth").val();
+    let id = $(".id").val();
+    let passwd = $(".userPasswd").val();
+    let passwdok = $(".userPasswdConfirm").val();
+    let tel2 = $(".userTel2").val();
+    let tel3 = $(".userTel3").val();
+    let email1 = $(".userEmail1").val();
+    
+    if(name === ""){
+    	alert("이름을 입력해 주세요");
+    	$(".userName").focus();
+    	return; 
+    }
+    if (birth === "") {
+        alert("생년월일을 입력해 주세요"); // 사용자에게 알림
+        $(".userBirth").focus(); // 아이디 입력 필드에 포커스
+        return; // 함수 종료
+    }
+    if (id === "") {
+        alert("아이디를 입력해 주세요"); // 사용자에게 알림
+        $(".id").focus(); // 아이디 입력 필드에 포커스
+        return; // 함수 종료
+    }
     if (!ck) {
         alert("아이디 중복 확인을 먼저 해 주세요");
-        return false;
+        return;
+    }
+    if(passwd === ""){
+    	alert("비밀번호를 입력해 주세요");
+    	$(".userPasswd").focus();
+    	return;
+    }
+    if(passwdok===""){
+    	alert("비밀번호 확인을 입력해주세요");
+    	$(".userPasswdConfirm").focus();
+    	return;
+    }
+    if (passwd !== passwdok) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+    }
+    if(tel2==="" || tel3===""){
+    	alert("전화번호를 입력해주세요");
+    	return;
+    }
+    if(email===""){
+    	alert("이메일을 입력해주세요");
+    	return;
     }
     if (!mck) {
         alert("이메일 인증을 먼저 해 주세요");
-        return false;
-    }
-    
-    let password = $('input[name="userPasswd"]').val();
-    let confirmPassword = $('input[name="userPasswdConfirm"]').val();
-    if (password !== confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다.");
-        return false;
+        return;
     }
     return true;
 }
