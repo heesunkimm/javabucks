@@ -7,9 +7,7 @@ import com.project.javabucksStore.mapper.OrderMapper;
 
 @Controller
 public class OrderController {
-	
-	@Autowired
-	OrderMapper mapper;
+
 	
 	
 }
