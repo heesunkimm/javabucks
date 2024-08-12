@@ -39,6 +39,12 @@ public class SalesMapper {
         return uuid.substring(0, Math.min(length, uuid.length()));
     }
     
+    //지점 리스트 
+    public List<BucksDTO> bucksList(Map<String, Object> params){
+    	System.out.println(params);
+    	return sqlSession.selectList("bucksList",params);
+    }
+    
 	//이메일 중복 확인	
     public boolean checkEmail(BucksDTO dto) {
 		 int count = sqlSession.selectOne("checkEmail", dto);
@@ -54,15 +60,39 @@ public class SalesMapper {
     public List<BucksDTO> searchBucks(Map<String, Object> params){
     	return sqlSession.selectList("searchBucks", params);
     }
+    //특정 검색 지점 페이징 
+    public int searchBucksCount(Map<String, Object> params) {
+    	return sqlSession.selectOne("searchBucksCount",params);
+    }
     
     //지점 상세보기
     public BucksDTO editbucks(String bucksId) {
     	return sqlSession.selectOne("editbucks",bucksId);
     }
     
-    
+  //이메일 중복 확인	
+    public boolean editCheckEmail(BucksDTO dto) {
+		 int count = sqlSession.selectOne("editCheckEmail", dto);
+		 return count > 0;
+	 }
     
  
+  //지점 수정
+    public int editBucks(BucksDTO dto) {
+    	return sqlSession.update("editBucks", dto);
+    }
+    
+    //지점 삭제 
+    public int deleteBucks(String bucksId) {
+    	return sqlSession.delete("deleteBucks",bucksId);
+    }
+    
+    //페이징 
+    public int bucksListCount() {
+		return sqlSession.selectOne("bucksListCount");
+	}
+    
+    
     
 	
     
