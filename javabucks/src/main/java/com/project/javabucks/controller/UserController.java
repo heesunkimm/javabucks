@@ -52,7 +52,7 @@ public class UserController {
 		return "/user/user_index";
 	}
 
-	@GetMapping("/user_pay")
+	@RequestMapping("/user_pay")
 	public String userPay(Model model, HttpSession session) {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
 		String userId = dto.getUserId();
@@ -106,19 +106,21 @@ public class UserController {
 		}
 	}
 
-	@ResponseBody
 	@PostMapping("/modifyCardName")
-	public String modifyCardName(String cardName, String cardRegNum) {
+	public String modifyCardName(String cardName, String cardRegNum,Model model) {
 		System.out.println(cardName);
 		System.out.println(cardRegNum);
 		Map<String, String> params = new HashMap<>();
 		params.put("cardName", cardName);
 		params.put("cardRegNum", cardRegNum);
 		int res = userMapper.updateCardName(params);
-		if (res > 0) {
-			return "OK";
-		} else
-			return "NO";
+		if (res>0) {
+			model.addAttribute("msg", "카드이름이 변경되었습니다.");
+		} else {
+			model.addAttribute("msg", "이름수정에 실패했습니다.");
+		}
+		model.addAttribute("url", "user_pay");
+		return "message";
 
 	}
 

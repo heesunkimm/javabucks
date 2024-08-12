@@ -76,13 +76,13 @@
         </div>
         <!-- 카드명 수정 -->
         <div class="popup_box edit_card" id="cardedit" style="display: none;">
-            <form name="f" action="" method="post" onsubmit="return modifyCardName()">
+            <form name="f" action="modifyCardName" method="POST">
                 <!-- s: 내용 작성 -->
                  <div class="insert_box">
                      <p>변경할 이름을 입력해주세요.</p>
                      <label>카드 이름
                          <input type="text" name="cardName" value="" placeholder="카드명 최대 20자" maxlength="20">
-                         <input type="hidden" name="cardRegNum" value="cardregnum">
+                         <input type="hidden" name="cardRegNum" value="">
                      </label>
                  </div>
                 <!-- e: 내용 작성 -->
@@ -101,35 +101,14 @@
             if(!$(".edit_card").hasClass("s_active")) {
                 $(".pay_card").removeClass("s_active");
             }
+            
+            let cardRegNum = $(".card_num").text().trim();
+            
+            $("#cardedit input[name='cardRegNum']").val(cardRegNum);
         })
         $(".edit_card .close_btn").on("click",function () {
             $(".pay_card").addClass("s_active");
         })
-        
-        // 카드 이름 변경하기
-        
-	function modifyCardName(){
-	    let cardName = $('#cardName').val(); // 입력한 코드 가져오기
-	    $.ajax({
-	        url: 'modifyCardName',
-	        type: 'POST',
-	        data: { 
-	        	"cardName" : cardName,
-	    		"cardRegNum" : cardRegNum
-	    		},
-	        success: function(res) {
-	            if (res =='OK') {
-	                alert("이름 변경 성공.");
-	            } else {
-	                alert("이름 변경 실패.");
-	                $("#cardName").val("");
-					$("#cardName").focus();
-	            }
-	        },
-	        error: function(err) {
-	            console.error(err);
-	        }
-	    });
-	}
+   
      </script>
 <%@ include file="user_bottom.jsp" %>
