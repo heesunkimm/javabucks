@@ -82,7 +82,7 @@
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
-                <a href="user_join.do">회원가입</a>
+                <a href="user_join">회원가입</a>
             </div>
         </div>
         <div id="findbyid" class="popup_box" style="display: none;">
