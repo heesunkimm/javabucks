@@ -108,8 +108,6 @@ public class UserController {
 
 	@PostMapping("/modifyCardName")
 	public String modifyCardName(String cardName, String cardRegNum,Model model) {
-		System.out.println(cardName);
-		System.out.println(cardRegNum);
 		Map<String, String> params = new HashMap<>();
 		params.put("cardName", cardName);
 		params.put("cardRegNum", cardRegNum);
@@ -122,6 +120,17 @@ public class UserController {
 		model.addAttribute("url", "user_pay");
 		return "message";
 
+	}
+
+	@PostMapping("/user_paycharge")
+	public String userPaycharge(String cardRegNum) {
+		System.out.println("cardRegNum =" +cardRegNum);
+		return "/user/user_paycharge";
+	}
+
+	@RequestMapping("/user_paynow")
+	public String userPaynow() {
+		return "/user/user_paynow";
 	}
 
 	@RequestMapping("/user_store")
@@ -179,13 +188,4 @@ public class UserController {
 		return "/user/user_orderhistory";
 	}
 
-	@RequestMapping("/user_paynow")
-	public String userPaynow() {
-		return "/user/user_paynow";
-	}
-
-	@RequestMapping("/user_paycharge")
-	public String userPaycharge() {
-		return "/user/user_paycharge";
-	}
 }

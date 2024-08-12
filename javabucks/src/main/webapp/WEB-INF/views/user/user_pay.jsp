@@ -63,13 +63,13 @@
             <div class="card_img img_box">
                 <img src="../images/icons/starbucksCard.png" alt="">
             </div>
-            <form name="f" action="user_paynow" method="post">
+            <form name="f" action="user_paycharge" method="post">
             	<input type="hidden" name="cardRegNum" value="">
                 <!-- s: 내용 작성 -->
                 
                 <!-- e: 내용 작성 -->
                 <div class="pbtn_box">
-                    <button type="submit">결제하기</button>
+                    <button type="submit">충전하기</button>
                     <button type="button" onclick="window.location='user_paycharge'">충전하기</button>
                 </div>
             </form>
