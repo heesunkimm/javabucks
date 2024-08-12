@@ -36,4 +36,9 @@
  	<update id="updateCardName" parameterType="java.util.Map">
  		UPDATE javabucks_card SET cardName=#{cardName} WHERE cardRegNum=#{cardRegNum}
  	</update> 
+ 	
+ 	<insert id="paychargeCard" parameterType="PayhistoryDTO">
+ 		INSERT javabuck_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+ 		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, 'x', 'x', 'x', sysdate, #{payhistoryPrice}, #{payhistoryType}, #{payhistoryPayWay})
+ 	</insert>
  </mapper>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> <!-- 숫자 포맷팅 할 때 필요 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +60,7 @@
             <a class="close_btn" href="javascript:;" data-popup="cardpay">
                 <img src="../images/icons/close.png" alt="">
             </a>
-            <p class="card_price">잔액: <span>0</span>원</p>
+            <p class="card_price">잔액: <span>0</span><fmt:formatNumber value="" pattern="#,###" />원</p>
             <div class="card_img img_box">
                 <img src="../images/icons/starbucksCard.png" alt="">
             </div>
@@ -70,7 +71,7 @@
                 <!-- e: 내용 작성 -->
                 <div class="pbtn_box">
                     <button type="submit">충전하기</button>
-                    <button type="button" onclick="window.location='user_paycharge'">충전하기</button>
+                    <button type="button">충전하기</button>
                 </div>
             </form>
         </div>
@@ -97,6 +98,7 @@
     </section>
     <!-- e: content -->
      <script>
+     
         $(".edit_btn").on("click",function () {
             if(!$(".edit_card").hasClass("s_active")) {
                 $(".pay_card").removeClass("s_active");

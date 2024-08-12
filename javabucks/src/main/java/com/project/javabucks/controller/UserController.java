@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -107,12 +107,12 @@ public class UserController {
 	}
 
 	@PostMapping("/modifyCardName")
-	public String modifyCardName(String cardName, String cardRegNum,Model model) {
+	public String modifyCardName(String cardName, String cardRegNum, Model model) {
 		Map<String, String> params = new HashMap<>();
 		params.put("cardName", cardName);
 		params.put("cardRegNum", cardRegNum);
 		int res = userMapper.updateCardName(params);
-		if (res>0) {
+		if (res > 0) {
 			model.addAttribute("msg", "카드이름이 변경되었습니다.");
 		} else {
 			model.addAttribute("msg", "이름수정에 실패했습니다.");
@@ -123,8 +123,9 @@ public class UserController {
 	}
 
 	@PostMapping("/user_paycharge")
-	public String userPaycharge(String cardRegNum) {
-		System.out.println("cardRegNum =" +cardRegNum);
+	public String userPaycharge(Model model, String cardRegNum) {
+		CardDTO dto = userMapper.checkCardDupl(cardRegNum);
+		model.addAttribute("card", dto);
 		return "/user/user_paycharge";
 	}
 
