@@ -36,48 +36,9 @@
         )
      </insert>
      
-     <!-- 지점 리스트 -->
-     <select id="bucksList" parameterType="map" resultType="BucksDTO">
-			      <![CDATA[
-			    SELECT * FROM (
-			        SELECT ROWNUM AS rnum, R.* FROM (
-			            SELECT * FROM javabucks_bucks
-			            ORDER BY bucksJoindate ASC
-			        ) R
-			        WHERE ROWNUM <= #{endIndex}
-			    ) WHERE rnum > #{startIndex}
-			    ]]>
-     
-     		<!-- select * from javabucks_bucks  -->
-     </select>
-     
-     <!-- 특정 검색에 해당하는 지점 리스트 페이징 -->
+     <!-- 특정 검색에 해당하는 지점 리스트 -->
      <select id="searchBucks" parameterType="map" resultType="BucksDTO">
-    <![CDATA[
-    SELECT * FROM (
-        SELECT ROWNUM AS rnum, R.* FROM (
-            SELECT * FROM javabucks_bucks
-            WHERE 1=1
-            <if test="bucksName != null and bucksName != ''">
-                AND bucksName LIKE '%' || #{bucksName} || '%'
-            </if>
-            <if test="bucksId != null and bucksId != ''">
-                AND bucksId LIKE '%' || #{bucksId} || '%'
-            </if>
-            <if test="bucksLocation != null and bucksLocation != ''">
-                AND bucksLocation LIKE '%' || #{bucksLocation} || '%'
-            </if>
-            <if test="startDate != null and endDate != null">
-                AND bucksJoindate BETWEEN #{startDate} AND #{endDate}
-            </if>
-            ORDER BY bucksJoindate ASC
-        ) R
-        WHERE ROWNUM <= #{endIndex}
-    )
-    WHERE rnum > #{startIndex}
-    ]]>
-</select>
-        <!-- SELECT * FROM javabucks_bucks
+        SELECT * FROM javabucks_bucks
         WHERE 
             (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
             AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
@@ -85,63 +46,11 @@
             AND (
                 (#{startDate} IS NULL OR #{endDate} IS NULL) 
                 OR bucksJoindate BETWEEN #{startDate} AND #{endDate}
-            )-->
-    
-    
-    <!-- 검색 페이징처리 -->   
-	<select id="searchBucksCount" parameterType="map" resultType="int">
-	    SELECT COUNT(*) AS TOTAL_COUNT
-    FROM javabucks_bucks
-    WHERE 
-        (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
-        AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
-        AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%')
-        AND (
-            (#{startDate} IS NOT NULL AND #{endDate} IS NOT NULL AND bucksJoindate BETWEEN #{startDate} AND #{endDate})
-            OR (#{startDate} IS NULL AND #{endDate} IS NULL)
-        )
-	</select>
-	
+            )
+    </select>
     
     <select id="editbucks" parameterType="String" resultType="BucksDTO">
     	Select * FROM javabucks_bucks WHERE bucksId = #{bucksId}
     
     </select>
-    
-    <!-- 수정 이메일 중복 확인 쿼리 -->
-    <select id="editCheckEmail" parameterType="BucksDTO" resultType="int">
-	    SELECT COUNT(*) 
-	    FROM javabucks_bucks 
-	    WHERE bucksEmail1 = #{bucksEmail1} 
-	      AND bucksEmail2 = #{bucksEmail2}
-	      AND bucksId != #{bucksId} 
-	</select>
-	
-	<!-- 지점 수정  -->
-	<update id="editBucks" parameterType="BucksDTO">
-		UPDATE javabucks_bucks
-	    SET 
-	        bucksName = #{bucksName},      
-	        bucksOwner = #{bucksOwner},    
-	        bucksTel1 = #{bucksTel1},      
-	        bucksTel2 = #{bucksTel2},      
-	        bucksTel3 = #{bucksTel3},      
-	        bucksEmail1 = #{bucksEmail1},  
-	        bucksEmail2 = #{bucksEmail2}   
-	    WHERE 
-	        bucksId = #{bucksId}           
-	
-	</update>
-	
-	<!-- 지점 삭제 -->
-	<delete id="deleteBucks" parameterType="String">
-		DELETE FROM javabucks_bucks WHERE bucksId = #{bucksId}
-	</delete> 
-	
-	<!-- 페이징처리 -->   
-	<select id="bucksListCount" parameterType="int" resultType="int">
-	    SELECT COUNT(*) AS TOTAL_COUNT
-	    FROM javabucks_bucks
-	</select>
-	
   </mapper>
