@@ -1,5 +1,7 @@
 package com.project.javabucksStore.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.project.javabucksStore.dto.StockCartDTO;
 import com.project.javabucksStore.dto.StoreStocksDTO;
 import com.project.javabucksStore.mapper.StocksMapper;
 
@@ -202,19 +205,127 @@ public class StocksController {
 		return pagingMap;
 	}
 	
+	
+	// 재고 장바구니 추가 AJAX
 	@ResponseBody
 	@PostMapping("/addStocksCart.ajax")
-	public ResponseEntity<Map<String, Object>> addStocksCart(String stockListCode, int quantity) {		
-		System.out.println("stockListCode :" + stockListCode);
-		System.out.println("quantity :" + quantity);
-		
-		int addCartResult = mapper.addStocksCart(stockListCode, quantity);	
-		
+	public ResponseEntity<Map<String, Object>> addStocksCart(String stockListCode, int quantity) {	
+		// 지점 아이디 받아오는거 추가 필요		
+		List<StockCartDTO> list = mapper.stockCartList();
 		Map<String, Object> response = new HashMap<>();
-		response.put("response", addCartResult);		
 		
-		return ResponseEntity.ok(response);
+		boolean tag = false;
+		
+		// 리스트가 null인 경우
+		if(list.isEmpty()) {
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			response.put("response", addCartResult);
+			return ResponseEntity.ok(response);
+		} 		
+		// 리스트가 null이 아니고 이미 해당 코드가 있는 경우 수량만 update
+		for(StockCartDTO dto : list) {
+			if (dto.getStockListCode().equals(stockListCode)) {
+				int updateCartQuantity = mapper.updateCartQuantity(stockListCode, quantity);
+				response.put("response", updateCartQuantity);
+				tag = true;
+				break;
+			}
+		}				
+		// 리스트가 null이 아닌데 해당 코드는 없는 경우 코드와 수량 insert
+		if(!tag) {
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			response.put("response", addCartResult);
+		}
+		
+		return ResponseEntity.ok(response);				
 	}
 	
 	
+	// 재고 장바구니
+	@GetMapping("/stocksCart.do")
+	public String stocksCart(HttpServletRequest req) {
+		// 지점 아이디 받아서 추가하는 작업 필요
+		List<StockCartDTO> list = mapper.stockCartList();
+		Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String tommorow = formatter.format(calendar.getTime());
+        
+		req.setAttribute("stockCartList", list);	
+		req.setAttribute("tommorow", tommorow);
+		return "/stocks/store_cart";
+	}
+		
+
+	// 재고 장바구니 수량 업데이트
+	@ResponseBody
+	@PostMapping("/updateQuantity.ajax")
+	public ResponseEntity<Map<String, Object>> updateQuantity(String stockListCode, int quantity) {
+		// 지점 아이디 받아오는거 추가 필요
+		Map<String, Object> response = new HashMap<>();
+		int updateQuantity = mapper.updateQuantity(stockListCode, quantity);
+		response.put("response", updateQuantity);	
+		return ResponseEntity.ok(response);		
+	}
+	
+	// 재고 장바구니 삭제
+	@ResponseBody
+	@PostMapping("/deleteCart.ajax")
+	public ResponseEntity<Map<String, Object>> deleteCart(String stockListCode) {
+		// 지점 아이디 받아오는거 추가 필요
+		String bucksId = "bucks001";
+		
+		Map<String, Object> response = new HashMap<>();
+		int deleteCart = mapper.deleteCart(stockListCode, bucksId);
+		response.put("response", deleteCart);	
+		return ResponseEntity.ok(response);	
+	}
+	
+	// 주문하기
+	@PostMapping("/addStoreOrder.do")
+	public String addStoreOrder(@RequestParam("stockCartCount") List<Integer> stockCartCount, 
+								@RequestParam("stockListPrice") List<Integer> stockListPrice, 
+								@RequestParam("stockListCode") List<String> stockListCode,
+								@RequestParam("stockCartNum") List<Integer> stockCartNum) {
+		// 지점 아이디 받아오기
+		String bucksId = "bucks001";
+		
+		int price = 0;
+		int totPrice = 0;
+		for(int i=0; i<stockListCode.size(); i++) {
+			price = stockListPrice.get(i) * stockCartCount.get(i);			
+			totPrice = totPrice + price;			
+		}
+		
+		
+		List<OrderList> list = null;
+		//list.add(i, null)
+		
+		//int addStoreOrder = mapper.addStoreOrder(bucksId,  );
+		
+		
+		for(int i=0; i<stockCartNum.size(); i++) {
+			System.out.println(stockCartNum.get(i));
+			int updateCartStatus = mapper.updateCartStatus(bucksId, stockCartNum.get(i));
+		}		
+		
+		return "stocks/store_cart";
+	}
+	
+	public class OrderList {
+		private String stockListCode;
+		private int stockCartCount;
+		public String getStockListCode() {
+			return stockListCode;
+		}
+		public void setStockListCode(String stockListCode) {
+			this.stockListCode = stockListCode;
+		}
+		public int getStockCartCount() {
+			return stockCartCount;
+		}
+		public void setStockCartCount(int stockCartCount) {
+			this.stockCartCount = stockCartCount;
+		}		
+	}
 }
