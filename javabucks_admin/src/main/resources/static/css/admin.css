@@ -213,6 +213,20 @@ header .nav_item:hover .dropdown_content {display: block;}
 #admin_drinklist .list_box .btn_box {margin: 20px 0; text-align: right;}
 #admin_drinklist .search_list .menu_btn:hover {color: #006241;}
 
+/* admin_desertlist, admin_mdlist */
+.menuList button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.menuList button.search_btn, 
+.menuList button.add_btn, 
+.menuList button.enable_btn {background-color: #006241; color: #fff;}
+.menuList button.disable_order {background-color: #999; color: #fff;}
+.menuList .search_box {border: 1px solid #ccc; padding: 20px;}
+.menuList .search_box form > div {margin-bottom: 6px;}
+.menuList .search_box label + label {margin-left: 16px;}
+.menuList .search_box label, .menuList .search_box select {font-size: 18px;}
+.menuList .search_box select {padding: 0 10px;}
+.menuList .search_box input {padding: 0 6px; font-size: 18px;}
+.menuList .list_box .btn_box {margin: 20px 0; text-align: right;}
+
 
 /*  */
 .addmenu_cont .insert_box {margin-top: 20px;}
@@ -222,6 +236,7 @@ header .nav_item:hover .dropdown_content {display: block;}
 .addmenu_cont .insert_box form .info_box > div, 
 .addmenu_cont .insert_box form .info_box > label:not(:first-child) {margin-top: 10px;}
 .addmenu_cont .insert_box form .info_box input {padding: 0 6px;}
+.addmenu_cont .insert_box form .info_box input[name="menuName"] {width: 467px;}
 .addmenu_cont .insert_box form .info_box input[type="checkbox"] {margin-right: 6px;}
 .addmenu_cont .insert_box form .info_box select {width: 200px;}
 .addmenu_cont .insert_box form .info_box span {display: inline-block; width: 100px; font-size: 18px;}
