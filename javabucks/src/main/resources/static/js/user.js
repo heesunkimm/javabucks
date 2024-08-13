@@ -27,6 +27,8 @@ $(function() {
 			$('#cardpay .txt_tit').text(cardName);
 			$('#cardpay .card_price span').text(cardPrice);
 			
+			$("#cardpay input[name='cardRegNum']").val(cardRegNum);
+			
             $('#' + popupId).addClass('s_active');
             $('.dimm').addClass('s_active');
         });

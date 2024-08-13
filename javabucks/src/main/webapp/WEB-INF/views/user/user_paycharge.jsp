@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> <!-- 숫자 포맷팅 할 때 필요 -->
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,6 +86,7 @@
             let cardName = $("input[name='cardName']").val(); // 카드 이름
             let payhistoryPayType = $("input[name='payhistoryPayType']").val();
             let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
+            let payUser = '${inUser.userId}'
 
             // 결제 요청
             IMP.request_pay({
@@ -94,14 +95,40 @@
                 merchant_uid: 'JAVABUCKS_' + new Date().getTime(), // 주문번호
                 name: cardName, // 결제할 상품명 (카드 이름)
                 amount: chargeAmount, // 결제할 금액
-                buyer_name: '${sessionScope.userId}' // 구매자 이름
+                buyer_name: payUser // 구매자 이름
             }, function (rsp) {
                 if (rsp.success) {
                     // 결제 성공 시 서버에 데이터 전송
-                    
+                     $.ajax({
+                    url: 'user_paycharge.ajax',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        imp_uid: rsp.imp_uid,
+                        merchant_uid: rsp.merchant_uid,
+                        paid_amount: rsp.paid_amount,
+                        userId: payUser,
+                        payhistoryPrice: chargeAmount,
+                        cardRegNum: cardRegNum,
+                        payhistoryPayType: payhistoryPayType,
+                        payhistoryPayWay: payhistoryPayWay
+                    }),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('충전이 성공적으로 완료되었습니다.');
+                            window.location = "user_pay";
+                        } else {
+                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('처리 중 오류가 발생했습니다:', error);
+                    }
+                });
                 } else {
                     // 결제 실패 시 처리
-                    alert('결제에 실패했습니다. 에러 내용: ' + rsp.error_msg);
+                    alert(rsp.error_msg);
                 }
             });
         }

@@ -36,9 +36,25 @@
  	<update id="updateCardName" parameterType="java.util.Map">
  		UPDATE javabucks_card SET cardName=#{cardName} WHERE cardRegNum=#{cardRegNum}
  	</update> 
- 	
+ 	<!-- 페이히스토리 카드충전 -->
  	<insert id="paychargeCard" parameterType="PayhistoryDTO">
- 		INSERT javabuck_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
- 		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, 'x', 'x', 'x', sysdate, #{payhistoryPrice}, #{payhistoryType}, #{payhistoryPayWay})
+ 		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+ 		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, NULL, NULL, NULL, sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
  	</insert>
+ 	<!-- 카드금액충전 -->
+ 	<update id="plusCardPrice" parameterType="java.util.Map">
+ 		Update javabucks_card SET cardPrice = cardPrice + #{payhistoryPrice}
+		WHERE cardRegNum = #{cardRegNum}
+ 	</update>
+ 	
+ 	<!-- 채성진 작업 추가 -->
+ 	<select id="getInfoById" resultType="UserDTO">
+ 		SELECT * FROM javabucks_user WHERE userId= 'user001'
+ 	</select>
+ 	
+ 	<select id="getFrequencyById"  parameterType="String" resultType="FrequencyDTO"> 
+ 		SELECT jf.* FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
+ 		 WHERE jf.userId = #{userId}
+ 	</select>
+ 	
  </mapper>

@@ -3,25 +3,23 @@ package com.project.javabucks.dto;
 public class CouponListDTO {
 
 	private int cpnListNum;
-	private String cpnListCode;
+	private String cpnCode;
 	private String userId;
 	private String cpnListStatus;
 	private String cpnListStartDate;
 	private String cpnListEndDate;
 	private String cpnListUseDate;
-	
-	
 	public int getCpnListNum() {
 		return cpnListNum;
 	}
 	public void setCpnListNum(int cpnListNum) {
 		this.cpnListNum = cpnListNum;
 	}
-	public String getCpnListCode() {
-		return cpnListCode;
+	public String getCpnCode() {
+		return cpnCode;
 	}
-	public void setCpnListCode(String cpnListCode) {
-		this.cpnListCode = cpnListCode;
+	public void setCpnCode(String cpnCode) {
+		this.cpnCode = cpnCode;
 	}
 	public String getUserId() {
 		return userId;
@@ -53,6 +51,6 @@ public class CouponListDTO {
 	public void setCpnListUseDate(String cpnListUseDate) {
 		this.cpnListUseDate = cpnListUseDate;
 	}
-
+	
 	
 }
