@@ -9,34 +9,51 @@ import org.springframework.stereotype.Service;
 
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.FrequencyDTO;
+import com.project.javabucks.dto.PayhistoryDTO;
+import com.project.javabucks.dto.UserDTO;
 
 @Service
 public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
-	public int addNewCard(CardDTO dto){
-		return sqlSession.insert("addNewCard",dto);
+
+	public int addNewCard(CardDTO dto) {
+		return sqlSession.insert("addNewCard", dto);
 	}
-	
-	public List<CardDTO> listRegCardById(String userId){
+
+	public List<CardDTO> listRegCardById(String userId) {
 		return sqlSession.selectList("listRegCardById", userId);
 	}
-	
+
 	public CardDTO checkCardDupl(String cardRegNum) {
 		return sqlSession.selectOne("checkCardDupl", cardRegNum);
 	}
-	
+
 	public CardListDTO compareCardNum(String cardRegNum) {
 		return sqlSession.selectOne("compareCardNum", cardRegNum);
 	}
-	
+
 	public int modifyCardStatus(String cardRegNum) {
 		return sqlSession.update("modifyCardStatus", cardRegNum);
 	}
-	
+
 	public int updateCardName(Map<String, String> params) {
 		return sqlSession.update("updateCardName", params);
 	}
+
+	public int paychargeCard(PayhistoryDTO dto) {
+		return sqlSession.insert("paychargeCard", dto);
+	}
+	
+	// 채성진 작업------------------------------------------------------
+	public UserDTO getInfoById() {
+		return sqlSession.selectOne("getInfoById");
+	}
+	
+	public FrequencyDTO getFrequencyById(String userId) {		
+		return sqlSession.selectOne("getFrequencyById", userId);
+	}
+		
 }

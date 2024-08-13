@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -30,25 +31,34 @@ public class UserController {
 
 	@RequestMapping("/user_index")
 	public String userIndex(HttpServletRequest req) {
-		UserDTO dto = new UserDTO();
-		dto.setUserId("inUser");
-		dto.setUserPasswd("inUser");
-		dto.setUserName("이용중");
-		dto.setUserNickname("별며어엉");
-		dto.setUserGender("M");
-		dto.setUserBirth("920606");
-		dto.setUserEmail1("sky2464");
-		dto.setUserEmail2("naver.com");
-		dto.setUserTel1("010");
-		dto.setUserTel2("6859");
-		dto.setUserTel3("4432");
-		dto.setGradeCode("gold");
-		dto.setUserGradedate("24/08/06");
-		dto.setUserJoindate("24/06/06");
-		dto.setUserEnable("Y");
-		dto.setUserFrequencyCount("500");
+//		HttpSession session = req.getSession();
+//		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		System.out.println(userId);
+		
+		FrequencyDTO dto2 = userMapper.getFrequencyById(userId);
+		
+//		int frequencyById = dto2.getFrequencyCount();.
+		int frequencyById = 3;
+		if(dto.getGradeCode().equals("green")) {
+			int frequency = 30 - frequencyById;
+			int gage = (frequencyById/30) * 100;
+			req.setAttribute("maxStar", "30");
+			req.setAttribute("frequency", frequency);
+			req.setAttribute("until", "Gold");
+			req.setAttribute("progress_bar", gage);
+			
+		}else if(dto.getGradeCode().equals("welcome")) {
+			int frequency = 5 - frequencyById;
+			int gage = (frequencyById/5) * 100;
+			req.setAttribute("maxStar", "5");
+			req.setAttribute("frequency", frequency);
+			req.setAttribute("until", "Green");
+			req.setAttribute("progress_bar", gage);
+		}
 		req.getSession().setAttribute("inUser", dto);
-
 		return "/user/user_index";
 	}
 
@@ -107,14 +117,12 @@ public class UserController {
 	}
 
 	@PostMapping("/modifyCardName")
-	public String modifyCardName(String cardName, String cardRegNum,Model model) {
-		System.out.println(cardName);
-		System.out.println(cardRegNum);
+	public String modifyCardName(String cardName, String cardRegNum, Model model) {
 		Map<String, String> params = new HashMap<>();
 		params.put("cardName", cardName);
 		params.put("cardRegNum", cardRegNum);
 		int res = userMapper.updateCardName(params);
-		if (res>0) {
+		if (res > 0) {
 			model.addAttribute("msg", "카드이름이 변경되었습니다.");
 		} else {
 			model.addAttribute("msg", "이름수정에 실패했습니다.");
@@ -122,6 +130,18 @@ public class UserController {
 		model.addAttribute("url", "user_pay");
 		return "message";
 
+	}
+
+	@PostMapping("/user_paycharge")
+	public String userPaycharge(Model model, String cardRegNum) {
+		CardDTO dto = userMapper.checkCardDupl(cardRegNum);
+		model.addAttribute("card", dto);
+		return "/user/user_paycharge";
+	}
+
+	@RequestMapping("/user_paynow")
+	public String userPaynow() {
+		return "/user/user_paynow";
 	}
 
 	@RequestMapping("/user_store")
@@ -179,13 +199,4 @@ public class UserController {
 		return "/user/user_orderhistory";
 	}
 
-	@RequestMapping("/user_paynow")
-	public String userPaynow() {
-		return "/user/user_paynow";
-	}
-
-	@RequestMapping("/user_paycharge")
-	public String userPaycharge() {
-		return "/user/user_paycharge";
-	}
 }
