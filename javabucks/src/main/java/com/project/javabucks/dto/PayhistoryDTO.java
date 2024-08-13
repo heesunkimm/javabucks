@@ -1,8 +1,8 @@
 package com.project.javabucks.dto;
 
-public class PayhistoyDTO {
+public class PayhistoryDTO {
 
-	private int payhishoryNum;
+	private int payhistoryNum;
 	private String userId;
 	private int cardRegNum;
 	private String bucksId;
@@ -13,11 +13,11 @@ public class PayhistoyDTO {
 	private String payhistoryPayType;
 	private String payhistoryPayWay;
 	
-	public int getPayhishoryNum() {
-		return payhishoryNum;
+	public int getPayhistoryNum() {
+		return payhistoryNum;
 	}
-	public void setPayhishoryNum(int payhishoryNum) {
-		this.payhishoryNum = payhishoryNum;
+	public void setPayhistoryNum(int payhistoryNum) {
+		this.payhistoryNum = payhistoryNum;
 	}
 	public String getUserId() {
 		return userId;
@@ -73,6 +73,6 @@ public class PayhistoyDTO {
 	public void setPayhistoryPayWay(String payhistoryPayWay) {
 		this.payhistoryPayWay = payhistoryPayWay;
 	}
-	
 
+	
 }

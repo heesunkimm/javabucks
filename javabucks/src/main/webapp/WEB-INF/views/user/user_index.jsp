@@ -30,14 +30,14 @@
                 </div>
                 <div class="reward_box div_box"> 
                     <p class="remain_count font_green">
-                        <span class="star_count">11</span>
+                        <span class="star_count">${frequency}</span>
                         <span class="star_icon star_icon--01"></span>
-                        <span class="grade_name">until Gold Level</span>
+                        <span class="grade_name">until ${until} Level</span>
                     </p>
                     <div class="progress_box">
-                        <progress class="progress_bar"  min="0" max="100" value="50"></progress>
+                        <progress class="progress_bar"  min="0" max="100" value="${progress_bar}"></progress>
                         <p class="total_count">
-                            <span>11</span>/<span class="font_green">15</span>
+                            <span>${frequency}</span>/<span class="font_green">${maxStar}</span>
                             <span class="star_icon star_icon--02"></span>
                         </p>
                     </div>
