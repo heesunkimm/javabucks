@@ -61,7 +61,7 @@
                             <span>메뉴 사진</span>
                             <div>
                                 <div class="preview_box img_box" style="display: none;">
-                                    <img id="preview_image" src="/static/images/upload_menu/" alt="" style="display: none;" />
+                                    <img id="preview_image" src="" alt="" style="display: none;" />
                                 </div>
                                 <div class="file_box">
                                     <input class="file_name" placeholder="첨부파일" readonly>

@@ -15,8 +15,8 @@
     <header class="bg_beige">
         <div class="logo_box">
             <a href="javascript:;">
-                <div class="img_box">
-                    <img src="../images/logo/starbucks_logo.png" alt="">
+            	<div class="img_box">
+                    <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>
                 <span>JAVABUCKS</span>
             </a>
@@ -34,7 +34,7 @@
             <li class="nav_item">
                 <a href="javascript:;">메뉴관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">커피 및 음료</a></li>
+                    <li><a href="admin_drinklist">커피 및 음료</a></li>
                     <li><a href="javascript:;">케이크</a></li>
                     <li><a href="javascript:;">샌드위치</a></li>
                     <li><a href="javascript:;">텀블러</a></li>
@@ -53,7 +53,7 @@
                 <ul class="dropdown_content">
                     <li><a href="javascript:;">지점별 매출 관리</a></li>
                     <li><a href="javascript:;">카테고리별 매출관리</a></li>
-                    <li><a href="javascript:;">지점별 정산관리</a></li>
+                    <li><a href="javascript:;">발주 정산관리</a></li>
                 </ul>
             </li>
             <li class="nav_item">

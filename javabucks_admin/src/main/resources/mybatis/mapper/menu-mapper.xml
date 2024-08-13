@@ -3,26 +3,63 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="mybatis.mapper.menu-mapper">
+  	<!-- 음료등록 -->
   	<insert id="insertDrink" parameterType="MenuDTO">
-	    insert into javabucks_menu (menuCode, menuName, menuImages, menuPrice, menuDesc, menuEnable, menuoptCode)
-	    values (#{menuCode}, #{menuName}, #{menuImages}, #{menuPrice}, #{menuDesc}, #{menuEnable}, #{menuoptCode})
+	    insert into javabucks_menu (menuCode, menuName, menuImages, menuPrice, menuDesc, menuEnable, menuoptCode, menuregDate)
+	    values (#{menuCode}, #{menuName}, #{menuImages}, #{menuPrice}, #{menuDesc}, #{menuEnable}, #{menuoptCode}, SYSDATE)
 	</insert>
 	
-	<!-- <select id="listDrink" resultType="MenuDTO">
-    	select * from javabucks_menu where menuCode like concat('B', '%') order by menuName asc
-    </select> -->
-    
-    <select id="getDrinkPage" parameterType="String" resultType="Integer">
-		select count(*) from javabucks_menu where menuCode = #{menuCode}
+	<!-- 조건에 해당하는 음료 리스트 검색 -->
+	<select id="searchDrink" parameterType="java.util.Map" resultType="MenuDTO">
+	    SELECT * 
+	    FROM (
+	        SELECT ROW_NUMBER() OVER (ORDER BY menuregDate DESC) AS rn, m.*
+	        FROM javabucks_menu m
+	        WHERE 
+	            menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || '%'
+	            AND (
+	                (SUBSTR(menuCode, 4, 1) = COALESCE(#{menu_base}, '') OR COALESCE(#{menu_base}, '') = '')
+	                OR 
+	                (menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || COALESCE(#{menu_base}, '') || '%')
+	            )
+	            AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	            AND #{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N')
+	    ) drinks 
+	    WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
 	
-	<select id="searchDrink" parameterType="java.util.Map" resultType="MenuDTO">
-	    SELECT * FROM javabucks_menu
-	    WHERE (menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || '%' OR COALESCE(#{menu_cate}, '') = '')
-	    AND (menuCode LIKE '%' || COALESCE(#{menu_base}, '') || '%' OR COALESCE(#{menu_base}, '') = '')
-	    AND (menuName LIKE '%' || COALESCE(#{menuName}, '') || '%' OR COALESCE(#{menuName}, '') = '')
-	    AND (COALESCE(#{menuEnable}, 'N') = 'N' OR EXISTS (SELECT 1 FROM javabucks_menu m WHERE m.menuCode = javabucks_menu.menuCode AND m.menuEnable = COALESCE(#{menuEnable}, 'N')))
+	<!-- 조건에 해당하는 음료 리스트 갯수 구하기 -->
+	<select id="searchDrinkCount" parameterType="java.util.Map" resultType="Integer">
+	    SELECT COUNT(*) FROM javabucks_menu
+	    WHERE menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || '%'
+	    AND (
+	        (SUBSTR(menuCode, 4, 1) = COALESCE(#{menu_base}, '') OR COALESCE(#{menu_base}, '') = '')
+	        OR 
+	        (menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || COALESCE(#{menu_base}, '') || '%')
+	    )
+	    AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	    AND #{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N')
 	</select>
+	
+	<!-- 메뉴수정 -->
+	<!-- <update id="editDrink" parameterType="MenuDTO">
+		update javabucks_menu 
+		<set> menuName = #{menuName}, menuImages = #{menuImages}, menuDesc = #{menuDesc}, menuPrice = #{menuPrice} </set>
+		where menuCode = #{menuCode}
+	</update> -->
+	
+	<!-- 메뉴삭제 -->
+	<delete id="delDrink" parameterType="String">
+		delete from javabucks_menu where menuCode = #{menuCode}
+	</delete>
+
+	<!-- 메뉴 상태 업데이트 -->
+	<update id="menuStatusUpdate" parameterType="MenuDTO">
+		update javabucks_menu set menuEnable = #{menuEnable} where menuCode = #{menuCode}
+	</update>
+	
+	
+	
 
 
 
