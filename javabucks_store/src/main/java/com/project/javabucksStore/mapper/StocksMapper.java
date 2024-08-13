@@ -161,12 +161,11 @@ public class StocksMapper {
 	 
 	 
 	 // s : 재고 장바구니 주문
-	 public int addStoreOrder(String bucksId, String stockListCode, int stockListPrice, int stockCartCount) {
+	 public int addStoreOrder(String bucksId, String baljooList, int baljooPrice) {
 		 Map<String, Object> params = new HashMap<>();
-		 params.put("stockListCode", stockListCode);
 		 params.put("bucksId", bucksId);
-		 params.put("stockListPrice", stockListPrice);
-		 params.put("stockCartCount", stockCartCount);
+		 params.put("baljooList", baljooList);
+		 params.put("baljooPrice", baljooPrice);
 		 
 		 int insertResult = sqlSession.insert("addStoreOrder", params);
 		 return insertResult;
