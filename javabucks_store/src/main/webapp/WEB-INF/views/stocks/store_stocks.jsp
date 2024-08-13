@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="../store_top.jsp"%>
 <!-- s: content -->
 <section id="store_stocks" class="content">
@@ -30,7 +31,7 @@
                 	<c:forEach var="bevStocks" items="${bevStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${bevStocks.stockListImage}
+	                            <img src="/images/stocks_image/${bevStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -39,11 +40,12 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${bevStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${bevStocks.stockListPrice}" pattern="###,###"/>원</dd>
+	                                
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${bevStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${bevStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -102,7 +104,7 @@
                 	<c:forEach var="fooStocks" items="${fooStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${fooStocks.stockListImage}
+	                            <img src="/images/stocks_image/${fooStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -111,11 +113,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${fooStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${fooStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${fooStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${fooStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -124,12 +126,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${fooStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -174,7 +177,7 @@
                 	<c:forEach var="cupStocks" items="${cupStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${cupStocks.stockListImage}
+	                            <img src="/images/stocks_image/${cupStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -183,11 +186,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${cupStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${cupStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${cupStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${cupStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -196,12 +199,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${cupStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -246,7 +250,7 @@
                 	<c:forEach var="syrStocks" items="${syrStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${syrStocks.stockListImage}
+	                            <img src="/images/stocks_image/${syrStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -255,11 +259,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${syrStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${syrStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${syrStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${syrStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -268,12 +272,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${syrStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -318,7 +323,7 @@
                 	<c:forEach var="whiStocks" items="${whiStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${whiStocks.stockListImage}
+	                            <img src="/images/stocks_image/${whiStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -327,11 +332,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${whiStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${whiStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${whiStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${whiStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -340,12 +345,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${whiStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -390,7 +396,7 @@
                 	<c:forEach var="milStocks" items="${milStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${milStocks.stockListImage}
+	                            <img src="/images/stocks_image/${milStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -399,11 +405,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${milStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${milStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${milStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${milStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -412,12 +418,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${milStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -462,7 +469,7 @@
                 	<c:forEach var="tumStocks" items="${tumStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${tumStocks.stockListImage}
+	                            <img src="/images/stocks_image/${tumStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -471,11 +478,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${tumStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${tumStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${tumStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${tumStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -484,12 +491,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${tumStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -534,7 +542,7 @@
                 	<c:forEach var="wonStocks" items="${wonStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            ${wonStocks.stockListImage}
+	                            <img src="/images/stocks_image/${wonStocks.stockListImage}">
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -543,11 +551,11 @@
 	                            </dl>
 	                            <dl>
 	                                <dt>발주가격</dt>
-	                                <dd>${wonStocks.stockListPrice}원</dd>
+	                                <dd><fmt:formatNumber value="${wonStocks.stockListPrice}" pattern="###,###"/>원</dd>
 	                            </dl>
 	                            <dl>
 	                                <dt>남은재고</dt>
-	                                <dd>${wonStocks.stocksCount}개</dd>
+	                                <dd><fmt:formatNumber value="${wonStocks.stocksCount}" pattern="###,###"/>개</dd>
 	                            </dl>
 	                            <div class="add_box">
 	                                <div class="count_box">
@@ -556,12 +564,13 @@
 	                                    </div>
 	                                    <label>
 	                                        <input type="text" name="quantityValue" value="0">
+	                                        <input type="hidden" name="stockListCode" value="${wonStocks.stockListCode}">
 	                                    </label>
 	                                    <div class="plus_btn img_box">
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button">담기</button>
+	                                <button type="button" onclick="addCart(this)">담기</button>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -650,24 +659,37 @@
 		let stockListCodeVal = stockListCode.value;
 		const inputValue = addBox.querySelector('input[name="quantityValue"]');
 	    let QuantityVal = parseInt(inputValue.value);
+	    
 	    console.log(stockListCodeVal);
 	    console.log(QuantityVal);
 		
-		$.ajax({
-			type: "POST",
-			url: "addStocksCart.ajax",
-			data : {
-				stockListCode : stockListCodeVal,
-				quantity : QuantityVal
-			},
-			success: function(response){
-				console.log("성공", response);
-			},
-			error : function(error){
-				console.log("에러", error);
-			}
-		});
+	    if(QuantityVal > 0){
+			$.ajax({
+				type: "POST",
+				url: "addStocksCart.ajax",
+				data : {
+					stockListCode : stockListCodeVal,
+					quantity : QuantityVal
+				},	
+				success: function(response){
+					console.log("성공", response);
+					if (confirm("상품이 장바구니에 성공적으로 담겼습니다. 장바구니로 이동하시겠습니까?")) {
+						// Yes를 누르면 장바구니로 이동
+						window.location.href = "/stocksCart.do";
+					} else {
+						// No를 누르면 현재 페이지 유지
+						// 아무 작업도 하지 않음
+					}
+				},
+				error : function(error){
+					console.log("에러", error);
+				}
+			});
+	    } else {
+	    	alert("수량을 입력해주세요.")
+	    }
 		
 	}
 	
 </script>
+

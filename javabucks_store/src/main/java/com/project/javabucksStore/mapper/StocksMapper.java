@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucksStore.dto.StockCartDTO;
 import com.project.javabucksStore.dto.StoreStocksDTO;
 
 @Service
@@ -106,9 +107,10 @@ public class StocksMapper {
 		 int wonCount = sqlSession.selectOne("wonCount");
 		 return wonCount;
 	 }
-	// e: 지점 재고현황 조회
+	 // e: 지점 재고현황 조회
 	 
-	// s: 재고 장바구니
+	
+	 // s: 재고 장바구니 추가
 	 public int addStocksCart(String stockListCode, int quantity) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
@@ -116,7 +118,69 @@ public class StocksMapper {
 		 int addCartResult = sqlSession.insert("addStocksCart", params);
 		 return addCartResult;
 	 }
-	// e: 재고 장바구니
+	 // e: 재고 장바구니 추가
 	 
 	 
+	 // s: 재고 장바구니 조회
+	 public List<StockCartDTO> stockCartList(){
+		 List<StockCartDTO> list = sqlSession.selectList("stockCartList");
+		 return list;
+	 }	 
+	 // e: 재고 장바구니 조회
+	 
+	 // s: 장바구니 수량 추가
+	 public int updateCartQuantity(String stockListCode, int quantity) {
+		 Map<String, Object> params = new HashMap<>();
+		 params.put("stockListCode", stockListCode);
+		 params.put("quantity", quantity);		 
+		 int updateResult = sqlSession.update("updateCartQuantity", params);		 
+		 return updateResult;
+	 }
+	 // e: 장바구니 수량 추가
+	 
+	 // s: 재고 장바구니 수량 변경
+	 public int updateQuantity(String stockListCode, int quantity) {
+		 Map<String, Object> params = new HashMap<>();
+		 params.put("stockListCode", stockListCode);
+		 params.put("quantity", quantity);		 
+		 int updateResult = sqlSession.update("updateQuantity", params);		 
+		 return updateResult;
+	 }
+	 // e: 재고 장바구니 수량 변경
+	
+		 
+	 // s: 재고 장바구니 삭제
+	 public int deleteCart(String stockListCode, String bucksId) {
+		 Map<String, Object> params = new HashMap<>();
+		 params.put("stockListCode", stockListCode);
+		 params.put("bucksId", bucksId);		 
+		 int deleteResult = sqlSession.delete("deleteCart", params);		 
+		 return deleteResult;
+	 }
+	 // e: 재고 장바구니 삭제
+	 
+	 
+	 // s : 재고 장바구니 주문
+	 public int addStoreOrder(String bucksId, String stockListCode, int stockListPrice, int stockCartCount) {
+		 Map<String, Object> params = new HashMap<>();
+		 params.put("stockListCode", stockListCode);
+		 params.put("bucksId", bucksId);
+		 params.put("stockListPrice", stockListPrice);
+		 params.put("stockCartCount", stockCartCount);
+		 
+		 int insertResult = sqlSession.insert("addStoreOrder", params);
+		 return insertResult;
+	 }
+	 // e : 재고 장바구니 주문
+	 
+	 // s: 장바구니 상태 업데이트
+	 public int updateCartStatus(String bucksId, int stockCartNum) {
+		 Map<String, Object> params = new HashMap<>();
+		 params.put("bucksId", bucksId);
+		 params.put("stockCartNum", stockCartNum);
+		 
+		 int updateResult = sqlSession.update("updateCartStatus", params);
+		 return updateResult;
+	 }
+	 // e: 장바구니 상태 업데이트
 }

@@ -34,25 +34,23 @@
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">재고관리</a>
+                <a href="stocks.do">재고관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">재고현황</a></li>
-                    <li><a href="javascript:;">장바구니</a></li>
-                    <li><a href="javascript:;">발주내역</a></li>
+                    <li><a href="stocks.do">재고현황</a></li>
+                    <li><a href="stocksCart.do">장바구니</a></li>
                 </ul>
             </li>
             <li class="nav_item">
                 <a href="javascript:;">주문관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">오더현환</a></li>
-                    <li><a href="javascript:;">주문내역</a></li>
+                    <li><a href="javascript:;">주문현황</a></li>
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">배달관리</a>
+                <a href="javascript:;">주문내역</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">오더현환</a></li>
-                    <li><a href="javascript:;">주문내역</a></li>
+                    <li><a href="javascript:;">매장 주문내역</a></li>
+                    <li><a href="javascript:;">배달 주문내역</a></li>
                 </ul>
             </li>
             <li class="nav_item">
