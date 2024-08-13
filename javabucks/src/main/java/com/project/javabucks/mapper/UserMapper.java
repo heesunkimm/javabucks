@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
@@ -42,7 +43,7 @@ public class UserMapper {
 	public int updateCardName(Map<String, String> params) {
 		return sqlSession.update("updateCardName", params);
 	}
-	
+
 	// Payhistory 카드충전 기록.
 	public int paychargeCard(PayhistoryDTO dto) {
 		return sqlSession.insert("paychargeCard", dto);
@@ -58,8 +59,11 @@ public class UserMapper {
 		return sqlSession.selectOne("getInfoById");
 	}
 
-	public FrequencyDTO getFrequencyById(String userId) {
-		return sqlSession.selectOne("getFrequencyById", userId);
+	public FrequencyDTO getFrequencyById() {
+		return sqlSession.selectOne("getFrequencyById");
 	}
 
+	public List<CouponListDTO> getCouponListById() {
+		return sqlSession.selectList("getCouponListById");
+	}
 }

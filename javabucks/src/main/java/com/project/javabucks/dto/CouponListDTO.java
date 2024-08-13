@@ -9,6 +9,8 @@ public class CouponListDTO {
 	private String cpnListStartDate;
 	private String cpnListEndDate;
 	private String cpnListUseDate;
+	
+	
 	public int getCpnListNum() {
 		return cpnListNum;
 	}
@@ -52,5 +54,26 @@ public class CouponListDTO {
 		this.cpnListUseDate = cpnListUseDate;
 	}
 	
+	// 채성진 작업-----------------------------------------------
+		// Coupon과 JOIN한 컬럼
+		private String cpnName; // 쿠폰명
+		private String cpnDesc; // 쿠폰설명
+		
+		public String getCpnName() {
+			return cpnName;
+		}
+		
+		public void setCpnName(String cpnName) {
+			this.cpnName = cpnName;
+		}
+		
+		public String getCpnDesc() {
+			return cpnDesc;
+		}
+		
+		public void setCpnDesc(String cpnDesc) {
+			this.cpnDesc = cpnDesc;
+		}
+
 	
 }
