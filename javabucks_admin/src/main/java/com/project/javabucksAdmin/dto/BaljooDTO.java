@@ -46,5 +46,17 @@ public class BaljooDTO {
 		this.baljooDate = baljooDate;
 	}
 	
+	//조인값 추가
+	private String bucksName;
+
+	public String getBucksName() {
+		return bucksName;
+	}
+	public void setBucksName(String bucksName) {
+		this.bucksName = bucksName;
+	}
+	
+	
+	
 	
 }
