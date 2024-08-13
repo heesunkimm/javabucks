@@ -62,7 +62,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="user_join" method="post">
+            <form name="f" action="user_join" method="post" onsubmit="return check()">
                 <div class="input_box">
                     <label>
                         <input type="text" class="userName" name="userName" value="" placeholder="이름 입력" required>
@@ -115,9 +115,9 @@
                         </label>
                         <label>
                             <select name="userEmail2" class="userEmail2">
-                                <option value="">@naver.com</option>
-                                <option value="">@nate.com</option>
-                                <option value="">@gmail.com</option>
+                                <option value="@naver.com">@naver.com</option>
+                                <option value="@nate.com">@nate.com</option>
+                                <option value="@gmail.com">@gmail.com</option>
                             </select>
                         </label>
                         <button type="button" class="dupcate_btn" onclick="duplicateCheck()">중복체크</button>
@@ -126,12 +126,12 @@
                     <div class="confirm_box" style="display: none;"> 
                         <label>
                             <input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
-                            <span id="timer">00:00</span>
+                            <span id="timer">0:00</span>
                         </label>
                         <button type="button" onclick="codeCheck()">인증확인</button>
                     </div>
                 </div>
-                <button class="join_btn" type="submit" onclick="return check()">회원가입</button>
+                <button class="join_btn" type="submit">회원가입</button>
             </form>
         </div>
     </section>
@@ -206,13 +206,14 @@ function duplicateCheck() {
 	}
     document.querySelector('.confirm_btn').style.display = 'block';
     document.querySelector('.dupcate_btn').style.display = 'none';
+     
 }
 
 
 // 이메일인증 버튼 클릭시 유효성검사
 function sendEmail(){
 	let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
-	let email2 = $('.userEmail2').val();
+	let email2 = $('.userEmail2').val(); //  jQuery의 .val : value 데이터 넘어갈때 사용 
 	
 	// 인증번호 입력box 활성화 
 	document.querySelector('.confirm_box').style.display = 'block';
@@ -220,6 +221,7 @@ function sendEmail(){
 	if(email1 ==""){
 		alert("이메일 주소를 입력해주세요")
 		return $('.userEmail1').focus();
+		
 	}else if(email2 == ""){
 		// $('.confirm_box').show();
 		// $('.confirm_box').style.display="block";
@@ -227,8 +229,9 @@ function sendEmail(){
 	$.ajax({
 		url : 'sendEmail',
 		type : 'POST',
-		data : { "email1" : email1,
-				"email2" : email2	
+		data : { "userEmail1" : email1,
+				"userEmail2" : email2
+				 
 		},
 		success : function(res){
 			if(res == 'OK'){
@@ -242,14 +245,36 @@ function sendEmail(){
 		}
 	})
 }
-
+ 
+// 인증번호 
 function codeCheck(){
-	
+	let code = $('.code').val();
+	$.ajax({
+		url : 'codeCheck',
+		type : 'POST',
+		data:{"code":code},
+		success : function(res){
+			if(res=='OK'){
+				alert("인증 성공");
+				mck = true ;
+			}else{
+				alert("인증 실패! 다시 입력해주세요.");
+				$(".code").val("");
+				$(".code").focus();
+				mck = false;
+			}
+		},
+		error : function(err){
+			console.error(err);
+			mck = false;
+		}
+	});
 }
 
 
-
+ 
 // 회원가입 버튼 클릭시 유효성검사
+
 function check() {
 	let name = $(".userName").val();
     let birth = $(".userBirth").val();
@@ -263,50 +288,52 @@ function check() {
     if(name === ""){
     	alert("이름을 입력해 주세요");
     	$(".userName").focus();
-    	return; 
+    	return false; 
     }
     if (birth === "") {
         alert("생년월일을 입력해 주세요"); // 사용자에게 알림
         $(".userBirth").focus(); // 아이디 입력 필드에 포커스
-        return; // 함수 종료
+        return false; // 함수 종료
     }
     if (id === "") {
         alert("아이디를 입력해 주세요"); // 사용자에게 알림
         $(".id").focus(); // 아이디 입력 필드에 포커스
-        return; // 함수 종료
+        return false; // 함수 종료
     }
     if (!ck) {
         alert("아이디 중복 확인을 먼저 해 주세요");
-        return;
+        return false;
     }
     if(passwd === ""){
     	alert("비밀번호를 입력해 주세요");
     	$(".userPasswd").focus();
-    	return;
+    	return false;
     }
     if(passwdok===""){
     	alert("비밀번호 확인을 입력해주세요");
     	$(".userPasswdConfirm").focus();
-    	return;
+    	return false;
     }
     if (passwd !== passwdok) {
         alert("비밀번호가 일치하지 않습니다.");
-        return;
+        return false;
     }
     if(tel2==="" || tel3===""){
     	alert("전화번호를 입력해주세요");
-    	return;
+    	return false;
     }
     if(email===""){
     	alert("이메일을 입력해주세요");
-    	return;
+    	return false;
     }
     if (!mck) {
         alert("이메일 인증을 먼저 해 주세요");
-        return;
+        return false;
     }
     return true;
 }
+
+
 </script>
 </html>
 

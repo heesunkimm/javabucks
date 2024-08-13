@@ -1,9 +1,11 @@
 package com.project.javabucks.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
@@ -31,7 +34,7 @@ public class LoginController {
 	LoginMapper loginMapper;
 	
 	@Autowired
-	JavaMailSender javaMailSender;
+	JavaMailSender mailSender;
 	
 	// 로그인 창
 	@RequestMapping(value= {"/", "/user_login"})
@@ -39,30 +42,48 @@ public class LoginController {
 		return "userLogin/user_login";
 	}
 	// 회원가입창으로 이동
-	@GetMapping("/user_join.do")
+	@GetMapping("/user_join")
 	public String join() {
 		return "userLogin/user_join";
 	}
 	
 	// 회원가입하면 메인으로 이동
-	@PostMapping("/user_join.do")
-	public String join_form(Model model, @ModelAttribute UserDTO dto) {
+	@PostMapping("/user_join")
+	public String join_form(HttpServletRequest req, @ModelAttribute UserDTO dto) {
+		// System.out.println("req:"+req); 
+		System.out.println("dto.id:"+dto.getUserId());
+		System.out.println("dto.passwd:"+dto.getUserPasswd());
+		System.out.println("dto.name:"+dto.getUserName());
+		System.out.println("dto.nickname:"+dto.getUserNickname());
+		System.out.println("dto.gender:"+dto.getUserGender());
+		System.out.println("dto.birth:"+dto.getUserBirth());
+		System.out.println("dto.email1:"+dto.getUserEmail1());
+		System.out.println("dto.email2:"+dto.getUserEmail2());
+		System.out.println("dto.tel1:"+dto.getUserTel1());
+		System.out.println("dto.tel2:"+dto.getUserTel2());
+		System.out.println("dto.tel3:"+dto.getUserTel3());
+		System.out.println("dto.getGradeCode:"+dto.getGradeCode());
+		System.out.println("dto.getUserGradedate:"+dto.getUserGradedate());
+		System.out.println("dto.getUserJoindate:"+dto.getUserJoindate());
+		System.out.println("dto.getUserEnable:"+dto.getUserEnable());
+		System.out.println("dto.getUserFrequencyCount:"+dto.getUserFrequencyCount());
 		int res =  loginMapper.insertUser(dto);
+		System.out.println("res:"+res);
 		 
 		if(res>0) {
-			model.addAttribute("msg","회원가입성공! 메인페이지로 이동합니다.");
-			model.addAttribute("url","user/user_index.do");
-			 
+			req.setAttribute("msg","회원가입성공! 로그인 페이지로 이동합니다.");
+			req.setAttribute("url","user_login");
+			return "message";
 		}else {
-			model.addAttribute("msg", "회원가입 실패");
-			model.addAttribute("url","user_join.do");
+			req.setAttribute("msg", "회원가입 실패. 다시 시도 해주세요");
+			req.setAttribute("url","user_join");
+			return "message";
 		}
-		return "message";
 	}
 	
 	// 아이디 중복 확인
 	 @ResponseBody
-	 @RequestMapping(value = "/idCheck.do")
+	 @RequestMapping(value = "/idCheck")
 	 public String checkId(@RequestParam("id") String id) {
 		 int res = loginMapper.checkId(id);
 		 if(res == 0) {
@@ -71,41 +92,79 @@ public class LoginController {
 			 return "FAIL";
 		 }
 	 }
+ 
 	  
+//	 이메일 인증 
 	 @ResponseBody
-	 @RequestMapping(value = "/sendEmail")
-	 public String sendEmail(@RequestParam Map<String,String>params, HttpServletRequest req, HttpServletResponse resp) throws Exception{ // 쿠키 추가를 위해 resp 
-		 	MimeMessage msg = javaMailSender.createMimeMessage();
-		 	MimeMessageHelper helper = new MimeMessageHelper(msg,true);
-		 	String email = params.get("userEmail1") + params.get("userEmail2");
-		 	
-		 	Random random = new Random();
-		 	String code = String.valueOf(random.nextInt(900000) + 100000);
-		 	Cookie cookie = new Cookie("code",code);
-		 	cookie.setMaxAge(60*2);
-		 	resp.addCookie(cookie);
-		 	
-			// 보내는 사람 이메일 주소 설정.
-			helper.setFrom("mh5624@nate.com");
-			// 이메일의 수신자 주소를 설정
-			helper.setTo(email);
-			// 이메일의 제목을 설정합니다.
-			helper.setSubject("JavaBucks Email 인증번호입니다. ");
-			 // 이메일의 본문 내용을 설정합니다. 생성된 인증 코드가 포함됩니다.
-			helper.setText("안녕하세요!! JavaBucks입니다.\n\n 이메일 인증 번호 : " + code
-					+ "\n\n 회원가입을 진행 하시려면 해당 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다.");
-			// 이메일을 전송합니다.
-			javaMailSender.send(msg);
-			// 메소드가 성공적으로 수행되었음을 클라이언트에게 알리기 위해 "OK" 문자열을 반환합니다.
-			return "OK";
-		 	
-		 	
+	 @PostMapping("/sendEmail")
+	 public String sendEmail(@RequestParam Map<String,String> params, HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws Exception {
+		 try {
+		        // System.out.println(params); // userEmail1 , userEmail2
+		        String email1 = params.get("userEmail1");
+		        String email2 = params.get("userEmail2");
+		        String email = email1 + email2;
+		        
+//		        if (email1 == null || email2 == null || userId == null) {
+//		            req.setAttribute("msg", "이메일 주소와 아이디를 입력해주세요.");
+//		            return "windowClose";
+//		        }
+		        
+		        Map<String, String> paramMap = new HashMap<>();
+		        paramMap.put("userEmail1", email1);
+		        paramMap.put("userEmail2", email2);
+		        
+		        Random random = new Random();
+		        String code = String.valueOf(random.nextInt(900000) + 100000);
+		        Cookie cookie = new Cookie("checkCode",code);
+		        // cookie.setMaxAge(60*3);
+		        resp.addCookie(cookie);
+		        
+		        UserDTO dto = loginMapper.findUserByEmail(paramMap);
+		        
+		        if(dto!=null) {
+		        	return "FAIL";
+		        }
+		     // 이메일 전송 로직
+			 	MimeMessage msg = mailSender.createMimeMessage();
+		        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+		        
+		        helper.setFrom("mihyun6656@gmail.com");
+		        helper.setTo(email);
+		        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+		        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+		                + " \n\n 회원가입을 진행 하시려면 해당 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다.");
+		        mailSender.send(msg);
+		        req.setAttribute("msg", "해당 이메일로 정보를 전송하였습니다.");
+		        return "windowClose";
+		        
+		 }catch(Exception  e) {
+			  e.printStackTrace();  // 로그를 통해 상세 예외 메시지 확인
+		        req.setAttribute("msg", "이메일 전송 중 오류가 발생했습니다.");
+		        return "windowClose";
+		 }
+	 }
+	 
+	 @ResponseBody
+	 @RequestMapping(value = {"/codeCheck"})
+	 public String codeCheck(@RequestParam("code") String code, HttpServletRequest req) {
+		 Cookie [] ck = req.getCookies();
+		 if(ck != null) {
+			 for(Cookie cookie : ck) {
+				 if(cookie.getName().contentEquals("checkCode")) {
+					 if(cookie.getValue().equals(code)) {
+						 return "OK";
+					 }
+				 }
+			 }
+		 }
+		 return "FAIL";
 	 }
 	 
 	 
-	  
- 
-	
+	 
+	 
+	 
+} 
  
 	 
-}
+ 

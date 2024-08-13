@@ -1,6 +1,8 @@
 package com.project.javabucks.mapper;
 
 
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,11 @@ public class LoginMapper {
 	
 	public int checkId(String id) {
 		return sqlSession.selectOne("checkId", id);
+	}
+	
+	public UserDTO findUserByEmail(Map<String,String> params) {
+		return sqlSession.selectOne("findUserByEmail",params);
+		
 	}
 	
 }

@@ -41,15 +41,4 @@
  		INSERT javabuck_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
  		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, 'x', 'x', 'x', sysdate, #{payhistoryPrice}, #{payhistoryType}, #{payhistoryPayWay})
  	</insert>
- 	
- 	<!-- 채성진 작업 추가 -->
- 	<select id="getInfoById" resultType="UserDTO">
- 		SELECT * FROM javabucks_user WHERE userId= 'user001'
- 	</select>
- 	
- 	<select id="getFrequencyById"  parameterType="String" resultType="FrequencyDTO"> 
- 		SELECT jf.* FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
- 		 WHERE jf.userId = #{userId}
- 	</select>
- 	
  </mapper>

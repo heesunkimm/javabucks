@@ -8,16 +8,21 @@
 		INSERT INTO javabucks_user (
 		    userId, userPasswd, userName, userNickname, userGender, userBirth, 
 		    userEmail1, userEmail2, userTel1, userTel2, userTel3, gradeCode, userGradedate, 
-		    userJoindate, userEnable, userFrequency_count
+		    userJoindate, userEnable, userFrequencyCount
 		) 
 		VALUES (
 		    #{userId}, #{userPasswd}, #{userName}, #{userNickname}, #{userGender}, #{userBirth}, 
-		    #{userEmail1}, #{userEmail2}, #{userTel1}, #{userTel2}, #{userTel3}, #{gradeCode}, #{userGradedate}, #{userJoindate}, #{userEnable}, #{userFrequency_count}
-		);
+		    #{userEmail1}, #{userEmail2}, #{userTel1}, #{userTel2}, #{userTel3}, #{gradeCode}, #{userGradedate}, 
+		    #{userJoindate}, #{userEnable}, #{userFrequencyCount}
+		)
 	</insert>
 	
 	<select id="checkId" resultType="int" parameterType="String">
 		select count(*) from javabucks_user where userId = #{userId}
+	</select>
+	
+	<select id="findUserByEmail" parameterType="java.util.Map" resultType="UserDTO">
+		select userEmail1, userEmail2, userPasswd from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
 	</select>
 
 </mapper>
