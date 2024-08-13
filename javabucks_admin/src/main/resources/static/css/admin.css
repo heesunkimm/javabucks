@@ -199,7 +199,11 @@ header .nav_item:hover .dropdown_content {display: block;}
 #sendcpn .input_box select {margin-left: 6px; width: 230px;}
 
 /* admin_adddrink */
-#admin_drinklist button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#admin_drinklist button {padding: 0 10px; height: 27px; border-radius: 2px; font-size: 16px;}
+#admin_drinklist button.search_btn, 
+#admin_drinklist button.add_btn, 
+#admin_drinklist button.enable_btn {background-color: #006241; color: #fff;}
+#admin_drinklist button.disable_order {background-color: #999; color: #fff;}
 #admin_drinklist .search_box {border: 1px solid #ccc; padding: 20px;}
 #admin_drinklist .search_box form > div {margin-bottom: 6px;}
 #admin_drinklist .search_box label + label {margin-left: 16px;}
@@ -207,6 +211,7 @@ header .nav_item:hover .dropdown_content {display: block;}
 #admin_drinklist .search_box select {padding: 0 10px;}
 #admin_drinklist .search_box input {padding: 0 6px; font-size: 18px;}
 #admin_drinklist .list_box .btn_box {margin: 20px 0; text-align: right;}
+#admin_drinklist .search_list .menu_btn:hover {color: #006241;}
 
 
 /*  */
