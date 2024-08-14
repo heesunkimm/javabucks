@@ -1,5 +1,6 @@
 package com.project.javabucks.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
@@ -53,6 +55,18 @@ public class UserMapper {
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
 		return sqlSession.update("plusCardPrice", params);
+	}
+	
+	// 해당아이디로 등록된 알람 전체리스트(날짜순)
+	public List<AlarmDTO> listGetAlarmById (String userId){
+		return sqlSession.selectList("listGetAlarmById", userId);
+	}
+	// 알람 카테별 리스트(날짜순)
+	public List<AlarmDTO> getAlarmsByCategory (String userId, String alarmCate){
+		Map<String, String> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("alarmCate", alarmCate);
+		return sqlSession.selectList("getAlarmsByCategory", params);
 	}
 	
 	// 채성진 작업------------------------------------------------------

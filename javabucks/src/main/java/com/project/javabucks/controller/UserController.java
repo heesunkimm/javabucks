@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
@@ -162,44 +164,64 @@ public class UserController {
 		return "/user/user_paycharge";
 	}
 
-    @ResponseBody
-    @PostMapping("/user_paycharge.ajax")
-    public ResponseEntity<Map<String, String>> insertReserve(HttpSession session, @RequestBody PayhistoryDTO dto) {
-        UserDTO udto = (UserDTO) session.getAttribute("inUser");
-        if (udto == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        dto.setUserId(udto.getUserId());
-        System.out.println(dto);
-        Map<String, String> response = new HashMap<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=UTF-8");
-        Map<String, Object> params = new HashMap<>();
-        params.put("cardRegNum", dto.getCardRegNum());
-        params.put("payhistoryPrice", dto.getPayhistoryPrice());
-        System.out.println(params);
-        try {
-            int res = userMapper.paychargeCard(dto);
-            int price = userMapper.plusCardPrice(params);
-            if (res > 0) {
-                response.put("status", "success");
-                response.put("message", "카드 충전이 완료되었습니다.");
-                return ResponseEntity.ok().headers(headers).body(response);
-            } else {
-                response.put("status", "error");
-                response.put("message", "카드 충전에 실패하였습니다. 관리자에게 문의 바랍니다.");
-                return ResponseEntity.ok().headers(headers).body(response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.put("status", "error");
-            response.put("message", "서버 오류가 발생했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(response);
-        }
+	@ResponseBody
+	@PostMapping("/user_paycharge.ajax")
+	public ResponseEntity<Map<String, String>> insertReserve(HttpSession session, @RequestBody PayhistoryDTO dto) {
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		if (udto == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		dto.setUserId(udto.getUserId());
+		Map<String, String> response = new HashMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json; charset=UTF-8");
+		Map<String, Object> params = new HashMap<>();
+		params.put("cardRegNum", dto.getCardRegNum());
+		params.put("payhistoryPrice", dto.getPayhistoryPrice());
+		try {
+			int res = userMapper.paychargeCard(dto);
+			if (res > 0) {
+				int price = userMapper.plusCardPrice(params);
+				response.put("status", "success");
+				response.put("message", "카드 충전이 완료되었습니다.");
+				return ResponseEntity.ok().headers(headers).body(response);
+			} else {
+				response.put("status", "error");
+				response.put("message", "카드 충전에 실패하였습니다. 관리자에게 문의 바랍니다.");
+				return ResponseEntity.ok().headers(headers).body(response);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("status", "error");
+			response.put("message", "서버 오류가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(response);
+		}
 
+	}
+
+	@GetMapping("/user_alarm")
+	public String userAlarm(Model model, HttpSession session) {
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		List<AlarmDTO> listAlarm = userMapper.listGetAlarmById(userId);
+		model.addAttribute("listAlarm",listAlarm);
+		return "/user/user_alarm";
+	}
+	
+	@ResponseBody
+    @PostMapping("/getAlarmList.ajax")
+    public List<AlarmDTO> getAlarmList(String alarmCate, HttpSession session) {
+        UserDTO udto = (UserDTO) session.getAttribute("inUser");
+        String userId = udto.getUserId();
+        List<AlarmDTO> alarms = null;
+        if ("all".equals(alarmCate)) {
+            alarms = userMapper.listGetAlarmById(userId);
+        } else {
+            alarms = userMapper.getAlarmsByCategory(userId, alarmCate);
+        }
+        return alarms;
     }
 
-	
 	@RequestMapping("/user_paynow")
 	public String userPaynow() {
 		return "/user/user_paynow";
@@ -213,11 +235,6 @@ public class UserController {
 	@RequestMapping("/user_other")
 	public String userOther() {
 		return "/user/user_other";
-	}
-
-	@RequestMapping("/user_alarm")
-	public String userAlarm() {
-		return "/user/user_alarm";
 	}
 
 	@RequestMapping("/user_starhistory")

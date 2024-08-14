@@ -49,6 +49,39 @@
 		WHERE cardRegNum = #{cardRegNum}
 	</update>
  	
+ 	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
+ 	<select id="listGetAlarmById" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId}
+		ORDER BY alarmRegDate DESC
+ 	</select>
+ 	
+ 	<!-- 해당아이디로 등록된 알람 카테별 리스트(날짜순) -->
+ 	<select id="getAlarmsByCategory" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId} 
+			<choose>
+            <when test="alarmCate == 'cpn'">
+                AND alarmCate = 'cpn'
+                OR alarmCate = 'grade'
+            </when>
+            <when test="alarmCate == 'order'">
+            	AND alarmCate = 'order'
+                OR alarmCate = 'pickUp'
+            </when>
+            <otherwise>
+                AND alarmCate = #{alarmCate}
+            </otherwise>
+        </choose>
+		ORDER BY alarmRegDate DESC
+ 	</select>
+ 	
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
  		SELECT * FROM javabucks_user WHERE userId= 'user001'
