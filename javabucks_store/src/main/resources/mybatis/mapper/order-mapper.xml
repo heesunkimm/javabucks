@@ -15,4 +15,70 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select menuName from javabucks_menu
 		where menuCode = #{menuCode}
 	</select>
+	
+	<select id="getMenuOpt" parameterType="String" resultType="OrderOptDTO">
+		select * from javabucks_order_opt
+		where optId = #{optId}
+	</select>
+	
+	<select id="getCupType" parameterType="int" resultType="String">
+		select cupType from javabucks_menuopt_cup
+		where cupNum = #{cupNum}
+	</select>
+	
+	<select id="getCupPrice" parameterType="int" resultType="Integer">
+		select cupPrice from javabucks_menuopt_cup
+		where cupNum = #{cupNum}
+	</select>
+	
+	<select id="getShotType" parameterType="int" resultType="String">
+		select shotType from javabucks_menuopt_shot
+		where shotNum = #{shotNum}
+	</select>
+	
+	<select id="getShotPrice" parameterType="int" resultType="Integer">
+		select shotPrice from javabucks_menuopt_shot
+		where shotNum = #{shotNum}
+	</select>
+	
+	<select id="getSyrupType" parameterType="int" resultType="String">
+		select syrupType from javabucks_menuopt_syrup
+		where syrupNum = #{syrupNum}
+	</select>
+	
+	<select id="getSyrupPrice" parameterType="int" resultType="Integer">
+		select syrupPrice from javabucks_menuopt_syrup
+		where syrupNum = #{syrupNum}
+	</select>
+	
+	<select id="getMilkType" parameterType="int" resultType="String">
+		select milkType from javabucks_menuopt_milk
+		where milkNum = #{milkNum}
+	</select>
+	
+	<select id="getMilkPrice" parameterType="int" resultType="Integer">
+		select milkPrice from javabucks_menuopt_milk
+		where milkNum = #{milkNum}
+	</select>
+	
+	<select id="getIceType" parameterType="int" resultType="String">
+		select iceType from javabucks_menuopt_ice
+		where iceNum = #{iceNum}
+	</select>
+	
+	<select id="getIcePrice" parameterType="int" resultType="Integer">
+		select icePrice from javabucks_menuopt_ice
+		where iceNum = #{iceNum}
+	</select>
+	
+	<select id="getWhipType" parameterType="int" resultType="String">
+		select whipType from javabucks_menuopt_whip
+		where whipNum = #{whipNum}
+	</select>
+	
+	<select id="getWhipPrice" parameterType="int" resultType="Integer">
+		select whipPrice from javabucks_menuopt_whip
+		where whipNum = #{whipNum}
+	</select>
+	
 </mapper>

@@ -80,15 +80,20 @@ public class OrderDTO {
 		this.orderStatus = orderStatus;
 	}
 	
-	// 메서드 추가: orderList JSON을 List<String>으로 변환
+	// 메서드 추가: orderList JSON 문자열을 List<String>으로 변환
 	public List<String> getOrderListtoStringList() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(orderList, mapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
     }
 	
-	// 메서드 추가: List<String>을 JSON으로 변환
-    public void setOrderListFromStringList(List<String> orderList) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        this.orderList = mapper.writeValueAsString(orderList);
-    }
+    // 메뉴 화면출력용 변수
+    private List<MenuOrder> orderListbyMenuOrder;
+
+	public List<MenuOrder> getOrderListbyMenuOrder() {
+		return orderListbyMenuOrder;
+	}
+	public void setOrderListbyMenuOrder(List<MenuOrder> orderListbyMenuOrder) {
+		this.orderListbyMenuOrder = orderListbyMenuOrder;
+	}
+	
 }
