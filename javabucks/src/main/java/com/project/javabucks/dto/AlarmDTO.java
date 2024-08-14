@@ -2,18 +2,19 @@ package com.project.javabucks.dto;
 
 public class AlarmDTO {
 
-	private int alarm_num;
+	private int alarmNum;
 	private String userId;
+	private String alarmIsRead;
 	private String alarmCate;
 	private String alarmCont;
 	private String alarmRegDate;
 
-	public int getAlarm_num() {
-		return alarm_num;
+	public int getAlarNum() {
+		return alarmNum;
 	}
 
-	public void setAlarm_num(int alarm_num) {
-		this.alarm_num = alarm_num;
+	public void setAlarm_num(int alarmNum) {
+		this.alarmNum = alarmNum;
 	}
 
 	public String getUserId() {
@@ -22,6 +23,14 @@ public class AlarmDTO {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getAlarmIsRead() {
+		return alarmIsRead;
+	}
+
+	public void setAlarmIsRead(String alarmIsRead) {
+		this.alarmIsRead = alarmIsRead;
 	}
 
 	public String getAlarmCate() {

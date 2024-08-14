@@ -39,8 +39,8 @@
  	
 	<!-- 페이히스토리 카드충전 -->
  	<insert id="paychargeCard" parameterType="PayhistoryDTO">
- 		INSERT javabuck_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
- 		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, 'x', 'x', 'x', sysdate, #{payhistoryPrice}, #{payhistoryType}, #{payhistoryPayWay})
+		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, NULL, NULL, NULL, sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
  	</insert>
  	
 	<!-- 카드금액충전 -->
@@ -48,6 +48,39 @@
 		Update javabucks_card SET cardPrice = cardPrice + #{payhistoryPrice}
 		WHERE cardRegNum = #{cardRegNum}
 	</update>
+ 	
+ 	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
+ 	<select id="listGetAlarmById" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId}
+		ORDER BY alarmRegDate DESC
+ 	</select>
+ 	
+ 	<!-- 해당아이디로 등록된 알람 카테별 리스트(날짜순) -->
+ 	<select id="getAlarmsByCategory" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId} 
+			<choose>
+            <when test="alarmCate == 'cpn'">
+                AND alarmCate = 'cpn'
+                OR alarmCate = 'grade'
+            </when>
+            <when test="alarmCate == 'order'">
+            	AND alarmCate = 'order'
+                OR alarmCate = 'pickUp'
+            </when>
+            <otherwise>
+                AND alarmCate = #{alarmCate}
+            </otherwise>
+        </choose>
+		ORDER BY alarmRegDate DESC
+ 	</select>
  	
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
@@ -67,7 +100,44 @@
  	</select>
  	
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
- 		SELECT * FROM javabucks_bucks WHERE bucksName like  '%'#{검색}'%' or bucksLocation like '%'#{검색}'%'
+ 		 SELECT * 
+   		 FROM javabucks_bucks 
+   		 WHERE bucksEnable = 'y'	
+   		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
+      	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
+ 	</select>
+ 	
+ 	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'B%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreFoodList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'C%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreProdcutList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'M%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getMenuInfoByCode" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu  		    
+   		 WHERE menuCode = #{menuCode}   		 	  		 
  	</select>
  	
  </mapper>
