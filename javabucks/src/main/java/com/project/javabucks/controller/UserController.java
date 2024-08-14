@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
+import com.project.javabucks.dto.MenuDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -73,12 +73,36 @@ public class UserController {
 	}
 	
 	@RequestMapping("/user_delivers")
-	public String userDelivers(HttpServletRequest req) {
-		
-//		// 매장 검색하기
-//		List<BucksDTO> list = userMapper.getStoreList();
-//		req.setAttribute("storeList", list);
+	public String userDelivers(HttpServletRequest req, @RequestParam Map<String, String> params, 
+								String mode, String storeSearch) {	
+		// 매장 검색하기
+		if(mode != null) {	
+			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
+			req.setAttribute("storeList", list);	
+		}
+
 		return "/user/user_delivers";
+	}
+	
+	@RequestMapping("/user_order")
+	public String orderMenu(HttpServletRequest req, String storeName) {	
+		
+		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
+		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
+		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
+		req.setAttribute("drinkList", list);
+		req.setAttribute("foodList", list2);
+		req.setAttribute("productList", list3);
+		req.setAttribute("store", storeName);
+		return "/user/user_order";
+	}
+	
+	@RequestMapping("/user_menudetail")
+	public String menudetail(HttpServletRequest req, String menuCode) {	
+		
+		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
+		req.setAttribute("menu", dto);
+		return "/user/user_menudetail";
 	}
 	
 	//------------------------------------------------------------------------------------
@@ -149,7 +173,6 @@ public class UserController {
 		}
 		model.addAttribute("url", "user_pay");
 		return "message";
-
 	}
 
 	@PostMapping("/user_paycharge")

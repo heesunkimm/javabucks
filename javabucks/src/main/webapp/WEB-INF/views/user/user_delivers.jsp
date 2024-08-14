@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +20,13 @@
                 <div class="tit_box">
                     <p class="font_bold">Delivers</p>
                 </div>
-    
+    			
                 <div class="search_box">
-                    <form name="" action="" method="post">
-                    	<p class="txt_desc">배달 주소지:</p>
+                    <form name="" action="user_delivers?mode=store" method="post">
+                    	배달 주소지
+                    	<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" readonly><br>
                         <label>
-                            <input type="text" name="" value="" placeholder="검색">
+                            <input type="text" name="storeSearch" value="" placeholder="검색">
                         </label>
                         <button type="submit">검색</button>
                     </form>
@@ -32,15 +34,20 @@
                 </div>
         	</div>
         	<ul class="store_list">
+        		<c:if test= "${empty storeList}">
+        			검색된 결과가 없습니다.
+        		</c:if>
+        		<c:forEach var ="dto" items="${storeList}">
                 <li class="store_item">
                        <div class="img_box">
                            <!-- <img src="" alt=""> -->
                        </div>
                        <div class="txt_box">
-                           <p>지점명</p>
-                           <p>지점 주소</p>
+                           <a href="user_order?storeName=${dto.bucksName}">${dto.bucksName}</a>
+                           <a href="user_order?storeName=${dto.bucksName}">${dto.bucksLocation}</a>
                        </div>
                 </li>
+                </c:forEach>
             </ul>
         </div>
         
@@ -75,14 +82,14 @@
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
         window.onload = function() {
-            // 페이지가 로드되면 팝업을 보이게 설정
-            document.getElementById("insertAddress").style.display = "block";
+        	// input 필드의 value 값을 가져옴
+            var deliveryAddressValue = document.getElementById("deliveryAddress").value;
+
+            // value 값이 비어 있으면 팝업을 띄움
+            if (!deliveryAddressValue) {
+                document.getElementById("insertAddress").style.display = "block";
+            }
         };
-        
-    	 // 취소 버튼 클릭 시 팝업을 숨김
-        document.querySelector(".close_btn").addEventListener("click", function() {
-            document.getElementById("insertAddress").style.display = "none";
-        });
     	 
     	 // 배달주소 검색
         function checkPost() {
@@ -112,13 +119,24 @@
 		                    }
 	                   
 	                }
-	
 	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
 	                document.getElementById("address").value = addr;
 	                // 커서를 상세주소 필드로 이동한다.
 	                document.getElementById("detailAddress").focus();
 	            }
-	        }).open();
-	        
+	        }).open();	        
 	    } 
+    	 
+     	// 확인 버튼 클릭 시 팝업의 주소 데이터를 메인 화면으로 전달
+        document.querySelector(".btn_box button[type='button']").addEventListener("click", function() {
+            // 팝업의 주소와 상세주소 값을 가져옴
+            var addr1 = document.getElementById("address").value;
+            var addr2 = document.getElementById("detailAddress").value;
+
+            // 메인 화면의 배달 주소지 필드에 값을 설정
+            document.getElementById("deliveryAddress").value = addr1 + " " + addr2;
+
+            // 팝업을 닫음
+            document.getElementById("insertAddress").style.display = "none";
+        });
 </script>

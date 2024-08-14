@@ -8,6 +8,8 @@ public class MenuDTO {
 	private int menuPrice;
 	private String menuDesc;
 	private String menuEnable;
+	private String menuoptCode;
+	private String menuregDate;
 	
 	public String getMenuCode() {
 		return menuCode;
@@ -45,6 +47,17 @@ public class MenuDTO {
 	public void setMenuEnable(String menuEnable) {
 		this.menuEnable = menuEnable;
 	}
-
-	
+	public String getMenuoptCode() {
+		return menuoptCode;
+	}
+	public void setMenuoptCode(String menuoptCode) {
+		this.menuoptCode = menuoptCode;
+	}
+	public String getMenuregDate() {
+		return menuregDate;
+	}
+	public void setMenuregDate(String menuregDate) {
+		this.menuregDate = menuregDate;
+	}
 }
+

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,52 +28,58 @@
 
             <div id="cate_drink" class="tab-content s_active">
                 <ul class="menu_list">
+                	<c:forEach var = "dto" items="${drinkList}">
                     <li class="menu_item">
-                        <a href="user_menudetail.html">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}">
                             <div class="img_box">
-                                <!-- <img src="" alt=""> -->
+                               <!-- <img src="" alt=""> -->
                             </div>
                             <div class="txt_box">
-                                <p class="txt_tit">메뉴명1</p>
-                                <p class="txt_price">가격</p>
+                                <p class="txt_tit">${dto.menuName}</p>
+                                <p class="txt_price">${dto.menuPrice}</p>
                             </div>
                         </a>
                     </li>
+                   </c:forEach>
                 </ul>
             </div>
             <div id="cate_foond" class="tab-content">
                 <ul class="menu_list">
+                	<c:forEach var = "dto" items="${foodList}">
                     <li class="menu_item">
-                        <a href="user_menudetail.html">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}">
                             <div class="img_box">
-                                <!-- <img src="" alt=""> -->
+                                <!--<img src="" alt=""> -->
                             </div>
                             <div class="txt_box">
-                                <p class="txt_tit">메뉴명2</p>
-                                <p class="txt_price">가격</p>
+                                <p class="txt_tit">${dto.menuName}</p>
+                                <p class="txt_price">${dto.menuPrice}</p>
                             </div>
                         </a>
                     </li>
+                    </c:forEach>
                 </ul>
             </div>
             <div id="cate_pdt" class="tab-content">
                 <ul class="menu_list">
+                	<c:forEach var = "dto" items="${productList}">
                     <li class="menu_item">
-                        <a href="user_menudetail.html">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}">
                             <div class="img_box">
-                                <!-- <img src="" alt=""> -->
+                               <!-- <img src="" alt=""> -->
                             </div>
                             <div class="txt_box">
-                                <p class="txt_tit">메뉴명3</p>
-                                <p class="txt_price">가격</p>
+                                <p class="txt_tit">${dto.menuName}</p>
+                                <p class="txt_price">${dto.menuPrice}</p>
                             </div>
                         </a>
                     </li>
+                    </c:forEach>
                 </ul>
             </div>
             <div class="cart_box">
                 <!-- 클릭시 매장 선택 페이지로 재이동 -->
-                 <a class="select_store" href="user_store.html">매장명 <span class="font_gray">(매장이용/To-go)</span></a>
+                 <a class="select_store" href="user_delivers?mode=store">${store} <span class="font_gray">(매장이용/To-go)</span></a>
                 <button class="cart_btn" type="button">
                     <div class="img_box">
                         <img src="../images/icons/[li]order_basket.png" alt="">
