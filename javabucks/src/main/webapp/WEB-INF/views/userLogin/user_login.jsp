@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -68,7 +69,7 @@
             <form name="f" action="user_index" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="userId" value="" placeholder="아이디 입력" required>
+ 						<input type="text" name="userId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
                     </label>
                     <label>
                         <input type="password" name="userPasswd" value="" placeholder="비밀번호 입력" required>
@@ -78,7 +79,7 @@
             </form>
             <div class="find_box">
                 <label>
-                <input type="checkbox" name="" value=""> 아이디 저장
+                    <input type="checkbox" name="saveId" value="on"> 아이디 저장
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
@@ -94,11 +95,12 @@
                         <label>
                             <input type="text" name="" value="" placeholder="이메일입력" required>
                         </label>
+                        @
                         <label>
                             <select name="">
-                                <option value="">@naver.com</option>
-                                <option value="">@nate.com</option>
-                                <option value="">@gmail.com</option>
+                                <option value="">naver.com</option>
+                                <option value="">nate.com</option>
+                                <option value="">gmail.com</option>
                             </select>
                         </label>
                     </div>
@@ -127,11 +129,12 @@
                         <label>
                             <input type="text" name="" value="" placeholder="이메일입력" required>
                         </label>
+                        @
                         <label>
                             <select name="">
-                                <option value="">@naver.com</option>
-                                <option value="">@nate.com</option>
-                                <option value="">@gmail.com</option>
+                                <option value="">naver.com</option>
+                                <option value="">nate.com</option>
+                                <option value="">gmail.com</option>
                             </select>
                         </label>
                     </div>
@@ -152,4 +155,14 @@
     </section>
     <!-- e: content -->
 </body>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        var saveIdChecked = document.querySelector('input[name="saveId"]').checked;
+        console.log('Save ID checked:', saveIdChecked);
+    });
+</script>
+
 </html>
+
+ 

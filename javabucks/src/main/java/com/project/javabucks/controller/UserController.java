@@ -50,7 +50,7 @@ public class UserController {
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "Gold");
 			req.setAttribute("progress_bar", gage);
-			
+			javascript:;
 		}else if(dto.getGradeCode().equals("welcome")) {
 			int frequency = 5 - frequencyById;
 			int gage = (int)((frequencyById/5.0) * 100);
