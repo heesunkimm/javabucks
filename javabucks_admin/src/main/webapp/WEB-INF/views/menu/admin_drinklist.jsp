@@ -47,12 +47,14 @@
 	                        </select>
 	                    </label>
 	                    <label>주문막기 메뉴 확인
-	                    	<c:if test="${searchParams.menuEnable eq 'Y'}">
-							    <input type="checkbox" name="menuEnable" value="Y" checked>
-	                    	</c:if>
-	                    	<c:if test="${searchParams.menuEnable eq 'N'}">
-							    <input type="checkbox" name="menuEnable" value="N">
-	                    	</c:if>
+	                    	<c:choose>
+							    <c:when test="${searchParams.menuEnable eq 'Y'}">
+							        <input type="checkbox" name="menuEnable" value="Y" checked>
+							    </c:when>
+							    <c:when test="${searchParams.menuEnable eq 'N'}">
+							        <input type="checkbox" name="menuEnable" value="N">
+							    </c:when>
+							</c:choose>
 						</label>
 	                </div>
 	                <label>메뉴명
@@ -71,7 +73,7 @@
 	            <table class="search_list s_table">
 	                <thead class="bg_green font_white">
 	                    <tr>
-	                        <th>카테고리</th>
+	                        <th>구분</th>
 	                        <th>베이스</th>
 	                        <th>ICE/HOT</th>
 	                        <th>메뉴코드</th>
@@ -108,8 +110,7 @@
 									        <button class="updateBtn disable_order" type="button" 
 									        	data-menu-name="${dto.menuName}" 
 										        data-menu-code="${dto.menuCode}" 
-										        data-menu-enable="${dto.menuEnable}" 
-										        onclick="menuStatusEvt('${dto.menuCode}', '${dto.menuEnable}')">주문풀기
+										        data-menu-enable="${dto.menuEnable}">주문풀기
 									        </button>
 									    </c:when>
 									    <c:when test="${dto.menuEnable eq 'Y'}">
@@ -191,6 +192,5 @@
 	            console.error('AJAX 요청 실패:', status, err);
 	        }
 	    });
-		
 	})
 </script>

@@ -3,14 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:include page="../admin_top.jsp"/>
 	<!-- s: content -->
-    <section id="admin_editdrink" class="content addmenu_cont">
+    <section id="admin_editdessert" class="content addmenu_cont">
         <div class="inner_wrap">
             <div class="tit_box">
                 <p>메뉴 상세정보</p>
             </div>
 
             <div class="insert_box bg_beige">
-                <form name="edit_from" action="admin_editdrink" method="post" enctype="multipart/form-data">
+                <form name="edit_from" action="admin_editdessert" method="post" enctype="multipart/form-data">
                     <div class="info_box">
                         <label><span>메뉴코드</span>
                         	<input type="text" name="menuCode" value="${menu.menuCode}" readOnly>
@@ -123,7 +123,7 @@
 
 	            let $form = $('<form>', {
 	                method: 'post',
-	                action: 'admin_delDrink'
+	                action: 'admin_delDessert'
 	            });
 
 	            let $input = $('<input>', {

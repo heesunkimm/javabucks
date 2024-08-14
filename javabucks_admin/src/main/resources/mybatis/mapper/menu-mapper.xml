@@ -3,8 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="mybatis.mapper.menu-mapper">
-  	<!-- 음료등록 -->
-  	<insert id="insertDrink" parameterType="MenuDTO">
+  	<!-- 메뉴등록 -->
+  	<insert id="insertMenu" parameterType="MenuDTO">
 	    insert into javabucks_menu (menuCode, menuName, menuImages, menuPrice, menuDesc, menuEnable, menuoptCode, menuregDate)
 	    values (#{menuCode}, #{menuName}, #{menuImages}, #{menuPrice}, #{menuDesc}, #{menuEnable}, #{menuoptCode}, SYSDATE)
 	</insert>
@@ -27,7 +27,6 @@
 	    ) drinks 
 	    WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
-	
 	<!-- 조건에 해당하는 음료 리스트 갯수 구하기 -->
 	<select id="searchDrinkCount" parameterType="java.util.Map" resultType="Integer">
 	    SELECT COUNT(*) FROM javabucks_menu
@@ -41,15 +40,64 @@
 	    AND #{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N')
 	</select>
 	
-	<!-- 메뉴수정 -->
-	<!-- <update id="editDrink" parameterType="MenuDTO">
-		update javabucks_menu 
-		<set> menuName = #{menuName}, menuImages = #{menuImages}, menuDesc = #{menuDesc}, menuPrice = #{menuPrice} </set>
-		where menuCode = #{menuCode}
-	</update> -->
+	<!-- 조건에 해당하는 디저트 리스트 검색 -->
+	<select id="searchDessert" parameterType="java.util.Map" resultType="MenuDTO">
+	    SELECT * 
+	    FROM (
+	        SELECT ROW_NUMBER() OVER (ORDER BY menuregDate DESC) AS rn, m.* 
+	        FROM javabucks_menu m
+	        WHERE menuCode LIKE 'C%' 
+	            AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	            AND (#{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N'))
+	    ) dessert
+	    WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	<!-- 조건에 해당하는 디저트 리스트 갯수 구하기 -->
+	<select id="searchDessertCount" parameterType="java.util.Map" resultType="Integer">
+	    SELECT COUNT(*) 
+	    FROM javabucks_menu
+	    WHERE menuCode LIKE 'C%'
+	    AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	    AND (#{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N'))
+	</select>
+	
+	<!-- 조건에 해당하는 MD 리스트 검색 -->
+	<select id="searchMd" parameterType="java.util.Map" resultType="MenuDTO">
+	    SELECT * 
+	    FROM (
+	        SELECT ROW_NUMBER() OVER (ORDER BY menuregDate DESC) AS rn, m.* 
+	        FROM javabucks_menu m
+	        WHERE menuCode LIKE 'M%' 
+	            AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	            AND (#{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N'))
+	    ) dessert
+	    WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	<!-- 조건에 해당하는 MD 리스트 갯수 구하기 -->
+	<select id="searchMdCount" parameterType="java.util.Map" resultType="Integer">
+	    SELECT COUNT(*) 
+	    FROM javabucks_menu
+	    WHERE menuCode LIKE 'M%'
+	    AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
+	    AND (#{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N'))
+	</select>
+	
+	<!-- 메뉴정보 가져오기 -->
+	<select id="getEditMenu" parameterType="String" resultType="MenuDTO">
+		select * from javabucks_menu where menuCode = #{menuCode} 
+	</select>
+	
+	<!-- 음료메뉴수정 -->
+	<update id="editMenu" parameterType="MenuDTO">
+	    UPDATE javabucks_menu
+	    <set>
+	    	menuName = #{menuName}, menuImages = #{menuImages}, menuDesc = #{menuDesc}, menuPrice = #{menuPrice}
+	    </set>
+	    WHERE menuCode = #{menuCode}
+	</update>
 	
 	<!-- 메뉴삭제 -->
-	<delete id="delDrink" parameterType="String">
+	<delete id="delMenu" parameterType="String">
 		delete from javabucks_menu where menuCode = #{menuCode}
 	</delete>
 
@@ -57,14 +105,4 @@
 	<update id="menuStatusUpdate" parameterType="MenuDTO">
 		update javabucks_menu set menuEnable = #{menuEnable} where menuCode = #{menuCode}
 	</update>
-	
-	
-	
-
-
-
-
-
-
-
   </mapper>

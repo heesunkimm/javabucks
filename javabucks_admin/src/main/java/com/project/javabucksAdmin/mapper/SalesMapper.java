@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
 
 @Service
@@ -39,6 +40,13 @@ public class SalesMapper {
         return uuid.substring(0, Math.min(length, uuid.length()));
     }
     
+  //지점 리스트 
+    public List<BucksDTO> bucksList(Map<String, Object> params){
+    	System.out.println(params);
+    	return sqlSession.selectList("bucksList",params);
+    }
+
+    
 	//이메일 중복 확인	
     public boolean checkEmail(BucksDTO dto) {
 		 int count = sqlSession.selectOne("checkEmail", dto);
@@ -52,8 +60,15 @@ public class SalesMapper {
     
     //특정 검색 지점 리스트 
     public List<BucksDTO> searchBucks(Map<String, Object> params){
+    	System.out.println(params);
     	return sqlSession.selectList("searchBucks", params);
     }
+    
+  //특정 검색 지점 페이징 
+    public int searchBucksCount(Map<String, Object> params) {
+    	return sqlSession.selectOne("searchBucksCount",params);
+    }
+
     
     //지점 상세보기
     public BucksDTO editbucks(String bucksId) {
@@ -61,7 +76,39 @@ public class SalesMapper {
     }
     
     
+  //이메일 중복 확인	
+    public boolean editCheckEmail(BucksDTO dto) {
+		 int count = sqlSession.selectOne("editCheckEmail", dto);
+		 return count > 0;
+	 }
     
+ 
+  //지점 수정
+    public int editBucks(BucksDTO dto) {
+    	return sqlSession.update("editBucks", dto);
+    }
+    
+    //지점 삭제 
+    public int deleteBucks(String bucksId) {
+    	return sqlSession.delete("deleteBucks",bucksId);
+    }
+    
+    //페이징 
+    public int bucksListCount() {
+		return sqlSession.selectOne("bucksListCount");
+	}
+    
+//Sales
+    //발주페이지에 벅스이름 들고가기
+    public List<BucksDTO> selectBucksName() {
+    	return sqlSession.selectList("selectBucksName");
+    }
+    
+    ////검색한 지점과 날짜로 발주정산
+    public List<BaljooDTO> baljoolist(Map<String, Object> params){
+    	return sqlSession.selectList("baljoolist", params);
+    }
+
  
     
 	

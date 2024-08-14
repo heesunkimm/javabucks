@@ -9,7 +9,7 @@
             </div>
 
             <div class="insert_box bg_beige">
-                <form name="f" action="insertDrink" method="post" enctype="multipart/form-data">
+                <form name="add_form" action="admin_adddrink" method="post" enctype="multipart/form-data">
                 													<!-- 파일 전송시 필수작성 -->
                     <div class="info_box">
                         <label><span>구분코드</span>
@@ -83,7 +83,7 @@
                     <input type="hidden" name="menuEnable" value="">
                     <input type="hidden" name="menuoptCode" value="Y">
                     <div class="btn_box">
-                        <button class="add_btn" type="submit">등록</button>
+                        <button class="add_btn" type="button" onclick="contCheck()">등록</button>
                         <button class="del_btn" type="button" onclick="window.location='admin_drinklist'">취소</button>
                     </div>
                 </form>
@@ -92,6 +92,34 @@
     </section>
     <!-- e: content -->
     <script type="text/javascript">
+    	// 유효성체크
+	    function contCheck() {
+		    let MNameCode = $("input[name='menu_namecode']").val().trim();
+		    let MName = $("input[name='menuName']").val().trim();
+		    let MImages = $("input[name='menuImages']").val().trim();
+		    let MDesc = $("textarea[name='menuDesc']").val().trim();
+		    let MPrice = $("input[name='menuPrice']").val().trim();
+		    
+			if (MNameCode == '') {
+		        alert("메뉴코드를 입력해주세요.");
+		        return false;
+		    } else if (MName == '') {
+		        alert("메뉴명을 입력해주세요.");
+		        return false;
+		    } else if (MName == '') {
+		        alert("메뉴 이미지를 등록해주세요.");
+		        return false;
+		    } else if (MDesc == '') {
+		        alert("메뉴설명을 입력해주세요.");
+		        return false;
+		    } else if (MPrice == '') {
+		        alert("메뉴가격을 입력해주세요.");
+		        return false;
+		    }
+			document.forms['add_form'].submit();
+		    return true;
+		}
+	    
     	// 메뉴코드, 메뉴옵션 값 조합, 값넣기
 	    function updateMenuOpt() {
 	        let drinkDivide = $("select[name='menu_divide']").val();
@@ -159,18 +187,7 @@
 	    $('input[name="menuPrice"]').on('input', function() {
 	        // 입력값에서 숫자만 남기고 제거
 	        let value = $(this).val().replace(/[^\d]/g, '');
-
-	        // 3자리마다 , 표시
-	        if (value) {
-	            value = parseInt(value, 10).toLocaleString('en-US');
-	        }
 	        $(this).val(value);
-	    });
-	    // 데이터 전송시 , 제거
-	    $('#admin_adddrink form').on('submit', function(event) {
-	        $('input[name="menuPrice"]').val(function(i, value) {
-	            return value.replace(/,/g, '');
-	        });
 	    });
     </script>
 <jsp:include page="../admin_bottom.jsp"/>
