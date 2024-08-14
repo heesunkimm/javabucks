@@ -47,10 +47,10 @@
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">주문내역</a>
+                <a href="orderHistory.do">주문내역</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">매장 주문내역</a></li>
-                    <li><a href="javascript:;">배달 주문내역</a></li>
+                    <li><a href="orderHistory.do">매장 주문내역</a></li>
+                    <li><a href="deliversHistory.do">배달 주문내역</a></li>
                 </ul>
             </li>
             <li class="nav_item">

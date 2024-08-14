@@ -1,6 +1,7 @@
 package com.project.javabucksStore.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucksStore.dto.StockCartDTO;
 import com.project.javabucksStore.dto.StoreStocksDTO;
 import com.project.javabucksStore.mapper.StocksMapper;
@@ -286,46 +289,43 @@ public class StocksController {
 	public String addStoreOrder(@RequestParam("stockCartCount") List<Integer> stockCartCount, 
 								@RequestParam("stockListPrice") List<Integer> stockListPrice, 
 								@RequestParam("stockListCode") List<String> stockListCode,
-								@RequestParam("stockCartNum") List<Integer> stockCartNum) {
+								@RequestParam("stockCartNum") List<Integer> stockCartNum) throws JsonProcessingException {
 		// 지점 아이디 받아오기
 		String bucksId = "bucks001";
 		
+		// 총 주문금액
 		int price = 0;
 		int totPrice = 0;
 		for(int i=0; i<stockListCode.size(); i++) {
 			price = stockListPrice.get(i) * stockCartCount.get(i);			
 			totPrice = totPrice + price;			
 		}
+		//System.out.println("totPrice : " + totPrice);
+		
+		// 주문내역
+		List<String> orderList = new ArrayList<>();
+		for(int i=0; i<stockListCode.size(); i++) {
+			String Order = stockListCode.get(i) + ":" + stockCartCount.get(i);
+			orderList.add(Order);
+		}
+
+		// JSON 문자열로 변환
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    String jsonOrderList = objectMapper.writeValueAsString(orderList);
+	    //System.out.println("JSON Order List: " + jsonOrderList);
+	    
+		
+		// 주문내역 INSERT
+		int addStoreOrder = mapper.addStoreOrder(bucksId, jsonOrderList, totPrice);	
 		
 		
-		List<OrderList> list = null;
-		//list.add(i, null)
-		
-		//int addStoreOrder = mapper.addStoreOrder(bucksId,  );
-		
-		
+		// 장바구니 상태 UPDATE
 		for(int i=0; i<stockCartNum.size(); i++) {
-			System.out.println(stockCartNum.get(i));
+			//System.out.println("cartNum:"+stockCartNum.get(i));
 			int updateCartStatus = mapper.updateCartStatus(bucksId, stockCartNum.get(i));
 		}		
 		
-		return "stocks/store_cart";
+		return "/sales/store_baljooManage";
 	}
 	
-	public class OrderList {
-		private String stockListCode;
-		private int stockCartCount;
-		public String getStockListCode() {
-			return stockListCode;
-		}
-		public void setStockListCode(String stockListCode) {
-			this.stockListCode = stockListCode;
-		}
-		public int getStockCartCount() {
-			return stockCartCount;
-		}
-		public void setStockCartCount(int stockCartCount) {
-			this.stockCartCount = stockCartCount;
-		}		
-	}
 }

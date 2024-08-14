@@ -4,5 +4,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 
 <mapper namespace="mybatis.mapper.orderMapper">
-
+	<select id="orderInfo" parameterType="java.util.Map" resultType="OrderDTO">
+		select * from javabucks_order
+		where bucksId = #{bucksId}
+		order by orderDate desc
+		
+	</select>
+	
+	<select id="getMenuName" parameterType="String" resultType="String">
+		select menuName from javabucks_menu
+		where menuCode = #{menuCode}
+	</select>
 </mapper>

@@ -236,22 +236,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- s: 장바구니 주문 -->
 	<!-- 발주 인서트 -->
 	<insert id="addStoreOrder" parameterType="java.util.Map">
-		insert into javabucks_baljoo (baljooNum, bucksId, baljooList, baljooPrice, baljooDate, baljooStatus) 
-		values( 
-				seq_baljooNum.NEXTVAL, 
-		        #{bucksId}, 
-		        '<baljooList>
-		            <foreach collection="itemList" item="item" separator="">
-		                <item>
-		                    <stockCode>${item.stockListCode}</stockCode>
-		                    <quantity>${item.stockCartCount}</quantity>
-		                </item>
-		            </foreach>
-		         </baljooList>', 
-		        #{baljooPrice}, 
-		        SYSDATE, 
-		        '주문완료'
-			   )
+		insert into javabucks_baljoo
+				(baljooNum, bucksId, baljooList, baljooPrice, baljooDate, baljooStatus) 
+		values(
+				seq_baljooNum.NEXTVAL, #{bucksId}, #{baljooList}, #{baljooPrice}, SYSDATE, '주문완료')
 	</insert>
 	
 	<!-- 장바구니 상태 업데이트 -->

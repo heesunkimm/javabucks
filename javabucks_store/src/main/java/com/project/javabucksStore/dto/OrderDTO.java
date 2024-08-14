@@ -1,15 +1,19 @@
 package com.project.javabucksStore.dto;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class OrderDTO {
 	
 	private String orderCode; // 주문코드
 	private String userId; // 주문자
 	private String bucksId; // 지점
-	private String menuCode; // 메뉴코드
+	private String orderList; // 주문내역 (JSON)
 	private int menuPrice; // 메뉴 가격
-	private String optId; // 옵션 아이디
 	private int optPrice; // 옵션 총가격
-	private int menuCount; // 메뉴 수량
 	private int orderPrice; // 주문 총가격
 	private String orderDate; // 주문일시
 	private String orderType; // 주문유형
@@ -33,11 +37,11 @@ public class OrderDTO {
 	public void setBucksId(String bucksId) {
 		this.bucksId = bucksId;
 	}
-	public String getMenuCode() {
-		return menuCode;
+	public String getOrderList() {
+		return orderList;
 	}
-	public void setMenuCode(String menuCode) {
-		this.menuCode = menuCode;
+	public void setOrderList(String orderList) {
+		this.orderList = orderList;
 	}
 	public int getMenuPrice() {
 		return menuPrice;
@@ -45,23 +49,11 @@ public class OrderDTO {
 	public void setMenuPrice(int menuPrice) {
 		this.menuPrice = menuPrice;
 	}
-	public String getOptId() {
-		return optId;
-	}
-	public void setOptId(String optId) {
-		this.optId = optId;
-	}
 	public int getOptPrice() {
 		return optPrice;
 	}
 	public void setOptPrice(int optPrice) {
 		this.optPrice = optPrice;
-	}
-	public int getMenuCount() {
-		return menuCount;
-	}
-	public void setMenuCount(int menuCount) {
-		this.menuCount = menuCount;
 	}
 	public int getOrderPrice() {
 		return orderPrice;
@@ -88,4 +80,15 @@ public class OrderDTO {
 		this.orderStatus = orderStatus;
 	}
 	
+	// 메서드 추가: orderList JSON을 List<String>으로 변환
+	public List<String> getOrderListtoStringList() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(orderList, mapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+    }
+	
+	// 메서드 추가: List<String>을 JSON으로 변환
+    public void setOrderListFromStringList(List<String> orderList) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        this.orderList = mapper.writeValueAsString(orderList);
+    }
 }
