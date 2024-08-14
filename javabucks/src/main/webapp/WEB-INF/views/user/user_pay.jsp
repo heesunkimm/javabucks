@@ -83,7 +83,7 @@
                      <p>변경할 이름을 입력해주세요.</p>
                      <label>카드 이름
                          <input type="text" name="cardName" value="" placeholder="카드명 최대 20자" maxlength="20">
-                         <input type="hidden" name="cardRegNum" value="">
+                         <input type="hidden" name="modicardRegNum" value="">
                      </label>
                  </div>
                 <!-- e: 내용 작성 -->
@@ -98,7 +98,6 @@
     </section>
     <!-- e: content -->
      <script>
-     
         $(".edit_btn").on("click",function () {
             if(!$(".edit_card").hasClass("s_active")) {
                 $(".pay_card").removeClass("s_active");
@@ -106,7 +105,7 @@
             
             let cardRegNum = $(".card_num").text().trim();
             
-            $("#cardedit input[name='cardRegNum']").val(cardRegNum);
+            $("#cardedit input[name='modicardRegNum']").val(cardRegNum);
         })
         $(".edit_card .close_btn").on("click",function () {
             $(".pay_card").addClass("s_active");

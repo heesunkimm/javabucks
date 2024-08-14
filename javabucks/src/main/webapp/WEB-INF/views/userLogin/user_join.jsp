@@ -45,8 +45,9 @@
 
             #user_join .join_box .input_box .confirm_box, #user_join .join_box .input_box .id_box {margin-top: 6px; display: flex; align-items: center; justify-content: space-between;}
             #user_join .join_box .input_box .confirm_box label, #user_join .join_box .input_box .id_box label {position: relative; width: 230px;}
-            #user_join .join_box .input_box .confirm_box input, #user_join .join_box .input_box .id_box input {width: 100%; height: 36px; padding: 0 6px; font-size: 14px;}
-            #user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;}
+            #user_join .join_box .input_box .confirm_box input, #user_join .join_box .input_box .id_box input {width: 76%; height: 36px; padding: 0 6px; font-size: 14px;}
+            /* #user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */
+            #user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
             #user_join .join_box .input_box .confirm_box button, #user_join .join_box .input_box .id_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
 
             #user_join .join_box .join_btn {margin-top: 10px; width: 100%; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
@@ -94,12 +95,12 @@
                     </div>
                     <div class="hp_box">
                         <label>
-                            <select name="userTel1">
-                                <option value="">010</option>
-                                <option value="">016</option>
-                                <option value="">017</option>
-                                <option value="">018</option>
-                                <option value="">019</option>
+                            <select name="userTel1" class="userTel1">
+                                <option value="010">010</option>
+                                <option value="016">016</option>
+                                <option value="017">017</option>
+                                <option value="018">018</option>
+                                <option value="019">019</option>
                             </select>
                         </label>
                         <label>
@@ -113,11 +114,12 @@
                         <label>
                             <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일 입력" required>
                         </label>
+                        @
                         <label>
                             <select name="userEmail2" class="userEmail2">
-                                <option value="@naver.com">@naver.com</option>
-                                <option value="@nate.com">@nate.com</option>
-                                <option value="@gmail.com">@gmail.com</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
                         <button type="button" class="dupcate_btn" onclick="duplicateCheck()">중복체크</button>
@@ -125,8 +127,8 @@
                     </div>
                     <div class="confirm_box" style="display: none;"> 
                         <label>
-                            <input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
-                            <span id="timer">0:00</span>
+                       		<input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
+                            <span id="timerMin">3</span>:<span id="timerSec">00</span> 
                         </label>
                         <button type="button" onclick="codeCheck()">인증확인</button>
                     </div>
@@ -142,6 +144,10 @@
 	let ck = false; 
 	// 이메일 인증 상태를 추적하는 변수
 	let mck = false;
+	
+	// 이메일인증 타이머 
+	let timer; 
+	let timeRemaining = 180; // 3분 
 	
 // 중복확인 버튼 유효성검사 	
 function idCheck() {
@@ -209,6 +215,25 @@ function duplicateCheck() {
      
 }
 
+function startTimer(){
+	let timerMinId = document.getElementById('timerMin');
+	let timerSecId = document.getElementById('timerSec');
+	
+	timer = setInterval(()=>{
+		if(timeRemaining<=0){
+			clearInterval(timer);
+			alert("인증 시간이 초과되었습니다.");
+			return;
+		}
+		timeRemaining--;
+		
+		let minutes = Math.floor(timeRemaining / 60);
+		let seconds = timeRemaining % 60;
+		
+		timerMinId.textContent = minutes;
+		timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+	},1000);
+}
 
 // 이메일인증 버튼 클릭시 유효성검사
 function sendEmail(){
@@ -217,6 +242,10 @@ function sendEmail(){
 	
 	// 인증번호 입력box 활성화 
 	document.querySelector('.confirm_box').style.display = 'block';
+	
+	timeRemaining = 180;
+	startTimer();
+	
 	// 이메일 입력이 안되어있으면 focus
 	if(email1 ==""){
 		alert("이메일 주소를 입력해주세요")
@@ -237,16 +266,18 @@ function sendEmail(){
 			if(res == 'OK'){
 				alert("인증메일을 발송하였습니다.");
 			}else{
-				alert("인증메일 발송실패!")
+				alert("이미 등록된 이메일입니다.");
+				document.querySelector('.confirm_box').style.display = 'none';
 			}
 		},
 		error : function(err){
 			console.log(err);
+			alert("서버 요청 실패! 네트워크 상태를 확인해주세요.")
 		}
 	})
 }
  
-// 인증번호 
+// 이메일 인증번호  
 function codeCheck(){
 	let code = $('.code').val();
 	$.ajax({
@@ -274,13 +305,13 @@ function codeCheck(){
 
  
 // 회원가입 버튼 클릭시 유효성검사
-
 function check() {
 	let name = $(".userName").val();
     let birth = $(".userBirth").val();
     let id = $(".id").val();
     let passwd = $(".userPasswd").val();
     let passwdok = $(".userPasswdConfirm").val();
+    let tel1 = $(".userTel1").val();
     let tel2 = $(".userTel2").val();
     let tel3 = $(".userTel3").val();
     let email1 = $(".userEmail1").val();

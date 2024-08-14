@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
-import com.project.javabucks.dto.PayhistoryDTO;
+import com.project.javabucks.dto.CouponListDTO;
+import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -28,30 +31,57 @@ public class UserController {
 	@Autowired
 	UserMapper userMapper;
 
+	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
 	public String userIndex(HttpServletRequest req) {
-		UserDTO dto = new UserDTO();
-		dto.setUserId("inUser");
-		dto.setUserPasswd("inUser");
-		dto.setUserName("이용중");
-		dto.setUserNickname("별며어엉");
-		dto.setUserGender("M");
-		dto.setUserBirth("920606");
-		dto.setUserEmail1("sky2464");
-		dto.setUserEmail2("naver.com");
-		dto.setUserTel1("010");
-		dto.setUserTel2("6859");
-		dto.setUserTel3("4432");
-		dto.setGradeCode("gold");
-		dto.setUserGradedate("24/08/06");
-		dto.setUserJoindate("24/06/06");
-		dto.setUserEnable("Y");
-		dto.setUserFrequencyCount("500");
+//		HttpSession session = req.getSession();
+//		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		
+		FrequencyDTO dto2 = userMapper.getFrequencyById();		
+		int frequencyById = dto2.getFrequencyCount();
+		
+		if(dto.getGradeCode().equals("green")) {
+			int frequency = 30 - frequencyById;
+			int gage = (int)((frequencyById/30.0) * 100);
+			req.setAttribute("maxStar", "30");
+			req.setAttribute("frequency", frequency);
+			req.setAttribute("until", "Gold");
+			req.setAttribute("progress_bar", gage);
+			
+		}else if(dto.getGradeCode().equals("welcome")) {
+			int frequency = 5 - frequencyById;
+			int gage = (int)((frequencyById/5.0) * 100);
+			req.setAttribute("maxStar", "5");
+			req.setAttribute("frequency", frequency);
+			req.setAttribute("until", "Green");
+			req.setAttribute("progress_bar", gage);
+		}
 		req.getSession().setAttribute("inUser", dto);
-
 		return "/user/user_index";
 	}
 
+	@RequestMapping("/user_cpnhistory")
+	public String ListCpnhistory(HttpServletRequest req) {
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		List<CouponListDTO> list = userMapper.getCouponListById();
+		req.setAttribute("couponlist", list);
+		return "/user/user_cpnhistory";
+	}
+	
+	@RequestMapping("/user_delivers")
+	public String userDelivers(HttpServletRequest req) {
+		
+//		// 매장 검색하기
+//		List<BucksDTO> list = userMapper.getStoreList();
+//		req.setAttribute("storeList", list);
+		return "/user/user_delivers";
+	}
+	
+	//------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 	public String userPay(Model model, HttpSession session) {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
@@ -139,11 +169,6 @@ public class UserController {
 		return "/user/user_store";
 	}
 
-	@RequestMapping("/user_delivers")
-	public String userDelivers() {
-		return "/user/user_delivers";
-	}
-
 	@RequestMapping("/user_other")
 	public String userOther() {
 		return "/user/user_other";
@@ -172,11 +197,6 @@ public class UserController {
 	@RequestMapping("/user_mymenu")
 	public String userMymenu() {
 		return "/user/user_mymenu";
-	}
-
-	@RequestMapping("/user_cpnhistory")
-	public String userCpnhistory() {
-		return "/user/user_cpnhistory";
 	}
 
 	@RequestMapping("/user_delivershistory")

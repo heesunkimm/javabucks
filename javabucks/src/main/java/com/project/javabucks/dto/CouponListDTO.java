@@ -3,7 +3,7 @@ package com.project.javabucks.dto;
 public class CouponListDTO {
 
 	private int cpnListNum;
-	private String cpnListCode;
+	private String cpnCode;
 	private String userId;
 	private String cpnListStatus;
 	private String cpnListStartDate;
@@ -17,11 +17,11 @@ public class CouponListDTO {
 	public void setCpnListNum(int cpnListNum) {
 		this.cpnListNum = cpnListNum;
 	}
-	public String getCpnListCode() {
-		return cpnListCode;
+	public String getCpnCode() {
+		return cpnCode;
 	}
-	public void setCpnListCode(String cpnListCode) {
-		this.cpnListCode = cpnListCode;
+	public void setCpnCode(String cpnCode) {
+		this.cpnCode = cpnCode;
 	}
 	public String getUserId() {
 		return userId;
@@ -53,6 +53,27 @@ public class CouponListDTO {
 	public void setCpnListUseDate(String cpnListUseDate) {
 		this.cpnListUseDate = cpnListUseDate;
 	}
+	
+	// 채성진 작업-----------------------------------------------
+		// Coupon과 JOIN한 컬럼
+		private String cpnName; // 쿠폰명
+		private String cpnDesc; // 쿠폰설명
+		
+		public String getCpnName() {
+			return cpnName;
+		}
+		
+		public void setCpnName(String cpnName) {
+			this.cpnName = cpnName;
+		}
+		
+		public String getCpnDesc() {
+			return cpnDesc;
+		}
+		
+		public void setCpnDesc(String cpnDesc) {
+			this.cpnDesc = cpnDesc;
+		}
 
 	
 }

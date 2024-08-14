@@ -65,13 +65,13 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="" method="post">
+            <form name="f" action="user_index" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="" value="" placeholder="아이디 입력" required>
+                        <input type="text" name="userId" value="" placeholder="아이디 입력" required>
                     </label>
                     <label>
-                        <input type="password" name="" value="" placeholder="비밀번호 입력" required>
+                        <input type="password" name="userPasswd" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
