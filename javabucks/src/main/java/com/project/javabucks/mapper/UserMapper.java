@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
@@ -48,22 +49,26 @@ public class UserMapper {
 	public int paychargeCard(PayhistoryDTO dto) {
 		return sqlSession.insert("paychargeCard", dto);
 	}
-
+	
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
 		return sqlSession.update("plusCardPrice", params);
 	}
-
+	
 	// 채성진 작업------------------------------------------------------
 	public UserDTO getInfoById() {
 		return sqlSession.selectOne("getInfoById");
 	}
-
-	public FrequencyDTO getFrequencyById() {
+	
+	public FrequencyDTO getFrequencyById() {		
 		return sqlSession.selectOne("getFrequencyById");
 	}
-
-	public List<CouponListDTO> getCouponListById() {
+	
+	public List<CouponListDTO> getCouponListById() {	
 		return sqlSession.selectList("getCouponListById");
+	}
+	
+	public List<BucksDTO> getStoreList() {	
+		return sqlSession.selectList("getStoreList");
 	}
 }

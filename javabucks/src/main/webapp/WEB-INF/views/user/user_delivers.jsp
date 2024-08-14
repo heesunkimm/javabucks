@@ -15,9 +15,110 @@
     <!-- s: content -->
     <section id="user_delivers" class="content">
         <div class="inner_wrap">
-            
+			<div class="top_box">
+                <div class="tit_box">
+                    <p class="font_bold">Delivers</p>
+                </div>
+    
+                <div class="search_box">
+                    <form name="" action="" method="post">
+                    	<p class="txt_desc">배달 주소지:</p>
+                        <label>
+                            <input type="text" name="" value="" placeholder="검색">
+                        </label>
+                        <button type="submit">검색</button>
+                    </form>
+                    <!-- <a href="javascript:;">자주가는 매장</a> -->
+                </div>
+        	</div>
+        	<ul class="store_list">
+                <li class="store_item">
+                       <div class="img_box">
+                           <!-- <img src="" alt=""> -->
+                       </div>
+                       <div class="txt_box">
+                           <p>지점명</p>
+                           <p>지점 주소</p>
+                       </div>
+                </li>
+            </ul>
         </div>
+        
+        <!-- 픽업 선택 팝업 -->
+        <div class="popup_box pickup_box" id="insertAddress" style="display: none;">
+            <div class="tit_box">
+                <p class="txt_tit">배달 주소를 설정해 주세요</p>
+            </div>
+            <form name="f" action="" method="post">
+                <!-- s: 내용 작성 -->
+                <div class="select_box">
+                     <div class="txt_box">
+						<input class="" type="button" value="주소 검색" onclick="checkPost()">
+                       	<input class="" type="text" id="address" name="addr1" size="50" placeholder="주소" readonly>
+						<input class="" type="text" id="detailAddress" name="addr2" size="50" placeholder="상세주소">
+                       	<input type="hidden" id="house_addr" name="house_addr">
+                     </div>                    
+                </div>
+                <div class="btn_box">
+                    <button class="" type="button">확인</button>
+                    <button class="close_btn" type="button" data-popup="insertAddress">취소</button>
+                </div>
+                <!-- e: 내용 작성 -->
+            </form>
+        </div>
+        <div class="dimm"></div>
     </section>
     <!-- e: content -->
 
 <%@ include file="user_bottom.jsp" %>
+<!-- 주소 검색 API -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+        window.onload = function() {
+            // 페이지가 로드되면 팝업을 보이게 설정
+            document.getElementById("insertAddress").style.display = "block";
+        };
+        
+    	 // 취소 버튼 클릭 시 팝업을 숨김
+        document.querySelector(".close_btn").addEventListener("click", function() {
+            document.getElementById("insertAddress").style.display = "none";
+        });
+    	 
+    	 // 배달주소 검색
+        function checkPost() {
+	        new daum.Postcode({
+	            oncomplete: function(data) {
+	               
+	                var addr = ''; // 주소 변수
+	                var extraAddr = ''; // 참고항목 변수
+	
+	                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+	                    addr = data.roadAddress;
+	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+	                    addr = data.jibunAddress;
+	                }
+	
+	                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+	                if(data.userSelectedType === 'R'){
+	                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+	                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+		                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+		                        extraAddr += data.bname;
+		                    }
+		                    // 건물명이 있고, 공동주택일 경우 추가한다.
+		                    if(data.buildingName !== '' && data.apartment === 'Y'){
+		                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+		                    }
+	                   
+	                }
+	
+	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+	                document.getElementById("address").value = addr;
+	                // 커서를 상세주소 필드로 이동한다.
+	                document.getElementById("detailAddress").focus();
+	            }
+	        }).open();
+	        
+	    } 
+</script>

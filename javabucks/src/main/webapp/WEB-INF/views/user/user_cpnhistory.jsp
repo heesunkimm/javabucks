@@ -19,6 +19,9 @@
             <div class="tit_box">
                 <p class="font_bold">쿠폰 히스토리</p>
             </div>
+             <c:if test="${empty couponlist}">
+           	 사용 가능한 쿠폰이 없어요
+            </c:if>
 			<c:forEach var ="dto" items="${couponlist}">
             <ul class="cpn_list">
                 <!-- 쿠폰 사용완료시 <li class="cpn_item">에 use_complete 클래스 추가하면 딤처리됨 -->
@@ -37,6 +40,7 @@
                 </li>
             </ul>
             </c:forEach>
+           
         </div>
     </section>
     <!-- e: content -->
