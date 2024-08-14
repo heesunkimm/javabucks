@@ -100,7 +100,44 @@
  	</select>
  	
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
- 		SELECT * FROM javabucks_bucks WHERE bucksName like  '%'#{검색}'%' or bucksLocation like '%'#{검색}'%'
+ 		 SELECT * 
+   		 FROM javabucks_bucks 
+   		 WHERE bucksEnable = 'y'	
+   		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
+      	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
+ 	</select>
+ 	
+ 	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'B%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreFoodList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'C%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreProdcutList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'M%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getMenuInfoByCode" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu  		    
+   		 WHERE menuCode = #{menuCode}   		 	  		 
  	</select>
  	
  </mapper>

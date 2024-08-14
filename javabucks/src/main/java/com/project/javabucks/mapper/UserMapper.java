@@ -14,6 +14,7 @@ import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
+import com.project.javabucks.dto.MenuDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 
@@ -82,7 +83,23 @@ public class UserMapper {
 		return sqlSession.selectList("getCouponListById");
 	}
 	
-	public List<BucksDTO> getStoreList() {	
-		return sqlSession.selectList("getStoreList");
+	public List<BucksDTO> getStoreList(String storeSearch) {	
+		return sqlSession.selectList("getStoreList", storeSearch);
+	}
+	
+	public List<MenuDTO> getStoreDrinkList(String storeName) {	
+		return sqlSession.selectList("getStoreDrinkList", storeName);
+	}
+	
+	public List<MenuDTO> getStoreFoodList(String storeName) {	
+		return sqlSession.selectList("getStoreFoodList", storeName);
+	}
+	
+	public List<MenuDTO> getStoreProdcutList(String storeName) {	
+		return sqlSession.selectList("getStoreProdcutList", storeName);
+	}
+	
+	public MenuDTO getMenuInfoByCode(String menuCode) {
+		return sqlSession.selectOne("getMenuInfoByCode", menuCode);
 	}
 }
