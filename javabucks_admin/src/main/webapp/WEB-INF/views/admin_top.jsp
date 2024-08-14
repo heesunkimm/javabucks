@@ -51,9 +51,9 @@
             <li class="nav_item">
                 <a href="javascript:;">정산관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">지점별 매출 관리</a></li>
-                    <li><a href="javascript:;">카테고리별 매출관리</a></li>
-                    <li><a href="javascript:;">발주 정산관리</a></li>
+                    <li><a href="bucksSalesM.do">월별 지점 매출 관리</a></li>
+                    <li><a href="bucksSalesD.do">일별 지점 매출 관리</a></li>
+                    <li><a href="bucksOrderSales.do">발주 정산관리</a></li>
                 </ul>
             </li>
             <li class="nav_item">

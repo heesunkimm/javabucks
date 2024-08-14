@@ -46,5 +46,25 @@ public class BaljooDTO {
 		this.baljooDate = baljooDate;
 	}
 	
+	//조인값 추가
+	private String bucksName;
+	private int totalOrderAmount;
+
+	public int getTotalOrderAmount() {
+		return totalOrderAmount;
+	}
+	public void setTotalOrderAmount(int totalOrderAmount) {
+		this.totalOrderAmount = totalOrderAmount;
+	}
+	public String getBucksName() {
+		return bucksName;
+	}
+	public void setBucksName(String bucksName) {
+		this.bucksName = bucksName;
+	}
+	
+	
+	
+	
 	
 }
