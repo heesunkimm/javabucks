@@ -39,8 +39,8 @@
  	
 	<!-- 페이히스토리 카드충전 -->
  	<insert id="paychargeCard" parameterType="PayhistoryDTO">
- 		INSERT javabuck_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
- 		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, 'x', 'x', 'x', sysdate, #{payhistoryPrice}, #{payhistoryType}, #{payhistoryPayWay})
+		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, NULL, NULL, NULL, sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
  	</insert>
  	
 	<!-- 카드금액충전 -->

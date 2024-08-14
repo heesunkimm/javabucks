@@ -161,53 +161,53 @@ public class LoginController {
 	 
 	 // 로그인 ---------------------------------
 	// 로그인을 누르면 user_index 창으로 이동
-	@GetMapping("/user_index")
-	public String user_index() {
-		return "user/user_index";
-		
-	}
-	
-	@PostMapping("/user_index")
-	public String login(@RequestParam Map<String, String> params,
-						HttpServletRequest req, HttpServletResponse resp) {
-	 
-		String userId = params.get("userId");
-		String userPasswd = params.get("userPasswd");
-		
-		// 아이디로 사용자 정보 가져오기 
-		UserDTO user = loginMapper.findUserById(userId); 
-		
-		if(user != null) {
-			if(user.getUserPasswd().equals(userPasswd)) {
-				System.out.println("로그인");
-				
-				Cookie cookie = new Cookie("uerId",userId);
-				
-				// 쿠키 생성 
-				if(params.containsKey("userId")) {
-					cookie.setMaxAge(24 * 60 * 60);
-					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
-				// 쿠키 제거
-				}else {
-					cookie.setMaxAge(0);
-					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
-				}
-				resp.addCookie(cookie);
-				return "redirect:user_index";
-			}
-			else if(!(user.getUserPasswd().equals(userPasswd))){
-				//
-				System.out.println("비밀번호 불일치");
-				return "redirect:user_login";
-			}
-			 
-		}else {
-			// 로그인 실패 시 에러 메시지 설정
-	        //req.setAttribute("loginError", "아이디 또는 비밀번호가 틀렸습니다");
-	        return "redirect:user_login"; // 로그인 페이지로 반환 
-		}
-		return userPasswd;
-	}
+//	@GetMapping("/user_index")
+//	public String user_index() {
+//		return "user/user_index";
+//		
+//	}
+//	
+//	@PostMapping("/user_index")
+//	public String login(@RequestParam Map<String, String> params,
+//						HttpServletRequest req, HttpServletResponse resp) {
+//	 
+//		String userId = params.get("userId");
+//		String userPasswd = params.get("userPasswd");
+//		
+//		// 아이디로 사용자 정보 가져오기 
+//		UserDTO user = loginMapper.findUserById(userId); 
+//		
+//		if(user != null) {
+//			if(user.getUserPasswd().equals(userPasswd)) {
+//				System.out.println("로그인");
+//				
+//				Cookie cookie = new Cookie("uerId",userId);
+//				
+//				// 쿠키 생성 
+//				if(params.containsKey("userId")) {
+//					cookie.setMaxAge(24 * 60 * 60);
+//					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
+//				// 쿠키 제거
+//				}else {
+//					cookie.setMaxAge(0);
+//					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
+//				}
+//				resp.addCookie(cookie);
+//				return "redirect:user_index";
+//			}
+//			else if(!(user.getUserPasswd().equals(userPasswd))){
+//				//
+//				System.out.println("비밀번호 불일치");
+//				return "redirect:user_login";
+//			}
+//			 
+//		}else {
+//			// 로그인 실패 시 에러 메시지 설정
+//	        //req.setAttribute("loginError", "아이디 또는 비밀번호가 틀렸습니다");
+//	        return "redirect:user_login"; // 로그인 페이지로 반환 
+//		}
+//		return userPasswd;
+//	}
 	
 	
 	

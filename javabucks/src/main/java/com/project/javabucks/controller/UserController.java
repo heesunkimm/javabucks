@@ -5,20 +5,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
+import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -36,24 +39,24 @@ public class UserController {
 	public String userIndex(HttpServletRequest req) {
 //		HttpSession session = req.getSession();
 //		UserDTO dto = (UserDTO)session.getAttribute("inUser");
-		
+
 		UserDTO dto = userMapper.getInfoById();
 		String userId = dto.getUserId();
-		
-		FrequencyDTO dto2 = userMapper.getFrequencyById();		
+
+		FrequencyDTO dto2 = userMapper.getFrequencyById();
 		int frequencyById = dto2.getFrequencyCount();
-		
-		if(dto.getGradeCode().equals("green")) {
+
+		if (dto.getGradeCode().equals("green")) {
 			int frequency = 30 - frequencyById;
-			int gage = (int)((frequencyById/30.0) * 100);
+			int gage = (int) ((frequencyById / 30.0) * 100);
 			req.setAttribute("maxStar", "30");
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "Gold");
 			req.setAttribute("progress_bar", gage);
-			
-		}else if(dto.getGradeCode().equals("welcome")) {
+
+		} else if (dto.getGradeCode().equals("welcome")) {
 			int frequency = 5 - frequencyById;
-			int gage = (int)((frequencyById/5.0) * 100);
+			int gage = (int) ((frequencyById / 5.0) * 100);
 			req.setAttribute("maxStar", "5");
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "Green");
@@ -71,17 +74,17 @@ public class UserController {
 		req.setAttribute("couponlist", list);
 		return "/user/user_cpnhistory";
 	}
-	
+
 	@RequestMapping("/user_delivers")
 	public String userDelivers(HttpServletRequest req) {
-		
+
 //		// 매장 검색하기
 //		List<BucksDTO> list = userMapper.getStoreList();
 //		req.setAttribute("storeList", list);
 		return "/user/user_delivers";
 	}
-	
-	//------------------------------------------------------------------------------------
+
+	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 	public String userPay(Model model, HttpSession session) {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
@@ -137,10 +140,10 @@ public class UserController {
 	}
 
 	@PostMapping("/modifyCardName")
-	public String modifyCardName(String cardName, String cardRegNum, Model model) {
+	public String modifyCardName(String cardName, String modicardRegNum, Model model) {
 		Map<String, String> params = new HashMap<>();
 		params.put("cardName", cardName);
-		params.put("cardRegNum", cardRegNum);
+		params.put("cardRegNum", modicardRegNum);
 		int res = userMapper.updateCardName(params);
 		if (res > 0) {
 			model.addAttribute("msg", "카드이름이 변경되었습니다.");
@@ -159,6 +162,44 @@ public class UserController {
 		return "/user/user_paycharge";
 	}
 
+    @ResponseBody
+    @PostMapping("/user_paycharge.ajax")
+    public ResponseEntity<Map<String, String>> insertReserve(HttpSession session, @RequestBody PayhistoryDTO dto) {
+        UserDTO udto = (UserDTO) session.getAttribute("inUser");
+        if (udto == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        dto.setUserId(udto.getUserId());
+        System.out.println(dto);
+        Map<String, String> response = new HashMap<>();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=UTF-8");
+        Map<String, Object> params = new HashMap<>();
+        params.put("cardRegNum", dto.getCardRegNum());
+        params.put("payhistoryPrice", dto.getPayhistoryPrice());
+        System.out.println(params);
+        try {
+            int res = userMapper.paychargeCard(dto);
+            int price = userMapper.plusCardPrice(params);
+            if (res > 0) {
+                response.put("status", "success");
+                response.put("message", "카드 충전이 완료되었습니다.");
+                return ResponseEntity.ok().headers(headers).body(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", "카드 충전에 실패하였습니다. 관리자에게 문의 바랍니다.");
+                return ResponseEntity.ok().headers(headers).body(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", "error");
+            response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(response);
+        }
+
+    }
+
+	
 	@RequestMapping("/user_paynow")
 	public String userPaynow() {
 		return "/user/user_paynow";
