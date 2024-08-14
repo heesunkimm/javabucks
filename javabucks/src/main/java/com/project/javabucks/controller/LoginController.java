@@ -159,54 +159,91 @@ public class LoginController {
 	 }
 	 
 	 
-	 // 로그인 ---------------------------------
+	// 로그인 ---------------------------------
 	// 로그인을 누르면 user_index 창으로 이동
+	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
 	@GetMapping("/user_index")
 	public String user_index() {
 		return "user/user_index";
-		
 	}
 	
+	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
 	@PostMapping("/user_index")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
-	 
+
 		String userId = params.get("userId");
 		String userPasswd = params.get("userPasswd");
+		// String saveId = params.getOrDefault("saveId", "off"); // 체크박스가 없으면 기본값 'off'
+		String saveId = params.containsKey("saveId") ? "on" : "off";
+		
+		System.out.println("userId: "+ userId); 
+		System.out.println("userPasswd: "+ userPasswd); 
+		System.out.println("saveId: "+ saveId); 
+		System.out.println("params : " + params);
+		
+		 // getOrDefault 
+		 // Java의 Map 인터페이스에서 제공하는 메서드로, 주어진 키에 대한 값을 반환하거나, 해당 키가 존재하지 않을 때 기본값을 반환
 		
 		// 아이디로 사용자 정보 가져오기 
 		UserDTO user = loginMapper.findUserById(userId); 
 		
+		// user가 존재하면
 		if(user != null) {
-			if(user.getUserPasswd().equals(userPasswd)) {
+			// DB에 저장된 비밀번호와 입력한 비밀번호가 일치한지 확인
+			if(user.getUserPasswd().equals(userPasswd)) { 
 				System.out.println("로그인");
 				
-				Cookie cookie = new Cookie("uerId",userId);
-				
-				// 쿠키 생성 
-				if(params.containsKey("userId")) {
-					cookie.setMaxAge(24 * 60 * 60);
-					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
-				// 쿠키 제거
-				}else {
-					cookie.setMaxAge(0);
-					cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 
+				// 세션에 사용자 정보 저장하여 로그인상태 유지
+				req.getSession().setAttribute("inUser", user); 
+				req.setAttribute("msg", user.getUserId()+"님이 로그인하셨습니다. 메인 페이지로 이동합니다");
+				req.setAttribute("url", "user_index");
+	            
+				// 쿠키처리
+				if("on".equals(saveId)) {
+					// 아이디 저장 체크박스가 선택된 경우 
+					Cookie cookie = new Cookie("saveId",userId); // 사용자 ID를 저장하는 쿠키 생성
+					cookie.setMaxAge(24 * 60 * 60);  // 24시간동안 유지
+					cookie.setPath("/");  	 // 모든 경로에서 접근 가능하도록 설정
+					resp.addCookie(cookie);	 // 응답에 쿠키 추가
 				}
-				resp.addCookie(cookie);
-				return "redirect:user_index";
+				// 쿠키 제거
+				else {
+					 // 체크박스가 선택되지 않은 경우, 기존 쿠키 삭제
+					Cookie cookie = new Cookie("saveId","");
+					cookie.setMaxAge(0);
+					cookie.setPath("/");
+					resp.addCookie(cookie);  
+				}
 			}
+			// 비밀번호 불일치
 			else if(!(user.getUserPasswd().equals(userPasswd))){
-				//
 				System.out.println("비밀번호 불일치");
-				return "redirect:user_login";
+				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인후 로그인 해주세요");
+				req.setAttribute("url", "user_login");
 			}
-			 
+		// user가 존재하지 않으면 
 		}else {
-			// 로그인 실패 시 에러 메시지 설정
-	        //req.setAttribute("loginError", "아이디 또는 비밀번호가 틀렸습니다");
-	        return "redirect:user_login"; // 로그인 페이지로 반환 
+			System.out.println("누구세요?");
+			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인후 로그인 해주세요.");
+			req.setAttribute("url", "user_login");
 		}
-		return userPasswd;
+		return "message";
+	}
+	
+	// 로그아웃 
+	@GetMapping("/user_logout")
+	public String logout(HttpServletRequest req,HttpServletResponse resp) {
+		 // 세션 무효화
+	    HttpSession session = req.getSession(false);
+	    if (session != null) {
+	        session.invalidate();
+	        req.getSession().invalidate();  // invalidate() 세션 삭제
+	    }
+	    
+		req.setAttribute("msg", "로그아웃 되었습니다.");
+		req.setAttribute("url", "user_login"); // 로그인 페이지로 이동 
+		return "message";
 	}
 	
 	
