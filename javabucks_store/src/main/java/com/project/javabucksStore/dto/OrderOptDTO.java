@@ -12,6 +12,8 @@ public class OrderOptDTO {
 	private int iceNum;
 	private int whipNum;
 	private int optTotPrice;
+	
+	
 	public String getOptId() {
 		return optId;
 	}
@@ -72,7 +74,8 @@ public class OrderOptDTO {
 	public void setOptTotPrice(int optTotPrice) {
 		this.optTotPrice = optTotPrice;
 	}
+	
+	
+	
 
-	
-	
 }
