@@ -105,12 +105,89 @@
  		
  		</select>
  		
+ 		<select id="selectBaljoo" resultType="BaljooDTO">
+			SELECT
+			    b.bucksId AS bucksId,
+			    b.bucksName AS bucksName,
+			    COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+			FROM
+			    javabucks_bucks b
+			LEFT JOIN
+			    javabucks_baljoo jb ON b.bucksId = jb.bucksId
+			    AND TO_CHAR(jb.baljooDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
+			    AND TO_CHAR(jb.baljooDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+			GROUP BY
+			    b.bucksId,
+			    b.bucksName
+			ORDER BY bucksName ASC
+ 		</select>
+ 		
+ 		<!-- 발주 겸색 리스트 수정본1 -->
+ 		<select id="selectAllOrderSum" resultType="BaljooDTO">
+		    SELECT
+		        b.bucksId AS bucksId,
+		        b.bucksName AS bucksName,
+		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+		    FROM
+		        javabucks_bucks b
+		    LEFT JOIN
+		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
+		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
+		    GROUP BY
+		        b.bucksId,
+		        b.bucksName
+		    ORDER BY bucksName ASC
+		</select>
+		
+		<!-- 발주 겸색 리스트 2 -->
+		<select id="selectOrderSum" resultType="BaljooDTO">
+		    SELECT
+		        b.bucksId AS bucksId,
+		        b.bucksName AS bucksName,
+		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+		    FROM
+		        javabucks_bucks b
+		    LEFT JOIN
+		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
+		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
+		    WHERE
+		        b.bucksId = #{bucksId}
+		    GROUP BY
+		        b.bucksId,
+		        b.bucksName
+		    ORDER BY bucksName ASC
+		</select>
+ 		
+ 		<!-- bucks baljoo
  		<select id="baljoolist" parameterType="map" resultType="BaljooDTO">
  			 SELECT jbal.*, jbucks.bucksName FROM javabucks_baljoo jbal
      			JOIN javabucks_bucks jbucks ON jbal.bucksId = jbucks.bucksId
     			WHERE TO_CHAR(jbal.baljooDate, 'YYYY-MM') = #{baljooDate}
       			AND jbal.bucksId = #{bucksId}
- 		</select>
-    
-    
+ 		</select> -->
+    	
+    	<!-- 발주 상세 1 -->
+		<select id="getOrderDetails" parameterType="int" resultType="String">
+			select baljooList from javabucks_baljoo where baljooNum =#{baljooNum}
+		</select>    
+		
+		<!-- 발주 상세 2 -->
+		<select id="getDetailByCode" parameterType="java.util.List" resultType="java.util.Map">
+    SELECT 
+        stockListCode,
+        stockCateCode,
+        stockListName,
+        stockListImage,
+        stockListPrice,
+        stockListCount
+    FROM 
+        javabucks_stocklist
+    WHERE 
+        stockListCode IN 
+        <foreach item="code" collection="list" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+</select>
+		
+		
   </mapper>

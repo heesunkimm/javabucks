@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,11 +105,35 @@ public class SalesMapper {
     	return sqlSession.selectList("selectBucksName");
     }
     
-    ////검색한 지점과 날짜로 발주정산
-    public List<BaljooDTO> baljoolist(Map<String, Object> params){
-    	return sqlSession.selectList("baljoolist", params);
+    public List<BaljooDTO> selectBaljoo() {
+    	return sqlSession.selectList("selectBaljoo");
     }
-
+    
+    //검색한 지점과 날짜로 발주정산 수정
+    public List<BaljooDTO> selectAllOrderSum(String orderDate){
+    	return sqlSession.selectList("selectAllOrderSum",orderDate);
+    }
+    
+  //검색한 지점과 날짜로 발주정산 수정2
+    public List<BaljooDTO> selectOrderSum(Map<String, Object> params){
+    	return sqlSession.selectList("selectAllOrderSum",params);
+    }
+    
+//    ////검색한 지점과 날짜로 발주정산
+//    public List<BaljooDTO> baljoolist(Map<String, Object> params){
+//    	return sqlSession.selectList("baljoolist", params);
+//    }
+    
+    //발주 상세보기  
+    public String getOrderDetails(int baljooNum) {
+    	return sqlSession.selectOne("getOrderDetails",baljooNum);
+    }
+    
+    //발주 상세보기 2
+    public List<Object> getDetailByCode(@Param("codes") List<String> codes) {
+    	System.out.println(codes);
+        return sqlSession.selectList("getDetailByCode", codes);
+    }
  
     
 	

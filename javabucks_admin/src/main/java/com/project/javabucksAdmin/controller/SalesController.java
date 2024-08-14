@@ -1,5 +1,6 @@
 package com.project.javabucksAdmin.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -211,7 +213,7 @@ public class SalesController {
 		        
 		        salesMapper.editBucks(dto);
 
-		        return "account/admin_storemanage"; // 성공 시 이동할 페이지
+		        return "redirect:/storemanage.do"; // 성공 시 이동할 페이지
 		    }
 			
 			//지점 삭제
@@ -227,44 +229,105 @@ public class SalesController {
 			@GetMapping("/bucksOrderSales.do")
 			public String bucksOrderSales(Model model) {
 				List<BucksDTO> bucks = salesMapper.selectBucksName();
+				List<BaljooDTO> baljooB = salesMapper.selectBaljoo();
 				model.addAttribute("bucksN", bucks);
+				model.addAttribute("bucksBal", baljooB);
+				
 				return "sales/admin_storeordersales";
 			}
 			
 			//검색한 지점과 날짜로 발주정산
 			@PostMapping("/searchOrderSales.do")
-		    public String searchOrderSales(@RequestParam("orderDate") String orderDate,
-		                                   @RequestParam("bucksId") String bucksId,
-		                                   Model model) {
+			public String searchOrderSales(@RequestParam("orderDate") String orderDate, @RequestParam("bucksName") String bucksName, Model model) {
+			    System.out.println(bucksName);
 				
-				List<BucksDTO> bucks = salesMapper.selectBucksName();
-				model.addAttribute("bucksN", bucks);
-				
-				Map<String, Object> params = new HashMap<>();
-			    params.put("bucksId", bucksId);
+			    Map<String, Object> params = new HashMap<>();
+			    params.put("bucksName", bucksName);
 			    params.put("baljooDate", orderDate);
 			    
-			    List<BaljooDTO> blist = salesMapper.baljoolist(params);
+			    //List<BaljooDTO> alllist = salesMapper.selectAllOrderSum(params);
+			    //List<BaljooDTO> list = salesMapper.selectOrderSum(params);
+				
 			    
-			    // 발주 금액의 총합 계산
-			    double totalAmount = 0;
-			    if (blist != null && !blist.isEmpty()) {
-			        for (BaljooDTO baljoo : blist) {
-			            totalAmount += baljoo.getBaljooPrice();
-			        }
-			    }
-		        
-		        model.addAttribute("baljooList", blist);
-		        model.addAttribute("totalAmount", totalAmount);
-		        System.out.println(blist);
-		        
-		        
 
-		        
-		        return "sales/admin_storeordersales"; // 이 JSP 파일이 결과를 표시하는 역할을 합니다.
-		    }
+			    //model.addAttribute("bucksBal", result);
+			    return "sales/admin_storeordersales";
+			}
 			
+//			//검색한 지점과 날짜로 발주정산
+//			@PostMapping("/searchOrderSales.do")
+//		    public String searchOrderSales(@RequestParam("orderDate") String orderDate,
+//		                                   @RequestParam("bucksId") String bucksId,
+//		                                   Model model) {
+//				
+//				List<BucksDTO> bucks = salesMapper.selectBucksName();
+//				model.addAttribute("bucksN", bucks);
+//				
+//				Map<String, Object> params = new HashMap<>();
+//			    params.put("bucksId", bucksId);
+//			    params.put("baljooDate", orderDate);
+//			    
+//			    List<BaljooDTO> blist = salesMapper.baljoolist(params);
+//			    
+//			    // 발주 금액의 총합 계산
+//			    double totalAmount = 0;
+//			    if (blist != null && !blist.isEmpty()) {
+//			        for (BaljooDTO baljoo : blist) {
+//			            totalAmount += baljoo.getBaljooPrice();
+//			        }
+//			    }
+//		        
+//		        model.addAttribute("baljooList", blist);
+//		        model.addAttribute("totalAmount", totalAmount);
+//		        System.out.println(blist);
+//		        
+//		        return "sales/admin_storeordersales"; // 이 JSP 파일이 결과를 표시하는 역할을 합니다.
+//		    }
 			
+			//발주 상세 리스트 
+			@PostMapping("/getOrderDetails.do")
+			@ResponseBody
+			public String getOrderDetails(@RequestBody Map<String, Object> requestData, Model model) {
+			    // baljooNum을 String으로 받아서 Integer로 변환
+			    String baljooNumStr = (String) requestData.get("baljooNum");
+			    Integer baljooNum = Integer.parseInt(baljooNumStr);
+
+//			    String baljooDate = (String) requestData.get("baljooDate");
+//			    String bucksId = (String) requestData.get("bucksId");
+
+			    System.out.println("발주 번호: " + baljooNum);
+
+			    // 데이터 처리 및 조회 로직 수행
+			    String order = salesMapper.getOrderDetails(baljooNum);
+			    System.out.println(order);
+			   
+			    // 결과를 맵에 담아서 반환
+			    Map<String, String> keyValueMap = new HashMap<>();
+			    
+			    // 처리된 데이터가 있으리라 가정하고 분리
+			    String[] items = order.replace("[", "").replace("]", "").replace("\"", "").split(",");
+			    List<String> codes = new ArrayList<>();
+			    Map<String, String> quantityMap = new HashMap<>();
+			    
+			 // 여러 코드 추출 및 리스트에 추가
+			    for (String item : items) {
+			        String[] keyValue = item.split(":");
+			        String code = keyValue[0]; 
+			        String quantity = keyValue[1];
+			        
+			        codes.add(code);
+			        quantityMap.put(String.valueOf(code), quantity);
+			    }
+			    
+			    // 여러 코드에 대한 상세 정보 조회
+			    List<Object> details = salesMapper.getDetailByCode(codes);
+			    System.out.println("첫번째 코드는? : "+ details.get(0));
+			    
+			    model.addAttribute("code", details);
+			    
+			    return "sales/admin_storeordersales";
+			}
+
 			
 			//"bucksSales.do" : 지점별 매출 관리
 			@GetMapping("/bucksSalesM.do")
