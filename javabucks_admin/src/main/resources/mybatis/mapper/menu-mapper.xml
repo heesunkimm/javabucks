@@ -20,7 +20,7 @@
 	            AND (
 	                (SUBSTR(menuCode, 4, 1) = COALESCE(#{menu_base}, '') OR COALESCE(#{menu_base}, '') = '')
 	                OR 
-	                (menuCode LIKE 'B' || COALESCE(#{menu_cate}, '') || COALESCE(#{menu_base}, '') || '%')
+	                (menuCode LIKE 'B' || COALESCE(#{menu_base}, '') || COALESCE(#{menu_base}, '') || '%')
 	            )
 	            AND menuName LIKE '%' || COALESCE(#{menuName}, '') || '%'
 	            AND #{menuEnable} = 'N' OR (#{menuEnable} = 'Y' AND menuEnable = 'N')
