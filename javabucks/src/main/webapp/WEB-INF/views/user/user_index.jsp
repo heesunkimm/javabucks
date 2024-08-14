@@ -90,7 +90,14 @@
     
             <div class="recommend_menu div_box">
                 <div class="tit_box">
-                    <p><span>user_name</span>님을 위한 추천 메뉴</p>
+                    <p><span>
+                    <c:if test="${not empty inUser.userNickname}">
+                    ${inUser.userNickname}
+                    </c:if>
+                    <c:if test="${empty inUser.userNickname}">
+                    ${inUser.userId}
+                    </c:if>
+                    </span>님을 위한 추천 메뉴</p>
                 </div>
                 <ul class="recommend_list">
                     <li>
