@@ -3,12 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="mybatis.mapper.coupon-mapper">
-  	<!-- <select id="listCoupon" resultType="CouponDTO">
-  		select * from javabucks_coupon
-  	</select> -->
-  	
+  	<!-- 쿠폰등록 -->
   	<insert id="insertCoupon" parameterType="CouponDTO">
 	    insert into javabucks_coupon (cpnCode, cpnName, cpnPrice, cpnDesc) values (#{cpnCode}, #{cpnName}, #{cpnPrice}, #{cpnDesc})
 	</insert>
+	
+  	<!-- 등록된 쿠폰리스트 조회 -->
+	<select id="listCoupon" resultType="CouponDTO">
+  		select * from javabucks_coupon
+  	</select>
+  	<!-- 쿠폰리스트 - 쿠폰명, 쿠폰코드 중복체크 -->
+  	<select id="cpnCheck" parameterType="CouponDTO" resultType="CouponDTO">
+  		select * from javabucks_coupon where cpnName = #{cpnName} or cpnCode = #{cpnCode}
+  	</select>
+  	
+  	<!-- 쿠폰삭제 -->
+  	<delete id="deleteCoupon" parameterType="String">
+  		delete from javabucks_coupon where cpnCode =#{cpnCode}
+  	</delete>
 
   </mapper>

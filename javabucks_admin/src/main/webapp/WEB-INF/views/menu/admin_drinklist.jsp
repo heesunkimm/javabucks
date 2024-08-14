@@ -127,6 +127,7 @@
 	                </tbody>
 	            </table>
 	            <!-- 페이징 -->
+	            <c:if test="${not empty drinkList}">
 	            <div class="pagination">
 		            <c:if test="${startPage > pageBlock}"> 
 			        	<a class="page_btn prev_btn" href="admin_drinklist?pageNum=${startPage-3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuEnable=${param.menuEnable}&menuName=${param.menuName}&menuEnable=${param.menuEnable}"><img src="../../images/icons/arrow.png"></a>
@@ -149,6 +150,7 @@
 				        <a class="page_btn next_btn" href="admin_drinklist?pageNum=${startPage+3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuEnable=${param.menuEnable}&menuName=${param.menuName}&menuEnable=${param.menuEnable}"><img src="../../images/icons/arrow.png"></a>
 				    </c:if>
 	            </div>
+	            </c:if>
 	        </div>
 	    </div>
 	</section>
