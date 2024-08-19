@@ -30,9 +30,9 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?menuCode=${dto.menuCode}">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink">
                             <div class="img_box">
-                               <!-- <img src="" alt=""> -->
+                               <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
                             <div class="txt_box">
                                 <p class="txt_tit">${dto.menuName}</p>
@@ -47,9 +47,9 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${foodList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?menuCode=${dto.menuCode}">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}">
                             <div class="img_box">
-                                <!--<img src="" alt=""> -->
+                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
                             <div class="txt_box">
                                 <p class="txt_tit">${dto.menuName}</p>
@@ -64,9 +64,9 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?menuCode=${dto.menuCode}">
+                        <a href="user_menudetail?menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}">
                             <div class="img_box">
-                               <!-- <img src="" alt=""> -->
+                               <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
                             <div class="txt_box">
                                 <p class="txt_tit">${dto.menuName}</p>
