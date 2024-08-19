@@ -15,6 +15,9 @@
 		#store_alldrink .select_box > label span {display: inline-block; width: 140px;}
 		#store_alldrink .select_box select {width: 100px; padding: 3px 0;}
 		
+		#store_alldrink .btn_box {padding: 0 20px; text-align: right;}
+		#store_alldrink .btn_box a {display: inline-block; width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; text-align: center; color: #fff;}
+		
 		#store_alldrink .select_box .tab_box {display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #ccc;}
 		#store_alldrink .select_box .tab_box .tab_btn {display: inline-block; width: 110px; padding: 6px 0; border-radius: 4px; background: #ddd; font-size: 18px; text-align: center; color: #fefefe;}
 		#store_alldrink .select_box .tab_box .tab_btn.tab_btn.s_active {background-color: #006241;}
@@ -46,6 +49,10 @@
         <div class="inner_wrap">
             <div class="tit_box">
                 <p>커피 및 음료</p>
+            </div>
+            
+            <div class="btn_box">
+            	<a class="addbtn" href="/store_adddrink">메뉴추가</a>
             </div>
 
             <div class="select_box">
