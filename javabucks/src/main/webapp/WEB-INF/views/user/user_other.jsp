@@ -31,8 +31,15 @@
             </div>
 
             <div class="user_box div_box">
-                <p><span class="font_green">user_id</span>님 <br/>환영합니다!</p>
-
+                <p>
+            	<c:if test="${not empty inUser.userNickname}">
+                    ${inUser.userNickname}님,
+                    </c:if>
+                <c:if test="${empty inUser.userNickname}">
+                    ${inUser.userId}님,
+                </c:if>
+            	<br/>환영합니다!
+            	</p>
                 <ul class="div_box">
                     <li>
                         <a href="user_starhistory">
@@ -144,7 +151,7 @@
             </div>
 
             <div class="logout_box div_box">
-                <a href="javascript:;">로그아웃</a>
+                <a href="user_logout">로그아웃</a>
             </div>
 
             <!-- 개인정보 관리 패스워드 확인 팝업 -->

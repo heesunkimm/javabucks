@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -48,7 +49,9 @@
             #user_login .popup_box .confirm_box {margin-top: 10px;}
             #user_login .popup_box .confirm_box label {position: relative;}
             #user_login .popup_box .confirm_box input { width: 200px; height: 36px; padding: 0 6px; font-size: 14px;}
-            #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;}
+            
+            /* #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */ 
+            #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
             #user_login .popup_box .confirm_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
             #user_login .popup_box .btn_box {text-align: center;}
             #user_login .popup_box .btn_box .setting_btn {position: relative; font-size: 14px; line-height: 18px; color: #555;}
@@ -68,47 +71,61 @@
             <form name="f" action="user_index" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="userId" value="" placeholder="아이디 입력" required>
+                    	<c:if test="${empty cookie['saveId']}">
+                        	<input type="text" name="userId" value="" placeholder="아이디 입력" required>
+                    	</c:if>
+                    	<c:if test="${not empty cookie['saveId']}">
+                        	<input type="text" name="userId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
+                    	</c:if>
                     </label>
                     <label>
                         <input type="password" name="userPasswd" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
-            </form>
             <div class="find_box">
                 <label>
-                <input type="checkbox" name="" value=""> 아이디 저장
+                	<c:if test="${empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId"> 아이디 저장 
+                	</c:if>
+                	
+                	<c:if test="${not empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
+                    </c:if>
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
                 <a href="user_join">회원가입</a>
             </div>
+            </form>
         </div>
         <div id="findbyid" class="popup_box" style="display: none;">
             <p class="popup_title">아이디 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbyid"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="">
+            <form name="f" action="" method="POST">
                 <div class="input_box">
                     <div class="email_box">
                         <label>
-                            <input type="text" name="" value="" placeholder="이메일입력" required>
+                            <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일입력" required>
                         </label>
+                        @
                         <label>
-                            <select name="">
-                                <option value="">@naver.com</option>
-                                <option value="">@nate.com</option>
-                                <option value="">@gmail.com</option>
+                            <select class="userEmail2" name="userEmail2" >
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
                     </div>
                 </div>
                 <div class="confirm_box">
                     <label>
-                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <span>00:00</span>
+                        <input type="text" name="code" value="" placeholder="인증번호 입력" required>
+                        <!-- <span>00:00</span> -->
+                        <span id="timerMin">3</span>:
+                        <span id="timerSec">00</span>
                     </label>
-                    <button class="confirm_btn" type="button">인증번호 발송</button>
+                    <button class="confirm_btn" type="button" onclick="sendEmail()">인증번호 발송</button>
                 </div>
                 <div class="pbtn_box">
                     <button class="submit_btn" type="submit">확인</button>
@@ -118,7 +135,7 @@
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 </p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="">
+            <form name="f" action="" method="POST">
                 <div class="input_box">
                     <label>
                         <input type="text" name="" value="" placeholder="아이디 입력" required>
@@ -127,11 +144,12 @@
                         <label>
                             <input type="text" name="" value="" placeholder="이메일입력" required>
                         </label>
+                        @
                         <label>
                             <select name="">
-                                <option value="">@naver.com</option>
-                                <option value="">@nate.com</option>
-                                <option value="">@gmail.com</option>
+                                <option value="">naver.com</option>
+                                <option value="">nate.com</option>
+                                <option value="">gmail.com</option>
                             </select>
                         </label>
                     </div>
@@ -139,7 +157,9 @@
                 <div class="confirm_box">
                     <label>
                         <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <span>00:00</span>
+                        <!-- <span>00:00</span> -->
+                        <span id="timerMin">3</span>:
+                        <span id="timerSec">00</span>
                     </label>
                     <button class="confirm_btn" type="button">인증번호 발송</button>
                 </div>
@@ -152,4 +172,62 @@
     </section>
     <!-- e: content -->
 </body>
+<script type="text/javascript">
+	let timer;
+	let timeRemaining = 180;
+
+	function startTimer(){
+		let timerMinId = document.getElementById('timerMin');
+		let timerSecId = document.getElementById('timerSec');
+		
+		timer = setInterval(()=>{
+			if(timeRemaining<=0){
+				clearInterval(timer);
+				alert("인증 시간이 초과되었습니다.");
+				return;
+			}
+			timeRemaining--;
+			
+			let minutes = Math.floor(timeRemaining / 60);
+			let seconds = timeRemaining % 60;
+			
+			timerMinId.textContent = minutes;
+			timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+		},1000);
+	}
+	
+	function sendEmail(){
+		let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
+		let email2 = $('.userEmail2').val();
+		
+		// 이메일 입력이 안되어있으면 focus
+		if(email1 ==""){
+			alert("이메일 주소를 입력해주세요")
+			return $('.userEmail1').focus();
+			
+		}else if(email2 == ""){
+			// $('.confirm_box').show();
+			// $('.confirm_box').style.display="block";
+		}
+		timeRemaining = 180;
+		startTimer();
+		
+		$.ajax({
+			url : 'findId',
+			type : 'POST',
+			data : { "userEmail1" : email1,
+					"userEmail2" : email2
+			},
+			success : function(res){
+				if(res == 'OK'){
+					alert("인증메일을 발송하였습니다.");
+				} 
+			},
+			error : function(err){
+				console.log(err);
+				alert("서버 요청 실패! 네트워크 상태를 확인해주세요.")
+			}
+		})
+	}
+</script>
 </html>
