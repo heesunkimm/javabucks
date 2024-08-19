@@ -3,10 +3,12 @@ package com.project.javabucksAdmin.dto;
 public class StockListDTO {
 
 	private String stockListCode;
-	private String cateCode;
+	private String stockCateCode;
 	private String stockListName;
 	private int stockListPrice;
 	private int stockListCount;
+	private String stockListImage;
+	
 	
 	public String getStockListCode() {
 		return stockListCode;
@@ -14,11 +16,11 @@ public class StockListDTO {
 	public void setStockListCode(String stockListCode) {
 		this.stockListCode = stockListCode;
 	}
-	public String getCateCode() {
-		return cateCode;
+	public String getStockCateCode() {
+		return stockCateCode;
 	}
-	public void setCateCode(String cateCode) {
-		this.cateCode = cateCode;
+	public void setStockCateCode(String stockCateCode) {
+		this.stockCateCode = stockCateCode;
 	}
 	public String getStockListName() {
 		return stockListName;
@@ -38,4 +40,14 @@ public class StockListDTO {
 	public void setStockListCount(int stockListCount) {
 		this.stockListCount = stockListCount;
 	}
+	public String getStockListImage() {
+		return stockListImage;
+	}
+	public void setStockListImage(String stockListImage) {
+		this.stockListImage = stockListImage;
+	}
+	
+	
+	
+	
 }

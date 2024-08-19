@@ -44,12 +44,12 @@
             <li class="nav_item">
                 <a href="javascript:;">발주관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">현황</a></li>
-                    <li><a href="javascript:;">재고관리</a></li>
+                    <li><a href="javascript:;">지점 발주현황</a></li>
+                    <li><a href="adminStockList.do">본사 재고관리</a></li>
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">정산관리</a>
+                <a href="bucksSalesM.do">정산관리</a>
                 <ul class="dropdown_content">
                     <li><a href="bucksSalesM.do">월별 지점 매출 관리</a></li>
                     <li><a href="bucksSalesD.do">일별 지점 매출 관리</a></li>
