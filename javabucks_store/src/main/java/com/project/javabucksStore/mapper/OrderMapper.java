@@ -22,6 +22,24 @@ public class OrderMapper {
 		return list;
 	}
 	
+	// 주문정보 검색
+	public List<OrderDTO> searchOrderInfo(Map<String, Object> params){
+		List<OrderDTO> list = sqlSession.selectList("searchOrderInfo", params);
+		return list;
+	}
+	
+	// 배달주문정보 조회 
+	public List<OrderDTO> deliversOrderInfo(Map<String, Object> params){
+		List<OrderDTO> list = sqlSession.selectList("deliversOrderInfo", params);
+		return list;
+	}
+	
+	// 배달주문정보 검색
+	public List<OrderDTO> searchDeliversOrderInfo(Map<String, Object> params){
+		List<OrderDTO> list = sqlSession.selectList("searchDeliversOrderInfo", params);
+		return list;
+	}
+	
 	public String getMenuName(String menuCode) {
 		String menuName = sqlSession.selectOne("getMenuName", menuCode);
 		return menuName;
@@ -86,4 +104,5 @@ public class OrderMapper {
         return sqlSession.selectOne("getWhipPrice", whipNum);
     }
 	
+
 }
