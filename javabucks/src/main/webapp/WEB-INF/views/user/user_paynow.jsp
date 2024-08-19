@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../css/reset.css">
+	<link rel="stylesheet" href="../css/user.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
@@ -76,6 +77,7 @@
         #user_paynow .pricecheck_box dl:nth-child(3) {margin-top: 16px; font-size: 20px; font-weight: 700;}
         #user_paynow .pricecheck_box .pay_btn {margin-top: 16px; width: 100%; height: 34px; line-height: 34px; padding: 0 10px; border-radius: 25px; background-color: #006241; font-size: 18px; color: #fefefe;}
     </style>
+    
 </head>
 <body>
     <!-- s: content -->

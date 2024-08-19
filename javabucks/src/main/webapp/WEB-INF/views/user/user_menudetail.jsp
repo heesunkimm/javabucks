@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +21,9 @@
             </div>
 
             <div class="txt_box">
-                <p class="txt_tit">메뉴명</p>
-                <p class="txt_desc">메뉴설명</p>
-                <p class="txt_price">가격</p>
+                <p class="txt_tit">${menu.menuName}</p>
+                <p class="txt_desc">${menu.menuDesc}</p>
+                <p class="txt_price">${menu.menuPrice}</p>
             </div>
 
             <div class="btn_box">

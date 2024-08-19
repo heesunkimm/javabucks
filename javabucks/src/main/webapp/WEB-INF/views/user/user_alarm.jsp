@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,83 +21,77 @@
                 <p class="font_bold">알림</p>
             </div>
             <div class="select_box">
-                <label>
-                    <select name="">
-                        <option value="">전체</option>
-                        <!-- 등급 변경시 -->
-                        <option value="">프로모션/이벤트</option>
-                        <option value="">쿠폰 알림</option>
-                        <option value="">사이렌 오더 알림</option>
-                        <option value="">카드 충전 알림</option>
-                    </select>
-                </label>
+            	<form method="post">
+	                <label>
+	                    <select id="cate" name="alarmCate" onchange="updateList()">
+	                        <option value="all" ${alarmCate == 'all' ? 'selected' : ''}>전체</option>
+	                        <option value="cpn" ${alarmCate == 'cpn' ? 'selected' : ''}>쿠폰/등급</option>
+	                        <option value="order" ${alarmCate == 'order' ? 'selected' : ''}>주문 알림</option>
+	                        <option value="charge" ${alarmCate == 'charge' ? 'selected' : ''}>카드 충전 알림</option>
+	                    </select>
+	                </label>
+                </form>
             </div>
 
-            <ul class="history_list">
-                <!-- 프로모션/이벤트 > 등급변경시 -->
+            <ul id="alarmList" class="history_list">
+            <c:if test="${empty listAlarm}">
+            	알람이 없습니다.
+            </c:if>
+            <c:if test="${not empty listAlarm}">
+            	<c:forEach var="alarm" items="${listAlarm}">
                 <li class="history_item">
                     <div class="img_box">
                         <!-- <img src="" alt=""> -->
                     </div>
                     <div class="txt_box">
                         <p class="txt_tit">
-                            GOLD Level이 되신 것을 축하합니다.
+                            ${alarm.alarmCont}
                         </p>
-                        <p class="txt_date font_gray">2024.03.16 14:21:00</p>
+                        <p class="txt_date font_gray">${alarm.alarmRegDate}</p>
                     </div>
                 </li>
-                <!-- 쿠폰 알림 > 쿠폰발급시 -->
-                <li class="history_item">
-                    <div class="img_box">
-                        <!-- <img src="" alt=""> -->
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_tit">
-                            (쿠폰명)이 발급되었습니다.
-                        </p>
-                        <p class="txt_date font_gray">2024.03.16 14:21:00</p>
-                    </div>
-                </li>
-                <!-- 사이렌 오더 알림 > 매장에서 주문확인했을때 -->
-                <li class="history_item">
-                    <div class="img_box">
-                        <!-- <img src="" alt=""> -->
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_tit">
-                            2번째로 메뉴를 준비중입니다. (B-20) <br/>
-                            전자영수증이 발행되었습니다.
-                        </p>
-                        <p class="txt_date font_gray">2024.03.16 14:21:00</p>
-                    </div>
-                </li>
-                <!-- 사이렌 오더 알림 > 제조완료상태 -->
-                <li class="history_item">
-                    <div class="img_box">
-                        <!-- <img src="" alt=""> -->
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_tit">
-                            메뉴가 모두 준비되었어요. <br/>
-                            픽업대에서 메뉴를 픽업해주세요!
-                        </p>
-                        <p class="txt_date font_gray">2024.03.16 14:21:00</p>
-                    </div>
-                </li>
-                <!-- 카드 충전 알림 > 카드충전시 -->
-                <li class="history_item">
-                    <div class="img_box">
-                        <!-- <img src="" alt=""> -->
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_tit">
-                            (카드명)에 (금액)원 충전되었습니다.
-                        </p>
-                        <p class="txt_date font_gray">2024.03.16 14:21:00</p>
-                    </div>
-                </li>
+                </c:forEach>
+			</c:if>
             </ul>
         </div>
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
+<script type="text/javascript">
+	 function updateList() {
+	        // 선택된 카테고리 값 가져오기
+	        var selectedCate = $('#cate').val();
+	        
+	        // AJAX 요청 보내기
+	        $.ajax({
+	            url: 'getAlarmList.ajax', // 서버 요청 URL
+	            type: 'POST',
+	            data: { alarmCate: selectedCate },
+	            dataType: 'json',
+		            success: function(data) {
+		            	 // 리스트 업데이트를 위한 대상 요소 선택
+		                var alarmList = $('#alarmList');
+		                alarmList.empty(); // 기존 리스트 제거
+
+		                // 리턴된 데이터가 없을 경우 처리
+		                if (data.length === 0) {
+		                    alarmList.append('<li>알람이 없습니다.</li>');
+		                } else {
+		                    // 새로운 리스트 항목 추가
+		                    $.each(data, function(index, alarm) {
+		                        var listItem = '<li class="history_item">' +
+		                                       '<div class="img_box"></div>' +
+		                                       '<div class="txt_box">' +
+		                                       '<p class="txt_tit">' + alarm.alarmCont + '</p>' +
+		                                       '<p class="txt_date font_gray">' + alarm.alarmRegDate + '</p>' +
+		                                       '</div></li>';
+		                        alarmList.append(listItem);
+		                    });
+		                }
+		            },
+		            error: function(xhr, status, error) {
+		                console.log('오류 발생:', error);
+		            }
+		        });
+		    }
+</script>
