@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="mybatis.mapper.sales-mapper">
+  
+  	<select id="checkBucksId" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM javabucks_bucks 
+        WHERE bucksId = #{bucksId}
+    </select>
+
+   <!-- 이메일 중복 확인 쿼리 -->
+    <select id="checkEmail" parameterType="BucksDTO" resultType="int">
+        SELECT COUNT(*) FROM javabucks_bucks WHERE bucksEmail1 = #{bucksEmail1} AND bucksEmail2 = #{bucksEmail2}
+    </select>
+   
+   <!-- 지점 등록 -->
+     <insert id="addBucks" parameterType="BucksDTO" >
+     	INSERT INTO javabucks_bucks (
+            bucksId, bucksPasswd, bucksOwner, bucksName, bucksLocation, bucksEmail1, 
+            bucksEmail2, bucksTel1, bucksTel2, bucksTel3, 
+            bucksJoindate, bucksEnable) VALUES (
+            #{bucksId},
+            #{bucksPasswd},
+            #{bucksOwner},
+            #{bucksName},
+            #{bucksLocation},
+            #{bucksEmail1},
+            #{bucksEmail2},
+            #{bucksTel1},
+            #{bucksTel2},
+            #{bucksTel3},
+            SYSDATE,
+            DEFAULT
+        )
+     </insert>
+     
+     <!--  지점 리스트  -->
+	<select id="bucksList" parameterType="map" resultType="BucksDTO">
+	<![CDATA[ 
+	SELECT * FROM 
+	( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_bucks ORDER BY bucksJoindate ASC ) R 
+	WHERE ROWNUM <= #{endIndex} ) WHERE rnum > #{startIndex} ]]>
+	<!--  select * from javabucks_bucks   -->
+	</select>
+			
+		
+     
+     <!-- 특정 검색에 해당하는 지점 리스트 -->
+     <select id="searchBucks" parameterType="map" resultType="BucksDTO">
+    SELECT * FROM (
+        SELECT ROWNUM rnum, a.*
+        FROM (
+            SELECT *
+            FROM javabucks_bucks
+            WHERE 
+                (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
+                AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
+                AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%')
+                AND (
+                    (#{startDate} IS NULL OR #{endDate} IS NULL) 
+                    OR bucksJoindate BETWEEN #{startDate} AND #{endDate}
+                )
+            ORDER BY bucksJoindate DESC
+        ) a
+        WHERE ROWNUM &lt;= #{endIndex}
+    )
+    WHERE rnum &gt;= #{startIndex}
+</select>
+    
+    <!--  검색 페이징처리 갯수 -->
+		<select id="searchBucksCount" parameterType="map" resultType="int"> 
+			SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_bucks 
+			WHERE (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%') 
+			AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%') 
+			AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%') 
+			AND ( (#{startDate} IS NOT NULL AND #{endDate} IS NOT NULL AND bucksJoindate BETWEEN #{startDate} 
+			AND #{endDate}) OR (#{startDate} IS NULL AND #{endDate} IS NULL) ) </select>
+			
+		<select id="editbucks" parameterType="String" resultType="BucksDTO"> 
+		Select * FROM javabucks_bucks WHERE bucksId = #{bucksId} </select>
+			
+		<!--  수정 이메일 중복 확인 쿼리  -->
+		<select id="editCheckEmail" parameterType="BucksDTO" resultType="int"> 
+			SELECT COUNT(*) FROM javabucks_bucks WHERE bucksEmail1 = #{bucksEmail1} AND bucksEmail2 = #{bucksEmail2} AND bucksId != #{bucksId} </select>
+			
+		<!--  지점 수정   -->
+		<update id="editBucks" parameterType="BucksDTO"> 
+		UPDATE javabucks_bucks SET bucksName = #{bucksName}, bucksOwner = #{bucksOwner}, bucksTel1 = #{bucksTel1}, bucksTel2 = #{bucksTel2}, bucksTel3 = #{bucksTel3}, bucksEmail1 = #{bucksEmail1}, bucksEmail2 = #{bucksEmail2} WHERE bucksId = #{bucksId} </update>
+			
+		<!--  지점 삭제  -->
+		<delete id="deleteBucks" parameterType="String"> 
+		DELETE FROM javabucks_bucks WHERE bucksId = #{bucksId} </delete>
+			
+		<!--  페이징처리  -->
+		<select id="bucksListCount" parameterType="int" resultType="int"> 
+		SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_bucks </select>
+			    
+    
+ <!-- Sales -->
+ 		<!-- 벅스이름 select -->
+ 		<select id="selectBucksName" resultType="BucksDTO">
+ 		 	select bucksName,bucksId from javabucks_bucks ORDER BY bucksName ASC
+ 		
+ 		</select>
+ 		
+ 		<select id="selectBaljoo" resultType="BaljooDTO">
+			SELECT
+			    b.bucksId AS bucksId,
+			    b.bucksName AS bucksName,
+			    COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+			FROM
+			    javabucks_bucks b
+			LEFT JOIN
+			    javabucks_baljoo jb ON b.bucksId = jb.bucksId
+			    AND TO_CHAR(jb.baljooDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
+			    AND TO_CHAR(jb.baljooDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+			GROUP BY
+			    b.bucksId,
+			    b.bucksName
+			ORDER BY bucksName ASC
+ 		</select>
+ 		
+ 		<!-- 발주 겸색 리스트 수정본1 -->
+ 		<select id="selectAllOrderSum" resultType="BaljooDTO">
+		    SELECT
+		        b.bucksId AS bucksId,
+		        b.bucksName AS bucksName,
+		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+		    FROM
+		        javabucks_bucks b
+		    LEFT JOIN
+		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
+		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
+		    GROUP BY
+		        b.bucksId,
+		        b.bucksName
+		    ORDER BY bucksName ASC
+		</select>
+		
+		<!-- 발주 겸색 리스트 2 -->
+		<select id="selectOrderSum" resultType="BaljooDTO">
+		    SELECT
+		        b.bucksId AS bucksId,
+		        b.bucksName AS bucksName,
+		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+		    FROM
+		        javabucks_bucks b
+		    LEFT JOIN
+		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
+		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
+		    WHERE
+		        b.bucksId = #{bucksId}
+		    GROUP BY
+		        b.bucksId,
+		        b.bucksName
+		    ORDER BY bucksName ASC
+		</select>
+ 		
+ 		<!-- bucks baljoo
+ 		<select id="baljoolist" parameterType="map" resultType="BaljooDTO">
+ 			 SELECT jbal.*, jbucks.bucksName FROM javabucks_baljoo jbal
+     			JOIN javabucks_bucks jbucks ON jbal.bucksId = jbucks.bucksId
+    			WHERE TO_CHAR(jbal.baljooDate, 'YYYY-MM') = #{baljooDate}
+      			AND jbal.bucksId = #{bucksId}
+ 		</select> -->
+    	
+    	<!-- 발주 상세 1 -->
+		<select id="getOrderDetails" parameterType="int" resultType="String">
+			select baljooList from javabucks_baljoo where baljooNum =#{baljooNum}
+		</select>    
+		
+		<!-- 발주 상세 2 -->
+		<select id="getDetailByCode" parameterType="java.util.List" resultType="java.util.Map">
+    SELECT 
+        stockListCode,
+        stockCateCode,
+        stockListName,
+        stockListImage,
+        stockListPrice,
+        stockListCount
+    FROM 
+        javabucks_stocklist
+    WHERE 
+        stockListCode IN 
+        <foreach item="code" collection="list" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+</select>
+		
+		
+  </mapper>

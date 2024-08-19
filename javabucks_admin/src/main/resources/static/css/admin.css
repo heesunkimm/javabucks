@@ -182,27 +182,54 @@ header .nav_item:hover .dropdown_content {display: block;}
 /* admin_cpnmange */
 #admin_cpnmange .btn_box {margin-bottom: 20px; text-align: right;}
 #admin_cpnmange .btn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#admin_cpnmange .btn_box button:first-child {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
 
-#addcpn .popup_title {font-size: 20px;}
-#addcpn .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
-#addcpn .input_box {display: flex; flex-direction: column;}
-#addcpn .input_box label + label {margin-top: 10px;}
-#addcpn .input_box label:not(:nth-child(2)) {display: flex; align-items: center;}
-#addcpn .input_box label:nth-child(2) {height: 100px; display: flex; flex-direction: column;}
-#addcpn .input_box input {margin-left: 6px; padding: 0 6px;}
-#addcpn .input_box textarea {margin-top: 4px; padding: 3px 6px; font-size: 18px;}
-#addcpn .input_box select {margin-left: 6px; width: 80px;}
-#addcpn .pbtn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
+#listcpn {width: 330px;}
+#listcpn .input_box label:not(:nth-child(3)) {justify-content: space-between;}
+.cpn_popup .popup_title {font-size: 20px;}
+.cpn_popup .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
+.cpn_popup .input_box {display: flex; flex-direction: column;}
+.cpn_popup .input_box label + label {margin-top: 10px;}
+.cpn_popup .input_box label:not(:nth-child(3)) {display: flex; align-items: center;}
+.cpn_popup .input_box label:nth-child(3) {height: 100px; display: flex; flex-direction: column;}
+.cpn_popup .input_box input {margin-left: 6px; padding: 0 6px;}
+.cpn_popup .input_box textarea {margin-top: 4px; padding: 3px 6px; font-size: 18px;}
+.cpn_popup .input_box select {margin-left: 6px; width: 233px;}
+.cpn_popup .pbtn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
+.cpn_popup .pbtn_box button.delBtn {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
+
+
+#sendcpn .input_box label {display: flex; align-items: center; justify-content: space-between;}
+#sendcpn .input_box select {margin-left: 6px; width: 230px;}
 
 /* admin_adddrink */
-#admin_adddrink button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
-#admin_adddrink .search_box {border: 1px solid #ccc; padding: 20px;}
-#admin_adddrink .search_box form > div {margin-bottom: 6px;}
-#admin_adddrink .search_box label + label {margin-left: 16px;}
-#admin_adddrink .search_box label, #admin_adddrink .search_box select {font-size: 18px;}
-#admin_adddrink .search_box select {padding: 0 10px;}
-#admin_adddrink .search_box input {padding: 0 6px; font-size: 18px;}
-#admin_adddrink .list_box .btn_box {margin: 20px 0; text-align: right;}
+#admin_drinklist button {padding: 0 10px; height: 27px; border-radius: 2px; font-size: 16px;}
+#admin_drinklist button.search_btn, 
+#admin_drinklist button.add_btn, 
+#admin_drinklist button.enable_btn {background-color: #006241; color: #fff;}
+#admin_drinklist button.disable_order {background-color: #999; color: #fff;}
+#admin_drinklist .search_box {border: 1px solid #ccc; padding: 20px;}
+#admin_drinklist .search_box form > div {margin-bottom: 6px;}
+#admin_drinklist .search_box label + label {margin-left: 16px;}
+#admin_drinklist .search_box label, #admin_drinklist .search_box select {font-size: 18px;}
+#admin_drinklist .search_box select {padding: 0 10px;}
+#admin_drinklist .search_box input {padding: 0 6px; font-size: 18px;}
+#admin_drinklist .list_box .btn_box {margin: 20px 0; text-align: right;}
+#admin_drinklist .search_list .menu_btn:hover {color: #006241;}
+
+/* admin_desertlist, admin_mdlist */
+.menuList button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.menuList button.search_btn, 
+.menuList button.add_btn, 
+.menuList button.enable_btn {background-color: #006241; color: #fff;}
+.menuList button.disable_order {background-color: #999; color: #fff;}
+.menuList .search_box {border: 1px solid #ccc; padding: 20px;}
+.menuList .search_box form > div {margin-bottom: 6px;}
+.menuList .search_box label + label {margin-left: 16px;}
+.menuList .search_box label, .menuList .search_box select {font-size: 18px;}
+.menuList .search_box select {padding: 0 10px;}
+.menuList .search_box input {padding: 0 6px; font-size: 18px;}
+.menuList .list_box .btn_box {margin: 20px 0; text-align: right;}
 
 
 /*  */
@@ -213,6 +240,7 @@ header .nav_item:hover .dropdown_content {display: block;}
 .addmenu_cont .insert_box form .info_box > div, 
 .addmenu_cont .insert_box form .info_box > label:not(:first-child) {margin-top: 10px;}
 .addmenu_cont .insert_box form .info_box input {padding: 0 6px;}
+.addmenu_cont .insert_box form .info_box input[name="menuName"] {width: 467px;}
 .addmenu_cont .insert_box form .info_box input[type="checkbox"] {margin-right: 6px;}
 .addmenu_cont .insert_box form .info_box select {width: 200px;}
 .addmenu_cont .insert_box form .info_box span {display: inline-block; width: 100px; font-size: 18px;}
@@ -222,9 +250,9 @@ header .nav_item:hover .dropdown_content {display: block;}
 .addmenu_cont .insert_box form .info_box button {margin-top: 10px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 
 .addmenu_cont .insert_box .info_box .upload_box {display: flex;}
-.addmenu_cont .insert_box .info_box .upload_box .img_box {margin-left: 7px; width: 100px; height: 100px; border-radius: 2px; border: 1px solid #eee; box-shadow: 0px 2px 5px #ccc;}
+.addmenu_cont .insert_box .info_box .upload_box .img_box {margin: 0 0 10px 7px; width: 100px; height: 100px; border-radius: 2px; border: 1px solid #eee; box-shadow: 0px 2px 5px #ccc;}
 .addmenu_cont .insert_box .info_box .upload_box .img_box img {width: 100%; height: 100%;}
-.addmenu_cont .insert_box .info_box .upload_box .file_box {margin: 10px 0 0 7px; display: flex; align-items: center;}
+.addmenu_cont .insert_box .info_box .upload_box .file_box {margin: 0 0 0 7px; display: flex; align-items: center;}
 .addmenu_cont .insert_box .info_box .upload_box .file_box input[type="file"] {position: absolute; width: 0; height: 0; padding: 0; overflow: hidden; border: 0;}
 .addmenu_cont .insert_box .info_box .upload_box .file_box .file_name {display: inline-block; padding: 0 10px; vertical-align: middle; width: 190px; border: 1px solid #dddddd; border-radius: 4px; font-size: 16px; color: #555;}
 .addmenu_cont .insert_box .info_box .upload_box .file_box label {margin-left: 6px; display: inline-block; width: 80px; line-height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff; text-align: center; cursor: pointer;}
