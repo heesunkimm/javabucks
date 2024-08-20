@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.OrderDTO;
+import com.project.javabucksAdmin.dto.OrderItem;
 import com.project.javabucksAdmin.dto.PayhistoryDTO;
 import com.project.javabucksAdmin.mapper.SalesMapper;
 
@@ -542,6 +543,73 @@ public class SalesController {
 			    //model.addAttribute("bucksBal", result);
 			    return "sales/admin_monthlysales";
 			}
+			
+			//월별 매출 상세보기 
+			@PostMapping("/MonthlyDetails.do")
+			@ResponseBody
+			public Map<String, Integer> MonthlyDetails(@RequestParam("bucksId") String bucksId, @RequestParam("orderDate") String orderDate, Model model) {
+				Map<String, Object> params = new HashMap<>();
+			    params.put("bucksId", bucksId);
+			    params.put("payhistoryDate", orderDate);
+			    
+			    //1단계 쿼리 - 조인 해서 oredercode에 해당하는 orderList받기
+			    List<OrderDTO> details = salesMapper.monthlyDetails(params);
+			    //System.out.println("details : " + details);
+			    
+			    Map<String, Integer> categoryTotals = new HashMap<>();
+			    categoryTotals.put("음료", 0);
+			    categoryTotals.put("디저트", 0);
+			    categoryTotals.put("MD상품", 0);
+			    
+			 
+			    
+			    
+			 // 2단계: orderList를 파싱
+			    for (OrderDTO detail : details) {
+			        String orderListJson = detail.getOrderList();
+
+			        // 1. 대괄호 제거
+			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
+
+			        // 2. 쉼표로 구분하여 요소 분리
+			        String[] items = orderListJson.split(",");
+
+			        for (String item : items) {
+			            item = item.replace("\"", ""); // 큰따옴표 제거
+			            String[] parts = item.split(":");
+
+			            String menuCode = parts[0];
+			            String optionId = parts[1];
+			            int quantity = Integer.parseInt(parts[2]);
+
+			         // OrderItem 객체로 저장
+			           // OrderItem orderItem = new OrderItem(menuCode, optionId, quantity);
+
+			            // 매퍼를 통해 메뉴가격 가져오기
+			            int price = salesMapper.getMenuPrice(menuCode);
+			            System.out.println("price:" + price);
+			            int optPrice = salesMapper.getOptPrice(optionId);
+			            System.out.println("optPrice:" + optPrice);
+			            int totalPrice = (price + optPrice) * quantity;
+			            System.out.println("totalPrice : " + totalPrice);
+			            String category = "";
+			            if (menuCode.startsWith("B")) {
+			                category = "음료";
+			            } else if (menuCode.startsWith("C")) {
+			                category = "디저트";
+			            } else if (menuCode.startsWith("M")) {
+			                category = "MD상품";
+			            }
+
+			            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0) + totalPrice);
+			        }
+			    }
+			    
+			    return categoryTotals;  // JSON 형식으로 반환
+
+			}
+
+			
 			
 			@GetMapping("/bucksSalesD.do")
 			public String dailyBucksSales() {

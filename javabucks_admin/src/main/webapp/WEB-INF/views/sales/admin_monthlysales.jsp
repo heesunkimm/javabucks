@@ -39,17 +39,23 @@
                             </tr>
                         </thead>
                         <tbody>
+                         <c:set var="totalSum" value="0" /> <!-- 총 매출액 변수 초기화 -->
                         <c:forEach items="${list}" var="mlist"> 
                             <tr>
                                 <td>${mlist.payhistoryYearMonth}</td>
-                                <td><a class="tab_btn" href="javascript:;" data-tab="2024_01">${mlist.branchName}</a></td>
-                                <td><fmt:formatNumber value="${mlist.totalSales}" type="number" maxFractionDigits="0"/>원</td>
+                                <td><a class="tab_btn" href="javascript:;" onclick="MonthlyDetails('${mlist.bucksId}', '${mlist.payhistoryYearMonth}')">${mlist.branchName}</a></td>
+                                <td><fmt:formatNumber value="${mlist.totalSales}" type="number" maxFractionDigits="0"/>원
+                                	<!-- 매출액을 총합에 더하기 -->
+                                <c:set var="totalSum" value="${totalSum + mlist.totalSales}" />
+                                </td>
+                           
                             </tr>
                         </c:forEach>
                             <tr class="bg_green font_white">
                                 <td>총계</td>
                                 <td></td>
-                                <td>000,000,000원</td>
+                                <td><!-- 계산된 총 매출액 표시 -->
+                                <fmt:formatNumber value="${totalSum}" type="number" maxFractionDigits="0"/>원</td>
                             </tr>
                         </tbody>
                     </table>
@@ -119,5 +125,31 @@
 	    });
 	    
 	});
- 
+	
+	
+	function MonthlyDetails(bucksId, payhistoryYearMonth) {
+ 	    console.log("bucksId:", bucksId); 
+ 	    console.log("payhistoryYearMonth:", payhistoryYearMonth); 
+
+ 	   $.ajax({
+ 	        type: "POST",
+ 	        url: "/MonthlyDetails.do",
+ 	        data: {
+ 	            bucksId: bucksId,
+ 	            orderDate: payhistoryYearMonth
+ 	        },
+ 	       success: function(response) {
+$('.sales_cont').empty(); // 기존 결과 지우기
+              
+              $.each(response, function(category, totalSales) {
+                  $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>'
+ +'<li><ul class="cont_detail"><li>' + category + '</li> ' +
+                		  '<li>' + totalSales + '원</li>' + '<li>비중</li></li>');
+              });
+          },
+          error: function(error) {
+              console.log("Error:", error);
+          }
+      });
+ 	} 
  </script>
