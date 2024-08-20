@@ -25,6 +25,12 @@ import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.MenuDTO;
+import com.project.javabucks.dto.MenuOptCupDTO;
+import com.project.javabucks.dto.MenuOptIceDTO;
+import com.project.javabucks.dto.MenuOptMilkDTO;
+import com.project.javabucks.dto.MenuOptShotDTO;
+import com.project.javabucks.dto.MenuOptSyrupDTO;
+import com.project.javabucks.dto.MenuOptWhipDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
@@ -105,10 +111,29 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_menudetail")
-	public String menudetail(HttpServletRequest req, String menuCode) {
-
+	public String menudetail(HttpServletRequest req, String menuCode, String menuoptCode, String drink) {
+		
+		// 메뉴코드로 메뉴정보 꺼내오기
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);
+		req.setAttribute("drink", drink);
+		
+		// 음료메뉴 퍼스널옵션값 가져오기
+		if(drink != null) {
+			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
+			req.setAttribute("shot", dto2.getShotType());
+		}
+		List<MenuOptCupDTO> list1 = userMapper.CupSizeByCode(menuoptCode);
+		List<MenuOptIceDTO> list2 = userMapper.IceByCode(menuoptCode);
+		List<MenuOptWhipDTO> list3 = userMapper.WhipByCode(menuoptCode);
+		List<MenuOptSyrupDTO> list4 = userMapper.SyrupByCode(menuoptCode);
+		List<MenuOptMilkDTO> list5 = userMapper.MilkByCode(menuoptCode);
+		req.setAttribute("cup", list1);
+		req.setAttribute("ice", list2);		
+		req.setAttribute("whip", list3);
+		req.setAttribute("syrup", list4);
+		req.setAttribute("milk", list5);
+		
 		return "/user/user_menudetail";
 	}
 

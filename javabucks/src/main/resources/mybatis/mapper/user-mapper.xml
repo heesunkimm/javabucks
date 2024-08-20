@@ -140,4 +140,40 @@
    		 WHERE menuCode = #{menuCode}   		 	  		 
  	</select>
  	
+ 	<select id="CupSizeByCode" parameterType="String" resultType="MenuOptCupDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_cup  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="IceByCode" parameterType="String" resultType="MenuOptIceDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_ice  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="ShotByCode" parameterType="String" resultType="MenuOptShotDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_shot  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="WhipByCode" parameterType="String" resultType="MenuOptWhipDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_whip  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="SyrupByCode" parameterType="String" resultType="MenuOptSyrupDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_syrup  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="MilkByCode" parameterType="String" resultType="MenuOptMilkDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_milk  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
  </mapper>

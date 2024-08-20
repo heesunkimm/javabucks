@@ -15,6 +15,12 @@ import com.project.javabucks.dto.CardListDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.MenuDTO;
+import com.project.javabucks.dto.MenuOptCupDTO;
+import com.project.javabucks.dto.MenuOptIceDTO;
+import com.project.javabucks.dto.MenuOptMilkDTO;
+import com.project.javabucks.dto.MenuOptShotDTO;
+import com.project.javabucks.dto.MenuOptSyrupDTO;
+import com.project.javabucks.dto.MenuOptWhipDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 
@@ -102,4 +108,29 @@ public class UserMapper {
 	public MenuDTO getMenuInfoByCode(String menuCode) {
 		return sqlSession.selectOne("getMenuInfoByCode", menuCode);
 	}
+	
+	public List<MenuOptCupDTO> CupSizeByCode(String menuoptCode) {	
+		return sqlSession.selectList("CupSizeByCode", menuoptCode);
+	}
+	
+	public List<MenuOptIceDTO> IceByCode(String menuoptCode) {	
+		return sqlSession.selectList("IceByCode", menuoptCode);
+	}
+	
+	public MenuOptShotDTO ShotByCode(String menuoptCode) {	
+		return sqlSession.selectOne("ShotByCode", menuoptCode);
+	}
+	
+	public List<MenuOptWhipDTO> WhipByCode(String menuoptCode) {	
+		return sqlSession.selectList("WhipByCode", menuoptCode);
+	}
+	
+	public List<MenuOptSyrupDTO> SyrupByCode(String menuoptCode) {	
+		return sqlSession.selectList("SyrupByCode", menuoptCode);
+	}
+	
+	public List<MenuOptMilkDTO> MilkByCode(String menuoptCode) {	
+		return sqlSession.selectList("MilkByCode", menuoptCode);
+	}
+
 }
