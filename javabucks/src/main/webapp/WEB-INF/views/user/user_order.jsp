@@ -79,7 +79,12 @@
             </div>
             <div class="cart_box">
                 <!-- 클릭시 매장 선택 페이지로 재이동 -->
-                 <a class="select_store" href="user_delivers?mode=store">${store} <span class="font_gray">(매장이용/To-go)</span></a>
+                <c:if test="${not empty pickup}">
+                <a class="select_store" href="user_store">${store} <span class="font_gray">(매장이용/To-go)</span></a>
+                </c:if>
+                <c:if test="${empty pickup}">
+                <a class="select_store" href="user_delivers">${store} <span class="font_gray">(매장이용/To-go)</span></a>
+                </c:if>
                 <button class="cart_btn" type="button">
                     <div class="img_box">
                         <img src="../images/icons/[li]order_basket.png" alt="">
