@@ -20,7 +20,7 @@
 	</select>
 	
 	<!-- 조건에 해당하는 음료 리스트 뽑기 -->
-	<!-- <select id="searchDrinks" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	<select id="searchDrinks" parameterType="java.util.Map" resultType="StoreMenuDTO">
 	    SELECT * 
 	    FROM (
 	        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.*
@@ -34,10 +34,10 @@
 	          AND m.menuEnable = 'Y'
 	    ) AS drinks 
 	    WHERE rn BETWEEN #{startRow} AND #{endRow}
-	</select> -->
+	</select>
 
 	<!-- 조건에 해당하는 음료 리스트 갯수 -->
-	<!-- <select id="searchDrinksCount" parameterType="java.util.Map" resultType="Integer">
+	<select id="searchDrinksCount" parameterType="java.util.Map" resultType="Integer">
 	    SELECT COUNT(*)
 	    FROM javabucks_storemenu sm
 	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode
@@ -47,5 +47,5 @@
 	      AND (SUBSTR(m.menuCode, 5, 1) = NVL(#{menu_base}, '') OR NVL(#{menu_base}, '') = '')
 	      AND m.menuName LIKE '%' || NVL(#{menuName}, '') || '%'
 	      AND m.menuEnable = 'Y'
-	</select> -->
+	</select>
 </mapper>

@@ -86,63 +86,63 @@ public class MenuController {
 		return "/menu/store_allmd";
 	}
 	
-//	@PostMapping("/searchDrinks.ajax")
-//	@ResponseBody
-//	public Map<String, Object> searchDrinks(HttpServletRequest req, @RequestParam Map<String, Object> params, 
-//	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
-//		
-//		// 검색 필터가 null or ""일 경우 기본값 설정
-//	    String menuCate = (String) params.get("menu_cate");
-//	    String menuBase = (String) params.get("menu_base");
-//	    String menuName = (String) params.get("menuName");
-//	    
-//	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
-//	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
-//	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-//	    
-//	    // 검색 조건을 포함한 매퍼 호출
-//	    Map<String, Object> searchParams = new HashMap<>();
-//	    searchParams.put("menuCate", menuCate);
-//	    searchParams.put("menu_base", menuBase);
-//	    searchParams.put("menuName", menuName);
-//	    
-//		int searchCount = menuMapper.searchDrinksCount(searchParams);
-//	    int pageSize = 10;
-//	    int startRow = (pageNum - 1) * pageSize + 1;
-//	    int endRow = startRow + pageSize - 1;	
-//	    if (endRow > searchCount) endRow = searchCount;		
-//	    int no = searchCount - startRow + 1;				
-//	    int pageBlock = 3;
-//	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
-//	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
-//	    int endPage = startPage + pageBlock - 1;
-//	    if (endPage > pageCount) endPage = pageCount;
-//	    
-//	    // 검색 조건에 따라 메뉴 리스트 가져오기
-//	    searchParams.put("startRow", startRow);
-//	    searchParams.put("endRow", endRow);
-//	    
-//    	List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
-//	    Map<String, Object> allList = new HashMap<>();
-//	    
-//	    if (drinkList.isEmpty()) {
-//	        // 값이 없을 때
-//	    	allList.put("noList", true);
-//	    } else {
-//	        // 값이 있을 때
-//	    	allList.put("drinkList", drinkList);
-//	    	allList.put("searchParams", searchParams);
-//	    	allList.put("searchCount", searchCount);
-//	    	allList.put("pageSize", pageSize);
-//	    	allList.put("startRow", startRow);
-//	    	allList.put("endRow", endRow);
-//	    	allList.put("no", no);
-//	    	allList.put("pageBlock", pageBlock);
-//	    	allList.put("pageCount", pageCount);
-//	    	allList.put("startPage", startPage);
-//	    	allList.put("endPage", endPage);
-//	    }
-//	    
-//	    return allList;
-//	}
+	@PostMapping("/searchDrinks.ajax")
+	@ResponseBody
+	public Map<String, Object> searchDrinks(HttpServletRequest req, @RequestParam Map<String, Object> params, 
+	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+		
+		// 검색 필터가 null or ""일 경우 기본값 설정
+	    String menuCate = (String) params.get("menu_cate");
+	    String menuBase = (String) params.get("menu_base");
+	    String menuName = (String) params.get("menuName");
+	    
+	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
+	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
+	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
+	    
+	    // 검색 조건을 포함한 매퍼 호출
+	    Map<String, Object> searchParams = new HashMap<>();
+	    searchParams.put("menuCate", menuCate);
+	    searchParams.put("menu_base", menuBase);
+	    searchParams.put("menuName", menuName);
+	    
+		int searchCount = menuMapper.searchDrinksCount(searchParams);
+	    int pageSize = 10;
+	    int startRow = (pageNum - 1) * pageSize + 1;
+	    int endRow = startRow + pageSize - 1;	
+	    if (endRow > searchCount) endRow = searchCount;		
+	    int no = searchCount - startRow + 1;				
+	    int pageBlock = 3;
+	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
+	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
+	    int endPage = startPage + pageBlock - 1;
+	    if (endPage > pageCount) endPage = pageCount;
+	    
+	    // 검색 조건에 따라 메뉴 리스트 가져오기
+	    searchParams.put("startRow", startRow);
+	    searchParams.put("endRow", endRow);
+	    
+    	List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
+	    Map<String, Object> allList = new HashMap<>();
+	    
+	    if (drinkList.isEmpty()) {
+	        // 값이 없을 때
+	    	allList.put("noList", true);
+	    } else {
+	        // 값이 있을 때
+	    	allList.put("drinkList", drinkList);
+	    	allList.put("searchParams", searchParams);
+	    	allList.put("searchCount", searchCount);
+	    	allList.put("pageSize", pageSize);
+	    	allList.put("startRow", startRow);
+	    	allList.put("endRow", endRow);
+	    	allList.put("no", no);
+	    	allList.put("pageBlock", pageBlock);
+	    	allList.put("pageCount", pageCount);
+	    	allList.put("startPage", startPage);
+	    	allList.put("endPage", endPage);
+	    }
+	    
+	    return allList;
+	}
 }

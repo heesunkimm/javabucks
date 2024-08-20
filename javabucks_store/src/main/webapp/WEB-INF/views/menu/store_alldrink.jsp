@@ -181,7 +181,7 @@
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
 <script>
-	/* $('input[type="checkbox"]').on('change', function() {
+	$('input[type="checkbox"]').on('change', function() {
 		if ($(this).prop('checked')) {
 	        $('input[name="menu_cate"], input[name="menu_base"]').prop('checked', false);
 	        $(this).prop('checked', true);
@@ -225,10 +225,10 @@
 	            console.error('Error:', err);
 	        }
 	    });
-	}); */
+	});
 	
 	// 검색창에서 입력 후 검색 버튼 클릭 시 메뉴 리스트를 불러오는 함수
-	/* $('form[name="menuNameForm"]').on('submit', function(e) {
+	$('form[name="menuNameForm"]').on('submit', function(e) {
 	    e.preventDefault();
 	    
 	    $('input[name="menu_cate"], input[name="menu_base"]').prop('checked', false);
@@ -269,5 +269,5 @@
 	            console.error('Error:', err);
 	        }
 	    });
-	}); */
+	});
 </script>

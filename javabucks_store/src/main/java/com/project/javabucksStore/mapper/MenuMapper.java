@@ -29,12 +29,12 @@ public class MenuMapper {
 		return sqlSession.selectList("getSelectedMenu", bucksId);
 	}
 	// 조건에 해당하는 음료 리스트 뽑기
-//	public List<StoreMenuDTO> searchDrinks(Map<String, Object> params) {
-//		return sqlSession.selectList("searchDrinks", params);
-//	}
+	public List<StoreMenuDTO> searchDrinks(Map<String, Object> params) {
+		return sqlSession.selectList("searchDrinks", params);
+	}
 //	// 조건에 해당하는 음료 리스트 갯수
-//	public int searchDrinksCount(Map<String, Object> params) {
-//		return sqlSession.selectOne("searchDrinksCount", params);
-//	}
+	public int searchDrinksCount(Map<String, Object> params) {
+		return sqlSession.selectOne("searchDrinksCount", params);
+	}
 
 }
