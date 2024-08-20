@@ -69,7 +69,12 @@
             <form name="f" action="store_index" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="storeId" value="" placeholder="아이디 입력" required>
+                        <c:if test="${empty cookie['saveId']}">
+                        	<input type="text" name="storeId" value="" placeholder="아이디 입력" required>
+                    	</c:if>
+                    	<c:if test="${not empty cookie['saveId']}">
+                        	<input type="text" name="storeId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
+                    	</c:if>
                     </label>
                     <label>
                         <input type="password" name="storePw" value="" placeholder="비밀번호 입력" required>
@@ -79,7 +84,14 @@
             </form>
             <div class="find_box">
                 <label>
-                <input type="checkbox" name="saveId" value="on"> 아이디 저장
+                <!--  <input type="checkbox" name="saveId" value="on"> 아이디 저장 -->
+                <c:if test="${empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId"> 아이디 저장 
+                	</c:if>
+                	
+                	<c:if test="${not empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
+                    </c:if>
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
@@ -114,7 +126,7 @@
                 <div class="pbtn_box">
                     <button class="submit_btn" type="submit">확인</button>
                 </div>
-            </form>
+            </form> 
         </div>
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 </p>
@@ -154,4 +166,21 @@
     </section>
     <!-- e: content -->
 </body>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+	    let saveInput = document.querySelector('input[name="saveId"]');
+	    
+	    if(!saveInput.checked){
+	    	saveInput.value = "off";
+	    	console.log(saveInput);
+	    	
+	    }else{
+	    	saveInput.value = "on";
+	    	console.log(saveInput);
+	    }
+	    
+	    
+    });
+</script>
 </html>
