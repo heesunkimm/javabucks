@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -67,7 +68,10 @@
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">JavaBucks **지점</em> 환영합니다.</a>
+            <a href="javascript:;">
+            	<!-- <em class="font_green">JavaBucks **지점</em>  -->
+            		<em class="font_green">${inBucks.bucksName} 지점</em> 
+            환영합니다.</a>
         </div>
     </header>
     <!-- s: content -->
