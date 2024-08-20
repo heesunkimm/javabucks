@@ -182,7 +182,10 @@ header .nav_item:hover .dropdown_content {display: block;}
 /* admin_cpnmange */
 #admin_cpnmange .btn_box {margin-bottom: 20px; text-align: right;}
 #admin_cpnmange .btn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#admin_cpnmange .btn_box button:first-child {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
 
+#listcpn {width: 330px;}
+#listcpn .input_box label:not(:nth-child(3)) {justify-content: space-between;}
 .cpn_popup .popup_title {font-size: 20px;}
 .cpn_popup .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
 .cpn_popup .input_box {display: flex; flex-direction: column;}
@@ -191,8 +194,9 @@ header .nav_item:hover .dropdown_content {display: block;}
 .cpn_popup .input_box label:nth-child(3) {height: 100px; display: flex; flex-direction: column;}
 .cpn_popup .input_box input {margin-left: 6px; padding: 0 6px;}
 .cpn_popup .input_box textarea {margin-top: 4px; padding: 3px 6px; font-size: 18px;}
-.cpn_popup .input_box select {margin-left: 6px; width: 80px;}
+.cpn_popup .input_box select {margin-left: 6px; width: 233px;}
 .cpn_popup .pbtn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
+.cpn_popup .pbtn_box button.delBtn {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
 
 
 #sendcpn .input_box label {display: flex; align-items: center; justify-content: space-between;}
