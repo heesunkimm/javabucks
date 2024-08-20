@@ -295,7 +295,18 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_starhistory")
-	public String userStarhistory() {
+	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();	
+		params.put("userId", userId);
+		// 결과 2024-11-06 이런식으로 나옴
+//		System.out.println(params.get("startDate"));
+//		System.out.println(params.get("endDate"));
+		List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+		req.setAttribute("starHistory", list); 	
+	
+		
 		return "/user/user_starhistory";
 	}
 

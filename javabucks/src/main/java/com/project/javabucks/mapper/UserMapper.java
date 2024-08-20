@@ -132,5 +132,8 @@ public class UserMapper {
 	public List<MenuOptMilkDTO> MilkByCode(String menuoptCode) {	
 		return sqlSession.selectList("MilkByCode", menuoptCode);
 	}
-
+	
+	public List<FrequencyDTO> StarHistoryByUserid(Map<String, String> params) {	
+		return sqlSession.selectList("StarHistoryByUserid", params);
+	}
 }
