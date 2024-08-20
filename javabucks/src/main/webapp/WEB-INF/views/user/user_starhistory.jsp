@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>        
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,24 +36,27 @@
             </div>
 
             <div>
+            	<c:forEach var = "dto" items="${starHistory}">
                 <ul class="add_list">
                     <li>
                         <div class="add_box">
                             <div class="img_box">
                                 <img src="../images/icons/star_line.png" alt="">
                             </div>
-                            <p>+2</p>
+                            <p>+${dto.frequencyCount}</p>
                         </div>
                         <div class="txt_box">
-                            <p class="txt_tit">적립_별 적립</p>
+                            <p class="txt_tit">적립</p>
                             <!-- 일자 =적립시간 / 유효기간 = 1년 -->
                              <ul class="txt_desc">
-                                 <li>일자 <span>2024-07-31 12:18:06</span></p>
+                                 <li>일자 <span>${dto.frequencyRegDate}</span></p>
                                  <li>유효기간 <span>2025-08-01</span></p>
                              </ul>
                         </div>
                     </li>
                 </ul>
+               </c:forEach>
+                
                 <ul class="addlist_noti">
                     <li>최근 3개월까지의 별 히스토리를 조회가능합니다.</li>
                     <li>전체 별 히스토리는 홈페이지에서 조회하실 수 있습니다.</li>
@@ -64,27 +68,27 @@
             <div class="tit_box">
                 <p class="txt_tit">기간 설정</p>
             </div>
-            <form name="f" action="" method="post">
+            <form name="f" action="user_starhistory?mode=search" method="post">
                 <!-- s: 내용 작성 -->
                  <div class="date_box">
                      <label>시작일
-                         <input type="date" name="" value="">
+                         <input type="date" name="startDate" value="">
                      </label>
                      <label>종료일
-                         <input type="date" name="" value="">
+                         <input type="date" name="endDate" value="">
                      </label>
                  </div>
                 <div class="select_period">
                     <label>
-                        <input type="radio" name="period_startdate" value="">
+                        <input type="radio" name="period_startdate" value="1month">
                         1개월
                     </label>
                     <label>
-                        <input type="radio" name="period_startdate" value="">
+                        <input type="radio" name="period_startdate" value="3months">
                         3개월
                     </label>
                     <label>
-                        <input type="radio" name="period_startdate" value="" checked>
+                        <input type="radio" name="period_startdate" value="custom" checked>
                         기간설정
                     </label>
                 </div>
@@ -102,3 +106,57 @@
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp" %>
+
+<script>
+     function toggleDateInputs() {
+         const startDateInput = document.querySelector('input[name="startDate"]');
+         const endDateInput = document.querySelector('input[name="endDate"]');
+         const periodRadioButtons = document.querySelectorAll('input[name="period_startdate"]');
+         
+         periodRadioButtons.forEach(radio => {
+             radio.addEventListener('change', function() {
+                 if (this.value === '1month' || this.value === '3months') {
+                     startDateInput.disabled = true;
+                     endDateInput.disabled = true;
+                 } else {
+                     startDateInput.disabled = false;
+                     endDateInput.disabled = false;
+                 }
+             });
+         });
+
+         const selectedRadio = document.querySelector('input[name="period_startdate"]:checked');
+         if (selectedRadio && (selectedRadio.value === '1month' || selectedRadio.value === '3months')) {
+             startDateInput.disabled = true;
+             endDateInput.disabled = true;
+         } else {
+             startDateInput.disabled = false;
+             endDateInput.disabled = false;
+         }
+
+         // StartDate 변경 시 EndDate 제한 설정
+         startDateInput.addEventListener('change', function() {
+             const selectedDate = new Date(this.value);
+
+             // 최소값 설정 (startDate와 동일)
+             endDateInput.min = this.value;
+
+             // 최대값 설정 (startDate에서 3개월 후)
+             const maxDate = new Date(selectedDate);
+             maxDate.setMonth(maxDate.getMonth() + 3); // 3개월 후로 설정
+
+             // maxDate 객체를 yyyy-mm-dd 형식으로 변환
+             const maxYear = maxDate.getFullYear();
+             const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+             const maxDay = String(maxDate.getDate()).padStart(2, '0');
+             endDateInput.max = `${maxYear}-${maxMonth}-${maxDay}`;
+         });
+         
+     	 
+     }
+     
+     // 페이지 로드 시 초기 설정
+     window.onload = function() {
+         toggleDateInputs();
+     };
+</script>

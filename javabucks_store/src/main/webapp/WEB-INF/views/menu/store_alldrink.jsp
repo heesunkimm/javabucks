@@ -1,51 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <style>
-    	/* store_alldrink */
-		#store_alldrink .select_box, #store_alldrink .code_box {padding: 20px; border-radius: 4px;}
-		#store_alldrink span, 
-		#store_alldrink label, 
-		#store_alldrink input, 
-		#store_alldrink select, 
-		#store_alldrink button {font-size: 18px;}
-		
-		#store_alldrink input[type="checkbox"] {width: 14px; height: 14px;}
-		#store_alldrink .select_box > label + label {margin-top: 6px;}
-		#store_alldrink .select_box > label, #store_alldrink .code_box p {width: 100%;}
-		#store_alldrink .select_box > label span {display: inline-block; width: 140px;}
-		#store_alldrink .select_box select {width: 100px; padding: 3px 0;}
-		
-		#store_alldrink .btn_box {padding: 0 20px; text-align: right;}
-		#store_alldrink .btn_box a {display: inline-block; width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; text-align: center; color: #fff;}
-		
-		#store_alldrink .select_box .tab_box {display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #ccc;}
-		#store_alldrink .select_box .tab_box .tab_btn {display: inline-block; width: 110px; padding: 6px 0; border-radius: 4px; background: #ddd; font-size: 18px; text-align: center; color: #fefefe;}
-		#store_alldrink .select_box .tab_box .tab_btn.tab_btn.s_active {background-color: #006241;}
-		
-		#store_alldrink .select_box .select_list {margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 39px; padding: 20px; background-color: #f6f5ef;}
-		#store_alldrink .select_box .select_list label {display: flex; align-items: center; gap: 12px; width: 180px;}
-		
-		#store_alldrink .select_box .cont_box {margin-top: 20px;}
-		#store_alldrink .select_box .cont_box .select_tit {padding: 20px; background-color: #f6f5ef; font-size: 20px;}
-		
-		#store_alldrink #menu_cont form {padding: 20px 20px 0 20px;}
-		#store_alldrink #menu_cont input {width: 300px; height: 27px; padding: 0 6px;}
-		#store_alldrink #menu_cont button {width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
-		
-		#store_alldrink .menu_list {margin-top: 20px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
-		#store_alldrink .menu_list li + li {border-top: 1px solid #ccc;}
-		#store_alldrink .menu_list .menu_item {display: flex; align-items: center; justify-content: space-between; padding: 16px 30px;}
-		#store_alldrink .menu_list .menu_item .menu_info {display: flex; align-items: center; justify-content: space-between; gap: 30px;}
-		#store_alldrink .menu_list .menu_item .img_box {width: 100px; height: 100px; border: 1px solid #ccc;}
-		#store_alldrink .menu_list .menu_item .menu_info {display: flex; align-items: center; width: 760px;}
-		#store_alldrink .menu_list .menu_item .txt_box {width: 600px;}
-		#store_alldrink .menu_list .menu_item .txt_box .txt_tit {font-size: 16px;}
-		#store_alldrink .menu_list .menu_item .txt_box .txt_desc {margin-top: 6px; font-size: 14px; color: #555;}
-		#store_alldrink .menu_list .menu_item .btn_box button {width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
-    </style>
 <%@ include file="../store_top.jsp"%>
 	<!-- s: content -->
-    <section id="store_alldrink" class="content">
+    <section id="store_alldrink" class="content allMenu">
         <div class="inner_wrap">
             <div class="tit_box">
                 <p>커피 및 음료</p>
@@ -63,42 +20,43 @@
                 </div>
 
                 <div id="cate_cont" class="tab-content s_active">
-                    <form name="" action="" method="post">
+                    <form name="menuCateForm" method="post">
                         <div class="select_list">
                             <label>
-                                <input type="checkbox" name="menu_divide" value="" checked>전체
+                                <input type="checkbox" name="menu_cate" value="" checked>전체
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="ES">에스프레소
+                                <input type="checkbox" name="menu_cate" value="ES">에스프레소
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="CB">콜드브루
+                                <input type="checkbox" name="menu_cate" value="CB">콜드브루
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="BD">블론드
+                                <input type="checkbox" name="menu_cate" value="BD">블론드
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="DC">디카페인
+                                <input type="checkbox" name="menu_cate" value="DC">디카페인
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="PJ">피지오
+                                <input type="checkbox" name="menu_cate" value="PJ">피지오
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="RF">리프레셔
+                                <input type="checkbox" name="menu_cate" value="RF">리프레셔
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="FP">프라푸치노
+                                <input type="checkbox" name="menu_cate" value="FP">프라푸치노
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="BL">블렌디드
+                                <input type="checkbox" name="menu_cate" value="BL">블렌디드
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="BR">브루드
+                                <input type="checkbox" name="menu_cate" value="BR">브루드
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_divide" value="ET">기타
+                                <input type="checkbox" name="menu_cate" value="ET">기타
                             </label>
                         </div>
+                        <input type="hidden" name="menuoptCode" value="">
                     </form>
 
                     <div class="cont_box">
@@ -109,7 +67,7 @@
                         <ul class="menu_list">
                             <li class="menu_item">
                                 <div class="menu_img img_box">
-                                    <!-- <img src="" alt=""> -->
+                                    <img src="../../images/upload_menuImages" alt="">
                                 </div>
                                 <div class="menu_info">
                                     <div class="txt_box">
@@ -118,6 +76,7 @@
                                     </div>
                                     <div class="btn_box">
                                         <button type="button">주문막기</button>
+                                        <button class="delBtn" type="button">메뉴삭제</button>
                                     </div>
                                 </div>
                             </li>
@@ -125,7 +84,7 @@
                     </div>
                 </div>
                 <div id="base_cont" class="tab-content">
-                    <form name="" action="" method="post">
+                    <form name="menuBaseForm" method="post">
                         <div class="select_list">
                             <label>
                                 <input type="checkbox" name="menu_base" value="" checked>전체
@@ -168,7 +127,7 @@
                         <ul class="menu_list">
                             <li class="menu_item">
                                 <div class="menu_img img_box">
-                                    <!-- <img src="" alt=""> -->
+                                    <img src="../../images/upload_menuImages" alt="">
                                 </div>
                                 <div class="menu_info">
                                     <div class="txt_box">
@@ -177,6 +136,7 @@
                                     </div>
                                     <div class="btn_box">
                                         <button type="button">주문막기</button>
+                                        <button type="button">메뉴삭제</button>
                                     </div>
                                 </div>
                             </li>
@@ -184,9 +144,9 @@
                     </div>
                 </div>
                 <div id="menu_cont" class="tab-content">
-                    <form name="" action="" method="post">
+                    <form name="menuNameForm" method="post">
                         <label>
-                            <input type="text" name="" value="" placeholder="메뉴명을 입력하세요.">
+                            <input type="text" name="menuName" value="" placeholder="메뉴명을 입력하세요.">
                         </label>
                         <button type="submit">검색</button>
                     </form>
@@ -199,7 +159,7 @@
                         <ul class="menu_list">
                             <li class="menu_item">
                                 <div class="menu_img img_box">
-                                    <!-- <img src="" alt=""> -->
+                                    <img src="../../images/upload_menuImages" alt="">
                                 </div>
                                 <div class="menu_info">
                                     <div class="txt_box">
@@ -208,6 +168,7 @@
                                     </div>
                                     <div class="btn_box">
                                         <button type="button">주문막기</button>
+                                        <button type="button">메뉴삭제</button>
                                     </div>
                                 </div>
                             </li>
@@ -220,10 +181,93 @@
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
 <script>
-    $('input[type="checkbox"]').on('click', function() {
-       if ($(this).prop('checked')) {
-           $('input[name="menu_divide"], input[name="menu_base"]').prop('checked', false);
-           $(this).prop('checked', true);
-       }
-   });
+	$('input[type="checkbox"]').on('change', function() {
+		if ($(this).prop('checked')) {
+	        $('input[name="menu_cate"], input[name="menu_base"]').prop('checked', false);
+	        $(this).prop('checked', true);
+	    }
+		
+	    let formData = $('form[name="menuCateForm"], form[name="menuBaseForm"]').serialize();
+	    
+	    $.ajax({
+	        url: '${pageContext.request.contextPath}/searchDrinks.ajax',
+	        type: 'POST',
+	        data: formData,
+	        dataType: 'json',
+	        success: function(res) {
+	        	console.log(res)
+	        	
+	            if (res.noList) {
+	                $('.menu_list').html('<p>검색 결과가 없습니다.</p>');
+	            } else {
+	                let html = '';
+	                response.drinkList.forEach(drink => {
+	                    html += `<li class="menu_item">
+	                                <div class="menu_img img_box">
+	                                    <img src="../../images/upload_menuImages" alt="">
+	                                </div>
+	                                <div class="menu_info">
+	                                    <div class="txt_box">
+	                                        <p class="txt_tit">${drink.menuName}</p>
+	                                        <p class="txt_desc">${drink.menuDescription}</p>
+	                                    </div>
+	                                    <div class="btn_box">
+	                                        <button type="button">주문막기</button>
+	                                        <button class="delBtn" type="button">메뉴삭제</button>
+	                                    </div>
+	                                </div>
+	                            </li>`;
+	                });
+	                $('.menu_list').html(html);
+	            }
+	        },
+	        error: function(err) {
+	            console.error('Error:', err);
+	        }
+	    });
+	});
+	
+	// 검색창에서 입력 후 검색 버튼 클릭 시 메뉴 리스트를 불러오는 함수
+	$('form[name="menuNameForm"]').on('submit', function(e) {
+	    e.preventDefault();
+	    
+	    $('input[name="menu_cate"], input[name="menu_base"]').prop('checked', false);
+	    
+	    let formData = $(this).serialize();
+	    
+	    $.ajax({
+	        url: '${pageContext.request.contextPath}/searchDrinks.ajax',
+	        type: 'POST',
+	        data: formData,
+	        dataType: 'json',
+	        success: function(res) {
+	            if (res.noList) {
+	                $('.menu_list').html('<p>검색 결과가 없습니다.</p>');
+	            } else {
+	                let html = '';
+	                response.drinkList.forEach(drink => {
+	                    html += `<li class="menu_item">
+	                                <div class="menu_img img_box">
+	                                    <img src="../../images/upload_menuImages" alt="">
+	                                </div>
+	                                <div class="menu_info">
+	                                    <div class="txt_box">
+	                                        <p class="txt_tit">${drink.menuName}</p>
+	                                        <p class="txt_desc">${drink.menuDescription}</p>
+	                                    </div>
+	                                    <div class="btn_box">
+	                                        <button type="button">주문막기</button>
+	                                        <button type="button">메뉴삭제</button>
+	                                    </div>
+	                                </div>
+	                            </li>`;
+	                });
+	                $('.menu_list').html(html);
+	            }
+	        },
+	        error: function(err) {
+	            console.error('Error:', err);
+	        }
+	    });
+	});
 </script>
