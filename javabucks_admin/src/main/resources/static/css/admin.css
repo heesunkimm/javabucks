@@ -166,18 +166,18 @@ header .nav_item:hover .dropdown_content {display: block;}
 .tab_management .list_box .tab-content {width: 540px;}
 .tab_management .list_box .search_list {position: relative;}
 .tab_management .list_box .search_list::after {content: ''; position: absolute; top: 50%; right: -35px; transform: translateY(-50%) rotate(45deg); display: block; width: 14px; height: 14px; border-top: 2px solid #555; border-right: 2px solid #555;}
-.tab_management .list_box .tab-content .cont_toolbar, 
-.tab_management .list_box .tab-content .cont_details {width: 100%; display: flex; align-items: center; justify-content: space-between;}
-.tab_management .list_box .tab-content .cont_toolbar {padding: 4px 0; background-color: #006241; color: #fefefe;}
-.tab_management .list_box .tab-content .cont_details li {border: 1px solid #ccc; box-sizing: border-box;}
-.tab_management .list_box .tab-content .cont_toolbar li, 
-.tab_management .list_box .tab-content .cont_details li {font-size: 18px; text-align: center;}
-.tab_management .list_box .tab-content .cont_details li + li {border-left: none;}
+.tab_management .list_box .sales_cont .cont_toolbar, 
+.tab_management .list_box .sales_cont .cont_details {width: 100%; display: flex; align-items: center; justify-content: space-between;}
+.tab_management .list_box .sales_cont .cont_toolbar {padding: 4px 0; background-color: #006241; color: #fefefe;}
+.tab_management .list_box .sales_cont .cont_details li {border: 1px solid #ccc; box-sizing: border-box;}
+.tab_management .list_box .sales_cont .cont_toolbar li, 
+.tab_management .list_box .sales_cont .cont_details li {font-size: 18px; text-align: center;}
+.tab_management .list_box .sales_cont .cont_details li + li {border-left: none;}
 
-#admin_monthlysales .list_box .tab-content .cont_toolbar li, 
-#admin_monthlysales .list_box .tab-content .cont_details li {width: calc(100%/3);}
-#admin_storeordersales .list_box .tab-content .cont_toolbar li, 
-#admin_storeordersales .list_box .tab-content .cont_details li {width: calc(100%/4);}
+#admin_monthlysales .list_box .sales_cont .cont_toolbar li, 
+#admin_monthlysales .list_box .sales_cont .cont_details li {width: calc(100%/3);}
+#admin_storeordersales .list_box .sales_cont .cont_toolbar li, 
+#admin_storeordersales .list_box .sales_cont .cont_details li {width: calc(100%/4);}
 
 /* admin_cpnmange */
 #admin_cpnmange .btn_box {margin-bottom: 20px; text-align: right;}
