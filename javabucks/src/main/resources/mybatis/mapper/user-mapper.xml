@@ -176,4 +176,12 @@
    		 WHERE menuoptCode = #{menuoptCode}		 	  		 
  	</select>
  	
+ 	<select id="StarHistoryByUserid" parameterType="java.util.Map" resultType="FrequencyDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_frequency 		    
+   		 WHERE userId = #{userId}
+   		 AND frequencyRegDate between to_date(#{startDate}, 'YYYY-MM-DD') and to_date(#{endDate}, 'YYYY-MM-DD')
+		 ORDER by frequencyRegDate desc					 	  		 
+ 	</select>
+ 	
  </mapper>

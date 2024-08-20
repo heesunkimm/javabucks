@@ -98,7 +98,7 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_order")
-	public String orderMenu(HttpServletRequest req, String storeName) {
+	public String orderMenu(HttpServletRequest req, String storeName, String pickup) {
 
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
@@ -107,19 +107,20 @@ public class UserController {
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
 		req.setAttribute("store", storeName);
+		req.setAttribute("pickup", pickup);
 		return "/user/user_order";
 	}
 
 	@RequestMapping("/user_menudetail")
 	public String menudetail(HttpServletRequest req, String menuCode, String menuoptCode, String drink) {
-		
+
 		// 메뉴코드로 메뉴정보 꺼내오기
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);
 		req.setAttribute("drink", drink);
-		
+
 		// 음료메뉴 퍼스널옵션값 가져오기
-		if(drink != null) {
+		if (drink != null) {
 			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
 			req.setAttribute("shot", dto2.getShotType());
 		}
@@ -129,11 +130,11 @@ public class UserController {
 		List<MenuOptSyrupDTO> list4 = userMapper.SyrupByCode(menuoptCode);
 		List<MenuOptMilkDTO> list5 = userMapper.MilkByCode(menuoptCode);
 		req.setAttribute("cup", list1);
-		req.setAttribute("ice", list2);		
+		req.setAttribute("ice", list2);
 		req.setAttribute("whip", list3);
 		req.setAttribute("syrup", list4);
 		req.setAttribute("milk", list5);
-		
+
 		return "/user/user_menudetail";
 	}
 
@@ -278,7 +279,13 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_store")
-	public String userStore() {
+	public String userStore(Model model, @RequestParam Map<String, String> params, String mode, String storeSearch) {
+		// 매장 검색하기
+		if (mode != null) {
+			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
+			model.addAttribute("storeList", list);
+		}
+
 		return "/user/user_store";
 	}
 
@@ -288,7 +295,18 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_starhistory")
-	public String userStarhistory() {
+	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();	
+		params.put("userId", userId);
+		// 결과 2024-11-06 이런식으로 나옴
+//		System.out.println(params.get("startDate"));
+//		System.out.println(params.get("endDate"));
+		List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+		req.setAttribute("starHistory", list); 	
+	
+		
 		return "/user/user_starhistory";
 	}
 
