@@ -2,14 +2,14 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../store_top.jsp"%>
 	<!-- s: content -->
-    <section id="store_adddrink" class="content addmenu">
+    <section id="store_adddessert" class="content addmenu">
         <div class="inner_wrap">
             <div class="tit_box">
                 <p>메뉴 추가</p>
             </div>
             
             <div class="btn_box">
-            	<a class="listbtn" href="/store_alldrink">메뉴 목록 보기</a>
+            	<a class="listbtn" href="/store_alldessert">메뉴 목록 보기</a>
             </div>
             
             <form name="f" method="post">
@@ -17,44 +17,10 @@
 	                <label>
 	                    <span>구분 코드</span>
 	                    <select name="menu_divide">
-	                        <option value="BD">BD</option>
-	                        <option value="BL">BL</option>
-	                        <option value="BR">BR</option>
-	                        <option value="CB">CB</option>
-	                        <option value="DC">DC</option>
-	                        <option value="ES">ES</option>
-	                        <option value="ET">ET</option>
-	                        <option value="FP">FP</option>
-	                        <option value="PJ">PJ</option>
-	                        <option value="RF">RF</option>
+	                        <option value="CK">CK</option>
+	                        <option value="SD">SD</option>
 	                    </select>
 	                </label>
-	                <label>
-	                    <span>베이스 코드</span>
-	                    <select name="menu_base">
-	                        <option value="B">B</option>
-	                        <option value="C">C</option>
-	                        <option value="D">D</option>
-	                        <option value="E">E</option>
-	                        <option value="F">F</option>
-	                        <option value="J">J</option>
-	                        <option value="L">L</option>
-	                        <option value="M">M</option>
-	                        <option value="N">N</option>
-	                        <option value="P">P</option>
-	                        <option value="W">W</option>
-	                        <option value="Y">Y</option>
-	                    </select>
-	                </label>
-	                <div class="temp_box">
-	                    <span>ICE/HOT</span>
-	                    <label>ICE
-	                        <input type="checkbox" name="menu_temp" value="I" checked>
-	                    </label>
-	                    <label>HOT
-	                        <input type="checkbox" name="menu_temp" value="H">
-	                    </label>
-	                </div>
 	            </div>
 	                <input type="hidden" name="menuoptCode" value="">
             </form>
@@ -89,9 +55,7 @@
 	// 선택된 옵션에 맞는 메뉴 실시간 리스트업
 	function getSelectMenu() {
 	    let selectedDivide = $('select[name="menu_divide"]').val();
-	    let selectedBase = $('select[name="menu_base"]').val();
-	    let selectedTemp = $('input[name="menu_temp"]:checked').val();
-	    let selectedOptCode = selectedDivide + selectedBase + selectedTemp;
+	    let selectedOptCode = selectedDivide + 'NN'
 	    $('input[name="menuoptCode"]').val(selectedOptCode);
 	    let menuOpt = $('input[name="menuoptCode"]').val();
 	    
@@ -152,7 +116,7 @@
 	        data: { bucksId: storeId },
 	        dataType: 'json',
 	        success: function(res) {
-	            console.log(res);
+	            // console.log(res);
 
 	            // 메뉴 리스트 새로 업데이트
 	            $('.menu_list .menu_item').each(function () {
@@ -202,6 +166,6 @@
 	        error: function(err) {
 	            console.log('Error: ', err);
 	        }
-    	}); 
+   		}); 
 	});
 </script>

@@ -17,7 +17,7 @@
     <header class="bg_beige">
         <div class="logo_box img_box">
             <a href="javascript:;">
-                <img src="../images/logo/starbucks_logo.png" alt="">
+                <img src="../images/icons/starbucks_logo.png" alt="">
                 <span>JAVABUCKS</span>
             </a>
         </div>
@@ -26,11 +26,9 @@
             <li class="nav_item">
                 <a href="javascript:;">메뉴관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">커피 및 케이크</a></li>
-                    <li><a href="javascript:;">케이크</a></li>
-                    <li><a href="javascript:;">샌드위치</a></li>
-                    <li><a href="javascript:;">텀블러</a></li>
-                    <li><a href="javascript:;">원두</a></li>
+                    <li><a href="store_alldrink">커피 및 음료</a></li>
+                    <li><a href="store_alldessert">디저트</a></li>
+                    <li><a href="store_allmd">MD</a></li>
                 </ul>
             </li>
             <li class="nav_item">
