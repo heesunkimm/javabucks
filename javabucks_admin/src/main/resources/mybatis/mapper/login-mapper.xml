@@ -8,5 +8,5 @@
 	<select id="findAdminById" parameterType="String" resultType="AdminDTO">
 		select * from javabucks_admin where adminId = #{adminId}
 	</select>
-	
+	 
 </mapper>

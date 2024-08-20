@@ -16,5 +16,5 @@ public class LoginMapper {
 		System.out.println("adminId : " + adminId);
 		return sqlSession.selectOne("findAdminById",adminId);
 	}
-	
+	 
 }

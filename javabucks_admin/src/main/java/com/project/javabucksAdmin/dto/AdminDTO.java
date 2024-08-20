@@ -7,7 +7,7 @@ public class AdminDTO {
 	private String adminEmail;
 	private String adminAuthority;
 	private String adminJoindate;
-	private String adminEnable;
+	private String adminEnable; 
 
 	public String getAdminId() {
 		return adminId;

@@ -67,12 +67,13 @@
                 <ul class="dropdown_content">
                     <li><a href="javascript:;">쿠폰발급현황</a></li>
                     <li><a href="javascript:;">쿠폰생성</a></li>
-                </ul>
+                </ul> 
             </li>
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">관리자 OOO</em> 로그인하셨습니다.</a>
+        <!-- <a href="javascript:;"><em class="font_green">관리자 OOO</em> 로그인하셨습니다.</a> -->
+            <a href="javascript:;"><em class="font_green">관리자 ${inAdmin.adminId}</em> 로그인하셨습니다.</a>
         </div>
     </header>
     </header>

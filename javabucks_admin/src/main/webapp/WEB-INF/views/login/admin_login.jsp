@@ -82,7 +82,7 @@
                 <input type="checkbox" name="adminId" value=""> 아이디 저장
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 재설정</a>
-            </div>
+            </div> 
         </div>
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 재설정</p>

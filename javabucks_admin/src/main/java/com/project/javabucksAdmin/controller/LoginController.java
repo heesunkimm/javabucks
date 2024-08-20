@@ -52,9 +52,9 @@ public class LoginController {
 		if(dto != null) {
 			if(dto.getAdminPasswd().equals(adminPasswd)) {
 				System.out.println("로그인");
-				req.getSession().setAttribute("inBucks", dto); 
+				req.getSession().setAttribute("inAdmin", dto); 
 				req.setAttribute("msg", dto.getAdminId()+"님이 로그인하셨습니다. 메인 페이지로 이동합니다");
-				req.setAttribute("url", "admin_index");
+				req.setAttribute("url", "admin_index"); 
 			}
 //				if("on".equals(saveId)) {
 //					// 아이디 저장 체크박스가 선택된 경우 
