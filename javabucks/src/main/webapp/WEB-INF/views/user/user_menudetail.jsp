@@ -17,7 +17,7 @@
     <section id="user_menudetail" class="content">
         <div class="inner_wrap">
             <div class="menu_img img_box">
-                <!-- <img src="" alt=""> -->
+                <img src="upload_menuImages/${menu.menuImages}" alt="">
             </div>
 
             <div class="txt_box">
@@ -26,109 +26,129 @@
                 <p class="txt_price">${menu.menuPrice}</p>
             </div>
 
+			<c:if test="${not empty drink}">
             <div class="btn_box">
                 <button type="button">퍼스널옵션</button>
             </div>
+            </c:if>
             <div class="opt_wrap">
                 <!-- 옵션박스 -->
                 <div class="size_box opt_box">
                 </div>
+                
+                 <!-- 옵션: 컵 -->
+                <c:if test="${not empty cup}">
+                <div class="opt_box">
+                    <p class="opt_tit">컵</p>
+                    <div class="opt_rows">
+                        <div class="select_box">
+                        	<c:forEach var ="cup" items="${cup}">
+                        	<label>
+                                <input type="button" name="cupType" value="">
+                                <span>${cup.cupType}</span>
+                            </label>
+                            </c:forEach>                                                    
+                        </div>
+                    </div>
+                </div>
+                </c:if>
 
                 <!-- 옵션: 커피 -->
+                <c:if test="${not empty shot}">
                 <div class="opt_box">
                     <p class="opt_tit">커피</p>
                     <div class="opt_rows">
-                        <p>에스프레소 샷</p>
+                        <p>${shot}</p>
                         <div class="count_box">
                             <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="">
+                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('shot_count')">
                             </div>
                             <label>
-                                <input type="text" name="" value="0" readonly>
+                                <input type="text" id= "shot_count" name="shotType" value="0" readonly>
                             </label>
                             <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="">
+                                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('shot_count')">
                             </div>
                         </div>
                     </div>
                 </div>
-
+				</c:if>
+				
                 <!-- 옵션: 시럽 -->
+                <c:if test="${not empty syrup}">
                 <div class="opt_box">
                     <p class="opt_tit">시럽</p>
+                    <c:forEach var ="syrup" items="${syrup}">
                     <div class="opt_rows">
-                        <p>바닐라 시럽</p>
+                        <p>${syrup.syrupType}</p>
                         <div class="count_box">
                             <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="">
+                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('${syrup.syrupType}')">
                             </div>
                             <label>
-                                <input type="text" name="" value="0" readonly>
+                                <input type="text" id= "${syrup.syrupType}" name="syrupType" value="0" readonly>
                             </label>
                             <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="">
+                                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('${syrup.syrupType}')">
                             </div>
                         </div>
                     </div>
+                    </c:forEach>                                    
+                </div>
+                </c:if>
+                
+                <!-- 옵션: 얼음 -->
+                <c:if test="${not empty ice}">
+                <div class="opt_box">
+                    <p class="opt_tit">얼음</p>
                     <div class="opt_rows">
-                        <p>헤이즐넛 시럽</p>
-                        <div class="count_box">
-                            <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="">
-                            </div>
+                        <div class="select_box">
+                        	<c:forEach var ="ice" items="${ice}">
                             <label>
-                                <input type="text" name="" value="0" readonly>
+                                <input type="button" name="iceType" value="">
+                                <span>${ice.iceType}</span>
                             </label>
-                            <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="opt_rows">
-                        <p>카라멜 시럽</p>
-                        <div class="count_box">
-                            <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="">
-                            </div>
-                            <label>
-                                <input type="text" name="" value="0" readonly>
-                            </label>
-                            <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="">
-                            </div>
+                            </c:forEach>                                      
                         </div>
                     </div>
                 </div>
-
+				</c:if>
+				
                 <!-- 옵션: 우유 -->
+                <c:if test="${not empty milk}">
                 <div class="opt_box">
                     <p class="opt_tit">우유</p>
                     <div class="opt_rows">
                         <div class="select_box">
+                        	<c:forEach var ="milk" items="${milk}">
                             <label>
-                                <input type="button" name="" value="">
-                                <span>일반</span>
+                                <input type="button" name="milkType" value="">
+                                <span>${milk.milkType}</span>
                             </label>
+                            </c:forEach>                            
+                        </div>
+                    </div>
+                </div>                           
+				</c:if>
+				
+				<!-- 옵션: 휘핑 크림 -->
+				<c:if test="${not empty whip}">
+                <div class="opt_box">
+                    <p class="opt_tit">휘핑 크림</p>
+                    <div class="opt_rows">
+                        <div class="select_box">
+                        	<c:forEach var ="whip" items="${whip}">
                             <label>
-                                <input type="button" name="" value="">
-                                <span>저지방</span>
+                                <input type="button" name="whipType" value="">
+                                <span>${whip.whipType}</span>
                             </label>
-                            <label>
-                                <input type="button" name="" value="">
-                                <span>무지방</span>
-                            </label>
-                            <label>
-                                <input type="button" name="" value="">
-                                <span>두유</span>
-                            </label>
-                            <label>
-                                <input type="button" name="" value="">
-                                <span>오트(귀리)</span>
-                            </label>
+                            </c:forEach>
+                                                       
                         </div>
                     </div>
                 </div>
-
+                </c:if>
+                
             </div>
 
             <div class="order_box">
@@ -144,3 +164,24 @@
     <!-- e: content -->
 
 <%@ include file="user_bottom.jsp"%>
+
+<script type="text/javascript">
+// 감소 버튼 클릭 시 호출되는 함수
+	    function minus(fieldId) {
+	        var input = document.getElementById(fieldId);
+	        var value = parseInt(input.value, 10); // 현재 값 가져오기
+	        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+	        value--; // 감소
+	        if (value < 0) value = 0; // 음수 방지
+	        input.value = value; // 값 적용
+	    }
+	
+	    // 증가 버튼 클릭 시 호출되는 함수
+	    function plus(fieldId) {
+	        var input = document.getElementById(fieldId);
+	        var value = parseInt(input.value, 10); // 현재 값 가져오기
+	        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+	        value++; // 증가
+	        input.value = value; // 값 적용
+	    }
+</script>

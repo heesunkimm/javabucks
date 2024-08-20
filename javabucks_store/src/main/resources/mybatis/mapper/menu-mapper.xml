@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.menu-mapper">
+	<select id="getSelectMenu" resultType="MenuDTO">
+	    select * from javabucks_menu where substr(menuCode, 1,1) = 'B' and substr(menuCode, 2, 4) = #{menuoptCode}
+	</select>
+	
+	<insert id="addMenu" parameterType="StoreMenuDTO">
+		insert into javabucks_storemenu (storemenuCode, bucksId, menuCode, storemenuStatus) 
+		values (seq_storemenuNum.NEXTVAL, #{bucksId}, #{menuCode}, 'Y')
+	</insert>
+</mapper>

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
     <jsp:include page="../admin_top.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <section id="admin_monthlysales" class="content tab_management">
         <div class="inner_wrap">
@@ -10,17 +11,20 @@
             </div>
 
             <div class="select_box">
-                <form name="" action="" method="post">
+                <form name="" action="/searchMonthSales.do" method="post">
                     <div class="count_box">
                         <span>연월</span>
                         <div class="minus_btn img_box">
-                            <img src="../images/icons/minus.png" alt="">
+                            <img src="../images/icons/minus.png" alt="minus" class="minusBtn">
                         </div>
-                        <input type="text" name="" value="2024-08" readonly>
+                        <input type="text" class="dateInput" name="orderDate" value="" readonly>
                         <div class="plus_btn img_box">
-                            <img src="../images/icons/plus.png" alt="">
+                            <img src="../images/icons/plus.png" alt="plus" class="plusBtn">
                         </div>
-                        <button type="button">검색</button>
+                        <label>지점명
+                        <input type="text" name="bucksName" value="" style="border: 1px solid #666; width: 200px;">
+                    </label>
+                        <button type="submit">검색</button>
                     </div>
                 </form>
 
@@ -28,23 +32,29 @@
                     <table class="search_list s_table">
                         <thead class="bg_green font_white">
                             <tr>
-                                <th>연월</th>
+                            	<th>연월</th>
+                                <th>지점명</th>
                                 <th>매출액</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
+                        <c:forEach items="${list}" var="mlist"> 
                             <tr>
-                                <td><a class="tab_btn" href="javascript:;" data-tab="2024_01">2024.01</a></td>
-                                <td>매출액</td>
+                                <td>${mlist.payhistoryYearMonth}</td>
+                                <td><a class="tab_btn" href="javascript:;" data-tab="2024_01">${mlist.branchName}</a></td>
+                                <td><fmt:formatNumber value="${mlist.totalSales}" type="number" maxFractionDigits="0"/>원</td>
                             </tr>
+                        </c:forEach>
                             <tr class="bg_green font_white">
                                 <td>총계</td>
+                                <td></td>
                                 <td>000,000,000원</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <ul id="2024_01" class="s_active tab-content">
+                    <ul class="sales_cont">
                         <li>
                             <ul class="cont_toolbar">
                                 <li>메뉴카테고리</li>
@@ -65,3 +75,49 @@
         </div>
     </section>
  <jsp:include page="../admin_bottom.jsp"/>
+ <script>
+//검색 기능시간 
+	document.addEventListener('DOMContentLoaded', function() {
+	    const dateInput = document.querySelector('.dateInput');
+	    const minusBtn = document.querySelector('.minusBtn');
+	    const plusBtn = document.querySelector('.plusBtn');
+
+	    // 현재 날짜로 초기화
+	    const now = new Date();
+	    let year = now.getFullYear();
+	    let month = now.getMonth() + 1; // 0부터 시작하므로 +1
+
+	    // 월이 한 자리 숫자일 경우 앞에 0을 추가
+	    month = month < 10 ? "0" + month : month;
+
+	    // 초기 값 설정
+	    dateInput.value = year + "-" + month;
+
+	    function updateDate(offset) {
+	        month = parseInt(month) + offset;
+
+	        if (month > 12) {
+	            month = 1;
+	            year++;
+	        } else if (month < 1) {
+	            month = 12;
+	            year--;
+	        }
+
+	        // 월이 한 자리 숫자일 경우 앞에 0을 추가
+	        month = month < 10 ? "0" + month : month;
+
+	        dateInput.value = year + "-" + month;
+	    }
+
+	    minusBtn.addEventListener('click', function() {
+	        updateDate(-1);
+	    });
+
+	    plusBtn.addEventListener('click', function() {
+	        updateDate(1);
+	    });
+	    
+	});
+ 
+ </script>
