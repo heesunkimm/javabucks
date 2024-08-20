@@ -1,5 +1,6 @@
 package com.project.javabucksAdmin.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
+import com.project.javabucksAdmin.dto.OrderDTO;
+import com.project.javabucksAdmin.dto.PayhistoryDTO;
 
 @Service
 public class SalesMapper {
@@ -101,22 +104,18 @@ public class SalesMapper {
     
 //Sales
     //발주페이지에 벅스이름 들고가기
-    public List<BucksDTO> selectBucksName() {
-    	return sqlSession.selectList("selectBucksName");
-    }
+//    public List<BucksDTO> selectBucksName() {
+//    	return sqlSession.selectList("selectBucksName");
+//    }
     
     public List<BaljooDTO> selectBaljoo() {
     	return sqlSession.selectList("selectBaljoo");
     }
     
-    //검색한 지점과 날짜로 발주정산 수정
-    public List<BaljooDTO> selectAllOrderSum(String orderDate){
-    	return sqlSession.selectList("selectAllOrderSum",orderDate);
-    }
     
-  //검색한 지점과 날짜로 발주정산 수정2
+  //검색한 지점과 날짜로 발주정산 수정
     public List<BaljooDTO> selectOrderSum(Map<String, Object> params){
-    	return sqlSession.selectList("selectAllOrderSum",params);
+    	return sqlSession.selectList("selectOrderSum",params);
     }
     
 //    ////검색한 지점과 날짜로 발주정산
@@ -125,17 +124,36 @@ public class SalesMapper {
 //    }
     
     //발주 상세보기  
-    public String getOrderDetails(int baljooNum) {
-    	return sqlSession.selectOne("getOrderDetails",baljooNum);
+    public List<BaljooDTO> selectDetails(Map<String, Object> params) {
+    	return sqlSession.selectList("selectDetails",params);
     }
     
-    //발주 상세보기 2
-    public List<Object> getDetailByCode(@Param("codes") List<String> codes) {
-    	System.out.println(codes);
-        return sqlSession.selectList("getDetailByCode", codes);
+    public List<String> baljooNamesByCodes(@Param("codes") List<String> codes) {
+    	System.out.println("매퍼콘솔 : " +codes);
+    	return sqlSession.selectOne("baljooNameByCode",codes);
     }
+
+	public List<Object> getlistName(String stockCode) {
+		System.out.println("매퍼코드 : "+stockCode);
+		return sqlSession.selectList("getlistName",stockCode);
+	}
+    
+//    //발주 상세보기 2 ..ㅋㅋㅋㅋ 너무 멀리간 코드,,,,ㅋㅋㅋㅋㅋㅋㅋ 월뵬 카테고리 할때 참고하기,,,
+//	public List<Map<String, Object>> selectPricesByCodes(@Param("codes") List<String> codes) {
+//		System.out.println(codes);
+//		return sqlSession.selectList("selectPricesByCodes", codes);
+//	}
+    
+    
  
-    
+	public List<PayhistoryDTO> monthlyBucksSales() {
+    	return sqlSession.selectList("monthlyBucksSales");
+    }
+	
+	//검색한 지점과 날짜로 월별정산 
+    public List<PayhistoryDTO> searchMonth(Map<String, Object> params){
+    	return sqlSession.selectList("searchMonth",params);
+    }
 	
     
   
