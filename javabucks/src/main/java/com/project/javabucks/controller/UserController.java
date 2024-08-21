@@ -33,7 +33,6 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
-import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
@@ -126,6 +125,7 @@ public class UserController {
 		if (drink != null) {
 			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
 			req.setAttribute("shot", dto2);
+			req.setAttribute("shot", dto2.getShotType());
 		}
 		List<MenuOptCupDTO> list1 = userMapper.CupSizeByCode(menuoptCode);
 		List<MenuOptIceDTO> list2 = userMapper.IceByCode(menuoptCode);
