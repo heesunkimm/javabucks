@@ -6,6 +6,7 @@ public class FrequencyDTO {
 	private String userId;
 	private String frequencyRegDate;
 	private int frequencyCount;
+	private String frequencyEndDate;
 	
 	public int getFrequencyNum() {
 		return frequencyNum;
@@ -31,6 +32,10 @@ public class FrequencyDTO {
 	public void setFrequencyCount(int frequencyCount) {
 		this.frequencyCount = frequencyCount;
 	}
-	
-	
+	public String getFrequencyEndDate() {
+		return frequencyEndDate;
+	}
+	public void setFrequencyEndDate(String frequencyEndDate) {
+		this.frequencyEndDate = frequencyEndDate;
+	}		
 }
