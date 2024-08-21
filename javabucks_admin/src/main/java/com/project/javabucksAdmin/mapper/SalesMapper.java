@@ -173,6 +173,15 @@ public class SalesMapper {
     	//System.out.println("optionId : "+ optionId);
     	return sqlSession.selectOne("getOptPrice",optionId);
     }
-  
+    
+    //쿠폰 코드로 쿠폰가격 가져오기
+    public int getCouponPrice(int coupon) {
+    	System.out.println("coupon : " + coupon);
+    	return sqlSession.selectOne("getCouponPrice", coupon);
+    }
+    
+    public List<PayhistoryDTO> dailyBucksSales() {
+    	return sqlSession.selectList("dailyBucksSales");
+    }
 	 
 }

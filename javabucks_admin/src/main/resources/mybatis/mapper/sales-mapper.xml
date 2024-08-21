@@ -268,7 +268,7 @@
     
     <!-- 월별 매출 상세보기 1단계 -조인 : 월별 ordercode에대해 orderlist뽑기-->
     <select id="monthlyDetails" parameterType="map" resultType="OrderDTO">
-	    	SELECT o.*
+	    	SELECT o.* , p.cpnlistnum
 			FROM javabucks_payhistory p
 			JOIN javabucks_order o ON p.orderCode = o.orderCode
 			WHERE p.bucksId = #{bucksId}
@@ -282,19 +282,36 @@
 	
 	
 	<select id="getOptPrice" parameterType="String" resultType="int">
-    SELECT
-        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
-        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
-    FROM
-        javabucks_order_opt o
-    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
-    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
-    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
-    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
-    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
-    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
-    WHERE
-        o.optId = #{optionId}
-</select>
+	    SELECT
+	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	    FROM
+	        javabucks_order_opt o
+	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+	    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+	    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+	    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+	    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+	    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
+	    WHERE
+	        o.optId = #{optionId}
+	</select>
+	
+	<select id="getCouponPrice" parameterType="int" resultType="int">
+		SELECT c.cpnPrice
+	    FROM javabucks_couponList cl
+	    JOIN javabucks_coupon c ON cl.cpnCode = c.cpnCode
+	    WHERE cl.cpnListNum = #{coupon}
+	</select>
+	
+	<!-- daily Sales -->
+	<select id="dailyBucksSales" resultType="PayhistoryDTO">
+			SELECT jp.*, o.orderList, b.bucksName AS branchName, b.bucksOwner
+    		FROM javabucks_payhistory jp
+    		JOIN javabucks_order o ON jp.ordercode = o.ordercode
+    		JOIN javabucks_bucks b ON jp.bucksid = b.bucksid
+    		WHERE TRUNC(jp.payhistoryDate) = TRUNC(SYSDATE)
+		</select>
+	
 		
   </mapper>

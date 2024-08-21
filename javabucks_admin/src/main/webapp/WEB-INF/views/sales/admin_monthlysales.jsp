@@ -70,9 +70,7 @@
                         </li>
                         <li>
                             <ul class="cont_details">
-                                <li>메뉴카테고리</li>
-                                <li>매출액</li>
-                                <li>비중</li>
+                                
                             </ul>
                         </li>
                     </ul>
@@ -128,28 +126,47 @@
 	
 	
 	function MonthlyDetails(bucksId, payhistoryYearMonth) {
- 	    console.log("bucksId:", bucksId); 
- 	    console.log("payhistoryYearMonth:", payhistoryYearMonth); 
+	    console.log("bucksId:", bucksId); 
+	    console.log("payhistoryYearMonth:", payhistoryYearMonth); 
 
- 	   $.ajax({
- 	        type: "POST",
- 	        url: "/MonthlyDetails.do",
- 	        data: {
- 	            bucksId: bucksId,
- 	            orderDate: payhistoryYearMonth
- 	        },
- 	       success: function(response) {
-$('.sales_cont').empty(); // 기존 결과 지우기
-              
-              $.each(response, function(category, totalSales) {
-                  $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>'
- +'<li><ul class="cont_detail"><li>' + category + '</li> ' +
-                		  '<li>' + totalSales + '원</li>' + '<li>비중</li></li>');
-              });
-          },
-          error: function(error) {
-              console.log("Error:", error);
-          }
-      });
- 	} 
+	    $.ajax({
+	        type: "POST", // POST 요청 타입을 설정
+	        url: "/MonthlyDetails.do", // 요청을 보낼 서버의 URL 설정
+	        data: {
+	            bucksId: bucksId, // 요청 데이터에 포함될 bucksId
+	            orderDate: payhistoryYearMonth // 요청 데이터에 포함될 orderDate
+	        },
+	        success: function(response) {
+	            // 기존 매출 내역을 비웁니다.
+	            $('.sales_cont').empty();
+	            
+	            if (!response.hasSalesData) {
+	                // 매출 내역이 없을 때
+	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>' + 
+	                    '<li><ul class="cont_details">해당 지점의 매출 내역이 없습니다</ul></li>');
+	            } else {
+	                // cont_toolbar 부분을 반복문 밖으로 빼서 한 번만 추가
+	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>');
+
+	                // response 데이터를 반복하면서 각 카테고리와 매출액을 추가
+	                $.each(response, function(category, categoryData) {
+	                    if (category !== "totalSales" && category !== "hasSalesData") {
+	                        var totalSales = categoryData.totalSales;
+	                        var percentage = categoryData.percentage.toFixed(2);
+
+	                        // 각 카테고리와 매출액, 비중을 cont_detail 리스트에 추가
+	                        $('.sales_cont').append(
+	                            '<li><ul class="cont_details"><li>' + category + '</li> ' +
+	                            '<li>' + totalSales + '원</li>' + '<li>' + percentage + '%</li></ul></li>'
+	                        );
+	                    }
+	                });
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Ajax request failed:", status, error);
+	            alert("매출 데이터를 불러오는 중 오류가 발생했습니다.");
+	        }
+	    });
+	}
  </script>

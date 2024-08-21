@@ -10,47 +10,31 @@
             </div>
 
             <div class="select_box">
-                <form name="" action="" method="post">
+                <form name="dailySearchForm" action="/searchDailySales.do" method="post">
                     <div class="search_box">
                         <label>기간
-                            <select name="">
-                                <option value="">2024</option>
-                                <option value="">2023</option>
-                                <option value="">2022</option>
-                                <option value="">2021</option>
-                                <option value="">2020</option>
-                            </select>
+                            <input type="date" name="startDate" value="" required>
+                            ~
+                            <input type="date" name="startDate" value="" required>
                         </label>
-                        <label>~
-                            <select name="">
-                                <option value="">1월</option>
-                                <option value="">2월</option>
-                                <option value="">3월</option>
-                                <option value="">4월</option>
-                                <option value="">5월</option>
-                                <option value="">6월</option>
-                                <option value="">7월</option>
-                                <option value="">8월</option>
-                                <option value="">9월</option>
-                                <option value="">10월</option>
-                                <option value="">11월</option>
-                                <option value="">12월</option>
-                            </select>
-                        </label>
+                        
                         <label>지점명
-                            <input type="text" name="" value="">
+                            <input type="text" name="bucksName" required>
                         </label>
                         <label>메뉴 카테고리
-                            <select name="">
-                                <option value="">-</option>
+                            <select name="category" required>
+                            	<option value="">전체</option>
+                                <option value="B">음료</option>
+                                <option value="C">디저트</option>
+                                <option value="M">MD상품</option>
                             </select>
                         </label>
-                        <button type="button">검색</button>
+                        <button type="submit">검색</button>
                     </div>
                 </form>
 
                 <div class="list_box">
-                    <p class="totabl_sales">매출액:<span>000,000,000원</span></p>
+                    <p class="totabl_sales">해당 기간 총 매출액:<span>000,000,000원</span></p>
                     <table class="search_list s_table">
                         <thead>
                             <tr>
@@ -63,14 +47,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>일자</td>
-                                <td>지점명</td>
-                                <td>지점등록번호</td>
-                                <td>점주명</td>
-                                <td>메뉴카테고리</td>
-                                <td>매출액</td>
-                            </tr>
+                        <c:choose>
+						    <c:when test="${empty list}">
+						        <tr>
+						            <td colspan="6">해당 날짜의 매출이 없습니다.</td>
+						        </tr>
+						    </c:when>
+						    <c:otherwise>
+						        <c:forEach items="${list}" var="dlist">
+						            <tr>
+						                <td>${dlist.payhistoryDate}</td>
+						                <td>${dlist.branchName}</td>
+						                <td>${dlist.bucksId}</td>
+						                <td>${dlist.bucksOwner}</td>
+						                <td></td>
+						                <td></td>
+						            </tr>
+						        </c:forEach>
+						    </c:otherwise>
+						</c:choose>
                         </tbody>
                     </table>
                     <!-- 페이징 -->
