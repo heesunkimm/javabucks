@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.StockListDTO;
 
 @Service
@@ -73,5 +74,17 @@ public class OrderMapper {
 	public int stockStatusUpdateY(String stockListCode) {
 		return sqlSession.update("stockStatusUpdateY", stockListCode);
 	}
+	
+	// 발주 리스트
+	public List<BaljooDTO> baljooList(Map<String, Object> params){
+		List<BaljooDTO> list = sqlSession.selectList("baljooList", params);
+		return list;
+	}
+	
+	// 발주 리스트 개수
+	public int baljooCount() {
+		return sqlSession.selectOne("baljooCount");
+	}
+	
 	
 }
