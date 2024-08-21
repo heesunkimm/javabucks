@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -69,22 +69,33 @@
             <form name="f" action="user_index" method="post">
                 <div class="input_box">
                     <label>
- 						<input type="text" name="userId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
+                    	<c:if test="${empty cookie['saveId']}">
+                        	<input type="text" name="userId" value="" placeholder="아이디 입력" required>
+                    	</c:if>
+                    	<c:if test="${not empty cookie['saveId']}">
+                        	<input type="text" name="userId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
+                    	</c:if>
                     </label>
                     <label>
                         <input type="password" name="userPasswd" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
-            </form>
             <div class="find_box">
                 <label>
-                    <input type="checkbox" name="saveId" value="on"> 아이디 저장
+                	<c:if test="${empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId"> 아이디 저장 
+                	</c:if>
+                	
+                	<c:if test="${not empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
+                    </c:if>
                 </label>
-                <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
-                <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
+                <a class="popup_btn" href="find_id" data-popup="findbyid">아이디 찾기</a>
+                <a class="popup_btn" href="find_password" data-popup="findbypw">비밀번호 찾기</a>
                 <a href="user_join">회원가입</a>
             </div>
+            </form>
         </div>
         <div id="findbyid" class="popup_box" style="display: none;">
             <p class="popup_title">아이디 찾기</p>
@@ -155,14 +166,4 @@
     </section>
     <!-- e: content -->
 </body>
-
-<script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-        var saveIdChecked = document.querySelector('input[name="saveId"]').checked;
-        console.log('Save ID checked:', saveIdChecked);
-    });
-</script>
-
-</html>
-
- 
+</html>  

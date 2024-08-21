@@ -23,11 +23,11 @@
     			
                 <div class="search_box">
                     <form name="" action="user_delivers?mode=store" method="post">
-                    	배달 주소지
-                    	<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" readonly><br>
+                    	<label>
+	                    	<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="" readonly>
+                    	</label>
                         <label>
-                            <input type="text" name="storeSearch" value="" placeholder="검색">
-                        </label>
+                            <input type="text" name="storeSearch" value="" placeholder="주소 검색">                        </label>
                         <button type="submit">검색</button>
                     </form>
                     <!-- <a href="javascript:;">자주가는 매장</a> -->
@@ -54,17 +54,21 @@
         <!-- 픽업 선택 팝업 -->
         <div class="popup_box pickup_box" id="insertAddress" style="display: none;">
             <div class="tit_box">
-                <p class="txt_tit">배달 주소를 설정해 주세요</p>
+                <p class="txt_tit">주소 설정</p>
             </div>
             <form name="f" action="" method="post">
                 <!-- s: 내용 작성 -->
                 <div class="select_box">
-                     <div class="txt_box">
-						<input class="" type="button" value="주소 검색" onclick="checkPost()">
-                       	<input class="" type="text" id="address" name="addr1" size="50" placeholder="주소" readonly>
-						<input class="" type="text" id="detailAddress" name="addr2" size="50" placeholder="상세주소">
-                       	<input type="hidden" id="house_addr" name="house_addr">
-                     </div>                    
+	                <div class="location_box">
+	                   	<label>
+	                       	<input class="" type="text" id="address" name="addr1" size="50" placeholder="주소" readonly>
+	                   	</label>
+	                   	<label>
+							<input class="" type="text" id="detailAddress" name="addr2" size="50" placeholder="상세주소">
+	                   	</label>
+	                </div>
+					<input class="" type="button" value="주소 검색" onclick="checkPost()">
+                   	<input type="hidden" id="house_addr" name="house_addr">
                 </div>
                 <div class="btn_box">
                     <button class="" type="button">확인</button>
