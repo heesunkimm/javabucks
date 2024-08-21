@@ -9,8 +9,7 @@
         <div class="tit_box">
             <p>장바구니</p>
         </div>
-
-        <form name="cart_f" action="addStoreOrder.do" method="post">
+        <form name="cart_f" action="addStoreOrder.do" method="post" onsubmit="return validate()">
             <ul class="cart_list">
             	<c:if test="${empty stockCartList}">
             		장바구니에 담긴 재고 품목이 없습니다.
@@ -18,9 +17,14 @@
             	<c:if test="${not empty stockCartList}">
             		<c:set var="sumPrice" value="0" />
 	            	<c:forEach var="stockCart" items="${stockCartList}">
-		                <li class="cart_item">
+		                <li class="cart_item">		                	
 		                    <div class="img_box">
-		                        <img src="/images/stocks_image/${stockCart.stockListImage}">
+		                    	<c:if test="${stockCart.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${stockCart.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${stockCart.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>			                        
 		                    </div>
 		                    <div class="txt_box">
 		                        <dl>
@@ -37,6 +41,7 @@
 		                                    <input type="hidden" name="stockListPrice" value="${stockCart.stockListPrice}">
 		                                    <input type="hidden" name="stockListCode" value="${stockCart.stockListCode}">
 		                                    <input type="hidden" name="stockCartNum" value="${stockCart.stockCartNum}">
+		                                    <input type="hidden" name="stockListStatus" value="${stockCart.stockListStatus}">
 		                                </label>
 		                                <div class="plus_btn img_box">
 		                                    <img src="../images/icons/plus.png" alt="" onclick="plusCount(this)">
@@ -170,6 +175,22 @@
 			// No를 누르면 현재 페이지 유지
 			// 아무 작업도 하지 않음
 		}	    
+	}
+	
+	// 장바구니 주문 전 검증
+	function validate(){
+		const cartItem = document.querySelectorAll('.txt_box');
+		
+		for (const item of cartItem){
+			const stockListStatus = item.querySelector('input[name="stockListStatus"]').value;
+			
+			if(stockListStatus === 'N'){
+				alert("장바구니에 품절된 상품이 포함되어있습니다. 장바구니에서 제외한 후 주문해주세요.")
+				return false;
+			}
+		}
+			alert("주문이 완료되었습니다.")
+			return true;		
 	}
 	
 </script>
