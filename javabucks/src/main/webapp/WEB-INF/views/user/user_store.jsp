@@ -33,7 +33,7 @@
             </div>
             <ul class="store_list">
         	    <c:if test= "${empty storeList}">
-        			매장명 / 지역을 검색해주세요
+       	    	<li class="nostore">이용하실 매장명 또는 지역을 검색해주세요.</li>
         		</c:if>
         		<c:forEach var ="dto" items="${storeList}">
                 <li class="store_item">
@@ -43,8 +43,8 @@
                         </div>
                         
                         <div class="txt_box">
-                         	  <p>${dto.bucksName}</p>
-             				  <p>${dto.bucksLocation}</p>
+                         	  <p class="txt_store">${dto.bucksName}</p>
+             				  <p class="txt_location">${dto.bucksLocation}</p>
                         </div>
                     </a>
                 </li>
