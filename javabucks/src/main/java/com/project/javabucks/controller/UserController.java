@@ -1,5 +1,7 @@
 package com.project.javabucks.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,6 +140,137 @@ public class UserController {
 		return "/user/user_menudetail";
 	}
 
+	@RequestMapping("/user_starhistory")
+	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();	
+		params.put("userId", userId);
+		int star = 0;	
+		
+		// 날짜 형식을 설정합니다.
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		// 현재 날짜를 가져옵니다.
+        LocalDate today = LocalDate.now();
+        // 한 달 전의 날짜를 계산합니다.
+        LocalDate oneMonthAgo = today.minusMonths(1); 
+        // 세 달 전의 날짜를 계산합니다.
+        LocalDate threeMonthAgo = today.minusMonths(3); 
+        // 날짜를 문자열로 변환합니다.      
+        String endDate = today.format(formatter);       
+		        
+		// 기간을 설정하고 확인눌렀다면
+		if(params.get("mode") != null) {
+			// 1개월 선택 시
+			if (params.get("period_startdate").equals("1month")) {
+				String startDate = oneMonthAgo.format(formatter);
+		        String period_setting = startDate + " ~ " + endDate;	            
+	            req.setAttribute("period_setting", period_setting);
+	            // 1개월 별 히스토리 조회
+	            params.put("startDate", startDate);
+	            params.put("endDate", endDate);
+	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+	            	            
+	            //별 갯수, 유효기간
+	    		for (FrequencyDTO freq : list) {
+	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+	                LocalDate validityDate = regDate.plusYears(1);
+	                freq.setFrequencyEndDate(validityDate.format(formatter));
+	                star += freq.getFrequencyCount();              
+	            }
+	    		req.setAttribute("star", star);
+	    		req.setAttribute("starHistory", list);
+	    		
+	        // 3개월 선택 시    
+	        } else if (params.get("period_startdate").equals("3months")) {
+	        	String startDate = threeMonthAgo.format(formatter);
+	        	String period_setting = startDate + " ~ " + endDate;	            
+	            req.setAttribute("period_setting", period_setting);
+	            
+	            // 3개월 별 히스토리 조회
+	            params.put("startDate", startDate);
+	            params.put("endDate", endDate);
+	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+	            	            
+	            //별 갯수
+	    		for (FrequencyDTO freq : list) {
+	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+	                LocalDate validityDate = regDate.plusYears(1);
+	                freq.setFrequencyEndDate(validityDate.format(formatter));
+	                star += freq.getFrequencyCount();              
+	            }
+	    		req.setAttribute("star", star);
+	    		req.setAttribute("starHistory", list);
+	    		
+            // 기간설정 버튼눌렀을때
+	        }else {
+			String period_setting = params.get("startDate") +" ~ " +params.get("endDate");
+			req.setAttribute("period_setting", period_setting);
+			List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+    		
+    		//별 갯수
+    		for (FrequencyDTO freq : list) {
+    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+                LocalDate validityDate = regDate.plusYears(1);
+                freq.setFrequencyEndDate(validityDate.format(formatter));
+                star += freq.getFrequencyCount();              
+            }
+    		req.setAttribute("star", star);
+    		req.setAttribute("starHistory", list);
+	        }
+			
+		}else {		
+			String startDate = oneMonthAgo.format(formatter);
+			// period_setting 문자열을 생성합니다.
+	        String period_setting = startDate + " ~ " + endDate;
+            // 요청 속성에 설정합니다.
+            req.setAttribute("period_setting", period_setting);
+            
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+            
+            // 유효기간을 계산하여 DTO에 추가
+            for (FrequencyDTO freq : list) {
+                LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+                LocalDate validityDate = regDate.plusYears(1);
+                freq.setFrequencyEndDate(validityDate.format(formatter));
+                star += freq.getFrequencyCount();  
+            }  
+            req.setAttribute("starHistory", list);
+     		req.setAttribute("star", star);
+        }
+		return "/user/user_starhistory";
+	}
+	
+	@RequestMapping("/user_mymenu")
+	public String userMymenu(HttpServletRequest req, String mode, String menuCode) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		System.out.println(mode);
+		
+		// 나만의메뉴 X 눌렀을때
+		if(mode != null) {
+			
+			//마메넘 구하는 메소드, 그걸 받아서 다시 아래에 넣어주기
+			int res =userMapper.MyMenuDeleteByMenuNum(mymenuNum);
+			if (res > 0) {	        	
+				req.setAttribute("msg", "나만의메뉴가 삭제되었습니다.");
+				req.setAttribute("url", "user_mymenu");
+	        } else {
+	        	req.setAttribute("msg", "나만의메뉴 삭제 중 오류가 발생하였습니다.");
+	    		req.setAttribute("url", "user_mymenu");
+	        }
+		}
+				
+		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
+		req.setAttribute("mymenu", list);		
+				
+		return "/user/user_mymenu";
+	}
+	
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 	public String userPay(Model model, HttpSession session) {
@@ -294,21 +427,7 @@ public class UserController {
 		return "/user/user_other";
 	}
 
-	@RequestMapping("/user_starhistory")
-	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
-		
-		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();	
-		params.put("userId", userId);
-		// 결과 2024-11-06 이런식으로 나옴
-//		System.out.println(params.get("startDate"));
-//		System.out.println(params.get("endDate"));
-		List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
-		req.setAttribute("starHistory", list); 	
 	
-		
-		return "/user/user_starhistory";
-	}
 
 	@RequestMapping("/user_recepit")
 	public String userRecepit() {
@@ -318,11 +437,6 @@ public class UserController {
 	@RequestMapping("/user_info")
 	public String userInfo() {
 		return "/user/user_info";
-	}
-
-	@RequestMapping("/user_mymenu")
-	public String userMymenu() {
-		return "/user/user_mymenu";
 	}
 
 	@RequestMapping("/user_delivershistory")

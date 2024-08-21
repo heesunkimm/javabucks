@@ -23,7 +23,7 @@
             <div class="star_count div_box">
                 <dl>
                     <dt>기간 내 적립한 누적 별</dt>
-                    <dd class="font_green">0개</dd>
+                    <dd class="font_green">${star}개</dd>
                 </dl>
                 <ul class="star_noti">
                     <li>※ 거래 변경, 별 소멸 및 기타 사유로 인해 실제 별 개수와 다소 차이가 있을 수 있습니다.</li>
@@ -31,7 +31,7 @@
             </div>
 
             <div class="view_date div_box">
-                <p class="font_gray">2024.07.01  ~ 2024.08.01</p>
+                <p class="font_gray">${period_setting}</p>
                 <a class="popup_btn font_green" href="javascript:;" data-popup="periodselect">기간 설정</a>
             </div>
 
@@ -50,7 +50,7 @@
                             <!-- 일자 =적립시간 / 유효기간 = 1년 -->
                              <ul class="txt_desc">
                                  <li>일자 <span>${dto.frequencyRegDate}</span></p>
-                                 <li>유효기간 <span>2025-08-01</span></p>
+                                 <li>유효기간 <span>${dto.frequencyEndDate}</span></p>
                              </ul>
                         </div>
                     </li>
@@ -108,55 +108,72 @@
 <%@ include file="user_bottom.jsp" %>
 
 <script>
-     function toggleDateInputs() {
-         const startDateInput = document.querySelector('input[name="startDate"]');
-         const endDateInput = document.querySelector('input[name="endDate"]');
-         const periodRadioButtons = document.querySelectorAll('input[name="period_startdate"]');
-         
-         periodRadioButtons.forEach(radio => {
-             radio.addEventListener('change', function() {
-                 if (this.value === '1month' || this.value === '3months') {
-                     startDateInput.disabled = true;
-                     endDateInput.disabled = true;
-                 } else {
-                     startDateInput.disabled = false;
-                     endDateInput.disabled = false;
-                 }
-             });
-         });
+    function toggleDateInputs() {
+        const startDateInput = document.querySelector('input[name="startDate"]');
+        const endDateInput = document.querySelector('input[name="endDate"]');
+        const periodRadioButtons = document.querySelectorAll('input[name="period_startdate"]');
+        
+        periodRadioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === '1month' || this.value === '3months') {
+                    startDateInput.disabled = true;
+                    endDateInput.disabled = true;
+                } else {
+                    startDateInput.disabled = false;
+                    endDateInput.disabled = false;
+                }
+            });
+        });
 
-         const selectedRadio = document.querySelector('input[name="period_startdate"]:checked');
-         if (selectedRadio && (selectedRadio.value === '1month' || selectedRadio.value === '3months')) {
-             startDateInput.disabled = true;
-             endDateInput.disabled = true;
-         } else {
-             startDateInput.disabled = false;
-             endDateInput.disabled = false;
-         }
+        const selectedRadio = document.querySelector('input[name="period_startdate"]:checked');
+        if (selectedRadio && (selectedRadio.value === '1month' || selectedRadio.value === '3months')) {
+            startDateInput.disabled = true;
+            endDateInput.disabled = true;
+        } else {
+            startDateInput.disabled = false;
+            endDateInput.disabled = false;
+        }
 
-         // StartDate 변경 시 EndDate 제한 설정
-         startDateInput.addEventListener('change', function() {
-             const selectedDate = new Date(this.value);
+        startDateInput.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
 
-             // 최소값 설정 (startDate와 동일)
-             endDateInput.min = this.value;
+            // 최소값 설정 (startDate와 동일)
+            endDateInput.min = this.value;
 
-             // 최대값 설정 (startDate에서 3개월 후)
-             const maxDate = new Date(selectedDate);
-             maxDate.setMonth(maxDate.getMonth() + 3); // 3개월 후로 설정
+            // 최대값 설정 (startDate에서 3개월 후)
+            const maxDate = new Date(selectedDate);
+            maxDate.setMonth(maxDate.getMonth() + 3);
 
-             // maxDate 객체를 yyyy-mm-dd 형식으로 변환
-             const maxYear = maxDate.getFullYear();
-             const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-             const maxDay = String(maxDate.getDate()).padStart(2, '0');
-             endDateInput.max = `${maxYear}-${maxMonth}-${maxDay}`;
-         });
-         
-     	 
-     }
-     
-     // 페이지 로드 시 초기 설정
-     window.onload = function() {
-         toggleDateInputs();
-     };
+            // 날짜 불일치 보정 (예: 31일이 없는 경우)
+            if (maxDate.getDate() !== selectedDate.getDate()) {
+                maxDate.setDate(0);
+            }
+
+            // maxDate 객체를 yyyy-mm-dd 형식으로 변환
+            const maxYear = maxDate.getFullYear();
+            const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+            const maxDay = String(maxDate.getDate()).padStart(2, '0');
+            endDateInput.max = `${maxYear}-${maxMonth}-${maxDay}`;
+			
+            // EndDate가 최대값을 초과하면 비활성화
+            if (new Date(endDateInput.value) > maxDate) {
+                endDateInput.value = ''; // 값을 비움
+                endDateInput.disabled = true; // 비활성화
+            } else {
+                endDateInput.disabled = false; // 활성화
+            }
+        });
+
+        // 페이지 로드 시 초기 설정
+        if (startDateInput.value) {
+            startDateInput.dispatchEvent(new Event('change'));
+        }
+    }
+  
+ 	// 팝업이 열릴 때마다 toggleDateInputs 함수 호출
+    document.querySelectorAll('[data-popup="periodselect"]').forEach(element => {
+        element.addEventListener('click', function() {
+            toggleDateInputs();
+        });
+    });
 </script>

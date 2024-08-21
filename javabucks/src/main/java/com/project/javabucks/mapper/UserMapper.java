@@ -136,4 +136,16 @@ public class UserMapper {
 	public List<FrequencyDTO> StarHistoryByUserid(Map<String, String> params) {	
 		return sqlSession.selectList("StarHistoryByUserid", params);
 	}
+	
+	public List<MenuDTO> MyMenuByUserid(String userId) {	
+		return sqlSession.selectList("MyMenuByUserid", userId);
+	}
+	
+	public MenuOptShotDTO MyMenuNumByMenucode(String menuoptCode) {	
+		return sqlSession.selectOne("MyMenuNumByMenucode", menuoptCode);
+	}
+	
+	public int MyMenuDeleteByMenuNum(int mymenuNum) {
+		return sqlSession.delete("MyMenuDeleteByMenuNum", mymenuNum);
+	}
 }

@@ -180,8 +180,28 @@
  		 SELECT *
  		 FROM javabucks_frequency 		    
    		 WHERE userId = #{userId}
-   		 AND frequencyRegDate between to_date(#{startDate}, 'YYYY-MM-DD') and to_date(#{endDate}, 'YYYY-MM-DD')
+   		 AND frequencyRegDate between to_date(#{startDate}, 'YYYY-MM-DD') 
+   		 and to_date(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND
 		 ORDER by frequencyRegDate desc					 	  		 
  	</select>
+ 	
+ 	<select id="MyMenuByUserid" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*
+ 		 FROM javabucks_mymenu jmy join javabucks_menu jm
+ 		 ON jmy.menuCode = jm.menuCode		    
+   		 WHERE userId = #{userId}   		 				 	  		 
+ 	</select>
+ 	
+ 	<select id="MyMenuNumByMenucode" parameterType="String" resultType="MymenuDTO"> 
+ 		 SELECT jm.*
+ 		 FROM javabucks_mymenu jmy join javabucks_menu jm
+ 		 ON jmy.menuCode = jm.menuCode		    
+   		 WHERE userId = #{userId}   		 				 	  		 
+ 	</select>
+ 	
+ 	<delete id="MyMenuDeleteByMenuNum" parameterType="String"> 
+ 		 DELETE FROM javabucks_mymenu	 		 	     
+   		 WHERE mymenuNum = #{mymenuNum} 		 				 	  		 
+ 	</delete>
  	
  </mapper>
