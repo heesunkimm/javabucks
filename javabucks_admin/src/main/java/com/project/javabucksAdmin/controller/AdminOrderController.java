@@ -118,8 +118,6 @@ public class AdminOrderController {
 	@ResponseBody
 	@PostMapping("/stockPlus.ajax")
 	public Map<String, Object> stockPlus(String stockListCode, String stockCount) {
-		System.out.println("stockListCode:" + stockListCode);
-		System.out.println("stockCount:" + stockCount);
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("stockListCode", stockListCode);
@@ -136,5 +134,48 @@ public class AdminOrderController {
 		
 		return response;
 	}
+	
+
+	@ResponseBody
+	@PostMapping("/adminOrderBlock.ajax")
+	public Map<String, Object> adminOrderBlock(String stockListCode){
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			int updateResult = mapper.stockStatusUpdateN(stockListCode);
+			if(updateResult > 0) {
+				response.put("result", "success");
+			} else {
+				response.put("result", "fail");
+			}
+			
+		} catch (Exception e) {
+			
+			response.put("result", "error");
+		}
+		return response;
+	}
+	
+	@ResponseBody
+	@PostMapping("/adminOrderRelease.ajax")
+	public Map<String, Object> adminOrderRelease(String stockListCode){
+		
+		Map<String, Object> response = new HashMap<>();
+		try {
+			int updateResult = mapper.stockStatusUpdateY(stockListCode);
+			if(updateResult > 0) {
+				response.put("result", "success");
+			} else {
+				response.put("result", "fail");
+			}
+			
+		} catch (Exception e) {
+			
+			response.put("result", "error");
+		}
+		return response;
+	}
+	
+	
 	
 }

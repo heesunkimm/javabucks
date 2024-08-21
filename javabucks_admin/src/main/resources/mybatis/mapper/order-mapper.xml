@@ -82,11 +82,24 @@
   	<update id="stockPlus" parameterType="java.util.Map">
 		update javabucks_stockList
 		set stockListCount = #{stockCount} + 100
-		WHERE stockListCode = #{stockListCode}
+		where stockListCode = #{stockListCode}
   	</update>
   
   	<select id="stockCountUpdated" parameterType="java.util.Map" resultType="int">
   		select stockListCount from javabucks_stockList
   		where stockListCode = #{stockListCode}
   	</select>
+  	
+  	<update id="stockStatusUpdateN" parameterType="String">
+  		update javabucks_stockList
+  		set stockListStatus = 'N'
+  		where stockListCode = #{stockListCode}
+  	</update>
+  	
+  	<update id="stockStatusUpdateY" parameterType="String">
+  		update javabucks_stockList
+  		set stockListStatus = 'Y'
+  		where stockListCode = #{stockListCode}
+  	</update>
+  	
   </mapper>

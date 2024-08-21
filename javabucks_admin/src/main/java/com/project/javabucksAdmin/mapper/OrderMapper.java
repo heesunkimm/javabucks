@@ -52,16 +52,26 @@ public class OrderMapper {
 		params.put("searchCate", searchCate);
 		params.put("searchStockListName", searchStockListName);	
 		return sqlSession.selectOne("searchAdminStockListCount", params);
-	}
-	
+	}	
 	
 	// 재고 확충
 	public int stockPlus(Map<String, Object> params) {
 		return sqlSession.update("stockPlus", params);
 	}
 	
-	// 업데이트된 수량
+	// 업데이트된 재고 수량
 	public int stockCountUpdated(Map<String, Object> params) {
 		return sqlSession.selectOne("stockCountUpdated", params);
 	}
+	
+	// 발주막기
+	public int stockStatusUpdateN(String stockListCode) {
+		return sqlSession.update("stockStatusUpdateN", stockListCode);
+	}
+	
+	// 발주풀기
+	public int stockStatusUpdateY(String stockListCode) {
+		return sqlSession.update("stockStatusUpdateY", stockListCode);
+	}
+	
 }

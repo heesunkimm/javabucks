@@ -8,6 +8,7 @@ public class StockListDTO {
 	private int stockListPrice;
 	private int stockListCount;
 	private String stockListImage;
+	private String stockListStatus;
 	
 	
 	public String getStockListCode() {
@@ -46,8 +47,11 @@ public class StockListDTO {
 	public void setStockListImage(String stockListImage) {
 		this.stockListImage = stockListImage;
 	}
-	
-	
-	
-	
+	public String getStockListStatus() {
+		return stockListStatus;
+	}
+	public void setStockListStatus(String stockListStatus) {
+		this.stockListStatus = stockListStatus;
+	}
+		
 }

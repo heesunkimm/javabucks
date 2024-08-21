@@ -57,7 +57,14 @@
 		                        <li class="stocks_count" style="width: 20%; text-align: center;">${stocks.stockListCount}</li>
 		                        <li style="width: 20%; text-align: center;">
 		                            <button class="stocks_btn" type="button" onclick="stocksPlus(this)">재고확충</button>
-		                            <button class="stocks_btn" type="button" onclick="orderBlock(this)">발주막기</button>
+		                            <c:if test="${stocks.stockListStatus eq 'Y'}">
+		                            	<button class="stocks_btn block" type="button" onclick="orderBlock(this)">발주막기</button>
+		                            	<button class="stocks_btn release" type="button" style="display:none;" onclick="orderRelease(this)">발주풀기</button>
+		                            </c:if>
+		                            <c:if test="${stocks.stockListStatus eq 'N'}">
+		                            	<button class="stocks_btn block" type="button" style="display:none;" onclick="orderBlock(this)">발주막기</button>
+		                            	<button class="stocks_btn release" type="button" onclick="orderRelease(this)">발주풀기</button>
+		                            </c:if>
 		                        </li>
 		                    </ul>                    
 		                </li>
@@ -111,8 +118,15 @@
 		                        <li class="stocks_listName" style="width: 20%; text-align: center;">${stocks.stockListName}</li>
 		                        <li class="stocks_count" style="width: 20%; text-align: center;">${stocks.stockListCount}</li>
 		                        <li style="width: 20%; text-align: center;">
-		                            <button class="stocks_btn" type="button" onclick="stocksPlus(this)">재고확충</button>
-		                            <button class="stocks_btn" type="button" onclick="orderBlock(this)">발주막기</button>
+		                        	<button class="stocks_btn" type="button" onclick="stocksPlus(this)">재고확충</button>
+		                            <c:if test="${stocks.stockListStatus eq 'Y'}">
+		                            	<button class="stocks_btn block" type="button" onclick="orderBlock(this)">발주막기</button>
+		                            	<button class="stocks_btn release" type="button" style="display:none;" onclick="orderRelease(this)">발주풀기</button>
+		                            </c:if>
+		                            <c:if test="${stocks.stockListStatus eq 'N'}">
+		                            	<button class="stocks_btn block" type="button" style="display:none;" onclick="orderBlock(this)">발주막기</button>
+		                            	<button class="stocks_btn release" type="button" onclick="orderRelease(this)">발주풀기</button>
+		                            </c:if>
 		                        </li>
 		                    </ul>                    
 		                </li>
@@ -156,7 +170,7 @@
 <script type="text/javascript">
 	function stocksPlus(element){
 		const stockListCode = element.closest('.search_item').querySelector('.stocks_listCode').textContent.trim();
-		const stocks_listName = element.closest('.search_item').querySelector('.stocks_listName').textContent.trim();
+		const stockListName = element.closest('.search_item').querySelector('.stocks_listName').textContent.trim();
 		const stockCount = element.closest('.search_item').querySelector('.stocks_count').textContent.trim();
 		
 		// 수량이 표시된 위치
@@ -169,17 +183,70 @@
 				stockListCode : stockListCode,
 				stockCount : stockCount
 			},	
-			success: function(response){
+			success : function(response){
 				let newStockCount = response.updateCount;
 				console.log(newStockCount);
 				stockCountElement.textContent = newStockCount;
-				alert(stocks_listName+"("+stockListCode + ")의 재고가 추가되었습니다.")
+				alert(stockListName+"("+stockListCode + ")의 재고가 추가되었습니다.")
 			},
 			error : function(error){
 				console.log("에러", error);
 			}
 		});
-
+	}
+	
+	function orderBlock(element){
+		const stockListCode = element.closest('.search_item').querySelector('.stocks_listCode').textContent.trim();
+		const stockListName = element.closest('.search_item').querySelector('.stocks_listName').textContent.trim();
+		
+		$.ajax({
+			type : "POST",
+			url : "adminOrderBlock.ajax",
+			data : {
+				stockListCode : stockListCode
+			},
+			success : function(response){
+				console.log(response.result);
+				if(response.result === "success"){
+					alert(stockListName+"("+stockListCode+") 재고 품목의 발주기능을 막았습니다.");
+ 					$(element).hide();
+ 					$(element).siblings('.release').css('display', 'inline-block');
+				} else {
+					alert("발주기능 막기 실패했습니다.")
+				}
+			},
+			error : function(){
+				alert("서버 오류 발생")
+			}
+		});
+	}
+	
+	function orderRelease(element){
+		const stockListCode = element.closest('.search_item').querySelector('.stocks_listCode').textContent.trim();
+		console.log(stockListCode);
+		const stockListName = element.closest('.search_item').querySelector('.stocks_listName').textContent.trim();
+		console.log(stockListName);
+		
+		$.ajax({
+			type : "POST",
+			url : "adminOrderRelease.ajax",
+			data : {
+				stockListCode : stockListCode
+			},
+			success : function(response){
+				console.log(response.result);
+				if(response.result === "success"){
+					alert(stockListName+"("+stockListCode+") 재고 품목의 발주기능을 풀었습니다.");
+ 					$(element).hide();
+ 					$(element).siblings('.block').css('display', 'inline-block');
+				} else {
+					alert("발주기능 풀기 실패했습니다.")
+				}
+			},
+			error : function(){
+				alert("서버 오류 발생")
+			}
+		});
 	}
 	
 
