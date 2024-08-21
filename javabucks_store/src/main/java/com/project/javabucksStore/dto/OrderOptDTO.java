@@ -2,7 +2,7 @@ package com.project.javabucksStore.dto;
 
 public class OrderOptDTO {
 
-	private String optId;
+	private int optId;
 	private int cupNum;
 	private int shotNum;
 	private int optShotCount;
@@ -14,10 +14,10 @@ public class OrderOptDTO {
 	private int optTotPrice;
 	
 	
-	public String getOptId() {
+	public int getOptId() {
 		return optId;
 	}
-	public void setOptId(String optId) {
+	public void setOptId(int optId) {
 		this.optId = optId;
 	}
 	public int getCupNum() {
