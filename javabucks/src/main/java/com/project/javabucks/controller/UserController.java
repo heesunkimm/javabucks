@@ -31,6 +31,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
@@ -122,7 +123,7 @@ public class UserController {
 		// 음료메뉴 퍼스널옵션값 가져오기
 		if (drink != null) {
 			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
-			req.setAttribute("shot", dto2.getShotType());
+			req.setAttribute("shot", dto2);
 		}
 		List<MenuOptCupDTO> list1 = userMapper.CupSizeByCode(menuoptCode);
 		List<MenuOptIceDTO> list2 = userMapper.IceByCode(menuoptCode);
@@ -274,7 +275,12 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_paynow")
-	public String userPaynow() {
+	public String userPaynow(Model model, @RequestParam Map<String, String> params) {
+		System.out.println(params);
+		int res = userMapper.orderOptInsert(params);
+//		OrderOptDTO optdto = new OrderOptDTO();
+//		optdto.setCupNum(Integer.parseInt(params.get("cupNum")));
+//		System.out.println(optdto.getCupNum());
 		return "/user/user_paynow";
 	}
 

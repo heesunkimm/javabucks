@@ -76,6 +76,11 @@ public class UserMapper {
 		return sqlSession.selectList("getAlarmsByCategory", params);
 	}
 	
+	// 주문옵션 javabucks_order_opt 테이블인서트
+	public int orderOptInsert (Map<String, String> params) {
+		return sqlSession.insert("orderOptInsert", params);
+	}
+	
 	// 채성진 작업------------------------------------------------------
 	public UserDTO getInfoById() {
 		return sqlSession.selectOne("getInfoById");

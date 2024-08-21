@@ -82,6 +82,31 @@
 		ORDER BY alarmRegDate DESC
  	</select>
  	
+ 	<!-- javabucks_order_opt 인서트 -->	
+ 	<insert id="orderOptInsert" parameterType="java.util.Map">
+ 		INSERT INTO javabucks_order_opt (optId, cupNum, shotNum, optShotCount, syrupNum, optSyrupCount, milkNum, iceNum, whipNum) 
+ 		VALUES (seq_optId.nextval, #{cupNum}, #{shotNum}, #{optShotCount}, #{syrupNum}, #{optSyrupCount},
+        <if test="milkNum != null and milkNum != ''">
+            #{milkNum}
+        </if>
+        <if test="milkNum == null or milkNum == ''">
+            NULL
+        </if>,
+        <if test="iceNum != null and iceNum != ''">
+            #{iceNum}
+        </if>
+        <if test="iceNum == null or iceNum == ''">
+            NULL
+        </if>,
+        <if test="whipNum != null and whipNum != ''">
+            #{whipNum}
+        </if>
+        <if test="whipNum == null or whipNum == ''">
+            NULL
+        </if>
+    )
+ 	</insert>
+ 	
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
  		SELECT * FROM javabucks_user WHERE userId= 'user001'
