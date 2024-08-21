@@ -1,5 +1,6 @@
 package com.project.javabucksAdmin.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucksAdmin.dto.BaljooDTO;
+import com.project.javabucksAdmin.dto.BaljooOrder;
 import com.project.javabucksAdmin.dto.StockListDTO;
 import com.project.javabucksAdmin.mapper.OrderMapper;
 
@@ -182,8 +185,6 @@ public class AdminOrderController {
 	public String adminStoreOrder(HttpServletRequest req,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
-		
-		
 		int baljooListCount = mapper.baljooCount();
 		Map<String, Object> pagingMap = paging_baljoo(baljooListCount, pageNum);
 				
@@ -191,9 +192,53 @@ public class AdminOrderController {
 		params.put("startRow", pagingMap.get("startRow"));
 		params.put("endRow", pagingMap.get("endRow"));
 		
-		List<BaljooDTO> list = mapper.baljooList(params);
+		List<BaljooDTO> baljooList = mapper.baljooList(params);
 		
-		req.setAttribute("baljooList", list);
+		ObjectMapper objectMapper = new ObjectMapper();
+		for(BaljooDTO baljooDTO : baljooList) {
+			try {
+				// baljooList 컬럼의 JSON 문자열을 List<String>으로 변환
+				List<String> baljooItems = objectMapper.readValue(baljooDTO.getBaljooList(), 
+                        					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+				
+				// 재고명까지 들어간 baljooList 업데이트용
+				List<BaljooOrder> updateBaljooList = new ArrayList<>();
+				
+				for(String items : baljooItems) {
+					String[] item = items.split(":");
+					
+					if(item.length == 2) {
+						String stockCode = item[0];
+						String quantity = item[1];
+						
+						// BaljooOrder 객체 생성
+						BaljooOrder baljooOrder = new BaljooOrder(stockCode, Integer.parseInt(quantity));
+						
+						// stockCode가지고 stockName 가져오기
+						String stockListName = mapper.getStcokName(stockCode);
+						
+						// BaljooOrder 객체에 재고명 set
+						baljooOrder.setStockListName(stockListName);
+						
+						// BaljooOrder객체를 updateBaljooList에 add
+						updateBaljooList.add(baljooOrder);
+						
+					} else {
+						System.out.println("Code:Quantity 형태가 아님");
+					}
+				}
+				// updateBaljooList를 baljooDTO에 set
+				baljooDTO.setBaljooListbyBaljooOrder(updateBaljooList);
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}		
+		req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+		req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+		req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+		req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
+		req.setAttribute("baljooList", baljooList);
 		
 		return "/order/admin_storeorder";
 	}
@@ -201,7 +246,7 @@ public class AdminOrderController {
 	
 	// 페이징 처리 메서드
 	public Map<String, Object> paging_baljoo(int count, int pageNum) {
-		int pageSize = 10; // 한 페이지에 보여질 게시글 수
+		int pageSize = 5; // 한 페이지에 보여질 게시글 수
 		int startRow = (pageNum-1) * pageSize + 1; // 페이지별 시작 넘버
 		int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
 		if (endRow > count) endRow = count;		

@@ -78,7 +78,13 @@
 									<fmt:formatDate value="${date}" pattern="yyyy-MM-dd" />	
 	                            </td>	                            
 	                            <td>${baljoo.bucksName}</td>
-	                            <td>${baljoo.baljooList}</td>
+	                            <td>
+	                            	<ul>
+	                            	<c:forEach var="item" items="${baljoo.baljooListbyBaljooOrder}">
+	                            		<li>- ${item.stockListName} ${item.quantity}개</li>
+	                            	</c:forEach>
+	                            	</ul>
+	                            </td>
 	                            <td><fmt:formatNumber value="${baljoo.baljooPrice}" pattern="###,###"/>원</td>
 	                            <td><a href="javascript:;">[처리]</a></td>
 	                        </tr>
@@ -87,6 +93,30 @@
                 </table>
                 <!-- 페이징 -->
                 <div class="pagination">
+				    <c:if test="${startPage > pageBlock}"> 
+				        <a class="page_btn prev_btn" href="adminStoreOrder.do?pageNum=${startPage-3}">
+				        이전
+				        </a>
+				    </c:if>
+				    
+				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+				        <c:set var="activeClass" value=""/>
+				        <c:choose>
+				            <c:when test="${empty param.pageNum and i == 1}">
+				                <c:set var="activeClass" value="page_active"/>
+				            </c:when>
+				            <c:when test="${param.pageNum == i}">
+				                <c:set var="activeClass" value="page_active"/>
+				            </c:when>
+				        </c:choose>
+				        <a href="adminStoreOrder.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+				    </c:forEach>
+				    
+				    <c:if test="${pageCount > endPage}">
+				        <a class="page_btn next_btn" href="adminStoreOrder.do?pageNum=${startPage+3}">
+				        다음
+				        </a>
+				    </c:if>
                 </div>    
             </div>
         </div>

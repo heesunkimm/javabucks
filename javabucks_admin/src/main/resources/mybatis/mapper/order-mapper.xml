@@ -119,4 +119,10 @@
   		select count(*) from javabucks_baljoo
   	</select>
   	
+  	<!-- 재고코드 가지고 재고명 받아오기 -->
+  	<select id="getStockName" parameterType="String" resultType="String">
+  		select stockListName from javabucks_stockList
+  		where stockListCode = #{stockListCode}
+  	</select>
+  	
   </mapper>

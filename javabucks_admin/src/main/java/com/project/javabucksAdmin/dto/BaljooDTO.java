@@ -1,5 +1,7 @@
 package com.project.javabucksAdmin.dto;
 
+import java.util.List;
+
 public class BaljooDTO {
 	
 	private int baljooNum; // 발주번호(시퀀스)
@@ -46,7 +48,18 @@ public class BaljooDTO {
 		this.baljooStatus = baljooStatus;
 	}
 	
-	//조인용
+	// 화면 출력용
+	private List<BaljooOrder> baljooListbyBaljooOrder;
+	
+	
+	public List<BaljooOrder> getBaljooListbyBaljooOrder() {
+		return baljooListbyBaljooOrder;
+	}
+	public void setBaljooListbyBaljooOrder(List<BaljooOrder> baljooListbyBaljooOrder) {
+		this.baljooListbyBaljooOrder = baljooListbyBaljooOrder;
+	}
+
+	// 조인용
 	private String bucksName;
 	private int totalOrderAmount;
 

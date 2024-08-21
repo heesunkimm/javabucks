@@ -86,5 +86,7 @@ public class OrderMapper {
 		return sqlSession.selectOne("baljooCount");
 	}
 	
-	
+	public String getStcokName(String stockListCode) {
+		return sqlSession.selectOne("getStockName", stockListCode);
+	}
 }
