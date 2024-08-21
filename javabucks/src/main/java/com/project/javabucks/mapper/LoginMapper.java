@@ -18,13 +18,13 @@ public class LoginMapper {
 	public int insertUser(UserDTO dto){
 		return sqlSession.insert("insertUser",dto);
 	}
-	
+	 
 	// 아이디 중복체크 
 	public int checkId(String id) {
 		return sqlSession.selectOne("checkId", id);
 	}
 	
-	// 이메일인증 - 이메일이 이미 존재한지 확인
+	// 회원가입 이메일인증 - 이메일이 이미 존재한지 확인
 	public UserDTO findUserByEmail(Map<String,String> params) {
 		return sqlSession.selectOne("findUserByEmail",params);
 	}
@@ -34,6 +34,10 @@ public class LoginMapper {
 		return sqlSession.selectOne("findUserById",userId);
 	}
 	
+	// 아이디찾기 이메일인증 
+	public UserDTO emailForId(Map<String, String> params) {
+		return sqlSession.selectOne("emailForId",params);
+	}
 	
 	
 	

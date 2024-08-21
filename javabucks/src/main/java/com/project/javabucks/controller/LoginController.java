@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucks.dto.UserDTO;
-import com.project.javabucks.mapper.LoginMapper;
+import com.project.javabucks.mapper.LoginMapper; 
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
@@ -246,7 +246,96 @@ public class LoginController {
 		return "message";
 	}
 	
+	// 아이디 찾기 
+	@ResponseBody
+	@PostMapping("/emailForId")
+	public String emailForId(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws Exception {
+	    try {
+	        System.out.println("params:" + params);
+	        String email1 = params.get("userEmail1");
+	        String email2 = params.get("userEmail2");
+	        String email = email1 + "@" + email2;
+
+	        Map<String, String> paramMap = new HashMap<>();
+	        paramMap.put("userEmail1", email1);
+	        paramMap.put("userEmail2", email2);
+
+	        Random random = new Random();
+	        String code = String.valueOf(random.nextInt(900000) + 100000);
+	        Cookie cookie = new Cookie("checkCode", code);
+	        resp.addCookie(cookie);
+
+	        UserDTO dto = loginMapper.emailForId(paramMap);
+
+	        MimeMessage msg = mailSender.createMimeMessage();
+	        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+	        helper.setFrom("mihyun6656@gmail.com");
+	        helper.setTo(email);
+	        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+	        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+	                + " \n\n 회원가입을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+	        mailSender.send(msg);
+
+	        req.setAttribute("msg", "해당 이메일로 정보를 전송하였습니다.");
+	        req.setAttribute("url", "user_login");
+	         
+	        return "OK";
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        req.setAttribute("msg", "이메일 전송 중 오류가 발생했습니다.");
+	        return "FAIL";
+	    }
+	}
 	
+	// emailForPw
+	@ResponseBody
+	@PostMapping("/emailForPw")
+	public String emailForPw(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws Exception {
+	    try {
+	        System.out.println("params:" + params);
+	        String id = params.get("findbypw_id");
+	        String email1 = params.get("findbypw_email1");
+	        String email2 = params.get("findbypw_email2");
+	        String email = email1 + "@" + email2;
+	        
+	        System.out.println("id: " + id);
+	        System.out.println("email1: " + email1);
+	        System.out.println("email2: " + email2);
+
+	        Map<String, String> paramMap = new HashMap<>();
+	        paramMap.put("userEmail1", email1);
+	        paramMap.put("userEmail2", email2);
+
+	        Random random = new Random();
+	        String code = String.valueOf(random.nextInt(900000) + 100000);
+	        Cookie cookie = new Cookie("checkCode", code);
+	        resp.addCookie(cookie);
+
+	        UserDTO dto = loginMapper.emailForId(paramMap);
+
+	        MimeMessage msg = mailSender.createMimeMessage();
+	        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+	        helper.setFrom("mihyun6656@gmail.com");
+	        helper.setTo(email);
+	        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+	        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 현재 비밀번호 : " + dto.getUserPasswd() + "입니다."
+	                + " \n\n 회원가입을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+	        mailSender.send(msg);
+
+	        req.setAttribute("msg", "해당 이메일로 정보를 전송하였습니다.");
+	        req.setAttribute("url", "user_login");
+	         
+	        return "OK";
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        req.setAttribute("msg", "이메일 전송 중 오류가 발생했습니다.");
+	        return "FAIL";
+	    }
+	}
 	
 	 
 	 
