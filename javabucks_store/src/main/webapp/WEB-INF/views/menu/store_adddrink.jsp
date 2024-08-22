@@ -112,7 +112,7 @@
 	            } else {
 	                res.forEach(function(item) {
 	                	// 메뉴 추가시 클래스 추가
-	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
+	                    let btnClass = item.storeEnable === 'N' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
 	                        '<li class="menu_item">' + 
@@ -128,7 +128,7 @@
 	                            '<div class="btn_box">' + 
 	                                '<button class="menuAddBtn ' + btnClass + 
 	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
-	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
+	                                '" data-name="' + item.menuName + '" data-enable="' + (item.storeEnable === 'N' ? 'N' : 'Y') + 
 	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
 	                        '</li>'
@@ -165,7 +165,7 @@
 
 	                let item = res.find(item => item.menuCode === menuCode);
 	                if (item && item.storemenuStatus === 'Y') {
-	                    $btn.addClass('btn_disable').attr('data-status', 'Y');
+	                    $btn.addClass('btn_disable').attr('data-enable', 'N');
 	                }
 	            });
 	        },
@@ -203,7 +203,7 @@
 	        success: function(res) {
 	        	// 메뉴추가 aelrt
 	        	alert(res);
-	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
+	        	$btn.addClass('btn_disable').attr('data-enable', 'N');
 	        	// 버튼상태 업데이트
 	        	updateStatus();
 	        },
