@@ -54,7 +54,7 @@
 	
 	// 선택된 옵션에 맞는 메뉴 실시간 리스트업
 	function getSelectMenu() {
-	    let selectedDivide = $('select[name="menu_divide"]').val();
+		let selectedDivide = $('select[name="menu_divide"]').val();
 	    let selectedOptCode = selectedDivide + 'NN'
 	    $('input[name="menuoptCode"]').val(selectedOptCode);
 	    let menuOpt = $('input[name="menuoptCode"]').val();
@@ -72,17 +72,14 @@
 	        success: function(res) {
 	            $('.menu_list').empty();
 	            
-	            // 선택된 옵션에 해당하는 메뉴가 없을때
 	            if(res.length === 0) {
-	            	 $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
-	            }else {
-            	// 선택된 옵션에 해당하는 메뉴가 있을때
+	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
+	            } else {
 	                res.forEach(function(item) {
-	                	let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
-	                    let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : '';
+	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
-	                   		'<li class="menu_item">' + 
+	                        '<li class="menu_item">' + 
 	                            '<div class="menu_info">' + 
 	                                '<div class="img_box">' + 
 	                                    '<img src="../../images/upload_menuImages/' + item.menuImages + '" alt="' + item.menuName + '">' + 
@@ -93,12 +90,18 @@
 	                                '</div>' + 
 	                            '</div>' + 
 	                            '<div class="btn_box">' + 
-	                                '<button class="menuAddBtn" data-store="bucks_1111" data-code="' + item.menuCode + '" data-name="' + item.menuName + '" data-status="N" type="button">메뉴 추가</button>' + 
+	                                '<button class="menuAddBtn ' + btnClass + 
+	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
+	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
+	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
 	                        '</li>'
 	                    );
 	                });
 	            }
+	            
+	            // 버튼 상태 업데이트
+	            updateStatus();
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);

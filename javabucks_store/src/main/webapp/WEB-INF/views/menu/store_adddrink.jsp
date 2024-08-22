@@ -75,14 +75,13 @@
 	});
 	
 	$('input[type="checkbox"]').on('click', function() {
-	    if ($(this).prop('checked')) {
-	        $('input[name="menu_temp"]').prop('checked', false);
-	        $(this).prop('checked', true);
-	    }
+       	$('input[name="menu_temp"]').not(this).prop('checked', false);
+        if ($('input[name="menu_base"]:checked').length === 0) {
+			$(this).prop('checked', true);
+        }
 	    // 체크박스 변경시 메뉴 재정렬
 	    getSelectMenu();
 	});
-	
 	// select option 변경시 메뉴 재정렬
 	$('select[name="menu_divide"], select[name="menu_base"]').change(getSelectMenu);
 	
@@ -108,17 +107,14 @@
 	        success: function(res) {
 	            $('.menu_list').empty();
 	            
-	            // 선택된 옵션에 해당하는 메뉴가 없을때
 	            if(res.length === 0) {
-	            	 $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
-	            }else {
-            	// 선택된 옵션에 해당하는 메뉴가 있을때
+	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
+	            } else {
 	                res.forEach(function(item) {
-	                	let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
-	                    let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : '';
+	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
-	                   		'<li class="menu_item">' + 
+	                        '<li class="menu_item">' + 
 	                            '<div class="menu_info">' + 
 	                                '<div class="img_box">' + 
 	                                    '<img src="../../images/upload_menuImages/' + item.menuImages + '" alt="' + item.menuName + '">' + 
@@ -129,12 +125,18 @@
 	                                '</div>' + 
 	                            '</div>' + 
 	                            '<div class="btn_box">' + 
-	                                '<button class="menuAddBtn" data-store="bucks_1111" data-code="' + item.menuCode + '" data-name="' + item.menuName + '" data-status="N" type="button">메뉴 추가</button>' + 
+	                                '<button class="menuAddBtn ' + btnClass + 
+	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
+	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
+	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
 	                        '</li>'
 	                    );
 	                });
 	            }
+	            
+	            // 버튼 상태 업데이트
+	            updateStatus();
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);
@@ -152,8 +154,6 @@
 	        data: { bucksId: storeId },
 	        dataType: 'json',
 	        success: function(res) {
-	            console.log(res);
-
 	            // 메뉴 리스트 새로 업데이트
 	            $('.menu_list .menu_item').each(function () {
 	                let $btn = $(this).find('.menuAddBtn');
@@ -196,7 +196,10 @@
 	        contentType: "application/json",
 	        dataType: "text",
 	        success: function(res) {
+	        	// 메뉴추가 aelrt
+	        	alert(menuName + res);
 	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
+	        	// 버튼상태 업데이트
 	        	updateStatus();
 	        },
 	        error: function(err) {

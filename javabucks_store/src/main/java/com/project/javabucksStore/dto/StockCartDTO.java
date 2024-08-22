@@ -52,6 +52,7 @@ public class StockCartDTO {
 	private String stockListName; // 재고명
 	private int stockListPrice; // 재고 가격
 	private String stockListImage; // 재고 이미지
+	private String stockListStatus;
 	private int totCount;
 	private String lastRegDate;
 
@@ -91,6 +92,12 @@ public class StockCartDTO {
 	public void setLastRegDate(String lastRegDate) {
 		this.lastRegDate = lastRegDate;
 	}
-
+	public String getStockListStatus() {
+		return stockListStatus;
+	}
+	public void setStockListStatus(String stockListStatus) {
+		this.stockListStatus = stockListStatus;
+	}
+	
 	
 }
