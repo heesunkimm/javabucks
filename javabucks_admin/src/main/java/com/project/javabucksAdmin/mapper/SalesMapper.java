@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.OrderDTO;
+import com.project.javabucksAdmin.dto.OrderItem;
 import com.project.javabucksAdmin.dto.PayhistoryDTO;
 
 @Service
@@ -154,8 +155,51 @@ public class SalesMapper {
     public List<PayhistoryDTO> searchMonth(Map<String, Object> params){
     	return sqlSession.selectList("searchMonth",params);
     }
-	
     
-  
+    //월별 매출 상세보기 1 - 
+    public List<OrderDTO> monthlyDetails(Map<String, Object> params){
+    	//System.out.println(params);
+    	return sqlSession.selectList("monthlyDetails", params);
+    }
+    
+    //월별 매출 상세보기 2 - 메뉴가격 가져오기
+	public int getMenuPrice(String menuCode){
+		//System.out.println("menuCode : " + menuCode);
+		return sqlSession.selectOne("getMenuPrice", menuCode);
+	}
+	
+	//월별 매출 상세보기 3 - 옵션가격 가져오기
+    public int getOptPrice(String optionId) {
+    	//System.out.println("optionId : "+ optionId);
+    	return sqlSession.selectOne("getOptPrice",optionId);
+    }
+    
+    //쿠폰 코드로 쿠폰가격 가져오기
+    public int getCouponPrice(int coupon) {
+    	System.out.println("coupon : " + coupon);
+    	return sqlSession.selectOne("getCouponPrice", coupon);
+    }
+    
+    public List<PayhistoryDTO> dailyBucksSales() {
+    	return sqlSession.selectList("dailyBucksSales");
+    }
+    
+    // 메뉴코드의 첫 글자를 통해 카테고리 분류
+ 	public String categorizeMenu(String menuCode) {
+ 			    if (menuCode.startsWith("B")) {
+ 			        return "음료";
+ 			    } else if (menuCode.startsWith("C")) {
+ 			        return "디저트";
+ 			    } else if (menuCode.startsWith("M")) {
+ 			        return "MD 상품";
+ 			    } else {
+ 			        return "Unknown";
+ 			    }
+ 			}
+ 	
+ 	public List<PayhistoryDTO> searchDailySales(Map<String, Object> params) {
+ 		return sqlSession.selectList("searchDailySales",params);
+ 	}
+ 			
 	 
 }

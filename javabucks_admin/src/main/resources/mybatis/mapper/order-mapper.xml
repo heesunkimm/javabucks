@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="mybatis.mapper.order-mapper">
+  
+  	<!-- 재고 리스트 개수 -->
+  	<!-- 처음 들어왔을 때 -->
+  	<select id="adminStockListCount" resultType="int">
+		select count(*) from javabucks_stocklist
+  	</select>
+  	
+  	<!-- 카테고리 검색 조건이 ALL일 때 -->
+  	<select id="searchAdminStockListCountAll" resultType="int">
+		select count(*) from javabucks_stocklist
+		<if test="searchStockListName != ''">
+			where stockListName like '%' || #{searchStockListName} || '%'
+		</if>
+		order by stockListCode asc
+	</select>
+	
+	<!-- 카테고리 검색 조건이 ALL이 아닐 때 -->
+	<select id="searchAdminStockListCount" resultType="int">
+		select count(*) from javabucks_stocklist
+		<if test="searchStockCate != '' and searchStockListName != ''">
+			where stockListName like '%' || #{searchStockListName} || '%'
+				and stockCateCode = #{searchCate}
+		</if>
+		<if test="searchStockCate == '' and searchStockListName != ''">
+			where stockListName like '%' || #{searchStockListName} || '%'
+		</if>
+		<if test="searchStockCate != '' and searchStockListName == ''">
+			where stockCateCode = #{searchCate}
+		</if>
+		order by stockListCode asc
+	</select>
+  	
+  	<!-- 재고 리스트 -->
+  	<!-- 처음 들어왔을 때 -->
+  	<select id="getAdminStockList" parameterType="java.util.Map" resultType="StockListDTO">
+  		select * from ( select rownum rn, A.*
+						from (
+	  							select * from javabucks_stocklist
+	  							order by stockListCode asc	  							
+	  							) A	)
+	  	where rn between #{startRow} and #{endRow}
+  	</select>
+  	
+  	<!-- 검색 cate ALL -->
+ 	<select id="findAdminStockListAll" parameterType="java.util.Map" resultType="StockListDTO">
+ 		select * from ( select rownum rn, A.*
+						from (
+	  							select * from javabucks_stocklist
+	  							<if test="searchStockListName != ''">
+									where stockListName like '%' || #{searchStockListName} || '%'
+								</if>
+	  							order by stockListCode asc	  							
+	  							) A	)
+	  	where rn between #{startRow} and #{endRow} 	
+ 	</select>
+ 	
+ 	<!-- 검색 cate ALL 이외 -->
+ 	<select id="findAdminStockList" parameterType="java.util.Map" resultType="StockListDTO">
+ 		select * from ( select rownum rn, A.*
+						from (
+	  							select * from javabucks_stocklist
+	  							<if test="searchStockCate != '' and searchStockListName != ''">
+									where stockListName like '%' || #{searchStockListName} || '%'
+										and stockCateCode = #{searchCate}
+								</if>
+								<if test="searchStockCate == '' and searchStockListName != ''">
+									where stockListName like '%' || #{searchStockListName} || '%'
+								</if>
+								<if test="searchStockCate != '' and searchStockListName == ''">
+									where stockCateCode = #{searchCate}
+								</if>
+	  							order by stockListCode asc	  							
+	  							) A	)
+	  	where rn between #{startRow} and #{endRow} 	
+ 	</select>
+
+  	<update id="stockPlus" parameterType="java.util.Map">
+		update javabucks_stockList
+		set stockListCount = #{stockCount} + 100
+		where stockListCode = #{stockListCode}
+  	</update>
+  
+  	<select id="stockCountUpdated" parameterType="java.util.Map" resultType="int">
+  		select stockListCount from javabucks_stockList
+  		where stockListCode = #{stockListCode}
+  	</select>
+  	
+  	<update id="stockStatusUpdateN" parameterType="String">
+  		update javabucks_stockList
+  		set stockListStatus = 'N'
+  		where stockListCode = #{stockListCode}
+  	</update>
+  	
+  	<update id="stockStatusUpdateY" parameterType="String">
+  		update javabucks_stockList
+  		set stockListStatus = 'Y'
+  		where stockListCode = #{stockListCode}
+  	</update>
+  	
+  	<select id="baljooList" parameterType="java.util.Map" resultType="BaljooDTO">
+  		select * from ( 
+  						select rownum rn, C.*
+  						from (
+  								select A.*, B.bucksName
+  								from javabucks_baljoo A
+  								join javabucks_bucks B
+  								on A.bucksId = B.bucksId
+  								where TO_CHAR(baljooDate, 'YYYY') = #{selectYear}
+									and TO_CHAR(baljooDate, 'MM') = #{selectMonth}
+  								order by baljooNum desc
+  						)C)
+  		where rn between #{startRow} and #{endRow} 
+  	</select>
+  	
+  	<select id="baljooCount" resultType="int">
+  		select count(*) from javabucks_baljoo
+  	</select>
+  	
+  	<!-- 재고코드 가지고 재고명 받아오기 -->
+  	<select id="getStockName" parameterType="String" resultType="String">
+  		select stockListName from javabucks_stockList
+  		where stockListCode = #{stockListCode}
+  	</select>
+  	
+  	<!-- 지점명 가져오기 -->
+  	<select id="getStoreName" resultType="BucksDTO">
+  		select bucksName, bucksId from javabucks_bucks
+  	</select>
+
+	<!-- 검색된 발주리스트 개수 -->
+	<select id="searchBaljooCount" resultType="int">
+		select count(*) from javabucks_baljoo
+		where TO_CHAR(baljooDate, 'YYYY') = #{selectYear}
+			and TO_CHAR(baljooDate, 'MM') = #{selectMonth}
+			<if test = "selectStore != 'ALL'">
+			and bucksId = #{selectStore}
+			</if>
+			<if test = "selectNum != ''">
+			and baljooNum = #{selectNum}
+			</if>
+			<if test = "unproCheck != null">
+			and baljooStatus = '주문완료'
+			</if>		
+	</select>
+
+	<select id="searchBaljooList" parameterType="java.util.Map" resultType="BaljooDTO">
+		select * from ( 
+  						select rownum rn, C.*
+  						from (
+  								select A.*, B.bucksName
+  								from javabucks_baljoo A
+  								join javabucks_bucks B
+  								on A.bucksId = B.bucksId
+  								where TO_CHAR(baljooDate, 'YYYY') = #{selectYear}
+									and TO_CHAR(baljooDate, 'MM') = #{selectMonth}
+									<if test = "selectStore != 'ALL'">
+									and A.bucksId = #{selectStore}
+									</if>
+									<if test = "selectNum != ''">
+									and A.baljooNum = #{selectNum}
+									</if>
+									<if test = "unproCheck == checked">
+									and A.baljooStatus = '주문완료'
+									</if>
+  								order by baljooNum desc
+  						)C)
+  		where rn between #{startRow} and #{endRow} 
+	</select>
+
+
+
+  	
+  </mapper>

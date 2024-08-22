@@ -218,6 +218,7 @@
 
 		<select id="monthlyBucksSales" resultType="PayhistoryDTO">
 			SELECT 
+				b.bucksId AS bucksId,
 		        b.bucksName AS branchName,   
 		        NVL(SUM(p.payhistoryPrice), 0) AS totalSales,
         		TO_CHAR(SYSDATE, 'YYYY-MM') AS payhistoryYearMonth
@@ -230,9 +231,11 @@
 		        AND TO_CHAR(p.payhistoryDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
 		        AND TO_CHAR(p.payhistoryDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
 		    GROUP BY 
+		    	b.bucksId,
 		        b.bucksName,
 		        TO_CHAR(SYSDATE, 'YYYY-MM')
 		    ORDER BY 
+		    	b.bucksId,
 		        b.bucksName,
 		        TO_CHAR(SYSDATE, 'YYYY-MM')
 		</select>
@@ -262,5 +265,86 @@
 			ORDER BY 
 			    jbu.bucksId, jbu.bucksName ASC
     </select>
+    
+    <!-- 월별 매출 상세보기 1단계 -조인 : 월별 ordercode에대해 orderlist뽑기-->
+    <select id="monthlyDetails" parameterType="map" resultType="OrderDTO">
+	    	SELECT o.* , p.cpnlistnum
+			FROM javabucks_payhistory p
+			JOIN javabucks_order o ON p.orderCode = o.orderCode
+			WHERE p.bucksId = #{bucksId}
+			  AND TO_CHAR(p.payhistoryDate, 'YYYY-MM') = #{payhistoryDate}
+    </select>
+    
+    <!--   -->
+    <select id="getMenuPrice" parameterType="String" resultType="int">
+    	SELECT jm.menuPrice FROM JAVABUCKS_MENU jm WHERE jm.MENUCODE =#{menuCode}
+	</select>
+	
+	
+	<select id="getOptPrice" parameterType="String" resultType="int">
+	    SELECT
+	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	    FROM
+	        javabucks_order_opt o
+	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+	    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+	    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+	    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+	    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+	    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
+	    WHERE
+	        o.optId = #{optionId}
+	</select>
+	
+	<select id="getCouponPrice" parameterType="int" resultType="int">
+		SELECT c.cpnPrice
+	    FROM javabucks_couponList cl
+	    JOIN javabucks_coupon c ON cl.cpnCode = c.cpnCode
+	    WHERE cl.cpnListNum = #{coupon}
+	</select>
+	
+	<!-- daily Sales -->
+	<select id="dailyBucksSales" resultType="PayhistoryDTO">
+    		SELECT
+		        TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,  <!-- 날짜를 'YYYY-MM-DD' 형식으로 변환 -->
+		        p.payhistoryPrice AS payhistoryPrice,
+		        p.bucksId,
+		        o.orderCode AS orderCode,
+		        o.orderList AS orderList,
+		        b.bucksName AS branchName,
+		        b.bucksOwner
+		    FROM
+		        javabucks_payhistory p
+		    JOIN
+		        javabucks_order o ON p.orderCode = o.orderCode
+		    JOIN
+		        javabucks_bucks b ON p.bucksId = b.bucksId
+		    WHERE
+		        TRUNC(p.payhistoryDate) = TRUNC(SYSDATE)
+		</select>
+		
+		<select id="searchDailySales" parameterType="map" resultType="PayhistoryDTO">
+    SELECT
+        TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,  <!-- 날짜를 'YYYY-MM-DD' 형식으로 변환 -->
+        p.payhistoryPrice AS payhistoryPrice,
+        p.bucksId,
+        o.orderCode AS orderCode,
+        o.orderList AS orderList,
+        b.bucksName AS branchName,
+        b.bucksOwner
+    FROM
+        javabucks_payhistory p
+    JOIN
+        javabucks_order o ON p.orderCode = o.orderCode
+    JOIN
+        javabucks_bucks b ON p.bucksId = b.bucksId
+    WHERE
+        p.payhistoryDate BETWEEN #{startDate} AND #{endDate}  <!-- 기간 필터링 -->
+         
+            AND b.bucksName LIKE '%' || #{bucksName} || '%'  <!-- Oracle에서는 || 연산자로 문자열 결합 -->
+        
+</select>
+	
 		
   </mapper>

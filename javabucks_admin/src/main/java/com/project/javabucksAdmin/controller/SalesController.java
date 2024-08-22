@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.OrderDTO;
+import com.project.javabucksAdmin.dto.OrderItem;
 import com.project.javabucksAdmin.dto.PayhistoryDTO;
 import com.project.javabucksAdmin.mapper.SalesMapper;
 
@@ -33,10 +34,10 @@ public class SalesController {
 	private SalesMapper salesMapper;
 	
 	//시작
-	@RequestMapping("/")
-	public String index() {
-		return "account/admin_index";
-	}
+//	@RequestMapping("/")
+//	public String index() {
+//		return "account/admin_index";
+//	}
 	
 	//지점 계정 관리 페이지로 이동 
 		@RequestMapping("/storemanage.do")
@@ -322,201 +323,9 @@ public class SalesController {
 			}
 
 			    	
-//			        String baljooListStr = dto.getBaljooList();
-//			        int orderNum = dto.getBaljooNum(); // 발주 넘버 가져오기 (int)
-//
-//			        // 대괄호와 따옴표를 제거하여 순수한 문자열 목록으로 변환
-//			        baljooListStr = baljooListStr.replaceAll("[\\[\\]\"]", "");
-//			        String[] items = baljooListStr.split(",");
-//
-//			        // 발주 넘버별 코드 리스트 관리
-//			        orderCodeMap.putIfAbsent(orderNum, new ArrayList<>());
-//			        List<String> codes = orderCodeMap.get(orderNum);
-//
-//			        for (String item : items) {
-//			            // 항목을 :로 나누어 코드와 수량을 추출
-//			            String[] parts = item.split(":");
-//			            if (parts.length == 2) {
-//			                // parts[0]는 코드, parts[1]는 수량
-//			                String code = parts[0].trim();
-//			                codes.add(code);
-//			            } else {
-//			                System.err.println("Invalid item format: " + item);
-//			            }
-//			        }
-//
-//			        // 디버깅용: 각 발주 넘버별로 수집된 코드를 출력
-//			        System.out.println("Order Number: " + orderNum + ", Codes Collected: " + codes);
-//			    
-//
-//			    if (codes != null && !codes.isEmpty()) {
-//		            // 매퍼 호출은 각 발주 번호마다 개별적으로 수행
-//		            List<String> stockNames = salesMapper.baljooNamesByCodes(codes);
-//
-//		            // 디버깅용: 매퍼에서 가져온 결과를 출력
-//		            System.out.println("Mapper Console for Order Number: " + orderNum + " : " + stockNames);
-//
-//		            String baljooListStr1 = dto.getBaljooList();
-//		            baljooListStr1 = baljooListStr1.replaceAll("[\\[\\]\"]", "");
-//		            String[] items1 = baljooListStr1.split(",");
-//
-//		            StringBuilder updatedList = new StringBuilder();
-//
-//		            for (int i = 0; i < items1.length; i++) {
-//		                String[] parts = items1[i].split(":");
-//		                if (parts.length == 2) {
-//		                    String stockName = stockNames.get(i);
-//		                    int quantity = Integer.parseInt(parts[1].trim());
-//
-//		                    if (updatedList.length() > 0) {
-//		                        updatedList.append(","); // 이전 항목과 쉼표로 구분
-//		                    }
-//		                    updatedList.append(stockName).append(":").append(quantity);
-//		                }
-//		            }
-//
-//		            // 변경된 발주 리스트를 DTO에 다시 설정
-//		            dto.setBaljooList(updatedList.toString());
-//		        }
-//		    }
-//
-//		    // 모델에 수정된 데이터 추가
-//		    model.addAttribute("details", details);
-//
-//		    return "sales/admin_storeordersales";
-//		}
-			
-			
-			
-			
-//			
-//			//발주 상세리스트 ......ㅋㅋㅋㅋㅋㅋ너무 멀리간코드 포함,,,,,,, //S 이부분분터 월별매출 카테고리별로 묶을떄 참고,,,,,
-//			@ResponseBody
-//			@PostMapping("/viewOrderDetails.do")
-//			public String viewOrderDetails(@RequestParam("bucksId") String bucksId, @RequestParam("orderDate") String orderDate, Model model) {
-//			    Map<String, Object> params = new HashMap<>();
-//			    params.put("bucksId", bucksId);
-//			    params.put("baljooDate", orderDate);
-//			    System.out.println(bucksId);
-//			    System.out.println(orderDate);
-//			    
-//			    List<BaljooDTO> details = salesMapper.selectDetails(params);
-//			    
-//			 // 디버깅: 조회된 발주 상세 리스트 확인
-//			    System.out.println("Retrieved Details: " + details);
-//
-//			 // 코드별로 총 수량을 합산하기 위한 Map
-//			    Map<String, Integer> codeQuantityMap = new HashMap<>();
-//
-//			    for (BaljooDTO detail : details) {
-//			        System.out.println("Processing detail: " + detail);
-//
-//			        // 발주 리스트를 ,로 나누어 각 항목을 추출
-//			        String[] items = detail.getTotaljooList().replaceAll("[\\[\\]\"]", "").split(",");
-//			        System.out.println("Parsed items: " + Arrays.toString(items));
-//
-//			        for (String item : items) {
-//			            // 항목을 :로 나누어 코드와 수량을 추출
-//			            String[] parts = item.split(":");
-//			            String code = parts[0];
-//			            int quantity = Integer.parseInt(parts[1]);
-//
-//			            System.out.println("Code: " + code + ", Quantity: " + quantity);
-//
-//			            // 같은 코드가 이미 존재하면 수량을 합산
-//			            if (codeQuantityMap.containsKey(code)) {
-//			                codeQuantityMap.put(code, codeQuantityMap.get(code) + quantity);
-//			            } else {
-//			                codeQuantityMap.put(code, quantity);
-//			            }
-//			        }
-//			    }
-//
-//			    // 디버깅: 합산된 코드별 총 수량 확인
-//			    for (Map.Entry<String, Integer> entry : codeQuantityMap.entrySet()) {
-//			        System.out.println("Code: " + entry.getKey() + ", Total Quantity: " + entry.getValue());
-//			    }
-//			    
-//			 // 합산된 코드 목록을 사용하여 가격 정보 조회
-//			    List<String> codes = new ArrayList<>(codeQuantityMap.keySet());
-//			    System.out.println("Codes: " + codes);
-//			    List<Map<String, Object>> rawResults = salesMapper.selectPricesByCodes(codes); // 결과를 List<Map<String, Object>> 형태로 받음
-//			    System.out.println("rawResults : " + rawResults);
-//
-//			    // 1. HashMap을 BaljooSubDTO로 수동 매핑
-//			    List<BaljooSubDTO> priceDetails = new ArrayList<>();
-//			   
-//
-//			    for (Map<String, Object> rawResult : rawResults) {
-//			        BaljooSubDTO dto = new BaljooSubDTO();
-//
-//			        // 키 이름을 모두 대문자로 변경하여 사용해보세요
-//			        String code = (String) rawResult.get("CODE");  // 'code' 대신 'CODE'로 접근
-//			        Object priceObj = rawResult.get("PRICE");  // 'price' 대신 'PRICE'로 접근
-//
-//			        if (code == null || priceObj == null) {
-//			            System.out.println("Null value encountered: Code=" + code + ", Price=" + priceObj);
-//			            continue;  // null 값이 있는 경우를 건너뜁니다.
-//			        }
-//
-//			        // DTO에 값 설정
-//			        dto.setCode(code);
-//			        dto.setPrice(new BigDecimal(priceObj.toString()));
-//
-//			        // DTO를 리스트에 추가하기 전에 출력해보기
-//			        System.out.println("Adding DTO: " + dto);
-//			        
-//			        // DTO를 리스트에 추가
-//			        priceDetails.add(dto);
-//			    }
-//
-//			    // 최종 리스트 출력
-//			    System.out.println("Mapped priceDetails: " + priceDetails);
-//
-//			    // 2. 코드별로 totalQuantity와 totalPrice를 누적 계산하기 위한 Map 생성
-//			    Map<String, BaljooSubDTO> codeSummaryMap = new HashMap<>();
-//
-//			    for (BaljooSubDTO item : priceDetails) {  // priceDetails 리스트의 각 항목을 순회
-//			        String code = item.getCode();  // 현재 항목의 코드를 가져옴
-//			        BigDecimal price = item.getPrice();  // 현재 항목의 가격을 가져옴
-//			        
-//			        // Map에서 해당 코드의 누적 정보를 가져옴 (없으면 초기화)
-//			        BaljooSubDTO summary = codeSummaryMap.getOrDefault(code, new BaljooSubDTO(code, BigDecimal.ZERO, 0, BigDecimal.ZERO));
-//			        
-//			        // 누적 수량과 금액 계산
-//			        int newTotalQuantity = summary.getTotalQuantity() + codeQuantityMap.get(code);  // 실제 수량 반영
-//			        BigDecimal newTotalPrice = summary.getTotalPrice().add(price.multiply(new BigDecimal(codeQuantityMap.get(code))));  // 총 금액 계산
-//			        
-//			        // 새로운 값을 다시 Map에 저장
-//			        summary.setTotalQuantity(newTotalQuantity);
-//			        summary.setTotalPrice(newTotalPrice);
-//			        
-//			        codeSummaryMap.put(code, summary);
-//			    }
-//
-//			    // 3. 결과 출력
-//			    List<BaljooSubDTO> summaryList = new ArrayList<>();
-//
-//			    for (Map.Entry<String, BaljooSubDTO> entry : codeSummaryMap.entrySet()) {
-//			        BaljooSubDTO summary = entry.getValue();
-//			        System.out.println("Code: " + summary.getCode() + 
-//			                           ", Total Quantity: " + summary.getTotalQuantity() + 
-//			                           ", Total Price: " + summary.getTotalPrice());
-//
-//			        // 리스트에 summary 추가
-//			        summaryList.add(summary);
-//			    }
-//
-//			    // 모델에 리스트 추가
-//			    model.addAttribute("orderSummary", summaryList);
-//
-//			    
-//			        return "sales/admin_storeordersales";
-//			}
-			
 
 
-//Sales-Month			
+//Sales-Monthly			
 			
 			@GetMapping("/bucksSalesM.do")
 			public String monthlyBucksSales(Model model) {
@@ -543,13 +352,315 @@ public class SalesController {
 			    return "sales/admin_monthlysales";
 			}
 			
+			//월별 매출 상세보기 
+			@PostMapping("/MonthlyDetails.do")
+			@ResponseBody
+			public Map<String, Object> MonthlyDetails(@RequestParam("bucksId") String bucksId, @RequestParam("orderDate") String orderDate, Model model) {
+				Map<String, Object> params = new HashMap<>();
+			    params.put("bucksId", bucksId);
+			    params.put("payhistoryDate", orderDate);
+			    
+			    //1단계 쿼리 - 조인 해서 oredercode에 해당하는 orderList받기
+			    List<OrderDTO> details = salesMapper.monthlyDetails(params);
+			    //System.out.println("details : " + details);
+			    
+			    Map<String, Integer> categoryTotals = new HashMap<>();
+			    categoryTotals.put("음료", 0);
+			    categoryTotals.put("디저트", 0);
+			    categoryTotals.put("MD상품", 0);
+			    
+			    int totalSales = 0; // 전체 매출 금액을 저장할 변수
+			    
+			    
+			 // 2단계: orderList를 파싱
+			    for (OrderDTO detail : details) {
+			        String orderListJson = detail.getOrderList();
+
+			        // 1. 대괄호 제거
+			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
+
+			        // 2. 쉼표로 구분하여 요소 분리
+			        String[] items = orderListJson.split(",");
+			        
+			        // 쿠폰 가져오기
+			        int coupon = detail.getCpnlistnum();
+			        System.out.println("coupon: " + coupon);
+			        int couponDiscount = 0;
+			        
+			        // 쿠폰이 있을 경우, 쿠폰 할인 금액을 가져옴
+			        if (coupon > 0) {
+			            couponDiscount = salesMapper.getCouponPrice(coupon);
+			            System.out.println("couponDiscount: " + couponDiscount);
+			        }
+
+			        int beverageTotal = 0; // 음료에 해당하는 금액의 총합
+			        int dessertTotal = 0; // 디저트에 해당하는 금액의 총합
+			        int mdTotal = 0; // MD상품에 해당하는 금액의 총합
+
+			        for (String item : items) {
+			            item = item.replace("\"", ""); // 큰따옴표 제거
+			            String[] parts = item.split(":");
+
+			            String menuCode = parts[0];
+			            String optionId = parts[1];
+			            int quantity = Integer.parseInt(parts[2]);
+
+			            // 메뉴와 옵션 가격을 각각 가져오기
+			            int price = salesMapper.getMenuPrice(menuCode);
+			            System.out.println("price: " + price);
+			            int optPrice = salesMapper.getOptPrice(optionId);
+			            System.out.println("optPrice: " + optPrice);
+
+			            // 메뉴 가격과 옵션 가격을 합산한 후 수량을 곱하여 금액 계산
+			            int itemTotalPrice = (price + optPrice) * quantity;
+
+			            // 카테고리별로 금액 합산
+			            if (menuCode.startsWith("B")) {
+			                beverageTotal += itemTotalPrice; // 음료 금액에 합산
+			            } else if (menuCode.startsWith("C")) {
+			                dessertTotal += itemTotalPrice; // 디저트 금액에 합산
+			            } else if (menuCode.startsWith("M")) {
+			                mdTotal += itemTotalPrice; // MD상품 금액에 합산
+			            }
+			        }
+
+			        // 음료 총액에 쿠폰 할인을 마지막에 한 번만 적용
+			        if (couponDiscount > 0) {
+			            beverageTotal -= couponDiscount;
+			            if (beverageTotal < 0) {
+			                beverageTotal = 0; // 할인으로 인해 음수가 되지 않도록 조정
+			            }
+			        }
+
+			        // 전체 매출에 합산
+			        int subtotal = beverageTotal + dessertTotal + mdTotal;
+			        totalSales += subtotal;
+
+			        // 카테고리별로 금액을 categoryTotals에 추가
+			        categoryTotals.put("음료", categoryTotals.getOrDefault("음료", 0) + beverageTotal);
+			        categoryTotals.put("디저트", categoryTotals.getOrDefault("디저트", 0) + dessertTotal);
+			        categoryTotals.put("MD상품", categoryTotals.getOrDefault("MD상품", 0) + mdTotal);
+			    }
+			    
+			    //비중 계산
+			    Map<String, Object> result = new HashMap<>();
+			    
+			    if (totalSales == 0) {
+			        // 매출 내역이 없는 경우
+			        result.put("hasSalesData", false);
+			    } else {
+			        // 매출 내역이 있는 경우
+			        result.put("hasSalesData", true);
+			        
+			    for (Map.Entry<String, Integer> entry : categoryTotals.entrySet()) {
+			        String category = entry.getKey();
+			        int sales = entry.getValue();
+			        double percentage = (double) sales / totalSales * 100; // 비중 계산 (백분율)
+			        Map<String, Object> categoryData = new HashMap<>();
+			        categoryData.put("totalSales", sales); // 카테고리별 총 매출
+			        categoryData.put("percentage", percentage); // 카테고리별 비중
+			        result.put(category, categoryData); // 결과에 추가
+			    }
+			    
+			    result.put("totalSales", totalSales); // 전체 매출 금액도 결과에 포함
+			    }
+			    
+			    return result;  // JSON 형식으로 반환
+
+			}
+
+	
+//Sales-Daily	
+			
+			//일별 매출관리 
 			@GetMapping("/bucksSalesD.do")
-			public String dailyBucksSales() {
-				
-				return "sales/admin_dailysales";
+			public String dailyBucksSales(Model model) {
+				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales();
+				//model.addAttribute("list",orderList);
+				// 지점별로 카테고리별 매출을 저장할 Map 생성
+			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
+			    int totalSalesSum = 0;  // 전체 총 매출액
+			    
+			    for (PayhistoryDTO order : orderList) {
+			        String orderListJson = order.getOrderList();
+			        String branchName = order.getBranchName(); // 지점명
+			        String branchId = order.getBucksId(); // 지점 등록번호
+			        String branchOwner = order.getBucksOwner(); // 점주명
+			        String payhistoryDate = order.getPayhistoryDate(); // 일자
+
+			     // 지점과 날짜별 매출 데이터를 초기화
+			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
+			        branchSalesMap.putIfAbsent(branchDateKey, new HashMap<>());
+			        Map<String, Integer> totalSalesByCategory = branchSalesMap.get(branchDateKey);
+			        
+			        
+			        totalSalesByCategory.putIfAbsent("음료", 0);
+			        totalSalesByCategory.putIfAbsent("디저트", 0);
+			        totalSalesByCategory.putIfAbsent("MD상품", 0);
+
+			        // 1. 대괄호 제거 및 쉼표로 분리
+			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
+			        String[] items = orderListJson.split(",");
+
+			        // 각 아이템 처리
+			        for (String item : items) {
+			            // 아이템을 ":"로 분리하여 메뉴 코드, 옵션 ID, 수량 추출
+			            String[] parts = item.replaceAll("[\\[\\]\"]", "").split(":");
+			            String menuCode = parts[0];
+			            String optionId = parts[1];
+			            int quantity = Integer.parseInt(parts[2]);
+
+			            // 카테고리 분류
+			            String category = salesMapper.categorizeMenu(menuCode);
+
+			            // 메뉴 가격 조회
+			            int menuPrice = salesMapper.getMenuPrice(menuCode);
+
+			            // 옵션 가격 조회
+			            int optionPrice = salesMapper.getOptPrice(optionId);
+
+			            // 총 가격 계산 (메뉴 가격 + 옵션 가격) * 수량
+			            int totalPrice = (menuPrice + optionPrice) * quantity;
+
+			            // 해당 카테고리의 매출 합산
+			            totalSalesByCategory.put(category, totalSalesByCategory.get(category) + totalPrice);
+
+			            // 각 주문 항목에 카테고리와 계산된 가격을 추가
+			            order.setCategory(category); // 카테고리 설정
+			            order.setTotalSales(totalPrice); // 매출액 설정
+			            totalSalesSum += totalPrice;  // 총 매출액 합산
+			        }
+			    }
+
+			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
+			    model.addAttribute("branchSalesMap", branchSalesMap);
+			    //System.out.println(branchSalesMap);
+
+			    // 주문 내역 리스트를 모델에 추가
+			    model.addAttribute("list", orderList);
+			    //System.out.println(orderList);
+			    
+			    model.addAttribute("total", totalSalesSum);
+
+			    // 결과 페이지로 이동
+			    return "sales/admin_dailysales";
 			}
 			
-            //"cateSales.do" : 카테고리별 매출관리
+			
+			
+			
+			//검색한 지점과 날짜로 일별매출
+			@PostMapping("/searchDailySales.do")
+			public String searchDailySales(@RequestParam("startDate") String startDate,
+		            						@RequestParam("endDate") String endDate,
+		            						@RequestParam("bucksName") String bucksName,
+		            						@RequestParam("category") String category, Model model) {
+				System.out.println(startDate);
+				System.out.println(endDate);
+				System.out.println(bucksName);
+				System.out.println(category);
+				
+				Map<String, Object> params = new HashMap<>();
+			    params.put("startDate", startDate);
+			    params.put("endDate", endDate);
+			    params.put("bucksName", bucksName);
+				
+				
+			    List<PayhistoryDTO> orderList = salesMapper.searchDailySales(params);
+				//System.out.println(orderList);
+				
+			 /// 지점별로 일자별 매출을 저장할 Map 생성
+			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
+			    int totalSalesSum = 0;  // 전체 총 매출액
+			    
+			    for (PayhistoryDTO order : orderList) {
+			        String orderListJson = order.getOrderList();
+			        String branchName = order.getBranchName(); // 지점명
+			        String branchId = order.getBucksId(); // 지점 등록번호
+			        String branchOwner = order.getBucksOwner(); // 점주명
+			        String payhistoryDate = order.getPayhistoryDate(); // 일자
+
+			     // 지점과 날짜별 매출 데이터를 초기화
+			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
+			        branchSalesMap.putIfAbsent(branchDateKey, new HashMap<>());
+			        Map<String, Integer> totalSalesByCategory = branchSalesMap.get(branchDateKey);
+			        
+			     // 카테고리별 초기화
+			        if ("음료".equals(category) || "".equals(category)) {
+			            totalSalesByCategory.putIfAbsent("음료", 0);
+			        }
+			        if ("디저트".equals(category) || "".equals(category)) {
+			            totalSalesByCategory.putIfAbsent("디저트", 0);
+			        }
+			        if ("MD상품".equals(category) || "".equals(category)) {
+			            totalSalesByCategory.putIfAbsent("MD상품", 0);
+			        }
+
+			        // 1. 대괄호 제거 및 쉼표로 분리
+			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
+			        String[] items = orderListJson.split(",");
+
+			        // 각 아이템 처리
+			        for (String item : items) {
+			            // 아이템을 ":"로 분리하여 메뉴 코드, 옵션 ID, 수량 추출
+			            String[] parts = item.replaceAll("[\\[\\]\"]", "").split(":");
+			            String menuCode = parts[0];
+			            String optionId = parts[1];
+			            int quantity = Integer.parseInt(parts[2]);
+
+			            // 카테고리 분류
+			            String cate = salesMapper.categorizeMenu(menuCode);
+
+			            int menuPrice = salesMapper.getMenuPrice(menuCode);
+			            int optionPrice = salesMapper.getOptPrice(optionId);
+			            int totalPrice = (menuPrice + optionPrice) * quantity;
+			            
+			         // 카테고리 코드에 따라 이름 매핑
+			            if ("B".equals(cate)) {
+			                cate = "음료";
+			            } else if ("C".equals(cate)) {
+			                cate = "디저트";
+			            } else if ("M".equals(cate)) {
+			                cate = "MD상품";
+			            }
+			            
+			         // 디버깅용 출력
+			            System.out.println("카테고리 코드: " + cate + ", 선택된 카테고리: " + category);
+
+			            // 선택된 카테고리와 비교 (코드와 매핑된 이름 비교)
+			            if (!"".equals(category) && !cate.equals(category)) {
+			                continue; // 선택된 카테고리에 맞지 않으면 스킵
+			            }
+
+			            // 해당 카테고리의 매출 합산
+			            totalSalesByCategory.put(cate, totalSalesByCategory.get(cate) + totalPrice);
+
+			            // 각 주문 항목에 카테고리와 계산된 가격을 추가
+			            order.setCategory(cate); // 카테고리 설정
+			            order.setTotalSales(totalPrice); // 매출액 설정
+			            
+			            totalSalesSum += totalPrice;  // 총 매출액 합산
+			            
+			         // 정상적으로 매핑되었을 때 출력
+			            System.out.println("cate after mapping: " + cate);
+			        }
+			    }
+
+			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
+			    model.addAttribute("branchSalesMap", branchSalesMap);
+			    //System.out.println(branchSalesMap);
+
+			    // 주문 내역 리스트를 모델에 추가
+			    model.addAttribute("list", orderList);
+			    //System.out.println(orderList);
+			    
+			    model.addAttribute("total", totalSalesSum);
+
+			    // 결과 페이지로 이동
+			    return "sales/admin_dailysales";
+			}
+			
+            
             
 			
 	
