@@ -136,7 +136,7 @@
    		 WHERE bucksEnable = 'y'	
    		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
       	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
- 	</select>
+ 	</select> 	
  	
  	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  
@@ -223,16 +223,30 @@
    		 WHERE userId = #{userId}   		 				 	  		 
  	</select>
  	
- 	<select id="MyMenuNumByMenucode" parameterType="String" resultType="MymenuDTO"> 
- 		 SELECT jm.*
+ 	<select id="MyMenuNumByUserid" parameterType="java.util.Map" resultType="Integer"> 
+ 		 SELECT jmy.mymenuNum
  		 FROM javabucks_mymenu jmy join javabucks_menu jm
- 		 ON jmy.menuCode = jm.menuCode		    
-   		 WHERE userId = #{userId}   		 				 	  		 
+ 		 ON jmy.menuCode = jm.menuCode	    
+   		 WHERE jmy.userId = #{userId} 
+   		 AND jm.menuCode = #{menuCode}  		 				 	  		 
  	</select>
  	
- 	<delete id="MyMenuDeleteByMenuNum" parameterType="String"> 
+ 	<delete id="MyMenuDeleteByMenuNum" parameterType="Integer"> 
  		 DELETE FROM javabucks_mymenu	 		 	     
    		 WHERE mymenuNum = #{mymenuNum} 		 				 	  		 
- 	</delete>
+ 	</delete>	
+
+ 	<select id="RecepitByUserid" parameterType="String" resultType="PayhistoryDTO"> 
+ 		 SELECT jb.bucksName, jp.*
+ 		 FROM javabucks_payhistory jp join javabucks_bucks jb
+ 		 ON jp.bucksId = jb.bucksId
+ 		 WHERE userId = #{userId}		 				 	  		 
+ 	</select>	
+ 	
+ 	 <select id="StoreInfoByBucksId" parameterType="String" resultType="BucksDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_bucks		 
+ 		 WHERE bucksId = #{bucksId}	 				 	  		 
+ 	</select>	
  	
  </mapper>

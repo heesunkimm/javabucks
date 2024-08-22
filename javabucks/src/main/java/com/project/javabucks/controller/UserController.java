@@ -259,25 +259,26 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_mymenu")
-	public String userMymenu(HttpServletRequest req, String mode, String menuCode) {
+	public String userMymenu(HttpServletRequest req, String mode, @RequestParam Map<String, String> params) {
 
 		UserDTO dto = userMapper.getInfoById();
 		String userId = dto.getUserId();
-		System.out.println(mode);
 
-//		// 나만의메뉴 X 눌렀을때
-//		if(mode != null) {
-//			
-//			//마메넘 구하는 메소드, 그걸 받아서 다시 아래에 넣어주기
-//			int res =userMapper.MyMenuDeleteByMenuNum(mymenuNum);
-//			if (res > 0) {	        	
-//				req.setAttribute("msg", "나만의메뉴가 삭제되었습니다.");
-//				req.setAttribute("url", "user_mymenu");
-//	        } else {
-//	        	req.setAttribute("msg", "나만의메뉴 삭제 중 오류가 발생하였습니다.");
-//	    		req.setAttribute("url", "user_mymenu");
-//	        }
-//		}
+		// 나만의메뉴 X 눌렀을때
+		if (mode != null) {
+			params.put("userId", userId);
+			int mymenuNum = userMapper.MyMenuNumByUserid(params);
+			int res = userMapper.MyMenuDeleteByMenuNum(mymenuNum);
+			if (res > 0) {
+				req.setAttribute("msg", "나만의메뉴가 삭제되었습니다.");
+				req.setAttribute("url", "user_mymenu");
+				return "message";
+			} else {
+				req.setAttribute("msg", "나만의메뉴 삭제 중 오류가 발생하였습니다.");
+				req.setAttribute("url", "user_mymenu");
+				return "message";
+			}
+		}
 
 		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
 		req.setAttribute("mymenu", list);
@@ -285,8 +286,117 @@ public class UserController {
 		return "/user/user_mymenu";
 	}
 
+	@RequestMapping("/user_recepit")
+	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();	
+		params.put("userId", userId);
+		int totalPrice = 0;
+		int number = 0;
+		
+		// 날짜 형식을 설정합니다.
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		// 현재 날짜를 가져옵니다.
+        LocalDate today = LocalDate.now();
+        // 한 달 전의 날짜를 계산합니다.
+        LocalDate oneMonthAgo = today.minusMonths(1); 
+        // 세 달 전의 날짜를 계산합니다.
+        LocalDate threeMonthAgo = today.minusMonths(3); 
+        // 날짜를 문자열로 변환합니다.      
+        String endDate = today.format(formatter);       
+		        
+//		// 기간을 설정하고 확인눌렀다면
+//		if(params.get("mode") != null) {
+//			// 1개월 선택 시
+//			if (params.get("period_startdate").equals("1month")) {
+//				String startDate = oneMonthAgo.format(formatter);
+//		        String period_setting = startDate + " ~ " + endDate;	            
+//	            req.setAttribute("period_setting", period_setting);
+//	            // 1개월 별 히스토리 조회
+//	            params.put("startDate", startDate);
+//	            params.put("endDate", endDate);
+//	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//	            	            
+//	            //별 갯수, 유효기간
+//	    		for (FrequencyDTO freq : list) {
+//	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//	                LocalDate validityDate = regDate.plusYears(1);
+//	                freq.setFrequencyEndDate(validityDate.format(formatter));
+//	                star += freq.getFrequencyCount();              
+//	            }
+//	    		req.setAttribute("star", star);
+//	    		req.setAttribute("starHistory", list);
+//	    		
+//	        // 3개월 선택 시    
+//	        } else if (params.get("period_startdate").equals("3months")) {
+//	        	String startDate = threeMonthAgo.format(formatter);
+//	        	String period_setting = startDate + " ~ " + endDate;	            
+//	            req.setAttribute("period_setting", period_setting);
+//	            
+//	            // 3개월 별 히스토리 조회
+//	            params.put("startDate", startDate);
+//	            params.put("endDate", endDate);
+//	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//	            	            
+//	            //별 갯수
+//	    		for (FrequencyDTO freq : list) {
+//	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//	                LocalDate validityDate = regDate.plusYears(1);
+//	                freq.setFrequencyEndDate(validityDate.format(formatter));
+//	                star += freq.getFrequencyCount();              
+//	            }
+//	    		req.setAttribute("star", star);
+//	    		req.setAttribute("starHistory", list);
+//	    		
+//            // 기간설정 버튼눌렀을때
+//	        }else {
+//			String period_setting = params.get("startDate") +" ~ " +params.get("endDate");
+//			req.setAttribute("period_setting", period_setting);
+//			List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//    		
+//    		//별 갯수
+//    		for (FrequencyDTO freq : list) {
+//    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//                LocalDate validityDate = regDate.plusYears(1);
+//                freq.setFrequencyEndDate(validityDate.format(formatter));
+//                star += freq.getFrequencyCount();              
+//            }
+//    		req.setAttribute("star", star);
+//    		req.setAttribute("starHistory", list);
+//	        }
+//			
+//		}else {		
+			String startDate = oneMonthAgo.format(formatter);
+			// period_setting 문자열을 생성합니다.
+	        String period_setting = startDate + " ~ " + endDate;
+            // 초기화면 기간 데이터
+            req.setAttribute("period_setting", period_setting);
+                        
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            List<PayhistoryDTO> list = userMapper.RecepitByUserid(userId);
+            for(PayhistoryDTO phis : list) {
+            	totalPrice += phis.getPayhistoryPrice();
+            	number = number +1;           	
+            }                      
+            req.setAttribute("recepitList", list);
+     		req.setAttribute("totalPrice", totalPrice);
+     		req.setAttribute("number", number);	
+     		
+     		String bucksId = params.get("bucksId");
+     		BucksDTO dto2 = userMapper.StoreInfoByBucksId(bucksId);
+     		req.setAttribute("", dto2);
+//        }
+		
+		
+		
+		return "/user/user_recepit";
+	}
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
+
 	public String userPay(Model model, HttpSession session) {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
 		String userId = dto.getUserId();
@@ -451,11 +561,7 @@ public class UserController {
 	@RequestMapping("/user_other")
 	public String userOther() {
 		return "/user/user_other";
-	}
 
-	@RequestMapping("/user_recepit")
-	public String userRecepit() {
-		return "/user/user_recepit";
 	}
 
 	@RequestMapping("/user_info")

@@ -182,6 +182,9 @@ public class LoginController {
 		System.out.println("saveId: "+ saveId); 
 		System.out.println("params : " + params);
 		
+		 // getOrDefault 
+		 // Java의 Map 인터페이스에서 제공하는 메서드로, 주어진 키에 대한 값을 반환하거나, 해당 키가 존재하지 않을 때 기본값을 반환
+		
 		// 아이디로 사용자 정보 가져오기 
 		UserDTO user = loginMapper.findUserById(userId); 
 		

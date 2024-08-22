@@ -12,6 +12,7 @@ public class PayhistoryDTO {
 	private int payhistoryPrice;
 	private String payhistoryPayType;
 	private String payhistoryPayWay;
+	private String bucksName;
 
 	public int getPayhistoryNum() {
 		return payhistoryNum;
@@ -92,5 +93,14 @@ public class PayhistoryDTO {
 	public void setPayhistoryPayWay(String payhistoryPayWay) {
 		this.payhistoryPayWay = payhistoryPayWay;
 	}
+	
+	// [채성진] join용 변수 설정
+	public String getBucksName() {
+		return bucksName;
+	}
 
+	public void setBucksName(String bucksName) {
+		this.bucksName = bucksName;
+	}
+	
 }
