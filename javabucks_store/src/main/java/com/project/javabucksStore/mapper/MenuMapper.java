@@ -24,17 +24,29 @@ public class MenuMapper {
 	public int addMenu(StoreMenuDTO dto) {
 		return sqlSession.insert("addMenu",dto);
 	}
+	// 지점에 이미 등록된 메뉴가 있는지 확인
+	public StoreMenuDTO getMenuByStore(Map<String, Object> params) {
+	    return sqlSession.selectOne("getMenuByStore", params);
+	}
+
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	public List<StoreMenuDTO> getSelectedMenu(String bucksId) {
 		return sqlSession.selectList("getSelectedMenu", bucksId);
 	}
-	// 조건에 해당하는 음료 리스트 뽑기
+	// 체크박스 조건에 해당하는 음료 리스트 뽑기
 	public List<StoreMenuDTO> searchDrinks(Map<String, Object> params) {
 		return sqlSession.selectList("searchDrinks", params);
 	}
-//	// 조건에 해당하는 음료 리스트 갯수
+	// 체크박스 조건에 해당하는 음료 리스트 갯수
 	public int searchDrinksCount(Map<String, Object> params) {
 		return sqlSession.selectOne("searchDrinksCount", params);
 	}
-
+	// 메뉴 키워드 검색 리스트 뽑기
+	public List<StoreMenuDTO> searchDrinksList(Map<String, Object> params) {
+		return sqlSession.selectList("searchDrinksList", params);
+	}
+	// 검색 조건에 해당하는 음료 리스트 갯수
+//	public int searchDrinksListCount(String bucksId) {
+//		return sqlSession.selectOne("searchDrinksList", bucksId);
+//	}
 }

@@ -99,6 +99,9 @@
 	                    );
 	                });
 	            }
+
+	            // 버튼 상태 업데이트
+	            updateStatus();
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);

@@ -152,13 +152,15 @@ header .store_box {font-size: 16px;}
 .allMenu .select_box .cont_box {margin-top: 20px;}
 .allMenu .select_box .cont_box .select_tit {padding: 20px; background-color: #f6f5ef; font-size: 20px;}
 
-.allMenu #menu_cont form {padding: 20px 20px 0 20px;}
+.allMenu #menu_cont .search_list {padding: 20px 20px 0 20px;}
 .allMenu #menu_cont input {width: 300px; height: 27px; padding: 0 6px;}
 .allMenu #menu_cont button {width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.allMenu #menu_cont button.delBtn {background: transparent; border: 1px solid #006241; color: #006241;}
 
 .allMenu .menu_list {margin-top: 20px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
 .allMenu .menu_list li + li {border-top: 1px solid #ccc;}
 .allMenu .menu_list .menu_item {display: flex; align-items: center; justify-content: space-between; padding: 16px 30px;}
+.allMenu .menu_list .menu_item.noMenu {justify-content: center;}
 .allMenu .menu_list .menu_item .menu_info {display: flex; align-items: center; justify-content: space-between; gap: 30px;}
 .allMenu .menu_list .menu_item .img_box {width: 120px; height: 120px;}
 .allMenu .menu_list .menu_item .menu_info {display: flex; align-items: center; width: 860px;}
