@@ -18,6 +18,7 @@ import com.project.javabucksStore.dto.StoreMenuDTO;
 import com.project.javabucksStore.mapper.MenuMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MenuController {
@@ -58,18 +59,21 @@ public class MenuController {
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("menuCode", dto.getMenuCode());
+		params.put("menuName", dto.getMenuName());
 	    params.put("bucksId", dto.getBucksId());
 		
 		// 지점에 이미 등록된 메뉴가 있는지 확인
 		StoreMenuDTO menuCheck = menuMapper.getMenuByStore(params);
 		
+		// 이미 등록된 메뉴 추가시 처리
 		if(menuCheck != null) {
-			return "이미 추가된 메뉴입니다.";
+			return dto.getMenuName() + "는 이미 추가된 메뉴입니다.";
 		}
-		
+
+		// 지점에 메뉴 추가
 		int res = menuMapper.addMenu(dto);
 		if(res>0) {
-			return "가 메뉴에 추가되었습니다.";
+			return dto.getMenuName() + "가 메뉴에 추가되었습니다.";
 		}else {
 			return "메뉴추가에 실패하였습니다.";
 		}
@@ -83,7 +87,7 @@ public class MenuController {
 	}
 
 	@GetMapping("/store_alldrink")
-	public String getAllDrink() {		
+	public String getAllDrink(HttpServletRequest req) {
 		return "/menu/store_alldrink";
 	}
 	
@@ -97,22 +101,14 @@ public class MenuController {
 		return "/menu/store_allmd";
 	}
 	
-	private static final List<String> various_bases = Arrays.asList("D", "E", "F", "J", "L", "P");
-	
 	@PostMapping("/searchDrinks.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params,
 	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
-		
 		String bucksId = (String) params.get("bucksId");
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
-	    
-	    // menuBase가 SPECIAL_MENU_BASES에 포함되어 있으면 'F'로 변경
-        if (menuBase != null && various_bases.contains(menuBase)) {
-            menuBase = "F";
-        }
 	    
 	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
 	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
@@ -121,6 +117,8 @@ public class MenuController {
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
 		searchParams.put("menuBase", menuBase);
+		
+//		System.out.println("Search Parameters: " + searchParams);
 		
 		int searchCount = menuMapper.searchDrinksCount(searchParams); // 검색결과별 리스트 수
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -141,6 +139,8 @@ public class MenuController {
 	    searchParams.put("endRow", endRow);
 	    
 	    drinkList = menuMapper.searchDrinks(searchParams);
+	    
+	    //System.out.println(drinkList.size());
 	    
 	    req.setAttribute("searchCount", searchCount);
 	    req.setAttribute("drinkList", drinkList);
@@ -174,5 +174,38 @@ public class MenuController {
 	    
 	    return filterList;
 	}
-
+	
+	// 주문막기 - 상태변경
+//	@PostMapping("/menuStatusUpdate.ajax")
+//	@ResponseBody
+//	public String menuStatusUpdate(@RequestBody StoreMenuDTO dto) {
+//		int res= menuMapper.menuStatusUpdate(dto);
+//		
+//		
+//		
+//		return "";
+//	}
+	
+	// 메뉴삭제 - 지점에 추가한 메뉴 삭제
+	@PostMapping("/deleteMenu.ajax")
+	@ResponseBody
+	public String delDrinkList(@RequestBody Map<String, Object> params) {
+		
+		String bucksId = (String) params.get("bucksId");
+	    String menuCode = (String) params.get("menuCode");
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCode", menuCode);
+		
+		// System.out.println(searchParams);
+		
+		int res = menuMapper.deleteMenu(searchParams);
+		
+		if(res>0) {
+			return "해당 메뉴를 지점 메뉴에서 삭제하였습니다.";
+		}else {
+			return "해당 메뉴를 삭제하는데 실패하였습니다.";
+		}
+	}
 }

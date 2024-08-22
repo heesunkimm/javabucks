@@ -83,7 +83,7 @@
  	</select>
  	
  	<!-- javabucks_order_opt 인서트 -->	
- 	<insert id="orderOptInsert" parameterType="java.util.Map">
+ 	<insert id="orderOptInsert" parameterType="OrderOptDTO" useGeneratedKeys="true" keyProperty="optId">
  		INSERT INTO javabucks_order_opt (optId, cupNum, shotNum, optShotCount, syrupNum, optSyrupCount, milkNum, iceNum, whipNum) 
  		VALUES (seq_optId.nextval, #{cupNum}, #{shotNum}, #{optShotCount}, #{syrupNum}, #{optSyrupCount},
         <if test="milkNum != null and milkNum != ''">
@@ -106,6 +106,12 @@
         </if>
     )
  	</insert>
+ 	
+ 	<select id="orderOptIdsearch" resultType="Integer">
+	    SELECT optId 
+	    FROM javabucks_order_opt 
+	    WHERE optId = (SELECT MAX(optId) FROM javabucks_order_opt)
+	</select>
  	
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">

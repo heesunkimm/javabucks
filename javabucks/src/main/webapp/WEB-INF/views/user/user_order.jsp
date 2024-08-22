@@ -30,7 +30,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink">
+                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -47,7 +47,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${foodList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}">
+                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&pickup=${pickup}">
                             <div class="img_box">
                                 <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -64,7 +64,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}">
+                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -85,7 +85,7 @@
                 <c:if test="${pickup=='To-go'}">
                 <a class="select_store" href="user_store">${store} <span class="font_gray">(To-go)</span></a>
                 </c:if>
-                <c:if test="${empty pickup}">
+                <c:if test="${pickup=='Delivers'}">
                 <a class="select_store" href="user_delivers">${store} <span class="font_gray">(Delivers)</span></a>
                 </c:if>
                 <button class="cart_btn" type="button">

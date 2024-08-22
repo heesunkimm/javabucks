@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.javabucksAdmin.dto.BaljooDTO;
+import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.StockListDTO;
 
 @Service
@@ -86,7 +87,25 @@ public class OrderMapper {
 		return sqlSession.selectOne("baljooCount");
 	}
 	
+	// 품목명 조회
 	public String getStcokName(String stockListCode) {
 		return sqlSession.selectOne("getStockName", stockListCode);
 	}
+	
+	// 지점 리스트 조회
+	public List<BucksDTO> getStoreName(){
+		return sqlSession.selectList("getStoreName");
+	}
+	
+	// 검색 발주 리스트 개수
+	public int searchBaljooCount(Map<String, Object> params) {
+		return sqlSession.selectOne("searchBaljooCount", params);
+	}
+	
+	// 검색 발주 리스트 조회
+	public List<BaljooDTO> searchBaljooList(Map<String, Object> params){
+		List<BaljooDTO> list = sqlSession.selectList("searchBaljooList", params);
+		return list;
+	}
+
 }
