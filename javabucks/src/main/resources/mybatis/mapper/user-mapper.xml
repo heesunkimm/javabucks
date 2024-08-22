@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="mybatis.mapper.user-mapper">
+ 	<insert id="addNewCard" parameterType="CardDTO">
+ 		INSERT INTO javabucks_card (
+ 			cardRegNum, userId, cardName, cardPrice
+ 		)
+ 		VALUES (
+ 			#{cardRegNum}, #{userId}, #{cardName}, 0
+ 		)
+ 	</insert>
+ 
+ 	<select id="listRegCardById" parameterType="String" resultType="CardDTO">
+ 		SELECT * FROM javabucks_card WHERE userId=#{userId}
+ 	</select>
+ 	
+ 	<select id="checkCardDupl" parameterType="String" resultType="CardDTO">
+ 		SELECT * FROM javabucks_card WHERE cardRegNum=#{cardRegNum}
+ 	</select>
+ 
+ 	<select id="compareCardNum" parameterType="String" resultType="CardListDTO">
+ 		SELECT * FROM javabucks_cardList
+ 		WHERE cardListRegNum = #{cardRegNum} 
+ 	</select>
+ 	
+ 	<update id="modifyCardStatus" parameterType="String">
+ 		UPDATE javabucks_cardList SET
+ 		cardListStatus='Y',
+ 		cardListRegDate=SYSDATE
+ 		WHERE cardListRegNum=#{cardRegNum}
+ 	</update>
+ 	
+ 	<update id="updateCardName" parameterType="java.util.Map">
+ 		UPDATE javabucks_card SET cardName=#{cardName} WHERE cardRegNum=#{cardRegNum}
+ 	</update> 
+ 	
+	<!-- 페이히스토리 카드충전 -->
+ 	<insert id="paychargeCard" parameterType="PayhistoryDTO">
+		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+		VALUES (seq_payhistoryNum.nextval, #{userId}, #{cardRegNum}, NULL, NULL, NULL, sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
+ 	</insert>
+ 	
+	<!-- 카드금액충전 -->
+	<update id="plusCardPrice" parameterType="java.util.Map">
+		Update javabucks_card SET cardPrice = cardPrice + #{payhistoryPrice}
+		WHERE cardRegNum = #{cardRegNum}
+	</update>
+ 	
+ 	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
+ 	<select id="listGetAlarmById" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId}
+		ORDER BY alarmRegDate DESC
+ 	</select>
+ 	
+ 	<!-- 해당아이디로 등록된 알람 카테별 리스트(날짜순) -->
+ 	<select id="getAlarmsByCategory" resultType="AlarmDTO" parameterType="String">
+ 		SELECT 
+ 			alarmNum, userId, alarmIsRead, alarmCate, alarmCont,
+			TO_CHAR(alarmRegDate, 'YYYY-MM-DD HH24:MI:SS') AS alarmRegDate
+		FROM javabucks_alarm
+		WHERE userId = #{userId} 
+			<choose>
+            <when test="alarmCate == 'cpn'">
+                AND alarmCate = 'cpn'
+                OR alarmCate = 'grade'
+            </when>
+            <when test="alarmCate == 'order'">
+            	AND alarmCate = 'order'
+                OR alarmCate = 'pickUp'
+            </when>
+            <otherwise>
+                AND alarmCate = #{alarmCate}
+            </otherwise>
+        </choose>
+		ORDER BY alarmRegDate DESC
+ 	</select>
+ 	
+ 	<!-- javabucks_order_opt 인서트 -->	
+ 	<insert id="orderOptInsert" parameterType="java.util.Map">
+ 		INSERT INTO javabucks_order_opt (optId, cupNum, shotNum, optShotCount, syrupNum, optSyrupCount, milkNum, iceNum, whipNum) 
+ 		VALUES (seq_optId.nextval, #{cupNum}, #{shotNum}, #{optShotCount}, #{syrupNum}, #{optSyrupCount},
+        <if test="milkNum != null and milkNum != ''">
+            #{milkNum}
+        </if>
+        <if test="milkNum == null or milkNum == ''">
+            NULL
+        </if>,
+        <if test="iceNum != null and iceNum != ''">
+            #{iceNum}
+        </if>
+        <if test="iceNum == null or iceNum == ''">
+            NULL
+        </if>,
+        <if test="whipNum != null and whipNum != ''">
+            #{whipNum}
+        </if>
+        <if test="whipNum == null or whipNum == ''">
+            NULL
+        </if>
+    )
+ 	</insert>
+ 	
+ 	<!-- 채성진 작업 추가 -->
+ 	<select id="getInfoById" resultType="UserDTO">
+ 		SELECT * FROM javabucks_user WHERE userId= 'user001'
+ 	</select>
+ 	
+ 	<select id="getFrequencyById" resultType="FrequencyDTO"> 
+ 		SELECT jf.* 
+ 		FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
+ 		WHERE jf.userId = 'user001'
+ 	</select>
+ 	
+ 	<select id="getCouponListById"  resultType="CouponListDTO"> 
+ 		SELECT cl.*, cc.cpnName, cc.cpnDesc 
+ 		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
+ 		WHERE cl.userId = 'user001' and cl.cpnListStatus = 'useable' 
+ 	</select>
+ 	
+ 	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
+ 		 SELECT * 
+   		 FROM javabucks_bucks 
+   		 WHERE bucksEnable = 'y'	
+   		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
+      	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
+ 	</select>
+ 	
+ 	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'B%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreFoodList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'C%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getStoreProdcutList" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
+   		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'M%' 	  		 
+ 	</select>
+ 	
+ 	<select id="getMenuInfoByCode" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu  		    
+   		 WHERE menuCode = #{menuCode}   		 	  		 
+ 	</select>
+ 	
+ 	<select id="CupSizeByCode" parameterType="String" resultType="MenuOptCupDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_cup  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="IceByCode" parameterType="String" resultType="MenuOptIceDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_ice  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="ShotByCode" parameterType="String" resultType="MenuOptShotDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_shot  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="WhipByCode" parameterType="String" resultType="MenuOptWhipDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_whip  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="SyrupByCode" parameterType="String" resultType="MenuOptSyrupDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_syrup  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="MilkByCode" parameterType="String" resultType="MenuOptMilkDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menuopt_milk  		    
+   		 WHERE menuoptCode = #{menuoptCode}		 	  		 
+ 	</select>
+ 	
+ 	<select id="StarHistoryByUserid" parameterType="java.util.Map" resultType="FrequencyDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_frequency 		    
+   		 WHERE userId = #{userId}
+   		 AND frequencyRegDate between to_date(#{startDate}, 'YYYY-MM-DD') 
+   		 and to_date(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND
+		 ORDER by frequencyRegDate desc					 	  		 
+ 	</select>
+ 	
+ 	<select id="MyMenuByUserid" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT jm.*
+ 		 FROM javabucks_mymenu jmy join javabucks_menu jm
+ 		 ON jmy.menuCode = jm.menuCode		    
+   		 WHERE userId = #{userId}   		 				 	  		 
+ 	</select>
+ 	
+ 	<select id="MyMenuNumByMenucode" parameterType="String" resultType="MymenuDTO"> 
+ 		 SELECT jm.*
+ 		 FROM javabucks_mymenu jmy join javabucks_menu jm
+ 		 ON jmy.menuCode = jm.menuCode		    
+   		 WHERE userId = #{userId}   		 				 	  		 
+ 	</select>
+ 	
+ 	<delete id="MyMenuDeleteByMenuNum" parameterType="String"> 
+ 		 DELETE FROM javabucks_mymenu	 		 	     
+   		 WHERE mymenuNum = #{mymenuNum} 		 				 	  		 
+ 	</delete>
+ 	
+ </mapper>

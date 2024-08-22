@@ -2,7 +2,7 @@ package com.project.javabucks.dto;
 
 public class AdminDTO {
 
-	private String adminId;
+	private String adminId; 
 	private String adminPasswd;
 	private String adminEmail1;
 	private String adminEmail2;

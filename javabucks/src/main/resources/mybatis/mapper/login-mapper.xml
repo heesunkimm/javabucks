@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mybtis.mapper.login-mapper">
+
+	<insert id="insertUser" parameterType="UserDTO">
+			INSERT INTO javabucks_user (
+		    userId, userPasswd, userName, userGender, userBirth, 
+		    userEmail1, userEmail2, userTel1, userTel2, userTel3
+		) 
+		VALUES (
+		    #{userId}, #{userPasswd}, #{userName}, #{userGender}, #{userBirth}, 
+		   #{userEmail1}, #{userEmail2}, #{userTel1}, #{userTel2}, #{userTel3}
+		) 
+	</insert>
+	
+	<select id="checkId" resultType="int" parameterType="String">
+		select count(*) from javabucks_user where userId = #{userId}
+	</select>
+	
+	<select id="findUserByEmail" parameterType="java.util.Map" resultType="UserDTO">
+		select userEmail1, userEmail2, userPasswd from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
+	</select>
+	
+	<select id="findUserById" parameterType="String" resultType="UserDTO">
+		select * from javabucks_user where userId = #{userId}
+	</select>
+
+	<select id="emailForId" parameterType="java.util.Map" resultType="UserDTO">
+		select * from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
+	</select>
+
+</mapper>

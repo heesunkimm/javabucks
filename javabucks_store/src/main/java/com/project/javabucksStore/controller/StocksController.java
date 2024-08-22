@@ -39,10 +39,7 @@ public class StocksController {
 			@RequestParam(value = "mil_pageNum", required = false, defaultValue = "1") int mil_pageNum,
 			@RequestParam(value = "tum_pageNum", required = false, defaultValue = "1") int tum_pageNum,
 			@RequestParam(value = "won_pageNum", required = false, defaultValue = "1") int won_pageNum) {
-		
-		
-		
-		
+			
 		// 음료 탭
 		int bev_list_count = mapper.bevCount();
 		Map<String, Object> bev_pagingMap = paging(bev_list_count, pageNum);

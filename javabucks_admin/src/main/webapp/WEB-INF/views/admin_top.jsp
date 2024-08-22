@@ -49,7 +49,7 @@
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="bucksSalesM.do">정산관리</a>
+                <a href="javascript:;">정산관리</a>
                 <ul class="dropdown_content">
                     <li><a href="bucksSalesM.do">월별 지점 매출 관리</a></li>
                     <li><a href="bucksSalesD.do">일별 지점 매출 관리</a></li>
