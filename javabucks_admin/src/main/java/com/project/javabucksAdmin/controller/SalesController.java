@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.OrderDTO;
+import com.project.javabucksAdmin.dto.OrderItem;
 import com.project.javabucksAdmin.dto.PayhistoryDTO;
 import com.project.javabucksAdmin.mapper.SalesMapper;
 
@@ -516,7 +517,7 @@ public class SalesController {
 			
 
 
-//Sales-Month			
+//Sales-Monthly			
 			
 			@GetMapping("/bucksSalesM.do")
 			public String monthlyBucksSales(Model model) {
@@ -543,13 +544,141 @@ public class SalesController {
 			    return "sales/admin_monthlysales";
 			}
 			
+			//월별 매출 상세보기 
+			@PostMapping("/MonthlyDetails.do")
+			@ResponseBody
+			public Map<String, Object> MonthlyDetails(@RequestParam("bucksId") String bucksId, @RequestParam("orderDate") String orderDate, Model model) {
+				Map<String, Object> params = new HashMap<>();
+			    params.put("bucksId", bucksId);
+			    params.put("payhistoryDate", orderDate);
+			    
+			    //1단계 쿼리 - 조인 해서 oredercode에 해당하는 orderList받기
+			    List<OrderDTO> details = salesMapper.monthlyDetails(params);
+			    //System.out.println("details : " + details);
+			    
+			    Map<String, Integer> categoryTotals = new HashMap<>();
+			    categoryTotals.put("음료", 0);
+			    categoryTotals.put("디저트", 0);
+			    categoryTotals.put("MD상품", 0);
+			    
+			    int totalSales = 0; // 전체 매출 금액을 저장할 변수
+			    
+			    
+			 // 2단계: orderList를 파싱
+			    for (OrderDTO detail : details) {
+			        String orderListJson = detail.getOrderList();
+
+			        // 1. 대괄호 제거
+			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
+
+			        // 2. 쉼표로 구분하여 요소 분리
+			        String[] items = orderListJson.split(",");
+			        
+			      //쿠폰 들고 오기 
+		            int coupon = detail.getCpnlistnum();
+		            System.out.println(coupon);
+		            int couponDiscount = 0;
+		            
+		            // 쿠폰이 있을 경우, 음료에만 쿠폰 할인을 적용
+		            if (coupon > 0) {
+		                couponDiscount = salesMapper.getCouponPrice(coupon);
+		                System.out.println("couponDiscount:" + couponDiscount);
+		            }
+
+			        for (String item : items) {
+			            item = item.replace("\"", ""); // 큰따옴표 제거
+			            String[] parts = item.split(":");
+
+			            String menuCode = parts[0];
+			            String optionId = parts[1];
+			            int quantity = Integer.parseInt(parts[2]);
+			            
+			            // 매퍼를 통해 메뉴가격 가져오기
+			            int price = salesMapper.getMenuPrice(menuCode);
+			            System.out.println("price:" + price);
+			            int optPrice = salesMapper.getOptPrice(optionId);
+			           //System.out.println("optPrice:" + optPrice);
+			            
+			         // 음료에만 쿠폰 할인을 적용
+			            if (menuCode.startsWith("B") && couponDiscount > 0) {
+			                price -= couponDiscount; // 쿠폰 할인 적용
+			                couponDiscount = 0; // 한 주문에 하나의 쿠폰만 적용하므로, 적용 후 초기화
+			            }
+			            
+			            int totalPrice = (price + optPrice) * quantity;
+			            System.out.println("totalPrice : " + totalPrice);
+			            
+			            String category = "";
+			            if (menuCode.startsWith("B")) {
+			                category = "음료";
+			            } else if (menuCode.startsWith("C")) {
+			                category = "디저트";
+			            } else if (menuCode.startsWith("M")) {
+			                category = "MD상품";
+			            }
+
+			            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0) + totalPrice);
+			            totalSales += totalPrice;
+			        }
+			    }
+			    
+			    //비중 계산
+			    Map<String, Object> result = new HashMap<>();
+			    
+			    if (totalSales == 0) {
+			        // 매출 내역이 없는 경우
+			        result.put("hasSalesData", false);
+			    } else {
+			        // 매출 내역이 있는 경우
+			        result.put("hasSalesData", true);
+			        
+			    for (Map.Entry<String, Integer> entry : categoryTotals.entrySet()) {
+			        String category = entry.getKey();
+			        int sales = entry.getValue();
+			        double percentage = (double) sales / totalSales * 100; // 비중 계산 (백분율)
+			        Map<String, Object> categoryData = new HashMap<>();
+			        categoryData.put("totalSales", sales); // 카테고리별 총 매출
+			        categoryData.put("percentage", percentage); // 카테고리별 비중
+			        result.put(category, categoryData); // 결과에 추가
+			    }
+			    
+			    result.put("totalSales", totalSales); // 전체 매출 금액도 결과에 포함
+			    }
+			    
+			    return result;  // JSON 형식으로 반환
+
+			}
+
+	
+//Sales-Daily	
+			//일별 매출관리 
 			@GetMapping("/bucksSalesD.do")
-			public String dailyBucksSales() {
-				
+			public String dailyBucksSales(Model model) {
+				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales();
+				model.addAttribute("list",orderList);
+				System.out.println(orderList);
 				return "sales/admin_dailysales";
 			}
 			
-            //"cateSales.do" : 카테고리별 매출관리
+			//검색한 지점과 날짜로 일별매출
+			@PostMapping("/searchDailySales.do")
+			public String searchDailySales(@RequestParam("startDate") String startDate,
+		            						@RequestParam("endDate") String endDate,
+		            						@RequestParam("bucksName") String bucksName,
+		            						@RequestParam("category") String category, Model model) {
+				
+				Map<String, Object> params = new HashMap<>();
+			    params.put("startDate", startDate);
+			    params.put("endDate", endDate);
+			    params.put("bucksName", bucksName);
+			    params.put("category", category);
+				
+				
+				
+			    return "sales/admin_dailysales";
+			}
+			
+            
             
 			
 	

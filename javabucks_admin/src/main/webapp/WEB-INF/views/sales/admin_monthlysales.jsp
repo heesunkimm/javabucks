@@ -39,17 +39,23 @@
                             </tr>
                         </thead>
                         <tbody>
+                         <c:set var="totalSum" value="0" /> <!-- 총 매출액 변수 초기화 -->
                         <c:forEach items="${list}" var="mlist"> 
                             <tr>
                                 <td>${mlist.payhistoryYearMonth}</td>
-                                <td><a class="tab_btn" href="javascript:;" data-tab="2024_01">${mlist.branchName}</a></td>
-                                <td><fmt:formatNumber value="${mlist.totalSales}" type="number" maxFractionDigits="0"/>원</td>
+                                <td><a class="tab_btn" href="javascript:;" onclick="MonthlyDetails('${mlist.bucksId}', '${mlist.payhistoryYearMonth}')">${mlist.branchName}</a></td>
+                                <td><fmt:formatNumber value="${mlist.totalSales}" type="number" maxFractionDigits="0"/>원
+                                	<!-- 매출액을 총합에 더하기 -->
+                                <c:set var="totalSum" value="${totalSum + mlist.totalSales}" />
+                                </td>
+                           
                             </tr>
                         </c:forEach>
                             <tr class="bg_green font_white">
                                 <td>총계</td>
                                 <td></td>
-                                <td>000,000,000원</td>
+                                <td><!-- 계산된 총 매출액 표시 -->
+                                <fmt:formatNumber value="${totalSum}" type="number" maxFractionDigits="0"/>원</td>
                             </tr>
                         </tbody>
                     </table>
@@ -64,9 +70,7 @@
                         </li>
                         <li>
                             <ul class="cont_details">
-                                <li>메뉴카테고리</li>
-                                <li>매출액</li>
-                                <li>비중</li>
+                                
                             </ul>
                         </li>
                     </ul>
@@ -119,5 +123,50 @@
 	    });
 	    
 	});
- 
+	
+	
+	function MonthlyDetails(bucksId, payhistoryYearMonth) {
+	    console.log("bucksId:", bucksId); 
+	    console.log("payhistoryYearMonth:", payhistoryYearMonth); 
+
+	    $.ajax({
+	        type: "POST", // POST 요청 타입을 설정
+	        url: "/MonthlyDetails.do", // 요청을 보낼 서버의 URL 설정
+	        data: {
+	            bucksId: bucksId, // 요청 데이터에 포함될 bucksId
+	            orderDate: payhistoryYearMonth // 요청 데이터에 포함될 orderDate
+	        },
+	        success: function(response) {
+	            // 기존 매출 내역을 비웁니다.
+	            $('.sales_cont').empty();
+	            
+	            if (!response.hasSalesData) {
+	                // 매출 내역이 없을 때
+	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>' + 
+	                    '<li><ul class="cont_details">해당 지점의 매출 내역이 없습니다</ul></li>');
+	            } else {
+	                // cont_toolbar 부분을 반복문 밖으로 빼서 한 번만 추가
+	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>');
+
+	                // response 데이터를 반복하면서 각 카테고리와 매출액을 추가
+	                $.each(response, function(category, categoryData) {
+	                    if (category !== "totalSales" && category !== "hasSalesData") {
+	                        var totalSales = categoryData.totalSales;
+	                        var percentage = categoryData.percentage.toFixed(2);
+
+	                        // 각 카테고리와 매출액, 비중을 cont_detail 리스트에 추가
+	                        $('.sales_cont').append(
+	                            '<li><ul class="cont_details"><li>' + category + '</li> ' +
+	                            '<li>' + totalSales + '원</li>' + '<li>' + percentage + '%</li></ul></li>'
+	                        );
+	                    }
+	                });
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Ajax request failed:", status, error);
+	            alert("매출 데이터를 불러오는 중 오류가 발생했습니다.");
+	        }
+	    });
+	}
  </script>
