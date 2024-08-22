@@ -11,8 +11,8 @@
 	
 	<!-- 어드민에서 등록된 메뉴 지점 메뉴로 추가 -->
 	<insert id="addMenu" parameterType="StoreMenuDTO">
-	    insert into javabucks_storemenu (storemenuCode, bucksId, menuCode, storemenuStatus) 
-	    values (seq_storemenuNum.NEXTVAL, #{bucksId}, #{menuCode}, #{storemenuStatus})
+	    insert into javabucks_storemenu (storemenuCode, bucksId, menuCode, storemenuStatus, storeEnable) 
+	    values (seq_storemenuNum.NEXTVAL, #{bucksId}, #{menuCode}, 'Y', 'N')
 	</insert>
 	
 	<!-- 지점에 이미 등록된 메뉴가 있는지 확인 -->
@@ -20,7 +20,7 @@
 	    select * from javabucks_storemenu where menuCode = #{menuCode} and bucksId = #{bucksId}
 	</select>
 	
-	<!-- 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지 -->
+	<!-- 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 버튼 유지 -->
 	<select id="getSelectedMenu" parameterType="String" resultType="StoreMenuDTO">
 		select * from javabucks_storemenu where bucksId = #{bucksId}
 	</select>
@@ -35,12 +35,12 @@
 	        WHERE sm.bucksId = #{bucksId} 
 	          AND sm.storemenuStatus = 'Y' 
 	          AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
-	          AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase}) 
+	          AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
 	          AND m.menuEnable = 'Y' 
 	    ) drinks 
 	    WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
-
+	
 	<!-- 조건에 해당하는 음료 리스트 갯수 -->
 	<select id="searchDrinksCount" parameterType="java.util.Map" resultType="Integer">
 	    SELECT COUNT(*)
@@ -63,5 +63,15 @@
           and sm.storemenuStatus = 'Y'
           and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
 	</select>
+	
+	<!-- 주문막기 - 상태변경 -->
+	<update id="menuStatusUpdate" parameterType="StoreMenuDTO">
+		update javabucks_storemenu set storemenuStatus = #{storemenuStatus} where menuCode = #{menuCode} and bucksId = #{bucksId} 
+	</update>
+	
+	<!-- 메뉴삭제 - 지점에 추가한 메뉴 삭제 -->
+	<delete id="deleteMenu" parameterType="java.util.Map">
+		delete from javabucks_storemenu where bucksId = #{bucksId} and menuCode = #{menuCode}
+	</delete>
 
 </mapper>

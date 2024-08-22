@@ -119,8 +119,6 @@
 	        data: { bucksId: storeId },
 	        dataType: 'json',
 	        success: function(res) {
-	            // console.log(res);
-
 	            // 메뉴 리스트 새로 업데이트
 	            $('.menu_list .menu_item').each(function () {
 	                let $btn = $(this).find('.menuAddBtn');

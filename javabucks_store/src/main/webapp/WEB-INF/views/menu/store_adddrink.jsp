@@ -111,6 +111,7 @@
 	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
 	            } else {
 	                res.forEach(function(item) {
+	                	// 메뉴 추가시 클래스 추가
 	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
@@ -151,7 +152,10 @@
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
-	        data: { bucksId: storeId },
+	        data: { 
+	        	bucksId: storeId,
+	        	
+	        	},
 	        dataType: 'json',
 	        success: function(res) {
 	            // 메뉴 리스트 새로 업데이트
@@ -181,6 +185,7 @@
 	    let data = {
 	    		bucksId: storeId,
 	    		menuCode: menuCode,
+	    		menuName: menuName,
 	    		storemenuStatus: 'Y', 
 	    }
 	    
@@ -197,7 +202,7 @@
 	        dataType: "text",
 	        success: function(res) {
 	        	// 메뉴추가 aelrt
-	        	alert(menuName + res);
+	        	alert(res);
 	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
 	        	// 버튼상태 업데이트
 	        	updateStatus();

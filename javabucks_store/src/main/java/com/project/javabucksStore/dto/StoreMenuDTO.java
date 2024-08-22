@@ -5,7 +5,8 @@ public class StoreMenuDTO {
 	private int storemenuCode; // 지점메뉴코드 pk
 	private String menuCode; // 본사메뉴코드
 	private String bucksId; // 지점아이디
-	private String storemenuStatus; // 지점메뉴상태 - 메뉴 추가시 Y / 메뉴 미추가 N
+	private String storemenuStatus; // 지점메뉴상태 - 메뉴주문가능 Y / 메뉴주문불가 N
+	private String storeEnable; // 지점메뉴 추가 여부 - 추가 Y / 미추가 N
 
 	public int getStoremenuCode() {
 		return storemenuCode;
@@ -31,7 +32,14 @@ public class StoreMenuDTO {
 	public void setStoremenuStatus(String storemenuStatus) {
 		this.storemenuStatus = storemenuStatus;
 	}
-	
+	public String getStoreEnable() {
+		return storeEnable;
+	}
+	public void setStoreEnable(String storeEnable) {
+		this.storeEnable = storeEnable;
+	}
+
+
 	// 조인된 테이블 컬럼 추가
 	private String menuName;
 	private String menuImages;
