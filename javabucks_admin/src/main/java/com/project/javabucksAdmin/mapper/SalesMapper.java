@@ -183,5 +183,23 @@ public class SalesMapper {
     public List<PayhistoryDTO> dailyBucksSales() {
     	return sqlSession.selectList("dailyBucksSales");
     }
+    
+    // 메뉴코드의 첫 글자를 통해 카테고리 분류
+ 	public String categorizeMenu(String menuCode) {
+ 			    if (menuCode.startsWith("B")) {
+ 			        return "음료";
+ 			    } else if (menuCode.startsWith("C")) {
+ 			        return "디저트";
+ 			    } else if (menuCode.startsWith("M")) {
+ 			        return "MD 상품";
+ 			    } else {
+ 			        return "Unknown";
+ 			    }
+ 			}
+ 	
+ 	public List<PayhistoryDTO> searchDailySales(Map<String, Object> params) {
+ 		return sqlSession.selectList("searchDailySales",params);
+ 	}
+ 			
 	 
 }
