@@ -21,6 +21,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 
@@ -77,8 +78,12 @@ public class UserMapper {
 	}
 	
 	// 주문옵션 javabucks_order_opt 테이블인서트
-	public int orderOptInsert (Map<String, String> params) {
-		return sqlSession.insert("orderOptInsert", params);
+	public void orderOptInsert (OrderOptDTO dto) {
+		sqlSession.insert("orderOptInsert", dto);
+	}
+	// 인서트된 optId 바로 뽑기
+	public int orderOptIdsearch() {
+		return sqlSession.selectOne("orderOptIdsearch");
 	}
 	
 	// 채성진 작업------------------------------------------------------

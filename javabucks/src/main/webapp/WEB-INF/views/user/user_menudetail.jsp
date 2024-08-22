@@ -18,6 +18,8 @@
 				<form name="optplus" action="user_paynow" method="post">
 				<input type="hidden" name="menuCode" value="${menu.menuCode}">
 				<input type="hidden" name="menuoptCode" value="${menu.menuoptCode}">
+				<input type="hidden" name="store" value="${store}">
+				<input type="hidden" name="pickup" value="${pickup}">
 		        <div class="inner_wrap">
 		            <div class="menu_img img_box">
 		                <img src="upload_menuImages/${menu.menuImages}" alt="">
@@ -41,7 +43,7 @@
 		                 <!-- 옵션: 컵 -->
 		                <c:if test="${not empty cup}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">컵</p>
+		                    <p class="opt_tit">사이즈 (필수) : 기본 가격은 Tall (size up +500원) </p>
 		                    <div class="opt_rows">
 		                        <div class="select_box">
 		                        	<c:forEach var ="cup" items="${cup}">
@@ -58,7 +60,7 @@
 		                <!-- 옵션: 커피 -->
 		                <c:if test="${not empty shot}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">샷추가</p>
+		                    <p class="opt_tit">샷추가(추가 샷당 +600원)</p>
 		                    <div class="opt_rows">
 		                        <p>${shot.shotType}</p>
 		                        <div class="count_box">
@@ -80,7 +82,7 @@
 		                <!-- 옵션: 시럽 -->
 		                <c:if test="${not empty syrup}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">시럽</p>
+		                    <p class="opt_tit">시럽 추가(종류 선택 하나만, 추가 샷당 +600원)</p>
 		                    <c:forEach var ="syrup" items="${syrup}">
 		                    <div class="opt_rows">
 		                        <p>${syrup.syrupType}</p>
@@ -104,7 +106,7 @@
 		                <!-- 옵션: 얼음 -->
 		                <c:if test="${not empty ice}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">얼음</p>
+		                    <p class="opt_tit">얼음량</p>
 		                    <div class="opt_rows">
 		                        <div class="select_box">
 		                        	<c:forEach var ="ice" items="${ice}">
@@ -121,7 +123,7 @@
 		                <!-- 옵션: 우유 -->
 		                <c:if test="${not empty milk}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">우유</p>
+		                    <p class="opt_tit">우유 종류 (단, 귀리는 +600원)</p>
 		                    <div class="opt_rows">
 		                        <div class="select_box">
 		                        	<c:forEach var ="milk" items="${milk}">
@@ -138,7 +140,7 @@
 						<!-- 옵션: 휘핑 크림 -->
 						<c:if test="${not empty whip}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">휘핑 크림</p>
+		                    <p class="opt_tit">휘핑 크림 추가 (+600원)</p>
 		                    <div class="opt_rows">
 		                        <div class="select_box">
 		                        	<c:forEach var ="whip" items="${whip}">
@@ -155,161 +157,17 @@
 		                <input type="hidden" name="iceNum" id="iceNum">
 		                <input type="hidden" name="milkNum" id="milkNum">
 		                <input type="hidden" name="whipNum" id="whipNum">
+		                <input type="hidden" name="optId" id="optId">
 		            </div>
 		        </div>
 		            <div class="order_box">
 		                <button type="button">담기</button>
-		                <button type="submit">주문하기</button>
+		                <button type="button" onclick="orderCheck()">주문하기</button>
 		                <button class="addlike" type="button">
 		                    <img src="../images/icons/like.png" alt="">
 		                </button>
 		            </div>
-					</form>
-        <div class="inner_wrap">
-            <div class="menu_img img_box">
-                <img src="upload_menuImages/${menu.menuImages}" alt="">
-            </div>
-
-            <div class="txt_box">
-                <p class="txt_tit">${menu.menuName}</p>
-                <p class="txt_desc">${menu.menuDesc}</p>
-                <p class="txt_price">${menu.menuPrice}</p>
-            </div>
-
-			<c:if test="${not empty drink}">
-            <div class="btn_box">
-                <button type="button">퍼스널옵션</button>
-            </div>
-            </c:if>
-            <div class="opt_wrap">
-                <!-- 옵션박스 -->
-                <div class="size_box opt_box">
-                </div>
-                
-                 <!-- 옵션: 컵 -->
-                <c:if test="${not empty cup}">
-                <div class="opt_box">
-                    <p class="opt_tit">컵</p>
-                    <div class="opt_rows">
-                        <div class="select_box">
-                        	<c:forEach var ="cup" items="${cup}">
-                        	<label>
-                                <input type="button" name="cupType" value="">
-                                <span>${cup.cupType}</span>
-                            </label>
-                            </c:forEach>                                                    
-                        </div>
-                    </div>
-                </div>
-                </c:if>
-
-                <!-- 옵션: 커피 -->
-                <c:if test="${not empty shot}">
-                <div class="opt_box">
-                    <p class="opt_tit">커피</p>
-                    <div class="opt_rows">
-                        <p>${shot}</p>
-                        <div class="count_box">
-                            <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('shot_count')">
-                            </div>
-                            <label>
-                                <input type="text" id= "shot_count" name="shotType" value="0" readonly>
-                            </label>
-                            <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('shot_count')">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-				</c:if>
-				
-                <!-- 옵션: 시럽 -->
-                <c:if test="${not empty syrup}">
-                <div class="opt_box">
-                    <p class="opt_tit">시럽</p>
-                    <c:forEach var ="syrup" items="${syrup}">
-                    <div class="opt_rows">
-                        <p>${syrup.syrupType}</p>
-                        <div class="count_box">
-                            <div class="minus_btn click_icon img_box">
-                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('${syrup.syrupType}')">
-                            </div>
-                            <label>
-                                <input type="text" id= "${syrup.syrupType}" name="syrupType" value="0" readonly>
-                            </label>
-                            <div class="plus_btn click_icon img_box">
-                                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('${syrup.syrupType}')">
-                            </div>
-                        </div>
-                    </div>
-                    </c:forEach>                                    
-                </div>
-                </c:if>
-                
-                <!-- 옵션: 얼음 -->
-                <c:if test="${not empty ice}">
-                <div class="opt_box">
-                    <p class="opt_tit">얼음</p>
-                    <div class="opt_rows">
-                        <div class="select_box">
-                        	<c:forEach var ="ice" items="${ice}">
-                            <label>
-                                <input type="button" name="iceType" value="">
-                                <span>${ice.iceType}</span>
-                            </label>
-                            </c:forEach>                                      
-                        </div>
-                    </div>
-                </div>
-				</c:if>
-				
-                <!-- 옵션: 우유 -->
-                <c:if test="${not empty milk}">
-                <div class="opt_box">
-                    <p class="opt_tit">우유</p>
-                    <div class="opt_rows">
-                        <div class="select_box">
-                        	<c:forEach var ="milk" items="${milk}">
-                            <label>
-                                <input type="button" name="milkType" value="">
-                                <span>${milk.milkType}</span>
-                            </label>
-                            </c:forEach>                            
-                        </div>
-                    </div>
-                </div>                           
-				</c:if>
-				
-				<!-- 옵션: 휘핑 크림 -->
-				<c:if test="${not empty whip}">
-                <div class="opt_box">
-                    <p class="opt_tit">휘핑 크림</p>
-                    <div class="opt_rows">
-                        <div class="select_box">
-                        	<c:forEach var ="whip" items="${whip}">
-                            <label>
-                                <input type="button" name="whipType" value="">
-                                <span>${whip.whipType}</span>
-                            </label>
-                            </c:forEach>
-                                                       
-                        </div>
-                    </div>
-                </div>
-                </c:if>
-                
-            </div>
-
-            <div class="order_box">
-                <button type="button">담기</button>
-                <button type="button">주문하기</button>
-                <button class="addlike" type="button">
-                    <img src="../images/icons/like.png" alt="">
-                </button>
-            </div>
-
-        </div>
+			</form>
     </section>
     <!-- e: content -->
 
@@ -340,7 +198,7 @@
 	            // 버튼의 data-* 속성 값 읽기
 	            const cupNum = this.getAttribute('data-cupNum');
 	            const iceNum = this.getAttribute('data-iceNum');
-	            const milkNum = this.getAttribute('data-milkNnum');
+	            const milkNum = this.getAttribute('data-milkNum');
 	            const whipNum = this.getAttribute('data-whipNum');
 
 	            // 숨겨진 필드에 값 설정
@@ -350,5 +208,76 @@
 	            document.getElementById('whipNum').value = whipNum || document.getElementById('whipNum').value;
 	        });
 	    });
+	    
+		// 유효성 검사
+	    function orderCheck() {
+			var drink = "${drink}";
+			if (drink === 'drink') { 
+			    var isIce = "${isIce}";
+			    var isMilk = "${isMilk}";
+			    
+		        var cupNum = $('#cupNum').val();
+		        var whipNum = $('#whipNum').val();
+		        var iceNum = $('#iceNum').val();
+		        var milkNum = $('#milkNum').val();
+		        
+		        // 사이즈 체크
+		        if (!cupNum) {
+		            alert("사이즈를 선택해 주세요.");
+		            return;
+		        }
+		        // 얼음량 체크 (ice 리스트가 비어 있지 않을 때만)
+		        if (isIce !== 'not' || isIce === 'ok') {
+		            if (!iceNum) {
+		                alert("얼음량을 선택해 주세요.");
+		                return;
+		            }
+		        }
+		        // 우유 종류 체크 (milk 리스트가 비어 있지 않을 때만)
+		        if (isMilk !== 'not' || isMilk === 'ok') {
+		            if (!milkNum) {
+		                alert("우유 종류를 선택해 주세요.");
+		                return;
+		            }
+		        }
+			}
+			orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+	    }
+		
+		// orderOptInsert 요청 처리
+	    function orderOptInsert(cupNum, whipNum, iceNum, milkNum) {
+			var shotNum = ${shot.shotNum};
+			var optShotCount = $("input[name='optShotCount']").val();
+			var syrupNum = $("input[name='syrupNum']").val();
+			var optSyrupCount = $("input[name='optSyrupCount']").val();
+			
+	        $.ajax({
+	            url: '/orderOptInsert.ajax', // 요청할 URL
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                cupNum: cupNum,
+	                whipNum: whipNum,
+	                iceNum: iceNum,
+	                milkNum: milkNum,
+	                shotNum: shotNum,
+	                optShotCount: optShotCount
+	            }),
+	            success: function(res) {
+	            	if (res > 0){
+	                	alert('결제 페이지로 이동합니다.');
+	                	$('#optId').val(res);
+	                	document.forms['optplus'].submit();
+	            	} else {
+	            		console.log('처리 중 오류가 발생했습니다.');
+	            		return;
+	            	}
+	            },
+	            error: function(error) {
+	                alert('처리 중 오류가 발생했습니다.');
+	                return;
+	            }
+	        });
+	    }
 	    
 </script>
