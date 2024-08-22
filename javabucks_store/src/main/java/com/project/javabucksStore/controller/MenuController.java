@@ -1,12 +1,11 @@
 package com.project.javabucksStore.controller;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,14 +55,26 @@ public class MenuController {
 	@PostMapping("/addMenu.ajax")
 	@ResponseBody
 	public String addMenu(@RequestBody StoreMenuDTO dto) {
-		int res = menuMapper.addMenu(dto);
 		
+		Map<String, Object> params = new HashMap<>();
+		params.put("menuCode", dto.getMenuCode());
+	    params.put("bucksId", dto.getBucksId());
+		
+		// 지점에 이미 등록된 메뉴가 있는지 확인
+		StoreMenuDTO menuCheck = menuMapper.getMenuByStore(params);
+		
+		if(menuCheck != null) {
+			return "이미 추가된 메뉴입니다.";
+		}
+		
+		int res = menuMapper.addMenu(dto);
 		if(res>0) {
 			return "가 메뉴에 추가되었습니다.";
 		}else {
 			return "메뉴추가에 실패하였습니다.";
 		}
 	}
+	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	@GetMapping("/getSelectedMenu.ajax")
 	@ResponseBody
@@ -86,28 +97,33 @@ public class MenuController {
 		return "/menu/store_allmd";
 	}
 	
+	private static final List<String> various_bases = Arrays.asList("D", "E", "F", "J", "L", "P");
+	
 	@PostMapping("/searchDrinks.ajax")
 	@ResponseBody
-	public Map<String, Object> searchDrinks(HttpServletRequest req, @RequestParam Map<String, Object> params, 
+	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params,
 	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
-		// 검색 필터가 null or ""일 경우 기본값 설정
+		
+		String bucksId = (String) params.get("bucksId");
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
-	    String menuName = (String) params.get("menuName");
+	    
+	    // menuBase가 SPECIAL_MENU_BASES에 포함되어 있으면 'F'로 변경
+        if (menuBase != null && various_bases.contains(menuBase)) {
+            menuBase = "F";
+        }
 	    
 	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
 	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
-	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    
-	    // 검색 조건을 포함한 매퍼 호출
-	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("menuCate", menuCate);
-	    searchParams.put("menu_base", menuBase);
-	    searchParams.put("menuName", menuName);
-	    
-		int searchCount = menuMapper.searchDrinksCount(searchParams);
-	    int pageSize = 10;
+
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCate", menuCate);
+		searchParams.put("menuBase", menuBase);
+		
+		int searchCount = menuMapper.searchDrinksCount(searchParams); // 검색결과별 리스트 수
+	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
 	    int startRow = (pageNum - 1) * pageSize + 1;
 	    int endRow = startRow + pageSize - 1;	
 	    if (endRow > searchCount) endRow = searchCount;		
@@ -118,31 +134,45 @@ public class MenuController {
 	    int endPage = startPage + pageBlock - 1;
 	    if (endPage > pageCount) endPage = pageCount;
 	    
+	    List<StoreMenuDTO> drinkList;
+	    
 	    // 검색 조건에 따라 메뉴 리스트 가져오기
 	    searchParams.put("startRow", startRow);
 	    searchParams.put("endRow", endRow);
 	    
-    	List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
-	    Map<String, Object> allList = new HashMap<>();
+	    drinkList = menuMapper.searchDrinks(searchParams);
 	    
-	    if (drinkList.isEmpty()) {
-	        // 값이 없을 때
-	    	allList.put("noList", true);
-	    } else {
-	        // 값이 있을 때
-	    	allList.put("drinkList", drinkList);
-	    	allList.put("searchParams", searchParams);
-	    	allList.put("searchCount", searchCount);
-	    	allList.put("pageSize", pageSize);
-	    	allList.put("startRow", startRow);
-	    	allList.put("endRow", endRow);
-	    	allList.put("no", no);
-	    	allList.put("pageBlock", pageBlock);
-	    	allList.put("pageCount", pageCount);
-	    	allList.put("startPage", startPage);
-	    	allList.put("endPage", endPage);
-	    }
+	    req.setAttribute("searchCount", searchCount);
+	    req.setAttribute("drinkList", drinkList);
+	    req.setAttribute("pageSize", pageSize);
+	    req.setAttribute("startRow", startRow);
+	    req.setAttribute("endRow", endRow);
+	    req.setAttribute("no", no);
+	    req.setAttribute("pageBlock", pageBlock);
+	    req.setAttribute("pageCount", pageCount);
+	    req.setAttribute("startPage", startPage);
+	    req.setAttribute("endPage", endPage);
 	    
-	    return allList;
+	    return drinkList;
 	}
+	
+	// 메뉴 키워드 검색 리스트 뽑기
+	@PostMapping("/searchDrinksList.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchDrinksList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+
+	    String bucksId = (String) params.get("bucksId");
+	    String searchCont = (String) params.get("menuName");
+
+	    searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
+	    
+	    Map<String, Object> searchParams = new HashMap<>();
+	    searchParams.put("bucksId", bucksId);
+	    searchParams.put("searchCont", searchCont);
+	    
+	    List<StoreMenuDTO> filterList = menuMapper.searchDrinksList(searchParams);
+	    
+	    return filterList;
+	}
+
 }

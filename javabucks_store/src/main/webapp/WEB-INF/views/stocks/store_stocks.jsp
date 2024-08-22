@@ -31,7 +31,12 @@
                 	<c:forEach var="bevStocks" items="${bevStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${bevStocks.stockListImage}">
+	                        	<c:if test="${bevStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${bevStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${bevStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>	                            
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -60,7 +65,13 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                
+	                                <c:if test="${bevStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${bevStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>	
 	                            </div>
 	                        </div>
 	                    </li>
@@ -82,7 +93,7 @@
 				            </c:when>
 				            <c:when test="${param.pageNum == i}">
 				                <c:set var="activeClass" value="page_active"/>
-				            </c:when>
+				            </c:when> 
 				        </c:choose>
 				        <a href="stocks.do?pageNum=${i}" class="${activeClass}  page_num">${i}</a>
 				    </c:forEach>
@@ -104,7 +115,12 @@
                 	<c:forEach var="fooStocks" items="${fooStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${fooStocks.stockListImage}">
+	                            <c:if test="${fooStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${fooStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${fooStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>	
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -132,7 +148,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${fooStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${fooStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>	
 	                            </div>
 	                        </div>
 	                    </li>
@@ -177,7 +198,12 @@
                 	<c:forEach var="cupStocks" items="${cupStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${cupStocks.stockListImage}">
+	                            <c:if test="${cupStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${cupStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${cupStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -205,7 +231,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${cupStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${cupStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>	
 	                            </div>
 	                        </div>
 	                    </li>
@@ -250,7 +281,12 @@
                 	<c:forEach var="syrStocks" items="${syrStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${syrStocks.stockListImage}">
+	                            <c:if test="${syrStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${syrStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${syrStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -278,7 +314,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${syrStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${syrStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>	
 	                            </div>
 	                        </div>
 	                    </li>
@@ -323,7 +364,12 @@
                 	<c:forEach var="whiStocks" items="${whiStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${whiStocks.stockListImage}">
+	                            <c:if test="${whiStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${whiStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${whiStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -351,7 +397,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${whiStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${whiStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -396,7 +447,12 @@
                 	<c:forEach var="milStocks" items="${milStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${milStocks.stockListImage}">
+	                            <c:if test="${milStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${milStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${milStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -424,7 +480,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${milStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${milStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -469,7 +530,12 @@
                 	<c:forEach var="tumStocks" items="${tumStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${tumStocks.stockListImage}">
+	                            <c:if test="${tumStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${tumStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${tumStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -497,7 +563,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${tumStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${tumStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>
 	                            </div>
 	                        </div>
 	                    </li>
@@ -542,7 +613,12 @@
                 	<c:forEach var="wonStocks" items="${wonStocksList}">
 	                    <li class="stocks_item">
 	                        <div class="img_box">
-	                            <img src="/images/stocks_image/${wonStocks.stockListImage}">
+	                            <c:if test="${wonStocks.stockListStatus eq 'Y'}">
+	                        		<img src="/images/stocks_image/${wonStocks.stockListImage}">
+	                        	</c:if>
+	                        	<c:if test="${wonStocks.stockListStatus eq 'N'}">
+	                        		주문막힘
+	                        	</c:if>
 	                        </div>
 	                        <div class="txt_box">
 	                            <dl>
@@ -570,7 +646,12 @@
 	                                        <img src="../images/icons/plus.png" name="plusBtn" alt="" onclick="plusCount(this)">
 	                                    </div>
 	                                </div>
-	                                <button type="button" onclick="addCart(this)">담기</button>
+	                                <c:if test="${wonStocks.stockListStatus eq 'Y'}">
+		                        		<button type="button" onclick="addCart(this)">담기</button>
+		                        	</c:if>
+		                        	<c:if test="${wonStocks.stockListStatus eq 'N'}">
+		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        	</c:if>
 	                            </div>
 	                        </div>
 	                    </li>

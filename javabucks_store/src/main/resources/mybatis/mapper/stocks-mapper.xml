@@ -5,11 +5,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="mybatis.mapper.stocks-mapper">
 
-	<!-- s: 재고 현황 조회 -->
+	<!-- s: 재고 현황 조회 --> 
 	<select id="bevStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="fooStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="cupStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="syrStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="whiStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="milStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="tumStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -93,7 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="wonStocksList" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
-				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 					   from javabucks_storeStocks A
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
@@ -207,7 +207,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- s: 재고 장바구니 조회 -->
 	<select id="stockCartList" resultType="StockCartDTO">
-		select A.stockCartNum, A.stockListCode, A.stockCartCount, A.stockCartRegDate, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage
+		select A.stockCartNum, A.stockListCode, A.stockCartCount, A.stockCartRegDate, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 		from javabucks_stockCart A
 		join javabucks_stockList B
 		on A.stockListCode = B.stockListCode

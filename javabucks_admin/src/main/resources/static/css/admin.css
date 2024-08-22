@@ -166,6 +166,7 @@ header .nav_item:hover .dropdown_content {display: block;}
 .tab_management .list_box .tab-content {width: 540px;}
 .tab_management .list_box .search_list {position: relative;}
 .tab_management .list_box .search_list::after {content: ''; position: absolute; top: 50%; right: -35px; transform: translateY(-50%) rotate(45deg); display: block; width: 14px; height: 14px; border-top: 2px solid #555; border-right: 2px solid #555;}
+.tab_management .list_box .sales_cont {width: 540px;}
 .tab_management .list_box .sales_cont .cont_toolbar, 
 .tab_management .list_box .sales_cont .cont_details {width: 100%; display: flex; align-items: center; justify-content: space-between;}
 .tab_management .list_box .sales_cont .cont_toolbar {padding: 4px 0; background-color: #006241; color: #fefefe;}

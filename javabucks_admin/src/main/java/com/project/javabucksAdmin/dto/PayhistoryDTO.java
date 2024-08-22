@@ -97,6 +97,28 @@ public class PayhistoryDTO {
 	private String branchName;   // 지점 이름
     private int totalSales;      // 지점별 합산된 결제 금액
     private String payhistoryYearMonth;   // 결제 날짜 (YYYY-MM 형식)
+    private String orderList;  
+    private String bucksOwner;  
+    
+    
+    
+    
+    
+	public String getOrderList() {
+		return orderList;
+	}
+
+	public void setOrderList(String orderList) {
+		this.orderList = orderList;
+	}
+
+	public String getBucksOwner() {
+		return bucksOwner;
+	}
+
+	public void setBucksOwner(String bucksOwner) {
+		this.bucksOwner = bucksOwner;
+	}
 
 	public String getPayhistoryYearMonth() {
 		return payhistoryYearMonth;
