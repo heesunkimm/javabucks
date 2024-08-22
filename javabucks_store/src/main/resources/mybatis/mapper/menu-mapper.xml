@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.menu-mapper">
+
+	<!-- 메뉴추가 - 선택된 메뉴 리스트 필터링 -->
+	<select id="getSelectMenu" resultType="MenuDTO">
+	    select * from javabucks_menu where substr(menuCode, 1,1) in ('B', 'C', 'M') and substr(menuCode, 2, 4) = #{menuoptCode}
+	</select>
+	
+	<!-- 어드민에서 등록된 메뉴 지점 메뉴로 추가 -->
+	<insert id="addMenu" parameterType="StoreMenuDTO">
+	    insert into javabucks_storemenu (storemenuCode, bucksId, menuCode, storemenuStatus, storeEnable) 
+	    values (seq_storemenuNum.NEXTVAL, #{bucksId}, #{menuCode}, 'Y', 'N')
+	</insert>
+	
+	<!-- 지점에 이미 등록된 메뉴가 있는지 확인 -->
+	<select id="getMenuByStore" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	    select * from javabucks_storemenu where menuCode = #{menuCode} and bucksId = #{bucksId}
+	</select>
+	
+	<!-- 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 버튼 유지 -->
+	<select id="getSelectedMenu" parameterType="String" resultType="StoreMenuDTO">
+		select * from javabucks_storemenu where bucksId = #{bucksId}
+	</select>
+	
+	<!-- 조건에 해당하는 음료 리스트 뽑기 -->
+	<select id="searchDrinks" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	    SELECT * 
+	    FROM (
+	        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.* 
+	        FROM javabucks_storemenu sm 
+	        JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
+	        WHERE sm.bucksId = #{bucksId} 
+	          AND sm.storemenuStatus = 'Y' 
+	          AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
+	          AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
+	          AND m.menuEnable = 'Y' 
+	    ) drinks 
+	    WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<!-- 조건에 해당하는 음료 리스트 갯수 -->
+	<select id="searchDrinksCount" parameterType="java.util.Map" resultType="Integer">
+	    SELECT COUNT(*)
+	    FROM javabucks_storemenu sm
+	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode
+	    WHERE sm.bucksId = #{bucksId}
+	      AND sm.storemenuStatus = 'Y'
+	      AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate})
+	      AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
+	      AND m.menuEnable = 'Y'
+	</select>
+	
+	<!-- 메뉴 키워드 검색 리스트 뽑기 -->
+	<select id="searchDrinksList" parameterType="java.util.Map" resultType="StoreMenuDTO">
+        select row_number() over (order by m.menuregDate desc) as rn,
+               m.* 
+        from javabucks_storemenu sm 
+        join javabucks_menu m on sm.menuCode = m.menuCode
+        where sm.bucksId = #{bucksId} 
+          and sm.storemenuStatus = 'Y'
+          and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+	</select>
+	
+	<!-- 주문막기 - 상태변경 -->
+	<update id="menuStatusUpdate" parameterType="StoreMenuDTO">
+		update javabucks_storemenu set storemenuStatus = #{storemenuStatus} where menuCode = #{menuCode} and bucksId = #{bucksId} 
+	</update>
+	
+	<!-- 메뉴삭제 - 지점에 추가한 메뉴 삭제 -->
+	<delete id="deleteMenu" parameterType="java.util.Map">
+		delete from javabucks_storemenu where bucksId = #{bucksId} and menuCode = #{menuCode}
+	</delete>
+
+</mapper>

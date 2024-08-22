@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.login-mapper">
+
+	<select id="findStoreById" parameterType="String" resultType="BucksDTO">
+		select * from javabucks_bucks where bucksId = #{bucksId}
+	</select>
+	
+	<select id="emailForId" parameterType="java.util.Map" resultType="BucksDTO">
+		select * from javabucks_bucks where bucksEmail1 = #{bucksEmail1} and bucksEmail2 = #{bucksEmail2}
+	</select>
+	
+</mapper>
