@@ -76,6 +76,11 @@ public class UserMapper {
 		return sqlSession.selectList("getAlarmsByCategory", params);
 	}
 	
+	// 주문옵션 javabucks_order_opt 테이블인서트
+	public int orderOptInsert (Map<String, String> params) {
+		return sqlSession.insert("orderOptInsert", params);
+	}
+	
 	// 채성진 작업------------------------------------------------------
 	public UserDTO getInfoById() {
 		return sqlSession.selectOne("getInfoById");
@@ -135,5 +140,17 @@ public class UserMapper {
 	
 	public List<FrequencyDTO> StarHistoryByUserid(Map<String, String> params) {	
 		return sqlSession.selectList("StarHistoryByUserid", params);
+	}
+	
+	public List<MenuDTO> MyMenuByUserid(String userId) {	
+		return sqlSession.selectList("MyMenuByUserid", userId);
+	}
+	
+	public MenuOptShotDTO MyMenuNumByMenucode(String menuoptCode) {	
+		return sqlSession.selectOne("MyMenuNumByMenucode", menuoptCode);
+	}
+	
+	public int MyMenuDeleteByMenuNum(int mymenuNum) {
+		return sqlSession.delete("MyMenuDeleteByMenuNum", mymenuNum);
 	}
 }
