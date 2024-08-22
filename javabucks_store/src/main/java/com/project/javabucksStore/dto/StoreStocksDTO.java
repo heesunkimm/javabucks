@@ -37,6 +37,7 @@ public class StoreStocksDTO {
 	private String stockListName;
 	private String stockListImage;
 	private int stockListPrice;
+	private String stockListStatus;
 
 	public String getStockCateCode() {
 		return stockCateCode;
@@ -62,7 +63,13 @@ public class StoreStocksDTO {
 	public void setStockListPrice(int stockListPrice) {
 		this.stockListPrice = stockListPrice;
 	}
-
+	public String getStockListStatus() {
+		return stockListStatus;
+	}
+	public void setStockListStatus(String stockListStatus) {
+		this.stockListStatus = stockListStatus;
+	}
+	
 	
 	
 }
