@@ -28,7 +28,7 @@
             	<c:forEach var="menu" items="${mymenu}">
                 <li class="menu_item">
                     <div class="close_icon img_box">
-                        <a href="user_mymenu?mode=deleteMymenu&mymenuNum=${menu.menuCode}">
+                        <a href="user_mymenu?mode=deleteMymenu&menuCode=${menu.menuCode}">
                             <img src="../images/icons/close.png" alt="">
                         </a>
                     </div>

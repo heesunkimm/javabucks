@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>        
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -22,7 +23,7 @@
             <div class="view_date div_box">
                 <p>전체</p>
                 <div>
-                    <p class="font_gray">2024.07.01  ~ 2024.08.01</p>
+                    <p class="font_gray">${period_setting}</p>
                     <a class="toggle_btn font_green" href="javascript:;">▽</a>
                 </div>
             </div>
@@ -72,25 +73,27 @@
 
             <div class="list_box">
                 <div class="count_box">
-                    <p class="font_gray">총 <span class="font_green">0건</span></p>
-                    <p class="font_gray">사용합계 <span class="font_green">0원</span></p>
+                    <p class="font_gray">총 <span class="font_green">${number}건</span></p>
+                    <p class="font_gray">사용합계 <span class="font_green">${totalPrice}원</span></p>
                 </div>
                 <ul class="add_list">
+                	<c:forEach var="dto" items="${recepitList}">
                     <li>
                         <div class="txt_box">
-                            <p class="txt_store">종로3가</p>
+                            <p class="txt_store">${dto.bucksName}</p>
                             <div class="font_gray">
-                                <p class="txt_date">2024-07-31 12:18:00</p>
+                                <p class="txt_date">${dto.payhistoryDate}</p>
                                 <p class="txt_pay">결제</p>
                             </div>
-                            <p class="txt_price font_green">6,700원</p>
+                            <p class="txt_price font_green">${dto.payhistoryPrice}원</p>
                         </div>
-                        <a class="popup_btn" href="javascript:;" data-popup="recepitbox">
+                        <a class="popup_btn" href="user_recepit?bucksId=${dto.bucksId}" data-popup="recepitbox">
                             <div class="img_box">
                                 <img src="../images/icons/receipt.png" alt="">
                             </div>
                         </a>
                     </li>
+                    </c:forEach>
                 </ul>
             </div>
         </div>
@@ -163,3 +166,8 @@
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
+<script>
+	$(".toggle_btn").on('click', function(){
+		$(".period_date").toggle();
+	})
+</script>

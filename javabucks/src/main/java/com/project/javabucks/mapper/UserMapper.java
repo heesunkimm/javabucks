@@ -151,11 +151,19 @@ public class UserMapper {
 		return sqlSession.selectList("MyMenuByUserid", userId);
 	}
 	
-	public MenuOptShotDTO MyMenuNumByMenucode(String menuoptCode) {	
-		return sqlSession.selectOne("MyMenuNumByMenucode", menuoptCode);
+	public int MyMenuNumByUserid(Map<String, String> params) {	
+		return sqlSession.selectOne("MyMenuNumByUserid", params);
 	}
 	
 	public int MyMenuDeleteByMenuNum(int mymenuNum) {
 		return sqlSession.delete("MyMenuDeleteByMenuNum", mymenuNum);
+	} 
+	
+	public List<PayhistoryDTO> RecepitByUserid(String userId) {	
+		return sqlSession.selectList("RecepitByUserid", userId);
+	}
+	
+	public BucksDTO StoreInfoByBucksId(String bucksId) {	
+		return sqlSession.selectOne("StoreInfoByBucksId", bucksId);
 	}
 }
