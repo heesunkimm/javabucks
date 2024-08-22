@@ -42,19 +42,16 @@
                         <c:forEach items="${bucksBal}" var="blist">
 	                         
 						     <tr>
-						       	<td><a class="tab_btn" href="javascript:;" data-tab="${blist.bucksName}">${blist.bucksName}</a></td>
+						       	<td><a class="tab_btn" href="javascript:;" onclick="viewOrderDetails('${blist.bucksId}', '${blist.baljooMonth}')">${blist.bucksName}</a></td>
 						        <td><fmt:formatNumber value="${blist.totalOrderAmount}" type="number" maxFractionDigits="0"/>원</td>
 						     </tr>
 						       
                          </c:forEach>
-                            <!-- <tr class="bg_green font_white">
-                                <td>총계</td>
-                                <td><fmt:formatNumber value="${totalAmount}" type="number" maxFractionDigits="0"/>원</td> 
-                            </tr> -->
+                            
                         </tbody>
                     </table>
 
-                    <ul id="${blist.baljooNum}" class="s_active tab-content">
+                    <ul  class="sales_cont">
                         <li>
                             <ul class="cont_toolbar">
                                 <li>발주번호</li>
@@ -64,12 +61,15 @@
                             </ul>
                         </li>
                         <li>
+                       
                             <ul class="cont_details">
-                                <li>발주번호</li>
-                                <li>발주일</li>
-                                <li>발주품목</li>
-                                <li>발주금액</li>
-                            </ul>
+							    <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+							        
+							</ul>
+							
                         </li>
                     </ul>
                 </div>
@@ -120,61 +120,62 @@
 	    plusBtn.addEventListener('click', function() {
 	        updateDate(1);
 	    });
+	    
 	});
  	
- // 발주 내역 상세보기
- 	document.querySelectorAll('.tab_btn').forEach(function(tabBtn) {
-    tabBtn.addEventListener('click', function() {
-        const baljooNum = this.getAttribute('data-tab'); // 클릭한 링크의 baljooNum 값
-        const baljooDate = this.innerText.trim(); // 클릭한 날짜 (trim()으로 공백 제거)
-        const bucksId = document.querySelector('select[name="bucksId"]').value; // 선택된 지점 ID
-        
-        // baljooNum이 유효한 값인지 확인
-        if (!baljooNum || !baljooDate || !bucksId) {
-            console.error('Invalid data:', { baljooNum, baljooDate, bucksId });
-            return;
-        }
+ 	function viewOrderDetails(bucksId, baljooMonth) {
+ 	    console.log("bucksId:", bucksId); // bucksId 확인
+ 	    console.log("baljooMonth:", baljooMonth); // baljooMonth 확인
 
-        // 서버로 AJAX 요청 보내기
-        fetch('/getOrderDetails.do', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                baljooNum: baljooNum, // baljooNum 값을 서버로 전송
-                baljooDate: baljooDate,
-                bucksId: bucksId
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // 서버에서 받은 데이터로 DOM 업데이트
-            const tabContent = document.getElementById(baljooNum); // 해당 baljooNum에 맞는 id를 사용
+ 	   $.ajax({
+ 	        type: "POST",
+ 	        url: "/viewOrderDetails.do",
+ 	        data: {
+ 	            bucksId: bucksId,
+ 	            orderDate: baljooMonth
+ 	        },
+ 	       success: function(response) {
+ 	            console.log("Response:", response); // 응답 데이터 확인
+ 	           const salesCont = $('.sales_cont'); // sales_cont 요소 선택
 
-            if (tabContent) {
-                tabContent.innerHTML = ''; // 기존 내용 지우기
+ 	            salesCont.empty(); // 기존 내용을 지움
 
-                for (const [key, value] of Object.entries(data)) {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <ul class="cont_details">
-                            <li>${key}</li>
-                            <li>${value}</li>
-                        </ul>
-                    `;
-                    tabContent.appendChild(listItem);
-                }
-            } else {
-                console.error('No element found with ID:', baljooNum);
-            }
-        })
-        .catch(error => console.error('Error during fetch:', error));
-    });
-});
- </script>
+ 	            if (response.length === 0) {
+ 	                // 검색 결과가 없을 경우, 메시지 추가
+ 	                salesCont.append(
+ 	                    '<li><ul class="cont_toolbar"><li>발주번호</li><li>발주일</li><li>발주품목</li><li>발주금액</li></ul></li>' +
+ 	                    '<li style="width: 100%; text-align: center; padding: 20px;">발주 내역이 없습니다.</li>'
+ 	                );
+ 	            } else {
+ 	                // 검색 결과가 있을 경우
+ 	                let listHtml = '<li><ul class="cont_toolbar"><li>발주번호</li><li>발주일</li><li>발주품목</li><li>발주금액</li></ul></li>';
+
+ 	                response.forEach(function(order) {
+ 	                    let stockItemsHtml = '';
+
+ 	                    order.stockList.forEach(function(stockItem) {
+ 	                        // stockListName이 배열일 경우 첫 번째 요소 사용
+ 	                        let stockName = Array.isArray(stockItem.stockListName) ? stockItem.stockListName[0] : stockItem.stockListName;
+ 	                        stockItemsHtml += stockName + ' x ' + stockItem.quantity + '<br>';
+ 	                    });
+
+ 	                    // 각 발주에 대한 HTML 생성
+ 	                    listHtml += '<li><ul class="cont_details">';
+ 	                    listHtml += '<li>' + order.baljooNum + '</li>'; // 발주 번호
+ 	                    listHtml += '<li>' + order.baljooDate + '</li>'; // 발주 날짜
+ 	                    listHtml += '<li>' + stockItemsHtml + '</li>'; // 발주 품목 리스트
+ 	                    listHtml += '<li>' + order.baljooPrice + '원</li>'; // 발주 금액
+ 	                    listHtml += '</ul></li>';
+ 	                });
+
+ 	                salesCont.append(listHtml); // 생성된 HTML을 sales_cont에 추가
+ 	            }
+
+ 	            console.log("Data successfully appended to .sales_cont.");
+ 	        },
+ 	        error: function(error) {
+ 	            console.log("Error fetching order details:", error); // 오류 발생 시 메시지 출력
+ 	        }
+ 	    });
+ 	} 
+ 	</script>

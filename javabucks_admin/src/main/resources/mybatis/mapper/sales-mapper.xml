@@ -109,6 +109,7 @@
 			SELECT
 			    b.bucksId AS bucksId,
 			    b.bucksName AS bucksName,
+			    TO_CHAR(jb.baljooDate, 'YYYY-MM') AS baljooMonth,
 			    COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
 			FROM
 			    javabucks_bucks b
@@ -118,44 +119,36 @@
 			    AND TO_CHAR(jb.baljooDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
 			GROUP BY
 			    b.bucksId,
-			    b.bucksName
+			    b.bucksName,
+			    TO_CHAR(jb.baljooDate, 'YYYY-MM')
 			ORDER BY bucksName ASC
  		</select>
  		
- 		<!-- 발주 겸색 리스트 수정본1 -->
- 		<select id="selectAllOrderSum" resultType="BaljooDTO">
-		    SELECT
-		        b.bucksId AS bucksId,
-		        b.bucksName AS bucksName,
-		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
-		    FROM
-		        javabucks_bucks b
-		    LEFT JOIN
-		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
-		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
-		    GROUP BY
-		        b.bucksId,
-		        b.bucksName
-		    ORDER BY bucksName ASC
-		</select>
 		
-		<!-- 발주 겸색 리스트 2 -->
-		<select id="selectOrderSum" resultType="BaljooDTO">
-		    SELECT
-		        b.bucksId AS bucksId,
-		        b.bucksName AS bucksName,
-		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
-		    FROM
-		        javabucks_bucks b
-		    LEFT JOIN
-		        javabucks_baljoo jb ON b.bucksId = jb.bucksId
-		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{orderDate}
-		    WHERE
-		        b.bucksId = #{bucksId}
-		    GROUP BY
-		        b.bucksId,
-		        b.bucksName
-		    ORDER BY bucksName ASC
+		<!-- 발주 겸색 리스트 수정본2 -->
+		<select id="selectOrderSum" parameterType="map" resultType="BaljooDTO">
+		    SELECT 
+		        jbu.bucksId,
+		        jbu.bucksName,
+		        jbu.bucksLocation,
+		        TO_CHAR(jb.baljooDate, 'YYYY-MM') AS baljooMonth,
+		        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount  -- 발주 금액이 없을 때 0으로 처리
+		    FROM 
+		        javabucks_bucks jbu
+		    LEFT JOIN 
+		        javabucks_baljoo jb
+		    ON 
+		        jbu.bucksId = jb.bucksId 
+		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{baljooDate}
+		    WHERE 
+		        (#{bucksName} IS NULL OR #{bucksName} = '' OR jbu.bucksName LIKE '%' || #{bucksName} || '%')
+		    GROUP BY 
+		        jbu.bucksId,
+		        jbu.bucksName,
+		        jbu.bucksLocation,
+		        TO_CHAR(jb.baljooDate, 'YYYY-MM')
+		    ORDER BY 
+		        jbu.bucksId, baljooMonth, jbu.bucksName ASC
 		</select>
  		
  		<!-- bucks baljoo
@@ -165,13 +158,47 @@
     			WHERE TO_CHAR(jbal.baljooDate, 'YYYY-MM') = #{baljooDate}
       			AND jbal.bucksId = #{bucksId}
  		</select> -->
+ 		
+ 		<!-- 발주 상세 - 리스트 합치기 -->
+ 		<select id="selectDetails" parameterType="map" resultType="BaljooDTO">
+        SELECT 
+	        jb.*
+	    FROM 
+	        javabucks_baljoo jb  -- 발주 테이블
+	    WHERE 
+	        jb.bucksId = #{bucksId}  -- 특정 발주 테이블 ID에 해당하는 레코드를 선택
+	        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{baljooDate}
+	    </select>
+	    
+	    
+	     <select id="getlistName" resultType="java.lang.Object" parameterType="String">
+    SELECT stockListName, stockListPrice
+    FROM javabucks_stockList
+    WHERE stockListCode = #{stockCode}
+</select>
+    
+    <!-- 발주 상세 -합계뽑기 -->
+    <!--  
+    <select id="selectPricesByCodes" parameterType="java.util.List" resultType="java.util.Map">
+        SELECT 
+            stockListCode AS code, 
+            stockListPrice AS price
+        FROM 
+            javabucks_stockList
+        WHERE 
+            stockListCode IN
+            <foreach item="code" collection="list" open="(" separator="," close=")">
+                #{code}
+            </foreach>
+    </select>-->
+ 		
     	
-    	<!-- 발주 상세 1 -->
+    	<!-- 발주 상세 1 
 		<select id="getOrderDetails" parameterType="int" resultType="String">
 			select baljooList from javabucks_baljoo where baljooNum =#{baljooNum}
-		</select>    
+		</select>    -->
 		
-		<!-- 발주 상세 2 -->
+		<!-- 발주 상세 2 
 		<select id="getDetailByCode" parameterType="java.util.List" resultType="java.util.Map">
     SELECT 
         stockListCode,
@@ -187,7 +214,104 @@
         <foreach item="code" collection="list" open="(" separator="," close=")">
             #{code}
         </foreach>
-</select>
+</select>-->
+
+		<select id="monthlyBucksSales" resultType="PayhistoryDTO">
+			SELECT 
+				b.bucksId AS bucksId,
+		        b.bucksName AS branchName,   
+		        NVL(SUM(p.payhistoryPrice), 0) AS totalSales,
+        		TO_CHAR(SYSDATE, 'YYYY-MM') AS payhistoryYearMonth
+		    FROM 
+		        javabucks_bucks b
+		    LEFT JOIN 
+		        javabucks_payhistory p
+		    ON 
+		        p.bucksId = b.bucksId 
+		        AND TO_CHAR(p.payhistoryDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+		        AND TO_CHAR(p.payhistoryDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
+		    GROUP BY 
+		    	b.bucksId,
+		        b.bucksName,
+		        TO_CHAR(SYSDATE, 'YYYY-MM')
+		    ORDER BY 
+		    	b.bucksId,
+		        b.bucksName,
+		        TO_CHAR(SYSDATE, 'YYYY-MM')
+		</select>
 		
+		<!-- 월별 정산 겸색  -->
+		<select id="searchMonth" parameterType="map" resultType="PayhistoryDTO">
+         SELECT 
+			    jbu.bucksId AS bucksId,
+			    jbu.bucksName AS branchName, 
+			    jbu.bucksLocation,
+			    #{monthDate} AS payhistoryYearMonth,  -- 검색한 monthDate를 직접 반환
+			    COALESCE(SUM(jph.payhistoryPrice), 0) AS totalSales
+			FROM 
+			    javabucks_bucks jbu
+			LEFT JOIN 
+			    javabucks_payhistory jph 
+			ON 
+			    jbu.bucksId = jph.bucksId 
+			AND 
+			    TO_CHAR(jph.payhistoryDate, 'YYYY-MM') = #{monthDate}
+			WHERE 
+			    (#{bucksName} IS NULL OR #{bucksName} = '' OR jbu.bucksName LIKE '%' || #{bucksName} || '%')
+			GROUP BY 
+			    jbu.bucksId,
+			    jbu.bucksName,
+			    jbu.bucksLocation
+			ORDER BY 
+			    jbu.bucksId, jbu.bucksName ASC
+    </select>
+    
+    <!-- 월별 매출 상세보기 1단계 -조인 : 월별 ordercode에대해 orderlist뽑기-->
+    <select id="monthlyDetails" parameterType="map" resultType="OrderDTO">
+	    	SELECT o.* , p.cpnlistnum
+			FROM javabucks_payhistory p
+			JOIN javabucks_order o ON p.orderCode = o.orderCode
+			WHERE p.bucksId = #{bucksId}
+			  AND TO_CHAR(p.payhistoryDate, 'YYYY-MM') = #{payhistoryDate}
+    </select>
+    
+    <!--   -->
+    <select id="getMenuPrice" parameterType="String" resultType="int">
+    	SELECT jm.menuPrice FROM JAVABUCKS_MENU jm WHERE jm.MENUCODE =#{menuCode}
+	</select>
+	
+	
+	<select id="getOptPrice" parameterType="String" resultType="int">
+	    SELECT
+	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	    FROM
+	        javabucks_order_opt o
+	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+	    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+	    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+	    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+	    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+	    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
+	    WHERE
+	        o.optId = #{optionId}
+	</select>
+	
+	<select id="getCouponPrice" parameterType="int" resultType="int">
+		SELECT c.cpnPrice
+	    FROM javabucks_couponList cl
+	    JOIN javabucks_coupon c ON cl.cpnCode = c.cpnCode
+	    WHERE cl.cpnListNum = #{coupon}
+	</select>
+	
+	<!-- daily Sales -->
+	<select id="dailyBucksSales" resultType="PayhistoryDTO">
+			SELECT jp.*, o.orderList, b.bucksName AS branchName, b.bucksOwner
+    		FROM javabucks_payhistory jp
+    		JOIN javabucks_order o ON jp.ordercode = o.ordercode
+    		JOIN javabucks_bucks b ON jp.bucksid = b.bucksid
+    		WHERE TRUNC(jp.payhistoryDate) = TRUNC(SYSDATE)
+		</select>
+	
 		
   </mapper>
