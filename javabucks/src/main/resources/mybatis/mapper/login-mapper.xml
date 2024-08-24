@@ -28,8 +28,12 @@
 		select * from javabucks_user where userId = #{userId}
 	</select>
 
-	<select id="emailForId" parameterType="java.util.Map" resultType="UserDTO">
+<!-- <select id="emailForId" parameterType="java.util.Map" resultType="UserDTO">
 		select * from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
+	</select> -->
+	 
+	 <select id="findUserById2" parameterType="java.util.Map" resultType="UserDTO">
+		select userId from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
 	</select>
 
 </mapper>
