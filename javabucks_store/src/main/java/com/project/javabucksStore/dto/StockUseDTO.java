@@ -1,10 +1,16 @@
 package com.project.javabucksStore.dto;
 
 public class StockUseDTO {
-	
+	private int stockUseNum;
 	private String stockUseCode;
 	private String stockListCode;
 	
+	public int getStockUseNum() {
+		return stockUseNum;
+	}
+	public void setStockUseNum(int stockUseNum) {
+		this.stockUseNum = stockUseNum;
+	}
 	public String getStockUseCode() {
 		return stockUseCode;
 	}

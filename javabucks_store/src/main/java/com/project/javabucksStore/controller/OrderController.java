@@ -1,11 +1,13 @@
 package com.project.javabucksStore.controller;
 
 import java.io.IOException;
+import java.sql.SQLRecoverableException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.project.javabucksStore.dto.MenuOrder;
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.OrderOptDTO;
+import com.project.javabucksStore.dto.StockUseDTO;
 import com.project.javabucksStore.mapper.OrderMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -136,7 +140,8 @@ public class OrderController {
     @GetMapping("/orderManage.do")
     public String orderManage(HttpServletRequest req,
     		@RequestParam(value = "storeOrder_pageNum", required = false, defaultValue = "1") int storeOrder_pageNum,
-    		@RequestParam(value = "deliverOrder_pageNum", required = false, defaultValue = "1") int deliverOrder_pageNum) {
+    		@RequestParam(value = "deliverOrder_pageNum", required = false, defaultValue = "1") int deliverOrder_pageNum,
+    		@RequestParam(value = "making_pageNum", required = false, defaultValue = "1") int making_pageNum) {
 
     	// 세션값 꺼내기
     	String bucksId = "bucks_1115";
@@ -179,12 +184,34 @@ public class OrderController {
 		req.setAttribute("deliverOrder_pageBlock", (int)deliverOrder_pagingMap.get("pageBlock"));
     	req.setAttribute("deliverOrderList", deliverOrderList);
     	
+    	// 제조중
+    	int makingListCount = mapper.getMakingListCount(bucksId);
+    	Map<String, Object> making_pagingMap = paging(makingListCount, making_pageNum);
+    	
+    	Map<String, Object> making_params = new HashMap<>();
+    	making_params.put("bucksId", bucksId);
+    	making_params.put("startRow", making_pagingMap.get("startRow"));
+    	making_params.put("endRow", making_pagingMap.get("endRow"));
+    	
+    	List<OrderDTO> makingList = mapper.getMakingList(making_params);
+    	// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
+    	orderListMethod(makingList);
+    	
+    	req.setAttribute("making_startPage", (int)making_pagingMap.get("startPage"));
+		req.setAttribute("making_endPage", (int)making_pagingMap.get("endPage"));
+		req.setAttribute("making_pageCount", (int)making_pagingMap.get("pageCount"));
+		req.setAttribute("making_pageBlock", (int)making_pagingMap.get("pageBlock"));
+    	req.setAttribute("makingList", makingList);
+    	
     	return "/order/store_orderManage";
     }
     
     // 주문접수 처리
-  	@PostMapping("/startOrder.ajax")
-  	public Map<String, Object> startOrder(String orderCode) {
+  	@GetMapping("/startOrder.do")
+  	public String startOrder(HttpServletRequest req, String orderCode) {
+  		// 파라미터 확인
+  		System.out.println("orderCode:"+orderCode);
+  		
   		// 세션값 꺼내기
      	String bucksId = "bucks_1115";
      	
@@ -205,7 +232,7 @@ public class OrderController {
      	int intDay = LocalDate.now().getDayOfMonth();
      	String day = String.valueOf(intDay);
      	//System.out.println(day); // 25
-     	
+     	 
      	String orderDate = year + month + day + "_";
      	//System.out.println(orderDate); // 240825_
      	
@@ -216,65 +243,236 @@ public class OrderController {
      	params.put("bucksId", bucksId);
      	params.put("orderCode", realOrderCode);
      	
-     	Map<String, Object> response = new HashMap<>();
      	
   		// orderCode로 주문 리스트 뽑아오기
   		List<OrderDTO> allOrderList = mapper.getAllOrderList(params);
   		// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
      	orderListMethod(allOrderList);
      	
-     	// 차감해야하는 재고 확인 & 스토어 재고 수량 확인 & 주문접수
+ 		// 기본재료 + 옵션재료 수량 저장
+		Map<String, Integer> mater = new HashMap<>();
+     	
+     	// 1. 차감해야하는 재료, 수량 확인
      	for(int i=0; i<allOrderList.size(); i++) {
+     		
      		// 주문리스트의 orderList컬럼 뽑기
      		List<MenuOrder> orderList = allOrderList.get(i).getOrderListbyMenuOrder();
      		
      		for(MenuOrder order : orderList) {
      			String menuCode = order.getMenuCode();
-     			//System.out.println(menuCode); // BESWHAMC
+     			//System.out.println("menuCode:"+menuCode); // BESWHAMC
      			String optionId = order.getOptionId();
-     			//System.out.println(optionId); // 6
-     			
+     			//System.out.println("optionId:"+optionId); // 6
+     			int quantity = order.getQuantity();
+     			//System.out.println("quantity:"+quantity);
+     			String menuName = order.getMenuName();
+     			System.out.println(menuName);
+   			
+     			// 메뉴선택 수량
+     			int materCount = quantity;
      			
      			// 메뉴코드의 앞글자가 B로 시작하면
-     			if(menuCode.startsWith("B")) {
+     			if(menuCode.startsWith("B")) {    				
+     				
      				// 음료 1) 메뉴옵션코드 뽑아서 차감해야하는 기본 재료 뽑기
          			String menuOptCode = menuCode.substring(1, 4);
          			System.out.println(menuOptCode); // ESW
          			
-         			// 음료 2) 옵션아이디로 차감해야하는 컵, 샷, 시럽, 우유, 휘핑 재료 뽑기
+         			List<StockUseDTO> useList = mapper.getUseList(menuOptCode);
+         			
+         			for(StockUseDTO useItem : useList) {
+         				String stockListCode = useItem.getStockListCode();
+         				System.out.println("stockListCode:"+stockListCode); // BEV01, BEV03
+         				if(mater.containsKey(stockListCode)) {
+         					int originCnt = mater.get(stockListCode);
+             				int changeCnt = originCnt + materCount;
+             				mater.put(stockListCode, changeCnt);
+         				} else {
+         					mater.put(stockListCode, materCount); // BEV01 - 수량
+         				}
+         				
+         			}
+         			
+         			// 음료 2) 옵션아이디로 차감해야하는 컵, 샷(추가), 시럽(추가), 우유(변경), 휘핑(추가) 재료 뽑기
+         			System.out.println("CupType:"+order.getCupType()); 
+         			System.out.println("ShotType:"+order.getShotType()); 
+         			System.out.println("ShotCount:"+order.getShotCount()); 
+         			System.out.println("SyrupType:"+order.getSyrupType()); 
+         			System.out.println("SyrupCount:"+order.getSyrupCount()); 
+         			System.out.println("MilkType:"+order.getMilkType()); 
+         			System.out.println("whipType:"+order.getWhipType()); 
+         			String cupType = order.getCupType();	// Tall
+         			String shotType = order.getShotType(); // 기본 >> BEV01에서 까야함
+         			int shotCount = order.getShotCount(); // 1
+         			String syrupType = order.getSyrupType(); // 바닐라 시럽
+         			int syrupCount = order.getSyrupCount(); // 1
+         			String milkType = order.getMilkType(); // 일반
+         			String whipType = order.getWhipType(); // 보통 >> WHI01에서 까야함
+         			
+         			// 컵
+         			if(mater.containsKey(cupType)) {
+         				int originCnt = mater.get(cupType);
+         				int changeCnt = originCnt + 1;
+         				mater.put(cupType, changeCnt);
+         			} else {
+         				mater.put(cupType, 1);
+         			}
          			
          			
+         			// 샷
+         			if(shotType != null) {
+	         			if(mater.containsKey("BEV01")) {
+	         				int originCnt = mater.get("BEV01");
+	         				int changeCnt = originCnt + shotCount;
+	         				mater.put("BEV01", changeCnt);
+	         			}else {
+	         				mater.put("BEV01", shotCount);
+	         			}
+         			}         			
          			
+         			// 시럽
+         			if(syrupType != null) {
+         				String syrupCode = mapper.getSyrupCode(syrupType);
+         				if(mater.containsKey(syrupCode)) {
+         					int originCnt = mater.get(syrupCode);
+	         				int changeCnt = originCnt + syrupCount;
+	         				mater.put(syrupCode, changeCnt);
+         				} else {         					
+             				mater.put(syrupCode, syrupCount);
+         				}
+         			}	
+         			         			
+         			// 우유
+         			if(milkType != null) {
+         				String milkCode = mapper.getMilkCode(milkType);
+         				if(mater.containsKey(milkCode)) {
+         					int originCnt = mater.get(milkCode);
+	         				int changeCnt = originCnt + 1;
+	         				mater.put(milkCode, changeCnt);
+         				}else {
+         					mater.put(milkCode, 1);
+         				}
+         			}
          			
-         			
-         			
+         			// 휘핑크림
+         			if(whipType != null) {
+         				if(mater.containsKey("WHI01")) {
+         					int originCnt = mater.get("WHI01");
+         					int changeCnt = 0;
+         					if(whipType.equals("보통")) {
+             					changeCnt = originCnt + 1;
+             				} else if(whipType.equals("많이")) {
+             					changeCnt = originCnt + 2;
+             				}
+	         				mater.put("WHI01", changeCnt);
+         				}else {
+         					if(whipType.equals("보통")) {
+             					mater.put("WHI01", 1);
+             				} else if(whipType.equals("많이")) {
+             					mater.put("WHI01", 2);
+             				}
+         				}
+         			}
      			} else { // 메뉴코드의 앞글자가 B가 아니면(C 또는 M)
-     				
+     				// 메뉴코드로 재고코드 뽑아오기
+     				String code = mapper.getStockListCode(menuName);
      				// 음료 외 메뉴코드 뽑아서 차감해야하는 기본재료 뽑기
-     				
+     				if(mater.containsKey(code)) {
+     					int originCnt = mater.get(code);
+     					int changeCnt = originCnt + quantity;
+     					mater.put(code, changeCnt);
+     				}else {
+     					mater.put(code, quantity);
+     				}
      			}
-     			
-     			
-     			 			
-     			
-     			
-     			
-     			
-     			
-     			// 뽑은 재료 스토어 재고 확인
-     			
-     			// 재고가 남아있으면 오더테이블 상태 업데이트
-	     			// 오더테이블 상태 업데이트
-	     	 		//int updateResult = mapper.updateOrderStatus();
-	      		
-	      			
-     			// 재고가 없으면 알림
+     			System.out.println("최종 재료:"+mater);
+     			//{WHI01=2, BEV03=2, Grande=1, SYR02=1, BEV01=4, Tall=1, MIL05=1, MIL01=1}
      		}
-
+     	}
+     		
+			
+     	// 2. 차감해야하는 재료를 바탕으로 스토어 재고 확인
+     	// 지점 재고 수량 저장용
+     	Map<String, Integer> storeStocksCountMap = new HashMap<>();
+     	
+     	Iterator<String> keyIterator = mater.keySet().iterator();
+     	while(keyIterator.hasNext()) {
+     		String code = keyIterator.next();
+     		
+     		// 파라미터 저장용
+         	Map<String, Object> stocksParams = new HashMap<>();
+         	stocksParams.put("bucksId", bucksId);
+         	stocksParams.put("stockListCode", code);
+     		int storeStocksCount = mapper.getStoreStocksCount(stocksParams);
+     		
+     		storeStocksCountMap.put(code, storeStocksCount);
      	}
 
-  			
-  		return response;
+		System.out.println("지점재고:"+storeStocksCountMap);
+     	// 지점재고:{SAN03=10, BEV03=10, SYR03=10, BEV01=10, MIL04=10, Venti=10}
+		
+		
+     	
+		// 3. 결과 처리
+		boolean orderResult = false;
+		Iterator<String> resultIterator = mater.keySet().iterator();
+		while(resultIterator.hasNext()) {
+			String code = resultIterator.next();
+			int needCount = mater.get(code);
+			int remainCount = storeStocksCountMap.get(code);
+			System.out.println("확인:"+code+"("+needCount+"/"+remainCount+")");
+			// 재고 수량 비교
+			if(needCount <= remainCount) {
+				orderResult = true;
+			} else {
+				orderResult = false;
+				break;
+			}
+		}
+	         			
+		System.out.println("재고수량 비교 결과:"+orderResult); // true 또는 false
+		
+		boolean minusResult = false;
+		boolean updateResult = false;
+		// 4. 재고 차감 및 상태업데이트
+		Iterator<String> countMinusIterator = mater.keySet().iterator();
+		if(orderResult) {
+			while(countMinusIterator.hasNext()) {
+				String code = countMinusIterator.next();
+				int value = mater.get(code);
+				Map<String, Object> paramsCountMinus = new HashMap<>();
+				paramsCountMinus.put("bucksId", bucksId);
+				paramsCountMinus.put("stockListCode", code);
+				paramsCountMinus.put("value", value);
+				// 재고 차감
+				int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
+				if(countMinusResult > 0) {
+					minusResult = true;
+				} else {
+					minusResult = false;
+				}
+			}
+			// 상태 업데이트
+			int OrderStatusUpdateResult = mapper.updateOrderStatus(realOrderCode);
+			if(OrderStatusUpdateResult > 0) {
+				updateResult = true;
+			} else {
+				updateResult = false;
+			}			
+		} 
+		
+		if (minusResult && updateResult) {
+	        System.out.println("정상 접수 완료");
+	        req.setAttribute("message", "정상적으로 주문 접수가 완료되었습니다.");
+	    } else if (!orderResult) {
+	        System.out.println("재고 부족");
+	        req.setAttribute("message", "재고가 부족하여 주문을 접수할 수 없습니다.");
+	    } else {
+	       System.out.println("재고차감, 상태업데이트 실패");
+	       req.setAttribute("message", "에러 발생. 관리자에게 문의하세요.");
+	    }
+		return "redirect:/orderManage.do";
+		
   	}
 
     

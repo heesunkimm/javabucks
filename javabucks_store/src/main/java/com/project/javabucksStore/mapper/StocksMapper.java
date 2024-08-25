@@ -111,10 +111,11 @@ public class StocksMapper {
 	 
 	
 	 // s: 재고 장바구니 추가
-	 public int addStocksCart(String stockListCode, int quantity) {
+	 public int addStocksCart(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
 		 params.put("quantity", quantity);
+		 params.put("bucksId", bucksId);
 		 int addCartResult = sqlSession.insert("addStocksCart", params);
 		 return addCartResult;
 	 }
@@ -122,27 +123,29 @@ public class StocksMapper {
 	 
 	 
 	 // s: 재고 장바구니 조회
-	 public List<StockCartDTO> stockCartList(){
-		 List<StockCartDTO> list = sqlSession.selectList("stockCartList");
+	 public List<StockCartDTO> stockCartList(String bucksId){
+		 List<StockCartDTO> list = sqlSession.selectList("stockCartList", bucksId);
 		 return list;
 	 }	 
 	 // e: 재고 장바구니 조회
 	 
 	 // s: 장바구니 수량 추가
-	 public int updateCartQuantity(String stockListCode, int quantity) {
+	 public int updateCartQuantity(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
-		 params.put("quantity", quantity);		 
+		 params.put("quantity", quantity);
+		 params.put("bucksId", bucksId);
 		 int updateResult = sqlSession.update("updateCartQuantity", params);		 
 		 return updateResult;
 	 }
 	 // e: 장바구니 수량 추가
 	 
 	 // s: 재고 장바구니 수량 변경
-	 public int updateQuantity(String stockListCode, int quantity) {
+	 public int updateQuantity(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
-		 params.put("quantity", quantity);		 
+		 params.put("quantity", quantity);		
+		 params.put("bucksId", bucksId);
 		 int updateResult = sqlSession.update("updateQuantity", params);		 
 		 return updateResult;
 	 }
