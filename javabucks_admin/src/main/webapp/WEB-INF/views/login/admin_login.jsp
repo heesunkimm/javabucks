@@ -69,31 +69,34 @@
             <form name="f" action="admin_index" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="adminId" value="" placeholder="아이디 입력" required>
+                        <input type="text" name="adminId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
                     </label>
                     <label>
                         <input type="password" name="adminPasswd" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
-            </form>
             <div class="find_box">
                 <label>
-                <input type="checkbox" name="adminId" value=""> 아이디 저장
+                	<input type="checkbox" name="saveId" value="on"> 아이디 저장
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 재설정</a>
             </div> 
+            </form>
         </div>
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 재설정</p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="">
+            <form name="f" action="admin_ChangePw" method="post">
                 <div class="input_box">
-                    <label>
-                        <input type="text" name="" value="" placeholder="새비밀번호 입력" required>
+               		 <label>
+                        <input type="text" name="adminId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
                     </label>
                     <label>
-                        <input type="text" name="" value="" placeholder="새비밀번호 확인" required>
+                        <input type="password" class="changePw1" name="changePw1" value="" placeholder="새비밀번호 입력" required>
+                    </label>
+                    <label>
+                        <input type="password" class="changePw2" name="changePw2" value="" placeholder="새비밀번호 확인" required>
                     </label>
                 </div>
                 <div class="pbtn_box">
