@@ -35,6 +35,10 @@ public class UserMapper {
 		return sqlSession.insert("addNewCard", dto);
 	}
 
+	public String findBucksLocation(String bucksName) {
+		return sqlSession.selectOne("findBucksLocation", bucksName);
+	}
+
 	public List<CardDTO> listRegCardById(String userId) {
 		return sqlSession.selectList("listRegCardById", userId);
 	}
@@ -59,111 +63,152 @@ public class UserMapper {
 	public int paychargeCard(PayhistoryDTO dto) {
 		return sqlSession.insert("paychargeCard", dto);
 	}
-	
+
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
 		return sqlSession.update("plusCardPrice", params);
 	}
-	
+
 	// 해당아이디로 등록된 알람 전체리스트(날짜순)
-	public List<AlarmDTO> listGetAlarmById (String userId){
+	public List<AlarmDTO> listGetAlarmById(String userId) {
 		return sqlSession.selectList("listGetAlarmById", userId);
 	}
+
 	// 알람 카테별 리스트(날짜순)
-	public List<AlarmDTO> getAlarmsByCategory (String userId, String alarmCate){
+	public List<AlarmDTO> getAlarmsByCategory(String userId, String alarmCate) {
 		Map<String, String> params = new HashMap<>();
 		params.put("userId", userId);
 		params.put("alarmCate", alarmCate);
 		return sqlSession.selectList("getAlarmsByCategory", params);
 	}
-	
+
 	// 주문옵션 javabucks_order_opt 테이블인서트
-	public void orderOptInsert (OrderOptDTO dto) {
+	public void orderOptInsert(OrderOptDTO dto) {
 		sqlSession.insert("orderOptInsert", dto);
 	}
+
 	// 인서트된 optId 바로 뽑기
 	public int orderOptIdsearch() {
 		return sqlSession.selectOne("orderOptIdsearch");
 	}
-	
+
+	// 옵션의 총 가격
+	public int orderOptTotPrice(int optId) {
+		return sqlSession.selectOne("orderOptTotPrice", optId);
+	}
+
+	// 가장 최근 orderCode 찾아 뽑기
+	public String getMaxOrderCode(String pickData) {
+		return sqlSession.selectOne("getMaxOrderCode", pickData);
+	}
+
+	// optId 로 OrderOptDTO 구하기
+	public OrderOptDTO findOrderOpt(int optId) {
+		return sqlSession.selectOne("findOrderOpt", optId);
+	}
+
+	public MenuOptCupDTO getCupInfo(int optId) {
+		return sqlSession.selectOne("getCupInfo", optId);
+	}
+
+	public MenuOptIceDTO getIceInfo(int optId) {
+		return sqlSession.selectOne("getIceInfo", optId);
+	}
+
+	public MenuOptShotDTO getShotInfo(int optId) {
+		return sqlSession.selectOne("getShotInfo", optId);
+	}
+
+	public MenuOptWhipDTO getWhipInfo(int optId) {
+		return sqlSession.selectOne("getWhipInfo", optId);
+	}
+
+	public MenuOptSyrupDTO getSyrupInfo(int optId) {
+		return sqlSession.selectOne("getSyrupInfo", optId);
+	}
+
+	public MenuOptMilkDTO getMilkInfo(int optId) {
+		return sqlSession.selectOne("getMilkInfo", optId);
+	}
+
 	// 채성진 작업------------------------------------------------------
 	public UserDTO getInfoById() {
 		return sqlSession.selectOne("getInfoById");
 	}
-	
-	public FrequencyDTO getFrequencyById() {		
+
+	public FrequencyDTO getFrequencyById() {
 		return sqlSession.selectOne("getFrequencyById");
 	}
-	
-	public List<CouponListDTO> getCouponListById() {	
+
+	public List<CouponListDTO> getCouponListById() {
 		return sqlSession.selectList("getCouponListById");
 	}
-	
-	public List<BucksDTO> getStoreList(String storeSearch) {	
+
+	public List<BucksDTO> getStoreList(String storeSearch) {
 		return sqlSession.selectList("getStoreList", storeSearch);
 	}
-	
-	public List<MenuDTO> getStoreDrinkList(String storeName) {	
+
+	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
-	
-	public List<MenuDTO> getStoreFoodList(String storeName) {	
+
+	public List<MenuDTO> getStoreFoodList(String storeName) {
 		return sqlSession.selectList("getStoreFoodList", storeName);
 	}
-	
-	public List<MenuDTO> getStoreProdcutList(String storeName) {	
+
+	public List<MenuDTO> getStoreProdcutList(String storeName) {
 		return sqlSession.selectList("getStoreProdcutList", storeName);
 	}
-	
+
 	public MenuDTO getMenuInfoByCode(String menuCode) {
 		return sqlSession.selectOne("getMenuInfoByCode", menuCode);
 	}
-	
-	public List<MenuOptCupDTO> CupSizeByCode(String menuoptCode) {	
+
+	public List<MenuOptCupDTO> CupSizeByCode(String menuoptCode) {
 		return sqlSession.selectList("CupSizeByCode", menuoptCode);
 	}
-	
-	public List<MenuOptIceDTO> IceByCode(String menuoptCode) {	
+
+	public List<MenuOptIceDTO> IceByCode(String menuoptCode) {
 		return sqlSession.selectList("IceByCode", menuoptCode);
 	}
-	
-	public MenuOptShotDTO ShotByCode(String menuoptCode) {	
+
+	public MenuOptShotDTO ShotByCode(String menuoptCode) {
 		return sqlSession.selectOne("ShotByCode", menuoptCode);
 	}
-	
-	public List<MenuOptWhipDTO> WhipByCode(String menuoptCode) {	
+
+	public List<MenuOptWhipDTO> WhipByCode(String menuoptCode) {
 		return sqlSession.selectList("WhipByCode", menuoptCode);
 	}
-	
-	public List<MenuOptSyrupDTO> SyrupByCode(String menuoptCode) {	
+
+	public List<MenuOptSyrupDTO> SyrupByCode(String menuoptCode) {
 		return sqlSession.selectList("SyrupByCode", menuoptCode);
 	}
-	
-	public List<MenuOptMilkDTO> MilkByCode(String menuoptCode) {	
+
+	public List<MenuOptMilkDTO> MilkByCode(String menuoptCode) {
 		return sqlSession.selectList("MilkByCode", menuoptCode);
 	}
-	
-	public List<FrequencyDTO> StarHistoryByUserid(Map<String, String> params) {	
+
+	public List<FrequencyDTO> StarHistoryByUserid(Map<String, String> params) {
 		return sqlSession.selectList("StarHistoryByUserid", params);
 	}
-	
-	public List<MenuDTO> MyMenuByUserid(String userId) {	
+
+	public List<MenuDTO> MyMenuByUserid(String userId) {
 		return sqlSession.selectList("MyMenuByUserid", userId);
 	}
-	
-	public int MyMenuNumByUserid(Map<String, String> params) {	
+
+	public int MyMenuNumByUserid(Map<String, String> params) {
 		return sqlSession.selectOne("MyMenuNumByUserid", params);
 	}
-	
+
 	public int MyMenuDeleteByMenuNum(int mymenuNum) {
 		return sqlSession.delete("MyMenuDeleteByMenuNum", mymenuNum);
-	} 
-	
-	public List<PayhistoryDTO> RecepitByUserid(String userId) {	
+	}
+
+	public List<PayhistoryDTO> RecepitByUserid(String userId) {
 		return sqlSession.selectList("RecepitByUserid", userId);
 	}
-	
-	public BucksDTO StoreInfoByBucksId(String bucksId) {	
+
+	public BucksDTO StoreInfoByBucksId(String bucksId) {
 		return sqlSession.selectOne("StoreInfoByBucksId", bucksId);
 	}
 }

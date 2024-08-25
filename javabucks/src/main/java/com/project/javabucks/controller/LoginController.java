@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class LoginController {
 	
-	
 	@Autowired
 	LoginMapper loginMapper;
 	

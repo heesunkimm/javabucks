@@ -12,6 +12,10 @@
  			#{cardRegNum}, #{userId}, #{cardName}, 0
  		)
  	</insert>
+ 	
+ 	<select id="findBucksLocation" parameterType="String" resultType="String">
+ 		SELECT bucksLocation FROM javabucks_bucks WHERE bucksName=#{bucksName}
+ 	</select>
  
  	<select id="listRegCardById" parameterType="String" resultType="CardDTO">
  		SELECT * FROM javabucks_card WHERE userId=#{userId}
@@ -113,6 +117,95 @@
 	    WHERE optId = (SELECT MAX(optId) FROM javabucks_order_opt)
 	</select>
  	
+ 	<select id="orderOptTotPrice" resultType="Integer">
+ 		SELECT
+		    (
+		        NVL((shot.SHOTPRICE * opt.optShotCount), 0) + 
+		        NVL((syrup.SYRUPPRICE * opt.optSyrupCount), 0) + 
+		        NVL(cup.CUPPRICE, 0) + 
+		        NVL(ice.ICEPRICE, 0) + 
+		        NVL(milk.MILKPRICE, 0) + 
+		        NVL(whip.WHIPPRICE, 0)
+		    ) AS totprice
+		FROM
+		    javabucks_order_opt opt
+		LEFT JOIN
+		    javabucks_menuopt_shot shot ON opt.shotNum = shot.shotNum
+		LEFT JOIN
+		    javabucks_menuopt_syrup syrup ON opt.syrupNum = syrup.syrupNum
+		LEFT JOIN
+		    javabucks_menuopt_cup cup ON opt.cupNum = cup.cupNum
+		LEFT JOIN
+		    javabucks_menuopt_ice ice ON opt.iceNum = ice.iceNum
+		LEFT JOIN
+		    javabucks_menuopt_milk milk ON opt.milkNum = milk.milkNum
+		LEFT JOIN
+		    javabucks_menuopt_whip whip ON opt.whipNum = whip.whipNum
+		WHERE
+		    opt.optId = #{optId}
+ 	</select>
+ 	
+ 	<!-- 해당 optId로 DTO 다시 만들기 -->
+ 	<select id="findOrderOpt" parameterType="Integer" resultType="OrderOptDTO">
+ 		SELECT * FROM javabucks_order_opt WHERE optId=#{otpId}
+ 	</select>
+ 	
+ 	<!-- 1. 컵 종류와 가격 조회 --> 
+    <select id="getCupInfo" parameterType="int" resultType="MenuOptCupDTO">
+        SELECT c.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 2. 얼음 종류와 가격 조회 -->
+    <select id="getIceInfo" parameterType="int" resultType="MenuOptIceDTO">
+        SELECT i.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 3. 샷 종류와 가격 조회 -->
+    <select id="getShotInfo" parameterType="int" resultType="MenuOptShotDTO">
+        SELECT s.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 4. 휘핑 종류와 가격 조회 -->
+    <select id="getWhipInfo" parameterType="int" resultType="MenuOptWhipDTO">
+        SELECT w.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 5. 시럽 종류와 가격 조회 -->
+    <select id="getSyrupInfo" parameterType="int" resultType="MenuOptSyrupDTO">
+        SELECT s.*
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_syrup s ON o.syrupNum = s.syrupNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 6. 우유 종류와 가격 조회 -->
+    <select id="getMilkInfo" parameterType="int" resultType="MenuOptMilkDTO">
+        SELECT m.*
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+        WHERE o.optId = #{optId}
+    </select>
+ 	
+ 	<!-- 최근 orderCode 구하기 -->
+ 	<select id="getMaxOrderCode" parameterType="String" resultType="String">
+ 		SELECT MAX(SUBSTR(orderCode, 10, 3)) 
+	    FROM javabucks_order 
+	    WHERE orderCode LIKE #{pickData} || '%'
+ 	</select>
+ 	
+ 	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
  		SELECT * FROM javabucks_user WHERE userId= 'user001'

@@ -48,7 +48,7 @@
             </div>
 
         </div>
-        <!-- 카드결제 팝업 -->
+        <!-- 카드충전 팝업 -->
         <div class="popup_box pay_card" id="cardpay" style="display: none;">
             <div class="tit_box">
                 <p class="txt_tit">카드이름</p>

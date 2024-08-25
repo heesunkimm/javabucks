@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
@@ -33,6 +35,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
@@ -288,25 +291,25 @@ public class UserController {
 
 	@RequestMapping("/user_recepit")
 	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params) {
-		
+
 		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();	
+		String userId = dto.getUserId();
 		params.put("userId", userId);
 		int totalPrice = 0;
 		int number = 0;
-		
+
 		// 날짜 형식을 설정합니다.
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 		// 현재 날짜를 가져옵니다.
-        LocalDate today = LocalDate.now();
-        // 한 달 전의 날짜를 계산합니다.
-        LocalDate oneMonthAgo = today.minusMonths(1); 
-        // 세 달 전의 날짜를 계산합니다.
-        LocalDate threeMonthAgo = today.minusMonths(3); 
-        // 날짜를 문자열로 변환합니다.      
-        String endDate = today.format(formatter);       
-		        
+		LocalDate today = LocalDate.now();
+		// 한 달 전의 날짜를 계산합니다.
+		LocalDate oneMonthAgo = today.minusMonths(1);
+		// 세 달 전의 날짜를 계산합니다.
+		LocalDate threeMonthAgo = today.minusMonths(3);
+		// 날짜를 문자열로 변환합니다.
+		String endDate = today.format(formatter);
+
 //		// 기간을 설정하고 확인눌렀다면
 //		if(params.get("mode") != null) {
 //			// 1개월 선택 시
@@ -368,32 +371,31 @@ public class UserController {
 //	        }
 //			
 //		}else {		
-			String startDate = oneMonthAgo.format(formatter);
-			// period_setting 문자열을 생성합니다.
-	        String period_setting = startDate + " ~ " + endDate;
-            // 초기화면 기간 데이터
-            req.setAttribute("period_setting", period_setting);
-                        
-            params.put("startDate", startDate);
-            params.put("endDate", endDate);
-            List<PayhistoryDTO> list = userMapper.RecepitByUserid(userId);
-            for(PayhistoryDTO phis : list) {
-            	totalPrice += phis.getPayhistoryPrice();
-            	number = number +1;           	
-            }                      
-            req.setAttribute("recepitList", list);
-     		req.setAttribute("totalPrice", totalPrice);
-     		req.setAttribute("number", number);	
-     		
-     		String bucksId = params.get("bucksId");
-     		BucksDTO dto2 = userMapper.StoreInfoByBucksId(bucksId);
-     		req.setAttribute("", dto2);
+		String startDate = oneMonthAgo.format(formatter);
+		// period_setting 문자열을 생성합니다.
+		String period_setting = startDate + " ~ " + endDate;
+		// 초기화면 기간 데이터
+		req.setAttribute("period_setting", period_setting);
+
+		params.put("startDate", startDate);
+		params.put("endDate", endDate);
+		List<PayhistoryDTO> list = userMapper.RecepitByUserid(userId);
+		for (PayhistoryDTO phis : list) {
+			totalPrice += phis.getPayhistoryPrice();
+			number = number + 1;
+		}
+		req.setAttribute("recepitList", list);
+		req.setAttribute("totalPrice", totalPrice);
+		req.setAttribute("number", number);
+
+		String bucksId = params.get("bucksId");
+		BucksDTO dto2 = userMapper.StoreInfoByBucksId(bucksId);
+		req.setAttribute("", dto2);
 //        }
-		
-		
-		
+
 		return "/user/user_recepit";
 	}
+
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 
@@ -541,11 +543,81 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_paynow")
-	public String userPaynow(Model model, @RequestParam Map<String, String> params) {
+	public String userPaynow(HttpSession session, Model model, @RequestParam Map<String, String> params, String cart)
+			throws JsonProcessingException {
+//		cart 는 단순결제 imme 랑 카트결제 cart 있음
+
+//		UserDTO user = (UserDTO) session.getAttribute("inUser");
+//		String userId = user.getUserId();
+
+		String userId = "user001";
 		System.out.println(params);
-		String bucksId = params.get("store");
+		String bucksName = params.get("store");
+		String bucksLocation = userMapper.findBucksLocation(bucksName);
+
+		// 옵션 총금액구하기
+		int optId = Integer.parseInt(params.get("optId"));
+		int optPrice = userMapper.orderOptTotPrice(optId); // 옵션금액
+		model.addAttribute("optPrice", optPrice);
+
+		// 받은 optId 로 optDTO 만들기
+		OrderOptDTO optdto = userMapper.findOrderOpt(optId);
+
+		MenuOptCupDTO cupdto = userMapper.getCupInfo(optId);
+		MenuOptIceDTO icedto = userMapper.getIceInfo(optId);
+		MenuOptShotDTO shotdto = userMapper.getShotInfo(optId);
+		MenuOptWhipDTO whipdto = userMapper.getWhipInfo(optId);
+		MenuOptSyrupDTO syrupdto = userMapper.getSyrupInfo(optId);
+		MenuOptMilkDTO milkdto = userMapper.getMilkInfo(optId);
+
+		// 페이지로 전송시킬 메뉴 옵션 관련 정보
+		model.addAttribute("cupdto", cupdto);
+		model.addAttribute("icedto", icedto);
+		model.addAttribute("shotdto", shotdto);
+		model.addAttribute("whipdto", whipdto);
+		model.addAttribute("syrupdto", syrupdto);
+		model.addAttribute("milkdto", milkdto);
+
+		String menuCode = params.get("menuCode");
+		MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
+		int quantity = Integer.parseInt(params.get("quantity"));
+
+		model.addAttribute("mdto", mdto);
+		model.addAttribute("cart", cart);
+		model.addAttribute("quantity", quantity);
+
+		// 페이지로 전송시킬 단일 결제 건 정보
+		model.addAttribute("optdto", optdto);
+
+		model.addAttribute("bucksName", bucksName);
+		model.addAttribute("bucksLocation", bucksLocation);
+		model.addAttribute("bucksName", bucksName);
+		model.addAttribute("pickup", params.get("pickup"));
+
+		// 자바벅스 카드 리스트 넘기기
+		List<CardDTO> list = userMapper.listRegCardById(userId);
+		model.addAttribute("listCard", list);
+
+//		// 현재 날짜 + pickUp + 숫자 로 orderCode 만들기
+//		String orderCode = generateOrderCode(params.get("pickup"));
+//		// 단일주문내역 JSON Parsing
+//		String orderList = menuCode + ":" + optId + ":" + Integer.parseInt(params.get("quantity"));
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		String jsonOrderList = objectMapper.writeValueAsString(orderList);
+//		// OrderDTO
+//		OrderDTO odto = new OrderDTO();
+//		odto.setUserId(userId);
+//		odto.setBucksId(bucksName);
+//		odto.setOrderList(jsonOrderList);
+//		odto.setMenuPrice(menutotPrice);
+//		odto.setOptPrice(optPrice);
+//		odto.setOrderType(params.get("pickup"));
+//		odto.setOrderStatus("주문대기");
+
 		return "/user/user_paynow";
 	}
+
+	// 주문 결제
 
 	@RequestMapping("/user_store")
 	public String userStore(Model model, @RequestParam Map<String, String> params, String mode, String storeSearch) {
@@ -577,6 +649,44 @@ public class UserController {
 	@RequestMapping("/user_orderhistory")
 	public String userOrderhistory() {
 		return "/user/user_orderhistory";
+	}
+
+	public String generateOrderCode(String pickUp) {
+		// 현재날짜 YYMMDD로 설정하기
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		LocalDate today = LocalDate.now();
+		String currentDate = today.format(formatter);
+
+		// pickUp 값에 따른 문자 결정
+		String pickUpChar = getPickUpChar(pickUp);
+
+		// SQL에서 주어진 날짜와 문자를 기준으로 가장 큰 번호 가져오기
+		String maxNumberStr = userMapper.getMaxOrderCode(currentDate + "_" + pickUpChar);
+		int maxNumber = 0;
+
+		// maxNumberStr가 null이 아니면 해당 값을 정수로 변환
+		if (maxNumberStr != null) {
+			maxNumber = Integer.parseInt(maxNumberStr);
+		}
+
+		// 다음 번호 생성 (001, 002, ...)
+		int nextNumber = maxNumber + 1;
+
+		// 새로운 orderCode 생성
+		return String.format("%s_%s-%03d", currentDate, pickUpChar, nextNumber);
+	}
+
+	private String getPickUpChar(String pickUp) {
+		switch (pickUp) {
+		case "매장이용":
+			return "A";
+		case "To-go":
+			return "B";
+		case "Delivers":
+			return "C";
+		default:
+			throw new IllegalArgumentException("Invalid pickUp value: " + pickUp);
+		}
 	}
 
 }
