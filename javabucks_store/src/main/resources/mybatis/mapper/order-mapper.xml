@@ -15,21 +15,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="searchOrderInfo" parameterType="java.util.Map" resultType="OrderDTO">
 		select * from javabucks_order
 		where bucksId = #{bucksId}
-		<choose>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
-				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
-				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-			</when>
-			<when test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<otherwise>
-			</otherwise>
-		</choose>
-				and orderType = 'order'
+		<if test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
+			and orderCode like concat('%', #{searchOpt_orderCode})
+		</if>
+		<if test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
+		</if>
+		<if test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
+			and orderCode like concat('%', #{searchOpt_orderCode})
+		</if>
+			and orderType = 'order'
 		order by orderDate desc	
 	</select>
 	
@@ -44,20 +40,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="searchDeliversOrderInfo" parameterType="java.util.Map" resultType="OrderDTO">
 		select * from javabucks_order
 		where bucksId = #{bucksId}
-		<choose>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
+			<if test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
 				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
+				and orderCode like concat('%', #{searchOpt_orderCode})
+			</if>
+			<if test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
 				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-			</when>
-			<when test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<otherwise>
-			</otherwise>
-		</choose>
+			</if>
+			<if test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
+				and orderCode like concat('%', #{searchOpt_orderCode})
+			</if>
 				and orderType = 'delivers'
 		order by orderDate desc	
 	</select>
@@ -131,6 +123,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select whipPrice from javabucks_menuopt_whip
 		where whipNum = #{whipNum}
 	</select>
+	
+	<select id="getStoreOrderListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '주문완료'
+			and orderType = 'order'
+	</select>
+	
+	<select id="getStoreOrderList" parameterType="java.util.Map" resultType="OrderDTO">
+		select * 
+		from ( select rownum rn, A.*
+				from ( select * from javabucks_order
+					   where bucksId = #{bucksId}
+							and orderStatus = '주문완료'
+							and orderType = 'order'
+					   order by orderDate asc) A)
+		where rn between #{startRow} and #{endRow}	
+	</select>
+	
+	<select id="getDeliverOrderListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '주문완료'
+			and orderType = 'delivers'
+	</select>
+		
+	<select id="getDeliverOrderList" parameterType="java.util.Map" resultType="OrderDTO">
+		select * 
+		from ( select rownum rn, A.*
+				from ( select * from javabucks_order
+					   where bucksId = #{bucksId}
+							and orderStatus = '주문완료'
+							and orderType = 'delivers'
+					   order by orderDate asc) A)
+		where rn between #{startRow} and #{endRow}	
+	</select>
+	
+	<select id="getAllOrderList" parameterType="java.util.Map" resultType="orderDTO">
+		select * from javabucks_order
+		where bucksId = #{bucksId}
+			and orderCode = #{orderCode}
+	</select>
+	
+	
+	
 	
 	
 	

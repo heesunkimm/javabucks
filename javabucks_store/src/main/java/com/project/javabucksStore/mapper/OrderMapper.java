@@ -104,5 +104,26 @@ public class OrderMapper {
         return sqlSession.selectOne("getWhipPrice", whipNum);
     }
 	
-
+	public int getStoreOrderListCount(String bucksId) {
+		return sqlSession.selectOne("getStoreOrderListCount", bucksId);
+	}
+	
+	public List<OrderDTO> getStoreOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getStoreOrderList", params);
+	}
+	
+	public int getDeliverOrderListCount(String bucksId) {
+		return sqlSession.selectOne("getDeliverOrderListCount", bucksId);
+	}
+		
+	public List<OrderDTO> getDeliverOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getDeliverOrderList", params);
+	}
+	
+	public List<OrderDTO> getAllOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getAllOrderList", params);
+	}
+	
+	
+	
 }
