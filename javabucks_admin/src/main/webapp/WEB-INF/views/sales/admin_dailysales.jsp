@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-
+  
 <style>
 .paging {
     display: flex;
@@ -69,7 +69,7 @@
                 </form>
 
                 <div class="list_box">
-                    <p class="totabl_sales">해당 기간 총 매출액:<span><fmt:formatNumber value="${total}" pattern="#,##0"/>원</span></p>
+                    <p class="totabl_sales"> 해당 기간 총 매출액:<span><fmt:formatNumber value="${total}" pattern="#,##0"/>원</span></p> 
                     <table class="search_list s_table">
                         <thead>
                             <tr>
@@ -90,92 +90,62 @@
                             </c:when>
                             <c:otherwise>
                                 <c:forEach items="${branchSalesMap}" var="entry">
-                                    <c:forEach var="dlist" items="${list}">
-                                        <c:set var="branchDateKey" value="${dlist.bucksId}_${dlist.payhistoryDate}" />
-											<c:if test="${branchDateKey eq entry.key}">
-                                            <!-- 지점 정보 출력 (첫 번째 카테고리 항목에만 출력) -->
-                                             <tr>
-                                                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.payhistoryDate}"/></td> <!-- 일자 -->
-                                                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.branchName}"/></td> <!-- 지점명 -->
-                                                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksId}"/></td> <!-- 지점 등록번호 -->
-                                                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksOwner}"/></td> <!-- 점주명 -->
-                                            </tr>
-                                            <!-- 각 카테고리 및 매출액 출력 -->
-                                            <c:forEach items="${entry.value}" var="categoryEntry">
-                                                <tr>
-                                                    <td><c:out value="${categoryEntry.key}"/></td> <!-- 메뉴 카테고리 -->
-                                                    <td><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</td> <!-- 매출액 -->
-                                                </tr>
-                                            </c:forEach>
-                                            <!-- 지점별 총 매출 합계 출력 -->
-                                            <tr>
-                                            	<td></td>
-                                            	<td></td>
-                                            	<td></td>
-                                            	<td></td>
-                                            	
-                                                <td><strong>총 합</strong></td>
-                                                <td><strong>
-                                                    <c:set var="totalSales" value="0"/>
-                                                    <c:forEach items="${entry.value}" var="categoryEntry">
-                                                        <c:set var="totalSales" value="${totalSales + categoryEntry.value}"/>
-                                                    </c:forEach>
-                                                    <fmt:formatNumber value="${totalSales}" pattern="#,##0"/>원
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                        </c:if>
-                                    </c:forEach>
-                                </c:forEach>
+    <c:set var="alreadyPrinted" value="false" />
+    <c:forEach var="dlist" items="${list}">
+        <c:set var="branchDateKey" value="${dlist.bucksId}_${dlist.payhistoryDate}" />
+        <c:if test="${branchDateKey eq entry.key && alreadyPrinted eq false}">
+            <c:set var="alreadyPrinted" value="true" /> <!-- 해당 지점과 날짜가 이미 출력된 경우 -->
+            
+            <!-- 지점 정보 출력 -->
+            <tr>
+                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.payhistoryDate}"/></td>
+                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.branchName}"/></td>
+                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksId}"/></td>
+                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksOwner}"/></td>
+            </tr>
+            <!-- 각 카테고리 및 매출액 출력 -->
+            <c:forEach items="${entry.value}" var="categoryEntry">
+                <tr>
+                    <td><c:out value="${categoryEntry.key}"/></td> <!-- 메뉴 카테고리 -->
+                    <td><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</td> <!-- 매출액 -->
+                </tr>
+            </c:forEach>
+            
+            <!-- 지점별 총 매출 합계 출력 -->
+            
+            <tr>
+    <td></td><td></td><td></td><td></td>
+    <td><strong>총 합</strong></td>
+    <c:set var="branchId" value="${dlist.bucksId}"/>
+    <td><strong><fmt:formatNumber value="${branchTotalSalesMap[branchId]}" pattern="#,##0"/>원</strong></td>
+</tr>
+                
+        </c:if>
+    </c:forEach>
+</c:forEach>
                             </c:otherwise>
                         </c:choose>
                         </tbody>
                     </table>
                     <!-- 페이징 -->
                     <div class="paging">
-            	<c:if test="${pageCount > 1}">
-                	<c:set var="startPage" value="${currentPage - 2}"/>
-                	
-                <c:if test="${startPage lt 1}">
-                    <c:set var="startPage" value="1"/>
-                </c:if>
-                
-                	<c:set var="endPage" value="${currentPage + 2}"/>
-                <c:if test="${endPage gt pageCount}">
-                    <c:set var="endPage" value="${pageCount}"/>
-                </c:if>
-                
-                <c:url value="/storemanage.do" var="firstPageUrl">
-                    <c:param name="page" value="1"/>
-                </c:url>
-                
-                <c:url value="/storemanage.do" var="prevPageUrl">
-                    <c:param name="page" value="${currentPage - 1}"/>
-                </c:url>
-                
-                <a href="${firstPageUrl}">First</a>
-                <c:if test="${currentPage > 1}">
-                    <a href="${prevPageUrl}">Previous</a>
-                </c:if>
-                
-                <c:forEach begin="${startPage}" end="${endPage}" var="pageNumber">
-                    <c:url value="/storemanage.do" var="pageUrl">
-                        <c:param name="page" value="${pageNumber}"/>
-                    </c:url>
-                    <a href="${pageUrl}" class="${pageNumber == currentPage ? 'active' : ''}">${pageNumber}</a>
-                </c:forEach>
-                <c:url value="/storemanage.do" var="nextPageUrl">
-                    <c:param name="page" value="${currentPage + 1}"/>
-                </c:url>
-                <c:if test="${currentPage lt pageCount}">
-                    <a href="${nextPageUrl}">Next</a>
-                </c:if>
-                <c:url value="/storemanage.do" var="lastPageUrl">
-                    <c:param name="page" value="${pageCount}"/>
-                </c:url>
-                <a href="${lastPageUrl}">End</a>
-            </c:if>
-        </div>
+					    <c:if test="${currentPage > 1}">
+					        <a href="?page=${currentPage - 1}&pageSize=${pageSize}">&laquo; 이전</a>
+					    </c:if>
+					
+					    <c:forEach var="i" begin="1" end="${totalPages}">
+					        <c:if test="${i == currentPage}">
+					            <strong>${i}</strong>
+					        </c:if>
+					        <c:if test="${i != currentPage}">
+					            <a href="?page=${i}&pageSize=${pageSize}">${i}</a>
+					        </c:if>
+					    </c:forEach>
+					
+					    <c:if test="${currentPage < totalPages}">
+					        <a href="?page=${currentPage + 1}&pageSize=${pageSize}">다음 &raquo;</a>
+					    </c:if>
+					</div>
         <!-- e:페이징 -->   
                 </div>
             </div>
