@@ -171,7 +171,6 @@ function idCheck() {
         $(".id").focus();  
         return;  
     }
-
     // AJAX 요청을 통해 아이디 중복 확인을 서버에 요청
     $.ajax({
         url: "idCheck", // 요청을 보낼 서버 URL
@@ -197,7 +196,6 @@ function idCheck() {
         }
     });
 }
-
 function duplicateCheck() {
     // 인증번호 발송 버튼의 display 속성을 변경하여 보이도록 설정합니다.
     let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
@@ -214,7 +212,6 @@ function duplicateCheck() {
     document.querySelector('.dupcate_btn').style.display = 'none';
      
 }
-
 function startTimer(){
 	let timerMinId = document.getElementById('timerMin');
 	let timerSecId = document.getElementById('timerSec');
@@ -234,7 +231,6 @@ function startTimer(){
 		timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
 	},1000);
 }
-
 // 이메일인증 버튼 클릭시 유효성검사
 function sendEmail(){
 	let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
@@ -260,7 +256,6 @@ function sendEmail(){
 		type : 'POST',
 		data : { "userEmail1" : email1,
 				"userEmail2" : email2
-				 
 		},
 		success : function(res){
 			if(res == 'OK'){
@@ -276,7 +271,6 @@ function sendEmail(){
 		}
 	})
 }
- 
 // 이메일 인증번호  
 function codeCheck(){
 	let code = $('.code').val();
@@ -302,8 +296,6 @@ function codeCheck(){
 	});
 }
 
-
- 
 // 회원가입 버튼 클릭시 유효성검사
 function check() {
 	let name = $(".userName").val();

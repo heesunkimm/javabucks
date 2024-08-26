@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>        
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -22,7 +23,7 @@
             <div class="view_date div_box">
                 <p>전체</p>
                 <div>
-                    <p class="font_gray">2024.07.01  ~ 2024.08.01</p>
+                    <p class="font_gray">${period_setting}</p>
                     <a class="toggle_btn font_green" href="javascript:;">▽</a>
                 </div>
             </div>
@@ -72,25 +73,27 @@
 
             <div class="list_box">
                 <div class="count_box">
-                    <p class="font_gray">총 <span class="font_green">0건</span></p>
-                    <p class="font_gray">사용합계 <span class="font_green">0원</span></p>
+                    <p class="font_gray">총 <span class="font_green">${number}건</span></p>
+                    <p class="font_gray">사용합계 <span class="font_green">${totalPrice}원</span></p>
                 </div>
                 <ul class="add_list">
+                	<c:forEach var="dto" items="${recepitList}">
                     <li>
                         <div class="txt_box">
-                            <p class="txt_store">종로3가</p>
+                            <p class="txt_store">${dto.bucksName}</p>
                             <div class="font_gray">
-                                <p class="txt_date">2024-07-31 12:18:00</p>
+                                <p class="txt_date">${dto.payhistoryDate}</p>
                                 <p class="txt_pay">결제</p>
                             </div>
-                            <p class="txt_price font_green">6,700원</p>
+                            <p class="txt_price font_green">${dto.payhistoryPrice}원</p>
                         </div>
-                        <a class="popup_btn" href="javascript:;" data-popup="recepitbox">
+                        <a class="popup_btn" href="javascript:void(0);" onclick="fetchReceiptData('${dto.bucksId}', '${dto.payhistoryNum}');" data-popup="recepitbox">
                             <div class="img_box">
                                 <img src="../images/icons/receipt.png" alt="">
                             </div>
                         </a>
                     </li>
+                    </c:forEach>
                 </ul>
             </div>
         </div>
@@ -104,11 +107,11 @@
              <ul class="store_info">
                 <li>
                     <span>지점명</span>
-                    <span>지점번호</span>
+                    <span>지점전화번호</span>
                 </li>
                 <li>지점위치</li>
                 <li>
-                    <span>점주</span>
+                    <span>대표: 점주명</span>
                     <span>지점코드</span>
                 </li>
                 <li>결제시간</li>
@@ -161,5 +164,75 @@
         </div>
         <div class="dimm"></div>
     </section>
-    <!-- e: content -->
+    <!-- e: content -->	
 <%@ include file="user_bottom.jsp"%>
+<script>
+function fetchReceiptData(bucksId, payhistoryNum) {
+    $.ajax({
+        url: 'user_recepit.ajax',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            bucksId: bucksId,
+            payhistoryNum: payhistoryNum
+        }),
+        success: function(response) {
+            // 서버에서 받은 데이터를 이용해 팝업을 업데이트합니다.
+            updatePopup(response);
+            // 팝업을 보여줍니다.
+            document.getElementById("recepitbox").style.display = 'block';
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX 요청 실패:', error);
+        }
+    });
+}
+
+function updatePopup(data) {
+    // 서버에서 받은 JSON 데이터를 사용해 팝업 내용을 업데이트합니다.
+    // 지점명
+	document.querySelector("#recepitbox .store_info li:nth-child(1) span:first-child").textContent = data.bucksName;
+	// 지점전화번호
+	document.querySelector("#recepitbox .store_info li:nth-child(1) span:last-child").textContent = 'T: ' + data.bucksTel1 + '-' + data.bucksTel2 + '-' + data.bucksTel3;
+	// 지점위치
+	document.querySelector("#recepitbox .store_info li:nth-child(2)").textContent = data.bucksLocation;
+	// 대표: 점주명
+	document.querySelector("#recepitbox .store_info li:nth-child(3) span:first-child").textContent = '대표: ' + data.bucksOwner;
+	// 지점코드
+	document.querySelector("#recepitbox .store_info li:nth-child(3) span:last-child").textContent = data.bucksCode;
+	// 결제시간
+	document.querySelector("#recepitbox .store_info li:nth-child(4)").textContent = data.payhistoryDate;
+	// 닉네임 설정
+	document.querySelector("#recepitbox .user_info .order_num p:first-child").textContent = data.userNickname;
+	// 주문번호 설정
+	document.querySelector("#recepitbox .user_info .order_num p:last-child").textContent = data.orderCode;
+
+	
+    // 합계 및 결제 정보 업데이트
+    document.querySelector("#recepitbox .total_box span:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원';
+    document.querySelector("#recepitbox .addvat_box em:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원'; // 부가세 포함 금액
+    document.querySelector("#recepitbox .pay_box dl:nth-child(1) dd").textContent = data.payhistoryPrice.toLocaleString() + '원';
+    document.querySelector("#recepitbox .pay_box dl:nth-child(2) dd").textContent = data.cardRegNum;
+    document.querySelector("#recepitbox .pay_box dl:nth-child(3) dd").textContent = data.cardPrice.toLocaleString() + '원';
+	}
+	
+    // 메뉴 정보 표시
+    const orderList = document.querySelector("#recepitbox .order_list");
+    orderList.innerHTML = ""; // 기존 항목 제거
+    data.items.forEach(item => {
+        const listItem = document.createElement("li");
+        listItem.className = "order_item";
+        listItem.innerHTML = `<span>${item.menuName}</span><div><span>${item.price}원</span><span>${item.quantity}개</span></div><span>${item.totalPrice}원</span>`;
+        orderList.appendChild(listItem);
+    });
+
+
+	// 팝업 닫기 버튼 이벤트 추가
+	document.querySelector(".close_btn").addEventListener('click', function() {
+	    document.getElementById("recepitbox").style.display = 'none';
+	});
+
+	$(".toggle_btn").on('click', function(){
+		$(".period_date").toggle();
+	})
+</script>

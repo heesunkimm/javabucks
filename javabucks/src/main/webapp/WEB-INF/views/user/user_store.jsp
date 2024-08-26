@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +22,9 @@
                 </div>
     
                 <div class="search_box">
-                    <form name="" action="" method="post">
+                    <form name="" action="user_store?mode=store" method="post">
                         <label>
-                            <input type="text" name="" value="" placeholder="검색">
+                            <input type="text" name="storeSearch" value="" placeholder="검색">
                         </label>
                         <button type="submit">검색</button>
                     </form>
@@ -31,17 +32,23 @@
                 </div>
             </div>
             <ul class="store_list">
+        	    <c:if test= "${empty storeList}">
+       	    	<li class="nostore">이용하실 매장명 또는 지역을 검색해주세요.</li>
+        		</c:if>
+        		<c:forEach var ="dto" items="${storeList}">
                 <li class="store_item">
-                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect">
+                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
                         <div class="img_box">
                             <!-- <img src="" alt=""> -->
                         </div>
+                        
                         <div class="txt_box">
-                            <p>지점명</p>
-                            <p>지점 주소</p>
+                         	  <p class="txt_store">${dto.bucksName}</p>
+             				  <p class="txt_location">${dto.bucksLocation}</p>
                         </div>
                     </a>
                 </li>
+                </c:forEach>
             </ul>
         </div>
         
@@ -50,23 +57,24 @@
             <div class="tit_box">
                 <p class="txt_tit">픽업은 어떻게 하시겠어요?</p>
             </div>
-            <form name="f" action="" method="post">
+            <form name="f" action="user_order" method="post">
                 <!-- s: 내용 작성 -->
                  <input type="hidden" name="store" value="">
                  <input type="hidden" name="pickup" value="">
+                 <input type="hidden" name="storeName" value="">
                 <div class="select_box">
-                    <a class="select_btn" href="user_order.html">
+                    <a class="select_btn" href="javascript:;" onclick="submitForm('매장이용')">
                         <div class="img_box">
-                            <img src="../images/icons/[li]eat.png" alt="">
+                            <img src="../images/icons/eat.png" alt="">
                         </div>
                         <div class="txt_box">
                             <p class="txt_tit">매장 이용</p>
                             <p class="txt_desc">매장에서 먹을게요</p>
                         </div>
                     </a>
-                    <a class="select_btn" href="user_order.html">
+                    <a class="select_btn" href="javascript:;" onclick="submitForm('To-go')">
                         <div class="img_box">
-                            <img src="../images/icons/[li]to_go.png" alt="">
+                            <img src="../images/icons/to_go.png" alt="">
                         </div>
                         <div class="txt_box">
                             <p class="txt_tit">To-go</p>
@@ -84,3 +92,38 @@
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp" %>
+<script type="text/javascript">
+		$(function() {
+		    // 매장 정보를 클릭했을 때 팝업 표시
+		    $(".popup_btn").on('click', function(e) {
+		        e.preventDefault();
+		
+		        // 선택한 매장 정보 가져오기
+		        let bucksName = $(this).data('bucksname');
+		        let popupId = $(this).data('popup');
+		
+		        // 팝업 내의 요소들에 매장 정보 삽입
+		        $("#pickupselect input[name='storeName']").val(bucksName);
+		
+		        // 팝업 열기
+		        $('#' + popupId).show();
+		        $('.dimm').show();
+		    });
+		    
+		    // 팝업 닫기
+		    $(".close_btn").on('click', function() {
+		        let popupId = $(this).data('popup');
+		        $('#' + popupId).hide();
+		        $('.dimm').hide();
+		    });
+		    
+		});
+			
+		function submitForm(pickupType) {
+		    // 선택한 pickupType (매장이용 또는 To-go)을 input에 설정
+		    $("input[name='pickup']").val(pickupType);
+
+		    // form 제출
+		    $("form[name='f']").submit();
+		}
+</script>

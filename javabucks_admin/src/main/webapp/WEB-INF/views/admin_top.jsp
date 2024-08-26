@@ -26,7 +26,7 @@
             <li class="nav_item">
                 <a href="javascript:;">계정관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">관리자 계정 관리</a></li>
+                    <li><a href="adminmanage.do">관리자 계정 관리</a></li>
                     <li><a href="storemanage.do">지점 계정 관리 </a></li>
                     <li><a href="javascript:;">유저 계정 관리</a></li>
                 </ul>
@@ -42,10 +42,10 @@
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">발주관리</a>
+                <a href="adminStoreOrder.do">발주관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">현황</a></li>
-                    <li><a href="javascript:;">재고관리</a></li>
+                    <li><a href="adminStoreOrder.do">지점 발주현황</a></li>
+                    <li><a href="adminStockList.do">본사 재고관리</a></li>
                 </ul>
             </li>
             <li class="nav_item">

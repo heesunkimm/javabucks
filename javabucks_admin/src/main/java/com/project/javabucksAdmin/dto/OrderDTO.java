@@ -73,4 +73,18 @@ public class OrderDTO {
    public void setOrderStatus(String orderStatus) {
       this.orderStatus = orderStatus;
    }
+   
+   //조인 
+   private int cpnlistnum;
+   
+   
+
+
+	public int getCpnlistnum() {
+		return cpnlistnum;
+	}
+	public void setCpnlistnum(int cpnlistnum) {
+		this.cpnlistnum = cpnlistnum;
+	}
+	
 }

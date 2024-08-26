@@ -1,5 +1,8 @@
 package com.project.javabucks.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
@@ -31,6 +36,8 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.OrderDTO;
+import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
@@ -98,7 +105,7 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_order")
-	public String orderMenu(HttpServletRequest req, String storeName) {
+	public String orderMenu(HttpServletRequest req, String storeName, String pickup) {
 
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
@@ -107,21 +114,26 @@ public class UserController {
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
 		req.setAttribute("store", storeName);
+		req.setAttribute("pickup", pickup);
 		return "/user/user_order";
 	}
 
 	@RequestMapping("/user_menudetail")
-	public String menudetail(HttpServletRequest req, String menuCode, String menuoptCode, String drink) {
-		
+	public String menudetail(HttpServletRequest req, @RequestParam Map<String, String> params) {
+
 		// 메뉴코드로 메뉴정보 꺼내오기
+		String menuCode = params.get("menuCode");
+		String menuoptCode = params.get("menuoptCode");
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);
-		req.setAttribute("drink", drink);
-		
+		req.setAttribute("drink", params.get("drink"));
+		req.setAttribute("store", params.get("store"));
+		req.setAttribute("pickup", params.get("pickup"));
+
 		// 음료메뉴 퍼스널옵션값 가져오기
-		if(drink != null) {
+		if (params.get("drink").equals("drink")) {
 			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
-			req.setAttribute("shot", dto2.getShotType());
+			req.setAttribute("shot", dto2);
 		}
 		List<MenuOptCupDTO> list1 = userMapper.CupSizeByCode(menuoptCode);
 		List<MenuOptIceDTO> list2 = userMapper.IceByCode(menuoptCode);
@@ -129,16 +141,321 @@ public class UserController {
 		List<MenuOptSyrupDTO> list4 = userMapper.SyrupByCode(menuoptCode);
 		List<MenuOptMilkDTO> list5 = userMapper.MilkByCode(menuoptCode);
 		req.setAttribute("cup", list1);
-		req.setAttribute("ice", list2);		
+		req.setAttribute("ice", list2);
 		req.setAttribute("whip", list3);
 		req.setAttribute("syrup", list4);
 		req.setAttribute("milk", list5);
-		
+
+		if (list2 == null || list2.isEmpty())
+			req.setAttribute("isIce", "not");
+		else
+			req.setAttribute("isIce", "ok");
+		if (list5 == null || list5.isEmpty())
+			req.setAttribute("isMilk", "not");
+		else
+			req.setAttribute("isMilk", "ok");
+
 		return "/user/user_menudetail";
 	}
 
+	@RequestMapping("/user_starhistory")
+	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
+
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		params.put("userId", userId);
+		int star = 0;
+
+		// 날짜 형식을 설정합니다.
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		// 현재 날짜를 가져옵니다.
+		LocalDate today = LocalDate.now();
+		// 한 달 전의 날짜를 계산합니다.
+		LocalDate oneMonthAgo = today.minusMonths(1);
+		// 세 달 전의 날짜를 계산합니다.
+		LocalDate threeMonthAgo = today.minusMonths(3);
+		// 날짜를 문자열로 변환합니다.
+		String endDate = today.format(formatter);
+
+		// 기간을 설정하고 확인눌렀다면
+		if (params.get("mode") != null) {
+			// 1개월 선택 시
+			if (params.get("period_startdate").equals("1month")) {
+				String startDate = oneMonthAgo.format(formatter);
+				String period_setting = startDate + " ~ " + endDate;
+				req.setAttribute("period_setting", period_setting);
+				// 1개월 별 히스토리 조회
+				params.put("startDate", startDate);
+				params.put("endDate", endDate);
+				List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+
+				// 별 갯수, 유효기간
+				for (FrequencyDTO freq : list) {
+					LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+					LocalDate validityDate = regDate.plusYears(1);
+					freq.setFrequencyEndDate(validityDate.format(formatter));
+					star += freq.getFrequencyCount();
+				}
+				req.setAttribute("star", star);
+				req.setAttribute("starHistory", list);
+
+				// 3개월 선택 시
+			} else if (params.get("period_startdate").equals("3months")) {
+				String startDate = threeMonthAgo.format(formatter);
+				String period_setting = startDate + " ~ " + endDate;
+				req.setAttribute("period_setting", period_setting);
+
+				// 3개월 별 히스토리 조회
+				params.put("startDate", startDate);
+				params.put("endDate", endDate);
+				List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+
+				// 별 갯수
+				for (FrequencyDTO freq : list) {
+					LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+					LocalDate validityDate = regDate.plusYears(1);
+					freq.setFrequencyEndDate(validityDate.format(formatter));
+					star += freq.getFrequencyCount();
+				}
+				req.setAttribute("star", star);
+				req.setAttribute("starHistory", list);
+
+				// 기간설정 버튼눌렀을때
+			} else {
+				String period_setting = params.get("startDate") + " ~ " + params.get("endDate");
+				req.setAttribute("period_setting", period_setting);
+				List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+
+				// 별 갯수
+				for (FrequencyDTO freq : list) {
+					LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+					LocalDate validityDate = regDate.plusYears(1);
+					freq.setFrequencyEndDate(validityDate.format(formatter));
+					star += freq.getFrequencyCount();
+				}
+				req.setAttribute("star", star);
+				req.setAttribute("starHistory", list);
+			}
+
+		} else {
+			String startDate = oneMonthAgo.format(formatter);
+			// period_setting 문자열을 생성합니다.
+			String period_setting = startDate + " ~ " + endDate;
+			// 요청 속성에 설정합니다.
+			req.setAttribute("period_setting", period_setting);
+
+			params.put("startDate", startDate);
+			params.put("endDate", endDate);
+			List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+
+			// 유효기간을 계산하여 DTO에 추가
+			for (FrequencyDTO freq : list) {
+				LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+				LocalDate validityDate = regDate.plusYears(1);
+				freq.setFrequencyEndDate(validityDate.format(formatter));
+				star += freq.getFrequencyCount();
+			}
+			req.setAttribute("starHistory", list);
+			req.setAttribute("star", star);
+		}
+		return "/user/user_starhistory";
+	}
+
+	@RequestMapping("/user_mymenu")
+	public String userMymenu(HttpServletRequest req, String mode, @RequestParam Map<String, String> params) {
+
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+
+		// 나만의메뉴 X 눌렀을때
+		if (mode != null) {
+			params.put("userId", userId);
+			int mymenuNum = userMapper.MyMenuNumByUserid(params);
+			int res = userMapper.MyMenuDeleteByMenuNum(mymenuNum);
+			if (res > 0) {
+				req.setAttribute("msg", "나만의메뉴가 삭제되었습니다.");
+				req.setAttribute("url", "user_mymenu");
+				return "message";
+			} else {
+				req.setAttribute("msg", "나만의메뉴 삭제 중 오류가 발생하였습니다.");
+				req.setAttribute("url", "user_mymenu");
+				return "message";
+			}
+		}
+
+		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
+		req.setAttribute("mymenu", list);
+
+		return "/user/user_mymenu";
+	}
+
+	@RequestMapping("/user_recepit")
+	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params, String mode) {
+		
+		UserDTO dto = userMapper.getInfoById();
+		String userId = dto.getUserId();
+		params.put("userId", userId);
+		int totalPrice = 0;
+		int number = 0;
+
+		// 날짜 형식을 설정합니다.
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		// 현재 날짜를 가져옵니다.
+		LocalDate today = LocalDate.now();
+		// 한 달 전의 날짜를 계산합니다.
+		LocalDate oneMonthAgo = today.minusMonths(1);
+		// 세 달 전의 날짜를 계산합니다.
+		LocalDate threeMonthAgo = today.minusMonths(3);
+		// 날짜를 문자열로 변환합니다.
+		String endDate = today.format(formatter);
+
+//		// 기간을 설정하고 확인눌렀다면
+//		if(params.get("mode") != null) {
+//			// 1개월 선택 시
+//			if (params.get("period_startdate").equals("1month")) {
+//				String startDate = oneMonthAgo.format(formatter);
+//		        String period_setting = startDate + " ~ " + endDate;	            
+//	            req.setAttribute("period_setting", period_setting);
+//	            // 1개월 별 히스토리 조회
+//	            params.put("startDate", startDate);
+//	            params.put("endDate", endDate);
+//	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//	            	            
+//	            //별 갯수, 유효기간
+//	    		for (FrequencyDTO freq : list) {
+//	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//	                LocalDate validityDate = regDate.plusYears(1);
+//	                freq.setFrequencyEndDate(validityDate.format(formatter));
+//	                star += freq.getFrequencyCount();              
+//	            }
+//	    		req.setAttribute("star", star);
+//	    		req.setAttribute("starHistory", list);
+//	    		
+//	        // 3개월 선택 시    
+//	        } else if (params.get("period_startdate").equals("3months")) {
+//	        	String startDate = threeMonthAgo.format(formatter);
+//	        	String period_setting = startDate + " ~ " + endDate;	            
+//	            req.setAttribute("period_setting", period_setting);
+//	            
+//	            // 3개월 별 히스토리 조회
+//	            params.put("startDate", startDate);
+//	            params.put("endDate", endDate);
+//	            List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//	            	            
+//	            //별 갯수
+//	    		for (FrequencyDTO freq : list) {
+//	    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//	                LocalDate validityDate = regDate.plusYears(1);
+//	                freq.setFrequencyEndDate(validityDate.format(formatter));
+//	                star += freq.getFrequencyCount();              
+//	            }
+//	    		req.setAttribute("star", star);
+//	    		req.setAttribute("starHistory", list);
+//	    		
+//            // 기간설정 버튼눌렀을때
+//	        }else {
+//			String period_setting = params.get("startDate") +" ~ " +params.get("endDate");
+//			req.setAttribute("period_setting", period_setting);
+//			List<FrequencyDTO> list = userMapper.StarHistoryByUserid(params);
+//    		
+//    		//별 갯수
+//    		for (FrequencyDTO freq : list) {
+//    			LocalDate regDate = LocalDate.parse(freq.getFrequencyRegDate(), dateTimeFormatter);
+//                LocalDate validityDate = regDate.plusYears(1);
+//                freq.setFrequencyEndDate(validityDate.format(formatter));
+//                star += freq.getFrequencyCount();              
+//            }
+//    		req.setAttribute("star", star);
+//    		req.setAttribute("starHistory", list);
+//	        }
+//			
+//		}else {		
+			String startDate = oneMonthAgo.format(formatter);
+			// period_setting 문자열을 생성합니다.
+	        String period_setting = startDate + " ~ " + endDate;
+            // 초기화면 기간 데이터
+            req.setAttribute("period_setting", period_setting);
+                        
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            List<PayhistoryDTO> list = userMapper.RecepitByUserid(userId);
+            for(PayhistoryDTO phis : list) {
+            	totalPrice += phis.getPayhistoryPrice();
+            	number = number +1;           	
+            }                      
+            req.setAttribute("recepitList", list);
+     		req.setAttribute("totalPrice", totalPrice);
+     		req.setAttribute("number", number);	
+     		    		
+//        }
+				
+		return "/user/user_recepit";
+	}
+	
+	// 영수증 팝업창 데이터 ajax
+	@ResponseBody
+	@PostMapping("/user_recepit.ajax")
+	public Map<String, Object> userRecepit(@RequestBody Map<String, Object> requestBody) {
+	    try {
+	        String bucksId = (String) requestBody.get("bucksId");	   
+	        
+	        // 안전한 타입 변환
+	        Integer payhistoryNum = null;
+	        Object payhistoryObj = requestBody.get("payhistoryNum");
+	        payhistoryNum = Integer.valueOf((String) payhistoryObj);
+
+	        // bucksId에 해당하는 데이터를 조회합니다.
+	        BucksDTO dto = userMapper.StoreInfoByBucksId(bucksId);
+	        PayhistoryDTO dto2 = userMapper.PayInfoByHistoryNum(payhistoryNum);
+	        String userNickname = userMapper.NicknameByHistoryNum(payhistoryNum);
+	        CardDTO dto3 = userMapper.CardInfoByHistoryNum(payhistoryNum);
+
+	        // 조회된 데이터를 JSON 형식으로 반환합니다.
+	        Map<String, Object> response = new HashMap<>();
+
+	        // 지점 정보
+	        response.put("bucksName", dto.getBucksName());
+	        response.put("bucksTel1", dto.getBucksTel1());
+	        response.put("bucksTel2", dto.getBucksTel2());
+	        response.put("bucksTel3", dto.getBucksTel3());
+	        response.put("bucksLocation", dto.getBucksLocation());
+	        response.put("bucksOwner", dto.getBucksOwner());
+	        response.put("bucksCode", bucksId);
+	        response.put("payhistoryDate", dto2.getPayhistoryDate());
+	        // 닉네임, 주문번호
+	        response.put("userNickname", userNickname);
+	        response.put("orderCode", dto2.getOrderCode());
+	        // 주문내역
+	        
+	        
+	        // 결제금액
+	        response.put("payhistoryPrice", dto2.getPayhistoryPrice());
+	        // 결제카드
+	        response.put("cardRegNum", dto3.getCardRegNum());
+	        response.put("cardPrice", dto3.getCardPrice());
+
+	        return response;
+	    } catch (Exception e) {
+	        e.printStackTrace(); // 예외 발생 시 스택 트레이스를 로그에 출력합니다.
+	        return Collections.singletonMap("error", "서버 오류가 발생했습니다.");
+	    }
+	}
+	
+	@RequestMapping("/user_cart")
+	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		String quantity = params.get("quantity");
+		session.setAttribute("quantity", quantity);
+		
+		req.setAttribute("quantity", quantity);
+		return "/user/user_cart";
+
+	}
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
+
 	public String userPay(Model model, HttpSession session) {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
 		String userId = dto.getUserId();
@@ -272,39 +589,113 @@ public class UserController {
 		return alarms;
 	}
 
+	@ResponseBody
+	@PostMapping("/orderOptInsert.ajax")
+	public int orderOptInsert(@RequestBody OrderOptDTO dto) {
+		System.out.println(dto);
+		userMapper.orderOptInsert(dto);
+		Integer optId = userMapper.orderOptIdsearch();
+		System.out.println(optId);
+		return optId;
+	}
+
 	@RequestMapping("/user_paynow")
-	public String userPaynow() {
+	public String userPaynow(HttpSession session, Model model, @RequestParam Map<String, String> params, String cart)
+			throws JsonProcessingException {
+//		cart 는 단순결제 imme 랑 카트결제 cart 있음
+
+//		UserDTO user = (UserDTO) session.getAttribute("inUser");
+//		String userId = user.getUserId();
+
+		String userId = "user001";
+		System.out.println(params);
+		String bucksName = params.get("store");
+		String bucksLocation = userMapper.findBucksLocation(bucksName);
+
+		// 옵션 총금액구하기
+		int optId = Integer.parseInt(params.get("optId"));
+		int optPrice = userMapper.orderOptTotPrice(optId); // 옵션금액
+		model.addAttribute("optPrice", optPrice);
+
+		// 받은 optId 로 optDTO 만들기
+		OrderOptDTO optdto = userMapper.findOrderOpt(optId);
+
+		MenuOptCupDTO cupdto = userMapper.getCupInfo(optId);
+		MenuOptIceDTO icedto = userMapper.getIceInfo(optId);
+		MenuOptShotDTO shotdto = userMapper.getShotInfo(optId);
+		MenuOptWhipDTO whipdto = userMapper.getWhipInfo(optId);
+		MenuOptSyrupDTO syrupdto = userMapper.getSyrupInfo(optId);
+		MenuOptMilkDTO milkdto = userMapper.getMilkInfo(optId);
+
+		// 페이지로 전송시킬 메뉴 옵션 관련 정보
+		model.addAttribute("cupdto", cupdto);
+		model.addAttribute("icedto", icedto);
+		model.addAttribute("shotdto", shotdto);
+		model.addAttribute("whipdto", whipdto);
+		model.addAttribute("syrupdto", syrupdto);
+		model.addAttribute("milkdto", milkdto);
+
+		String menuCode = params.get("menuCode");
+		MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
+		int quantity = Integer.parseInt(params.get("quantity"));
+
+		model.addAttribute("mdto", mdto);
+		model.addAttribute("cart", cart);
+		model.addAttribute("quantity", quantity);
+
+		// 페이지로 전송시킬 단일 결제 건 정보
+		model.addAttribute("optdto", optdto);
+
+		model.addAttribute("bucksName", bucksName);
+		model.addAttribute("bucksLocation", bucksLocation);
+		model.addAttribute("bucksName", bucksName);
+		model.addAttribute("pickup", params.get("pickup"));
+
+		// 자바벅스 카드 리스트 넘기기
+		List<CardDTO> list = userMapper.listRegCardById(userId);
+		model.addAttribute("listCard", list);
+
+//		// 현재 날짜 + pickUp + 숫자 로 orderCode 만들기
+//		String orderCode = generateOrderCode(params.get("pickup"));
+//		// 단일주문내역 JSON Parsing
+//		String orderList = menuCode + ":" + optId + ":" + Integer.parseInt(params.get("quantity"));
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		String jsonOrderList = objectMapper.writeValueAsString(orderList);
+//		// OrderDTO
+//		OrderDTO odto = new OrderDTO();
+//		odto.setUserId(userId);
+//		odto.setBucksId(bucksName);
+//		odto.setOrderList(jsonOrderList);
+//		odto.setMenuPrice(menutotPrice);
+//		odto.setOptPrice(optPrice);
+//		odto.setOrderType(params.get("pickup"));
+//		odto.setOrderStatus("주문대기");
+
 		return "/user/user_paynow";
 	}
 
+	// 주문 결제
+
 	@RequestMapping("/user_store")
-	public String userStore() {
+	public String userStore(Model model, @RequestParam Map<String, String> params, String mode, String storeSearch) {
+		// 매장 검색하기
+		if (mode != null) {
+			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
+			model.addAttribute("storeList", list);
+		}
+
 		return "/user/user_store";
 	}
 
 	@RequestMapping("/user_other")
 	public String userOther() {
 		return "/user/user_other";
-	}
 
-	@RequestMapping("/user_starhistory")
-	public String userStarhistory() {
-		return "/user/user_starhistory";
-	}
-
-	@RequestMapping("/user_recepit")
-	public String userRecepit() {
-		return "/user/user_recepit";
 	}
 
 	@RequestMapping("/user_info")
 	public String userInfo() {
 		return "/user/user_info";
-	}
-
-	@RequestMapping("/user_mymenu")
-	public String userMymenu() {
-		return "/user/user_mymenu";
 	}
 
 	@RequestMapping("/user_delivershistory")
@@ -315,6 +706,44 @@ public class UserController {
 	@RequestMapping("/user_orderhistory")
 	public String userOrderhistory() {
 		return "/user/user_orderhistory";
+	}
+
+	public String generateOrderCode(String pickUp) {
+		// 현재날짜 YYMMDD로 설정하기
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		LocalDate today = LocalDate.now();
+		String currentDate = today.format(formatter);
+
+		// pickUp 값에 따른 문자 결정
+		String pickUpChar = getPickUpChar(pickUp);
+
+		// SQL에서 주어진 날짜와 문자를 기준으로 가장 큰 번호 가져오기
+		String maxNumberStr = userMapper.getMaxOrderCode(currentDate + "_" + pickUpChar);
+		int maxNumber = 0;
+
+		// maxNumberStr가 null이 아니면 해당 값을 정수로 변환
+		if (maxNumberStr != null) {
+			maxNumber = Integer.parseInt(maxNumberStr);
+		}
+
+		// 다음 번호 생성 (001, 002, ...)
+		int nextNumber = maxNumber + 1;
+
+		// 새로운 orderCode 생성
+		return String.format("%s_%s-%03d", currentDate, pickUpChar, nextNumber);
+	}
+
+	private String getPickUpChar(String pickUp) {
+		switch (pickUp) {
+		case "매장이용":
+			return "A";
+		case "To-go":
+			return "B";
+		case "Delivers":
+			return "C";
+		default:
+			throw new IllegalArgumentException("Invalid pickUp value: " + pickUp);
+		}
 	}
 
 }

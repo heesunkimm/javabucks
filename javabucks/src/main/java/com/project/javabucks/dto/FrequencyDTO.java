@@ -6,6 +6,7 @@ public class FrequencyDTO {
 	private String userId;
 	private String frequencyRegDate;
 	private int frequencyCount;
+	private String frequencyEndDate;
 	
 	public int getFrequencyNum() {
 		return frequencyNum;
@@ -32,5 +33,11 @@ public class FrequencyDTO {
 		this.frequencyCount = frequencyCount;
 	}
 	
-	
+	// [채성진 작업] db값 담기위해 변수 frequencyEndDate 추가
+	public String getFrequencyEndDate() {
+		return frequencyEndDate;
+	}
+	public void setFrequencyEndDate(String frequencyEndDate) {
+		this.frequencyEndDate = frequencyEndDate;
+	}		
 }
