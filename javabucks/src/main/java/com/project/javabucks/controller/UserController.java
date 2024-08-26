@@ -2,6 +2,7 @@ package com.project.javabucks.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -287,7 +288,7 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_recepit")
-	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params) {
+	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params, String mode) {
 		
 		UserDTO dto = userMapper.getInfoById();
 		String userId = dto.getUserId();	
@@ -384,15 +385,70 @@ public class UserController {
             req.setAttribute("recepitList", list);
      		req.setAttribute("totalPrice", totalPrice);
      		req.setAttribute("number", number);	
-     		
-     		String bucksId = params.get("bucksId");
-     		BucksDTO dto2 = userMapper.StoreInfoByBucksId(bucksId);
-     		req.setAttribute("", dto2);
+     		    		
 //        }
-		
-		
-		
+				
 		return "/user/user_recepit";
+	}
+	
+	// 영수증 팝업창 데이터 ajax
+	@ResponseBody
+	@PostMapping("/user_recepit.ajax")
+	public Map<String, Object> userRecepit(@RequestBody Map<String, Object> requestBody) {
+	    try {
+	        String bucksId = (String) requestBody.get("bucksId");	   
+	        
+	        // 안전한 타입 변환
+	        Integer payhistoryNum = null;
+	        Object payhistoryObj = requestBody.get("payhistoryNum");
+	        payhistoryNum = Integer.valueOf((String) payhistoryObj);
+
+	        // bucksId에 해당하는 데이터를 조회합니다.
+	        BucksDTO dto = userMapper.StoreInfoByBucksId(bucksId);
+	        PayhistoryDTO dto2 = userMapper.PayInfoByHistoryNum(payhistoryNum);
+	        String userNickname = userMapper.NicknameByHistoryNum(payhistoryNum);
+	        CardDTO dto3 = userMapper.CardInfoByHistoryNum(payhistoryNum);
+
+	        // 조회된 데이터를 JSON 형식으로 반환합니다.
+	        Map<String, Object> response = new HashMap<>();
+
+	        // 지점 정보
+	        response.put("bucksName", dto.getBucksName());
+	        response.put("bucksTel1", dto.getBucksTel1());
+	        response.put("bucksTel2", dto.getBucksTel2());
+	        response.put("bucksTel3", dto.getBucksTel3());
+	        response.put("bucksLocation", dto.getBucksLocation());
+	        response.put("bucksOwner", dto.getBucksOwner());
+	        response.put("bucksCode", bucksId);
+	        response.put("payhistoryDate", dto2.getPayhistoryDate());
+	        // 닉네임, 주문번호
+	        response.put("userNickname", userNickname);
+	        response.put("orderCode", dto2.getOrderCode());
+	        // 주문내역
+	        
+	        
+	        // 결제금액
+	        response.put("payhistoryPrice", dto2.getPayhistoryPrice());
+	        // 결제카드
+	        response.put("cardRegNum", dto3.getCardRegNum());
+	        response.put("cardPrice", dto3.getCardPrice());
+
+	        return response;
+	    } catch (Exception e) {
+	        e.printStackTrace(); // 예외 발생 시 스택 트레이스를 로그에 출력합니다.
+	        return Collections.singletonMap("error", "서버 오류가 발생했습니다.");
+	    }
+	}
+	
+	@RequestMapping("/user_cart")
+	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		String quantity = params.get("quantity");
+		session.setAttribute("quantity", quantity);
+		
+		req.setAttribute("quantity", quantity);
+		return "/user/user_cart";
+
 	}
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")

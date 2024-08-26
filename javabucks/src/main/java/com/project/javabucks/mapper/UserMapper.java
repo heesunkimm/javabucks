@@ -166,4 +166,16 @@ public class UserMapper {
 	public BucksDTO StoreInfoByBucksId(String bucksId) {	
 		return sqlSession.selectOne("StoreInfoByBucksId", bucksId);
 	}
+	
+	public PayhistoryDTO PayInfoByHistoryNum(int payhistoryNum) {	
+		return sqlSession.selectOne("PayInfoByHistoryNum", payhistoryNum);
+	}
+	
+	public String NicknameByHistoryNum(int payhistoryNum) {
+		return sqlSession.selectOne("NicknameByHistoryNum", payhistoryNum);
+	}
+	
+	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {	
+		return sqlSession.selectOne("CardInfoByHistoryNum", payhistoryNum);
+	}
 }

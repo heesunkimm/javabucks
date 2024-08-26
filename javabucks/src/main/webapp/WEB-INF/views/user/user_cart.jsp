@@ -57,13 +57,14 @@
                                 <div class="price_box">
                                     <div class="count_box">
                                         <div class="minus_btn img_box">
-                                            <img src="../images/icons/minus.png" alt="">
+                                            <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('order_number')">
                                         </div>
                                         <label>
-                                            <input type="text" name="" value="2" readonly>
+                                            <input type="text" id= "order_number" name="order_number" value="${quantity}" readonly>
+                                        	<input type="hidden" name="syrupNum" value="${syrup.syrupNum}">
                                         </label>
                                         <div class="plus_btn img_box">
-                                            <img src="../images/icons/plus.png" alt="">
+                                            <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('order_number')">
                                         </div>
                                     </div>
                                     <div class="total_box">
@@ -89,3 +90,22 @@
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
+<script>
+	function minus(fieldId) {
+	    var input = document.getElementById(fieldId);
+	    var value = parseInt(input.value, 10); // 현재 값 가져오기
+	    value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+	    value--; // 감소
+	    if (value < 0) value = 0; // 음수 방지
+	    input.value = value; // 값 적용
+	}
+	
+	// 증가 버튼 클릭 시 호출되는 함수
+	function plus(fieldId) {
+	    var input = document.getElementById(fieldId);
+	    var value = parseInt(input.value, 10); // 현재 값 가져오기
+	    value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+	    value++; // 증가
+	    input.value = value; // 값 적용
+	}
+</script>

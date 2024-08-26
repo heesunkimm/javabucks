@@ -153,15 +153,25 @@
 		                    </div>
 		                </div>
 		                </c:if>
+		                <input type="hidden" name="optId" id="optId">
+		                <input type="hidden" name="cart" id="cart">
 		                <input type="hidden" name="cupNum" id="cupNum">
 		                <input type="hidden" name="iceNum" id="iceNum">
 		                <input type="hidden" name="milkNum" id="milkNum">
 		                <input type="hidden" name="whipNum" id="whipNum">
-		                <input type="hidden" name="optId" id="optId">
 		            </div>
 		        </div>
 		            <div class="order_box">
 		                <button type="button">담기</button>
+		                <div class="minus_btn click_icon img_box">
+		                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('quantity')">
+		                </div>
+		                	<label>
+		                		수량<input type="text" id="quantity" name="quantity" value="1" readonly>
+		                	</label>
+		                <div class="plus_btn click_icon img_box">
+		                	<img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('quantity')">
+		                </div>
 		                <button type="button" onclick="orderCheck()">주문하기</button>
 		                <button class="addlike" type="button">
 		                    <img src="../images/icons/like.png" alt="">
@@ -211,6 +221,11 @@
 	    
 		// 유효성 검사
 	    function orderCheck() {
+			var qty = $("input[name='quantity']").val();
+			if (qty < 1) {
+				alert("수량은 한개 이상 선택해주세요");
+				return;
+			}
 			var drink = "${drink}";
 			if (drink === 'drink') { 
 			    var isIce = "${isIce}";
@@ -223,24 +238,29 @@
 		        
 		        // 사이즈 체크
 		        if (!cupNum) {
-		            alert("사이즈를 선택해 주세요.");
+		            alert("사이즈를 선택해주세요.");
 		            return;
 		        }
 		        // 얼음량 체크 (ice 리스트가 비어 있지 않을 때만)
 		        if (isIce !== 'not' || isIce === 'ok') {
 		            if (!iceNum) {
-		                alert("얼음량을 선택해 주세요.");
+		                alert("얼음량을 선택해주세요.");
 		                return;
 		            }
 		        }
 		        // 우유 종류 체크 (milk 리스트가 비어 있지 않을 때만)
 		        if (isMilk !== 'not' || isMilk === 'ok') {
 		            if (!milkNum) {
-		                alert("우유 종류를 선택해 주세요.");
+		                alert("우유 종류를 선택해주세요.");
 		                return;
 		            }
 		        }
 			}
+			if (qty < 1) {
+				alert("수량은 한개 이상 선택해주세요");
+				return;
+			}
+			
 			orderOptInsert(cupNum, whipNum, iceNum, milkNum);
 	    }
 		
@@ -267,6 +287,7 @@
 	            	if (res > 0){
 	                	alert('결제 페이지로 이동합니다.');
 	                	$('#optId').val(res);
+	                	$('#cart').val("imme");
 	                	document.forms['optplus'].submit();
 	            	} else {
 	            		console.log('처리 중 오류가 발생했습니다.');
