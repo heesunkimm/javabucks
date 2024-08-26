@@ -5,7 +5,7 @@ public class CouponListDTO {
 	private int cpnListNum;
 	private String cpnListCode;
 	private String userId;
-	private String cpnListStatus;
+	private String cpnListStatus; // 쿠폰상태
 	private String cpnListStartDate;
 	private String cpnListEndDate;
 	private String cpnListUseDate;
