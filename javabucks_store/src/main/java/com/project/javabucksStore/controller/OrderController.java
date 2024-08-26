@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.project.javabucksStore.dto.BucksDTO;
 import com.project.javabucksStore.dto.MenuOrder;
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.OrderOptDTO;
@@ -28,6 +30,7 @@ import com.project.javabucksStore.dto.StockUseDTO;
 import com.project.javabucksStore.mapper.OrderMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -44,8 +47,10 @@ public class OrderController {
     	String today = dateFormat.format(date);    	
     	//System.out.println("today : " + today);
     	
-    	// 지점 아이디 받아서 추가하는 작업 필요
-        String bucksId = "bucks_1115";
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
         
         Map<String, Object> params = new HashMap<>();
         params.put("bucksId", bucksId);
@@ -69,8 +74,10 @@ public class OrderController {
     	//System.out.println("searchOpt_orderDate :" + searchOpt_orderDate);
     	//System.out.println("searchOpt_orderCode :" + searchOpt_orderCode);
     	
-    	// 지점 아이디 받아서 추가하는 작업 필요
-        String bucksId = "bucks_1115";
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
     	
         Map<String, Object> params = new HashMap<>();
         params.put("bucksId", bucksId);
@@ -98,8 +105,10 @@ public class OrderController {
     	String today = dateFormat.format(date);    	
     	//System.out.println("today : " + today);
     	
-    	// 지점 아이디 받아서 추가하는 작업 필요
-        String bucksId = "bucks_1115";
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
         
         Map<String, Object> params = new HashMap<>();
         params.put("bucksId", bucksId);
@@ -118,8 +127,10 @@ public class OrderController {
     
     @PostMapping("/deliversHistory.do")
     public String deliversOrderSearch(HttpServletRequest req, String searchOpt_orderDate, String searchOpt_orderCode) {
-    	// 지점 아이디 받아서 추가하는 작업 필요
-        String bucksId = "bucks_1115";
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
         
         Map<String, Object> params = new HashMap<>();
         params.put("bucksId", bucksId);
@@ -143,17 +154,25 @@ public class OrderController {
     		@RequestParam(value = "deliverOrder_pageNum", required = false, defaultValue = "1") int deliverOrder_pageNum,
     		@RequestParam(value = "making_pageNum", required = false, defaultValue = "1") int making_pageNum) {
 
-    	// 세션값 꺼내기
-    	String bucksId = "bucks_1115";
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+    	
+    	// 오늘 날짜 꺼내기
+    	Date date = new Date();
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    	String today = dateFormat.format(date); 
     	
     	// 매장 신규주문
-    	int storeOrderListCount = mapper.getStoreOrderListCount(bucksId);
+    	int storeOrderListCount = mapper.getStoreOrderListCount(bucksId, today);
     	Map<String, Object> storeOrder_pagingMap = paging(storeOrderListCount, storeOrder_pageNum); 
     	
     	Map<String, Object> storeOrder_params = new HashMap<>();
     	storeOrder_params.put("bucksId", bucksId);
     	storeOrder_params.put("startRow", storeOrder_pagingMap.get("startRow"));
     	storeOrder_params.put("endRow", storeOrder_pagingMap.get("endRow"));
+    	storeOrder_params.put("today", today);
 
     	List<OrderDTO> storeOrderList = mapper.getStoreOrderList(storeOrder_params);
     	// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
@@ -166,13 +185,14 @@ public class OrderController {
     	req.setAttribute("storeOrderList", storeOrderList);
     	
     	// 배달 신규주문
-    	int deliverOrderListCount = mapper.getDeliverOrderListCount(bucksId);
+    	int deliverOrderListCount = mapper.getDeliverOrderListCount(bucksId, today);
     	Map<String, Object> deliverOrder_pagingMap = paging(deliverOrderListCount, deliverOrder_pageNum);
     	
     	Map<String, Object> deliverOrder_params = new HashMap<>();
     	deliverOrder_params.put("bucksId", bucksId);
     	deliverOrder_params.put("startRow", deliverOrder_pagingMap.get("startRow"));
     	deliverOrder_params.put("endRow", deliverOrder_pagingMap.get("endRow"));
+    	deliverOrder_params.put("today", today);
     	
     	List<OrderDTO> deliverOrderList = mapper.getDeliverOrderList(deliverOrder_params);
     	// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
@@ -185,13 +205,14 @@ public class OrderController {
     	req.setAttribute("deliverOrderList", deliverOrderList);
     	
     	// 제조중
-    	int makingListCount = mapper.getMakingListCount(bucksId);
+    	int makingListCount = mapper.getMakingListCount(bucksId, today);
     	Map<String, Object> making_pagingMap = paging(makingListCount, making_pageNum);
     	
     	Map<String, Object> making_params = new HashMap<>();
     	making_params.put("bucksId", bucksId);
     	making_params.put("startRow", making_pagingMap.get("startRow"));
     	making_params.put("endRow", making_pagingMap.get("endRow"));
+    	making_params.put("today", today);
     	
     	List<OrderDTO> makingList = mapper.getMakingList(making_params);
     	// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
@@ -207,13 +228,15 @@ public class OrderController {
     }
     
     // 주문접수 처리
-  	@GetMapping("/startOrder.do")
-  	public String startOrder(HttpServletRequest req, String orderCode) {
+  	@PostMapping("/orderStart.ajax")
+  	public ResponseEntity<Map<String, String>> startOrder(HttpServletRequest req, String orderCode) {
   		// 파라미터 확인
   		System.out.println("orderCode:"+orderCode);
   		
-  		// 세션값 꺼내기
-     	String bucksId = "bucks_1115";
+  		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
      	
      	// 코드 앞에 붙일 날짜_ 만들기
      	int intYear = LocalDate.now().getYear();
@@ -266,7 +289,7 @@ public class OrderController {
      			int quantity = order.getQuantity();
      			//System.out.println("quantity:"+quantity);
      			String menuName = order.getMenuName();
-     			System.out.println(menuName);
+     			//System.out.println(menuName);
    			
      			// 메뉴선택 수량
      			int materCount = quantity;
@@ -276,13 +299,13 @@ public class OrderController {
      				
      				// 음료 1) 메뉴옵션코드 뽑아서 차감해야하는 기본 재료 뽑기
          			String menuOptCode = menuCode.substring(1, 4);
-         			System.out.println(menuOptCode); // ESW
+         			//System.out.println(menuOptCode); // ESW
          			
          			List<StockUseDTO> useList = mapper.getUseList(menuOptCode);
          			
          			for(StockUseDTO useItem : useList) {
          				String stockListCode = useItem.getStockListCode();
-         				System.out.println("stockListCode:"+stockListCode); // BEV01, BEV03
+         				//System.out.println("stockListCode:"+stockListCode); // BEV01, BEV03
          				if(mater.containsKey(stockListCode)) {
          					int originCnt = mater.get(stockListCode);
              				int changeCnt = originCnt + materCount;
@@ -294,13 +317,6 @@ public class OrderController {
          			}
          			
          			// 음료 2) 옵션아이디로 차감해야하는 컵, 샷(추가), 시럽(추가), 우유(변경), 휘핑(추가) 재료 뽑기
-         			System.out.println("CupType:"+order.getCupType()); 
-         			System.out.println("ShotType:"+order.getShotType()); 
-         			System.out.println("ShotCount:"+order.getShotCount()); 
-         			System.out.println("SyrupType:"+order.getSyrupType()); 
-         			System.out.println("SyrupCount:"+order.getSyrupCount()); 
-         			System.out.println("MilkType:"+order.getMilkType()); 
-         			System.out.println("whipType:"+order.getWhipType()); 
          			String cupType = order.getCupType();	// Tall
          			String shotType = order.getShotType(); // 기본 >> BEV01에서 까야함
          			int shotCount = order.getShotCount(); // 1
@@ -410,8 +426,6 @@ public class OrderController {
 
 		System.out.println("지점재고:"+storeStocksCountMap);
      	// 지점재고:{SAN03=10, BEV03=10, SYR03=10, BEV01=10, MIL04=10, Venti=10}
-		
-		
      	
 		// 3. 결과 처리
 		boolean orderResult = false;
@@ -461,24 +475,79 @@ public class OrderController {
 			}			
 		} 
 		
-		if (minusResult && updateResult) {
-	        System.out.println("정상 접수 완료");
-	        req.setAttribute("message", "정상적으로 주문 접수가 완료되었습니다.");
+		Map<String, String> response = new HashMap<>();
+    	
+		
+		if (orderResult && minusResult && updateResult) {
+			response.put("response", "success");
 	    } else if (!orderResult) {
-	        System.out.println("재고 부족");
-	        req.setAttribute("message", "재고가 부족하여 주문을 접수할 수 없습니다.");
+	    	response.put("response", "notEnough");
 	    } else {
-	       System.out.println("재고차감, 상태업데이트 실패");
-	       req.setAttribute("message", "에러 발생. 관리자에게 문의하세요.");
+	       response.put("response", "fail");
 	    }
-		return "redirect:/orderManage.do";
+		
+		return ResponseEntity.ok(response);
 		
   	}
-
+  	
+  	
+  	@PostMapping("/orderCancel.ajax")
+    public ResponseEntity<Map<String, Object>> orderCancel(HttpServletRequest req, String orderCode){
+    	System.out.println("orderCode :" + orderCode);
+    	
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+    	
+    	Date date = new Date();
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+    	String today = dateFormat.format(date); 
+    	
+    	String realOrderCode = today + "_" + orderCode;
+    	System.out.println(realOrderCode); // 240826_A-005
+    	
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("bucksId", bucksId);
+    	params.put("orderCode", realOrderCode);
+    	
+    	int cancelResult = mapper.orderStatusUpdateCancel(params);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("response", cancelResult);
+    	
+    	return ResponseEntity.ok(response);
+    }
     
     
-    
-    
+  	@PostMapping("/orderFinish.ajax")
+    public ResponseEntity<Map<String, Object>> orderFinish(HttpServletRequest req, String orderCode){
+    	//System.out.println("orderCode :" + orderCode);
+    	
+    	// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+    	
+    	Date date = new Date();
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+    	String today = dateFormat.format(date); 
+    	
+    	String realOrderCode = today + "_" + orderCode;
+    	//System.out.println(realOrderCode); // 240826_A-005
+    	
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("bucksId", bucksId);
+    	params.put("orderCode", realOrderCode);
+    	
+    	int finishResult = mapper.orderStatusUpdateFinish(params);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("response", finishResult);
+    	
+    	return ResponseEntity.ok(response);
+    }
+  	
     
     
     // order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
