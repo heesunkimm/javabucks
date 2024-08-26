@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	FROM javabucks_baljoo 
         	WHERE TO_CHAR(baljooDate, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
           	AND bucksId = #{bucksId}
+          	AND baljooStatus = '접수완료'
 		</select>
 		
 		 <!-- 재고 정보 조회 -->

@@ -14,7 +14,7 @@
 
         <div class="select_box">
             <div id="" class="tab-content s_active">
-                <form name="" action="searchBaljoo.do" method="post">
+                <form name="" action="searchBaljoo.do" method="get">
                     <div class="search_box">
                         <label>발주기간
                             <select class="yearSelect" name="year">
@@ -46,6 +46,7 @@
                                 <th>결제번호</th>
                                 <th>주문내역</th>
                                 <th>결제금액</th>
+                                <th>주문상태</th>
                                 <th>결제취소</th>
                             </tr>
                         </thead>
@@ -67,6 +68,7 @@
                                                 </c:forEach>
                                             </td>
                                             <td>${bal.baljooPrice}</td>
+                                            <td>${bal.baljooStatus}</td>
                                             <td><a href="javascript:;">취소</a></td>
                                         </tr>
                                     </c:forEach>
@@ -92,6 +94,12 @@
 
 
 const yearSelect = document.getElementsByClassName('yearSelect')[0];
+const monthSelect = document.getElementsByClassName('monthSelect')[0];
+
+const urlParams = new URLSearchParams(window.location.search);
+const selectedYear = urlParams.get('year');
+const selectedMonth = urlParams.get('month');
+
 const currentYear = new Date().getFullYear();
 for (let i = currentYear; i >= currentYear - 5; i--) {
     let option = document.createElement('option');
@@ -100,8 +108,6 @@ for (let i = currentYear; i >= currentYear - 5; i--) {
     yearSelect.appendChild(option);
 }
 
-const monthSelect = document.getElementsByClassName('monthSelect')[0];
-const currentMonth = new Date().getMonth() + 1; 
 for (let i = 1; i <= 12; i++) {
     let option = document.createElement('option');
     option.value = i;
@@ -109,7 +115,16 @@ for (let i = 1; i <= 12; i++) {
     monthSelect.appendChild(option);
 }
 
-yearSelect.value = currentYear;
-monthSelect.value = currentMonth;
+if (selectedYear) {
+    yearSelect.value = selectedYear;
+} else {
+    yearSelect.value = currentYear;
+}
+
+if (selectedMonth) {
+    monthSelect.value = selectedMonth;
+} else {
+    monthSelect.value = new Date().getMonth() + 1;
+}
 
 </script>
