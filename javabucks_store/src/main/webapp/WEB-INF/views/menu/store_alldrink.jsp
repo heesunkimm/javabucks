@@ -169,8 +169,8 @@
                 } else {
                     // 선택된 옵션에 해당하는 메뉴가 있을때
                     res.forEach(function(item) {
-                        let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
-                        let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : '';
+                        let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
+                        /* let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : ''; */
                         
                         $('.checkbox_cont .menu_list').append(
                             '<li class="menu_item">' +
@@ -183,7 +183,7 @@
                                         '<p class="txt_desc">' + item.menuDesc + '</p>' +
                                     '</div>' +
                                     '<div class="btn_box">' +
-                                        '<button type="button" data-code="' + item.menuCode + '">주문막기</button>' +
+                                        '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storeStatus + '">주문막기</button>' +
                                         '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
                                     '</div>' +
                                 '</div>' +
@@ -191,6 +191,7 @@
                         );
                     });
                 }
+                bindEvents();
             },
             error: function(err) {
                 console.log("Error: ", err);
@@ -212,7 +213,7 @@
     	    type: 'POST',
     	    data: JSON.stringify({
     	        menu_cate: menuCate,
-    	        menu_base: '',
+    	        menu_base: 'no',
     	        bucksId: bucksId
     	    }),
     	    contentType: 'application/json',
@@ -235,6 +236,7 @@
 	// 카테고리 체크박스 조건 선택시 메뉴 리스트 재정렬
     $('input[name="menu_base"]').on('change', function() {
    		let menuBase = $(this).val();
+   		
        	$('input[name="menu_base"]').not(this).prop('checked', false);
         if ($('input[name="menu_base"]:checked').length === 0) {
 			$(this).prop('checked', true);
@@ -244,7 +246,7 @@
 			url: '${pageContext.request.contextPath}/searchDrinks.ajax',
 		    type: 'POST',
 		    data: JSON.stringify({
-				menu_cate: '',
+				menu_cate: 'no',
 		        menu_base: menuBase,
 		        bucksId: bucksId
 			}),
@@ -278,12 +280,12 @@
                 bucksId: bucksId
             }),
             success: function(res) {
-                console.log(res);
-                
                 $(".searchbox_cont .menu_list").empty();  // 기존 리스트 비우기
                 
                 if (res.length > 0) {
                     res.forEach(function(item) {
+                    	let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
+                    	
                         $('.searchbox_cont .menu_list').append(
                             '<li class="menu_item">' +
                                 '<div class="menu_img img_box">' +
@@ -295,15 +297,15 @@
                                         '<p class="txt_desc">' + item.menuDesc + '</p>' +
                                     '</div>' +
                                     '<div class="btn_box">' +
-                                        '<button class="dimmBtn" type="button" data-code="' + item.menuCode + '">주문막기</button>' +
-                                        '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
+                                    '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storeStatus + '">주문막기</button>' +
+                                    '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
                                     '</div>' +
                                 '</div>' +
                             '</li>'
                         );
                     });
                 } else {
-                    $(".searchbox_cont .menu_list").append('<li class="menu_item noMenu">메뉴명을 검색하세요.</li>');
+                    $(".searchbox_cont .menu_list").append('<li class="menu_item noMenu">해당하는 검색어와 일치하는 메뉴가 없습니다.</li>');
                 }
             },
             error: function(err) {
@@ -337,4 +339,61 @@
 			}
 		});
 	})
+	
+	function bindEvents() {
+		// 주문막기 버튼 선택 시 이벤트 처리
+		$('.menu_list .holdBtn').off('click').on('click', function() {
+			let menuCode = $(this).data('code');
+			let menuStatus = $(this).data('status');
+				console.log("메뉴코드: " + menuCode)
+				console.log("메뉴상태: " + menuStatus)
+			
+			$.ajax({
+	    	    url: '${pageContext.request.contextPath}/menuStatusUpdate.ajax',
+	    	    type: 'POST',
+	    	    data: JSON.stringify({
+	    	    	menuCode: menuCode,
+	    	    	storemenuStatus: menuStatus,
+	    	        bucksId: bucksId
+	    	    }),
+	    	    contentType: 'application/json',
+		        dataType: "text",
+		        success: function(res) {
+		        	// 메뉴 삭제 alert
+		        	console.log(res)
+		        	//alert(res);
+		        	//loadMenuList();
+		        },
+	    	    error: function(err) {
+	    	        console.log("Error: ", err);
+	    	    }
+	    	});
+		})
+		
+		// 메뉴삭제 버튼 클릭 시 이벤트 처리
+		$('.menu_list .delBtn').off('click').on('click', function() {
+	        let menuCode = $(this).data('code');
+	        let menuCate = $('input[name="menu_cate"]:checked').val() || '';
+	        let menuBase = $('input[name="menu_base"]:checked').val() || '';
+	    
+	        $.ajax({
+	            url: '${pageContext.request.contextPath}/deleteMenu.ajax',
+	            type: 'POST',
+	            data: JSON.stringify({
+	                menuCode: menuCode,
+	                bucksId: bucksId
+	            }),
+	            contentType: 'application/json',
+	            dataType: "text",
+	            success: function(res) {
+	            	// 메뉴 삭제 alert
+	                alert(res);
+	                loadMenuList(menuCate, menuBase);
+	            },
+	            error: function(err) {
+	                console.log("Error: ", err);
+	            }
+	        });
+	    });
+    }
 </script>

@@ -111,7 +111,8 @@
 	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
 	            } else {
 	                res.forEach(function(item) {
-	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
+	                	// 메뉴 추가시 클래스 추가
+	                    let btnClass = item.storeEnable === 'N' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
 	                        '<li class="menu_item">' + 
@@ -127,7 +128,7 @@
 	                            '<div class="btn_box">' + 
 	                                '<button class="menuAddBtn ' + btnClass + 
 	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
-	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
+	                                '" data-name="' + item.menuName + '" data-enable="' + (item.storeEnable === 'N' ? 'N' : 'Y') + 
 	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
 	                        '</li>'
@@ -151,7 +152,10 @@
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
-	        data: { bucksId: storeId },
+	        data: { 
+	        	bucksId: storeId,
+	        	
+	        	},
 	        dataType: 'json',
 	        success: function(res) {
 	            // 메뉴 리스트 새로 업데이트
@@ -161,7 +165,7 @@
 
 	                let item = res.find(item => item.menuCode === menuCode);
 	                if (item && item.storemenuStatus === 'Y') {
-	                    $btn.addClass('btn_disable').attr('data-status', 'Y');
+	                    $btn.addClass('btn_disable').attr('data-enable', 'N');
 	                }
 	            });
 	        },
@@ -181,6 +185,7 @@
 	    let data = {
 	    		bucksId: storeId,
 	    		menuCode: menuCode,
+	    		menuName: menuName,
 	    		storemenuStatus: 'Y', 
 	    }
 	    
@@ -197,8 +202,8 @@
 	        dataType: "text",
 	        success: function(res) {
 	        	// 메뉴추가 aelrt
-	        	alert(menuName + res);
-	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
+	        	alert(res);
+	        	$btn.addClass('btn_disable').attr('data-enable', 'N');
 	        	// 버튼상태 업데이트
 	        	updateStatus();
 	        },

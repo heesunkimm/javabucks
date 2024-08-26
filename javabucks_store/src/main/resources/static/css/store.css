@@ -148,7 +148,6 @@ header .store_box {font-size: 16px;}
 
 .allMenu .select_box .select_list {margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 39px; padding: 20px; background-color: #f6f5ef;}
 .allMenu .select_box .select_list label {display: flex; align-items: center; gap: 12px; width: 180px;}
-
 .allMenu .select_box .cont_box {margin-top: 20px;}
 .allMenu .select_box .cont_box .select_tit {padding: 20px; background-color: #f6f5ef; font-size: 20px;}
 

@@ -66,7 +66,7 @@
 </section>
 <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
-<%@ include file="../store_bottom.jsp"%>
+
 <script type="text/javascript" >
 document.addEventListener('DOMContentLoaded', function() {
 	var optElement = document.querySelectorAll('.menu_opt');

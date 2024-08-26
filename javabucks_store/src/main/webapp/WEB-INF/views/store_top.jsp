@@ -39,9 +39,9 @@
                 </ul>
             </li>
             <li class="nav_item">
-                <a href="javascript:;">주문관리</a>
+                <a href="orderManage.do">주문관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">주문현황</a></li>
+                    <li><a href="orderManage.do">주문현황</a></li>
                 </ul>
             </li>
             <li class="nav_item">

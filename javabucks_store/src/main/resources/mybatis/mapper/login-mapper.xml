@@ -8,4 +8,8 @@
 		select * from javabucks_bucks where bucksId = #{bucksId}
 	</select>
 	
+	<select id="emailForId" parameterType="java.util.Map" resultType="BucksDTO">
+		select * from javabucks_bucks where bucksEmail1 = #{bucksEmail1} and bucksEmail2 = #{bucksEmail2}
+	</select>
+	
 </mapper>

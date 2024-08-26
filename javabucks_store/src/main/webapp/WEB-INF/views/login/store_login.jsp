@@ -66,86 +66,70 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="store_index" method="post">
+            <form name="f" action="store_index" method="POST">
                 <div class="input_box">
                     <label>
-                        <c:if test="${empty cookie['saveId']}">
-                        	<input type="text" name="storeId" value="" placeholder="아이디 입력" required>
-                    	</c:if>
-                    	<c:if test="${not empty cookie['saveId']}">
-                        	<input type="text" name="storeId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
-                    	</c:if>
+                    	 <input type="text" name="storeId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
                     </label>
                     <label>
                         <input type="password" name="storePw" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
-            </form>
+            
             <div class="find_box">
                 <label>
-                <!--  <input type="checkbox" name="saveId" value="on"> 아이디 저장 -->
-                <c:if test="${empty cookie['saveId']}">
-                		<input type="checkbox" name="saveId"> 아이디 저장 
-                	</c:if>
-                	
-                	<c:if test="${not empty cookie['saveId']}">
-                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
-                    </c:if>
+                	<input type="checkbox" name="saveId" value="on"> 아이디 저장
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
             </div>
+            </form>
         </div>
         <div id="findbyid" class="popup_box" style="display: none;">
             <p class="popup_title">아이디 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbyid"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="">
+            <form name="f" action="findById" method="POST">
                 <div class="input_box">
                     <div class="email_box">
                         <label>
-                            <input type="text" name="" value="" placeholder="이메일입력" required>
+                            <input type="text" name="bucksEmail1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-                            <select name="">
-                                <option value="">naver.com</option>
-                                <option value="">nate.com</option>
-                                <option value="">gmail.com</option>
+                            <select name="bucksEmail2">
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
                     </div>
                 </div>
                 <div class="confirm_box">
-                    <label>
-                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <span>00:00</span>
-                    </label>
-                    <button class="confirm_btn" type="button">인증번호 발송</button>
-                </div>
-                <div class="pbtn_box">
-                    <button class="submit_btn" type="submit">확인</button>
+	                <div class="pbtn_box">
+	                    <button class="submit_btn" type="submit">이메일 발송</button>
+	                </div>
                 </div>
             </form> 
         </div>
         <div id="findbypw" class="popup_box" style="display: none;">
-            <p class="popup_title">비밀번호 </p>
+            <p class="popup_title">비밀번호 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="">
+            <form name="f" action="findByPW" method="POST">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="" value="" placeholder="아이디 입력" required>
+                        <input type="text" name="findByPW_ID" value="" placeholder="아이디 입력" required>
                     </label>
                     <div class="email_box">
                         <label>
-                            <input type="text" name="" value="" placeholder="이메일입력" required>
+                            <input type="text" name="findByPW_PW1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-                            <select name="">
-                                <option value="">naver.com</option>
-                                <option value="">nate.com</option>
-                                <option value="">gmail.com</option>
+                            <select name="findByPW_PW2">
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
                     </div>
@@ -153,10 +137,11 @@
                 <div class="confirm_box">
                     <label>
                         <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <span>00:00</span>
+                        <span id="timerMin">3</span>:<span id="timerSec">00</span>
                     </label>
                     <button class="confirm_btn" type="button">인증번호 발송</button>
                 </div>
+                <button type="button">인증확인</button>
                 <div class="pbtn_box">
                     <button class="submit_btn" type="submit">확인</button>
                 </div>
@@ -166,21 +151,44 @@
     </section>
     <!-- e: content -->
 </body>
-
 <script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-	    let saveInput = document.querySelector('input[name="saveId"]');
-	    
-	    if(!saveInput.checked){
-	    	saveInput.value = "off";
-	    	console.log(saveInput);
-	    	
-	    }else{
-	    	saveInput.value = "on";
-	    	console.log(saveInput);
-	    }
-	    
-	    
+$(document).ready(function() {
+    // 이메일 발송 버튼 클릭 시
+    $('button.submit_btn').on('click', function(event) {
+        event.preventDefault(); // 폼의 기본 동작을 막음
+        
+    	 // 빈 입력 필드 검사
+        let email1 = $('input[name="bucksEmail1"]').val().trim();
+        let email2 = $('select[name="bucksEmail2"]').val().trim();
+        
+        if (email1 === '' || email2 === '') {
+            alert("이메일 입력란을 모두 입력해주세요.");
+            return; // 빈 필드가 있을 경우, AJAX 요청을 보내지 않음
+        }
+		        
+        // 이메일 발송을 위한 AJAX 요청
+        $.ajax({
+            url: 'findById', // 이메일 발송을 처리할 서버 URL
+            type: 'POST',
+            data: {
+            	 bucksEmail1: email1,
+                 bucksEmail2: email2
+            },
+            success: function(response) {
+                if (response === 'OK') {
+                    alert("이메일로 아이디를 발송하였습니다.");
+                    window.location.href = 'store_login';
+                } else {
+                    alert("등록된 Javabucks 관리자가 아닙니다. 관리자에게 문의하시기 바랍니다.");
+                    window.location.href = 'store_login';
+                }
+            },
+            error: function(error) {
+                alert("서버 요청 실패! 네트워크 상태를 확인해주세요.");
+                window.location.href = 'store_login';
+            }
+        });
     });
+});
 </script>
 </html>
