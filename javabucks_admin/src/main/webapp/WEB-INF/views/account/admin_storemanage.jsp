@@ -56,20 +56,7 @@
                     <label>지점명
                         <input type="text" name="bucksName" value="">
                     </label>
-                    <label>위치
-                        <select name="bucksLocation">
-                            <option value="">전체</option>
-                            <option value="서울">서울</option>
-                            <option value="광주">광주</option>
-                            <option value="대구">대구</option>
-                            <option value="대전">대전</option>
-                            <option value="부산">부산</option>
-                            <option value="울산">울산</option>
-                            <option value="인천">인천</option>
-                            <option value="창원">창원</option>
-                            <option value="수원">수원</option>
-                        </select>
-                    </label>
+                    
                     <button type="submit">검색</button>
                 </form>
             </div>

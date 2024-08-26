@@ -50,20 +50,19 @@
      <!-- 특정 검색에 해당하는 지점 리스트 -->
      <select id="searchBucks" parameterType="map" resultType="BucksDTO">
     SELECT * FROM (
-        SELECT ROWNUM rnum, a.*
-        FROM (
-            SELECT *
-            FROM javabucks_bucks
-            WHERE 
-                (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
-                AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
-                AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%')
-                AND (
-                    (#{startDate} IS NULL OR #{endDate} IS NULL) 
-                    OR bucksJoindate BETWEEN #{startDate} AND #{endDate}
-                )
-            ORDER BY bucksJoindate DESC
-        ) a
+    SELECT ROWNUM rnum, a.*
+    FROM (
+        SELECT *
+        FROM javabucks_bucks
+        WHERE 
+            (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
+            AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
+            AND (
+                (#{startDate} IS NULL AND #{endDate} IS NULL) 
+                OR (bucksJoindate BETWEEN #{startDate} AND #{endDate})
+            )
+        ORDER BY bucksJoindate DESC
+    ) a
         WHERE ROWNUM &lt;= #{endIndex}
     )
     WHERE rnum &gt;= #{startIndex}
@@ -74,7 +73,6 @@
 			SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_bucks 
 			WHERE (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%') 
 			AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%') 
-			AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%') 
 			AND ( (#{startDate} IS NOT NULL AND #{endDate} IS NOT NULL AND bucksJoindate BETWEEN #{startDate} 
 			AND #{endDate}) OR (#{startDate} IS NULL AND #{endDate} IS NULL) ) </select>
 			
