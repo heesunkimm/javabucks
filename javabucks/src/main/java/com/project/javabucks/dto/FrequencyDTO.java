@@ -32,6 +32,8 @@ public class FrequencyDTO {
 	public void setFrequencyCount(int frequencyCount) {
 		this.frequencyCount = frequencyCount;
 	}
+	
+	// [채성진 작업] db값 담기위해 변수 frequencyEndDate 추가
 	public String getFrequencyEndDate() {
 		return frequencyEndDate;
 	}

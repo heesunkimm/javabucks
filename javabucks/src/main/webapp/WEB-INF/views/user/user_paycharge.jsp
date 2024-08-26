@@ -46,7 +46,7 @@
                 <form name="ff" action="" method="post">
                     <dl>
                         <dt>충전 후 예상 총 카드 잔액</dt>
-                        <dd><fmt:formatNumber value="${card.cardPrice}" pattern="#,###" />원</dd>
+                        <dd><fmt:formatNumber value="${card.cardPrice}" pattern="#,###"/>원</dd>
                     </dl>
                     
                     <input type="hidden" name="chargeAmount" >

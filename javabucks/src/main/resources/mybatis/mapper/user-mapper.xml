@@ -12,6 +12,10 @@
  			#{cardRegNum}, #{userId}, #{cardName}, 0
  		)
  	</insert>
+ 	
+ 	<select id="findBucksLocation" parameterType="String" resultType="String">
+ 		SELECT bucksLocation FROM javabucks_bucks WHERE bucksName=#{bucksName}
+ 	</select>
  
  	<select id="listRegCardById" parameterType="String" resultType="CardDTO">
  		SELECT * FROM javabucks_card WHERE userId=#{userId}
@@ -83,7 +87,7 @@
  	</select>
  	
  	<!-- javabucks_order_opt 인서트 -->	
- 	<insert id="orderOptInsert" parameterType="java.util.Map">
+ 	<insert id="orderOptInsert" parameterType="OrderOptDTO" useGeneratedKeys="true" keyProperty="optId">
  		INSERT INTO javabucks_order_opt (optId, cupNum, shotNum, optShotCount, syrupNum, optSyrupCount, milkNum, iceNum, whipNum) 
  		VALUES (seq_optId.nextval, #{cupNum}, #{shotNum}, #{optShotCount}, #{syrupNum}, #{optSyrupCount},
         <if test="milkNum != null and milkNum != ''">
@@ -107,6 +111,101 @@
     )
  	</insert>
  	
+ 	<select id="orderOptIdsearch" resultType="Integer">
+	    SELECT optId 
+	    FROM javabucks_order_opt 
+	    WHERE optId = (SELECT MAX(optId) FROM javabucks_order_opt)
+	</select>
+ 	
+ 	<select id="orderOptTotPrice" resultType="Integer">
+ 		SELECT
+		    (
+		        NVL((shot.SHOTPRICE * opt.optShotCount), 0) + 
+		        NVL((syrup.SYRUPPRICE * opt.optSyrupCount), 0) + 
+		        NVL(cup.CUPPRICE, 0) + 
+		        NVL(ice.ICEPRICE, 0) + 
+		        NVL(milk.MILKPRICE, 0) + 
+		        NVL(whip.WHIPPRICE, 0)
+		    ) AS totprice
+		FROM
+		    javabucks_order_opt opt
+		LEFT JOIN
+		    javabucks_menuopt_shot shot ON opt.shotNum = shot.shotNum
+		LEFT JOIN
+		    javabucks_menuopt_syrup syrup ON opt.syrupNum = syrup.syrupNum
+		LEFT JOIN
+		    javabucks_menuopt_cup cup ON opt.cupNum = cup.cupNum
+		LEFT JOIN
+		    javabucks_menuopt_ice ice ON opt.iceNum = ice.iceNum
+		LEFT JOIN
+		    javabucks_menuopt_milk milk ON opt.milkNum = milk.milkNum
+		LEFT JOIN
+		    javabucks_menuopt_whip whip ON opt.whipNum = whip.whipNum
+		WHERE
+		    opt.optId = #{optId}
+ 	</select>
+ 	
+ 	<!-- 해당 optId로 DTO 다시 만들기 -->
+ 	<select id="findOrderOpt" parameterType="Integer" resultType="OrderOptDTO">
+ 		SELECT * FROM javabucks_order_opt WHERE optId=#{otpId}
+ 	</select>
+ 	
+ 	<!-- 1. 컵 종류와 가격 조회 --> 
+    <select id="getCupInfo" parameterType="int" resultType="MenuOptCupDTO">
+        SELECT c.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 2. 얼음 종류와 가격 조회 -->
+    <select id="getIceInfo" parameterType="int" resultType="MenuOptIceDTO">
+        SELECT i.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 3. 샷 종류와 가격 조회 -->
+    <select id="getShotInfo" parameterType="int" resultType="MenuOptShotDTO">
+        SELECT s.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 4. 휘핑 종류와 가격 조회 -->
+    <select id="getWhipInfo" parameterType="int" resultType="MenuOptWhipDTO">
+        SELECT w.* 
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 5. 시럽 종류와 가격 조회 -->
+    <select id="getSyrupInfo" parameterType="int" resultType="MenuOptSyrupDTO">
+        SELECT s.*
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_syrup s ON o.syrupNum = s.syrupNum
+        WHERE o.optId = #{optId}
+    </select>
+
+    <!-- 6. 우유 종류와 가격 조회 -->
+    <select id="getMilkInfo" parameterType="int" resultType="MenuOptMilkDTO">
+        SELECT m.*
+        FROM javabucks_order_opt o
+        JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+        WHERE o.optId = #{optId}
+    </select>
+ 	
+ 	<!-- 최근 orderCode 구하기 -->
+ 	<select id="getMaxOrderCode" parameterType="String" resultType="String">
+ 		SELECT MAX(SUBSTR(orderCode, 10, 3)) 
+	    FROM javabucks_order 
+	    WHERE orderCode LIKE #{pickData} || '%'
+ 	</select>
+ 	
+ 	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
  		SELECT * FROM javabucks_user WHERE userId= 'user001'
@@ -130,7 +229,7 @@
    		 WHERE bucksEnable = 'y'	
    		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
       	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
- 	</select>
+ 	</select> 	
  	
  	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  
@@ -217,16 +316,78 @@
    		 WHERE userId = #{userId}   		 				 	  		 
  	</select>
  	
- 	<select id="MyMenuNumByMenucode" parameterType="String" resultType="MymenuDTO"> 
- 		 SELECT jm.*
+ 	<select id="MyMenuNumByUserid" parameterType="java.util.Map" resultType="Integer"> 
+ 		 SELECT jmy.mymenuNum
  		 FROM javabucks_mymenu jmy join javabucks_menu jm
- 		 ON jmy.menuCode = jm.menuCode		    
-   		 WHERE userId = #{userId}   		 				 	  		 
+ 		 ON jmy.menuCode = jm.menuCode	    
+   		 WHERE jmy.userId = #{userId} 
+   		 AND jm.menuCode = #{menuCode}  		 				 	  		 
  	</select>
  	
- 	<delete id="MyMenuDeleteByMenuNum" parameterType="String"> 
+ 	<delete id="MyMenuDeleteByMenuNum" parameterType="Integer"> 
  		 DELETE FROM javabucks_mymenu	 		 	     
    		 WHERE mymenuNum = #{mymenuNum} 		 				 	  		 
- 	</delete>
+ 	</delete>	
+
+ 	<select id="RecepitByUserid" parameterType="String" resultType="PayhistoryDTO"> 
+ 		 SELECT jb.bucksName, jp.*
+ 		 FROM javabucks_payhistory jp join javabucks_bucks jb
+ 		 ON jp.bucksId = jb.bucksId
+ 		 WHERE userId = #{userId}		 				 	  		 
+ 	</select>	
+ 	
+ 	 <select id="StoreInfoByBucksId" parameterType="String" resultType="BucksDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_bucks		 
+ 		 WHERE bucksId = #{bucksId}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="PayInfoByHistoryNum" parameterType="Integer" resultType="PayhistoryDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_payhistory		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="NicknameByHistoryNum" parameterType="Integer" resultType="String"> 
+ 		 SELECT ju.userNickname
+ 		 FROM javabucks_payhistory jp join javabucks_user ju
+ 		 ON jp.userId = ju.userId		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="CardInfoByHistoryNum" parameterType="Integer" resultType="CardDTO"> 
+ 		 SELECT jc.*
+ 		 FROM javabucks_payhistory jp join javabucks_card jc
+ 		 ON jp.userId = jc.userId		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="OrderListByUserid" parameterType="Integer" resultType="CardDTO"> 
+ 		 SELECT jc.*
+ 		 FROM javabucks_payhistory jp join javabucks_order jo
+ 		 ON jp.orderCode = jo.orderCode
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+	<!-- 아이디로 장바구니 조회 -->
+ 	<select id="CartListByHistoryNum" parameterType="String" resultType="CardDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}	 				 	  		 
+ 	</select>	
+ 	
+ 	<!-- 장바구니에서 메뉴찾기 -->
+ 	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu		 
+ 		 WHERE menuCode = #{menuCode}	 				 	  		 
+ 	</select>	
+ 	
+ 	<!-- 메뉴 옵션찾기 -->
+ 	<select id="OptionByHistoryNum" parameterType="String" resultType="orderOptDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu		 
+ 		 WHERE menuCode = #{menuCode}	 				 	  		 
+ 	</select>	
  	
  </mapper>
