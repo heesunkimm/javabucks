@@ -191,7 +191,6 @@
                         );
                     });
                 }
-                
                 bindEvents();
             },
             error: function(err) {
@@ -214,7 +213,7 @@
     	    type: 'POST',
     	    data: JSON.stringify({
     	        menu_cate: menuCate,
-    	        menu_base: '',
+    	        menu_base: 'no',
     	        bucksId: bucksId
     	    }),
     	    contentType: 'application/json',
@@ -237,6 +236,7 @@
 	// 카테고리 체크박스 조건 선택시 메뉴 리스트 재정렬
     $('input[name="menu_base"]').on('change', function() {
    		let menuBase = $(this).val();
+   		
        	$('input[name="menu_base"]').not(this).prop('checked', false);
         if ($('input[name="menu_base"]:checked').length === 0) {
 			$(this).prop('checked', true);
@@ -246,7 +246,7 @@
 			url: '${pageContext.request.contextPath}/searchDrinks.ajax',
 		    type: 'POST',
 		    data: JSON.stringify({
-				menu_cate: '',
+				menu_cate: 'no',
 		        menu_base: menuBase,
 		        bucksId: bucksId
 			}),
@@ -280,8 +280,6 @@
                 bucksId: bucksId
             }),
             success: function(res) {
-                console.log(res);
-                
                 $(".searchbox_cont .menu_list").empty();  // 기존 리스트 비우기
                 
                 if (res.length > 0) {
@@ -344,7 +342,7 @@
 	
 	function bindEvents() {
 		// 주문막기 버튼 선택 시 이벤트 처리
-		/* $('.menu_list .holdBtn').off('click').on('click', function() {
+		$('.menu_list .holdBtn').off('click').on('click', function() {
 			let menuCode = $(this).data('code');
 			let menuStatus = $(this).data('status');
 				console.log("메뉴코드: " + menuCode)
@@ -370,11 +368,13 @@
 	    	        console.log("Error: ", err);
 	    	    }
 	    	});
-		}) */
+		})
 		
 		// 메뉴삭제 버튼 클릭 시 이벤트 처리
 		$('.menu_list .delBtn').off('click').on('click', function() {
 	        let menuCode = $(this).data('code');
+	        let menuCate = $('input[name="menu_cate"]:checked').val() || '';
+	        let menuBase = $('input[name="menu_base"]:checked').val() || '';
 	    
 	        $.ajax({
 	            url: '${pageContext.request.contextPath}/deleteMenu.ajax',
@@ -388,7 +388,7 @@
 	            success: function(res) {
 	            	// 메뉴 삭제 alert
 	                alert(res);
-	                loadMenuList();
+	                loadMenuList(menuCate, menuBase);
 	            },
 	            error: function(err) {
 	                console.log("Error: ", err);
@@ -396,5 +396,4 @@
 	        });
 	    });
     }
-	
 </script>
