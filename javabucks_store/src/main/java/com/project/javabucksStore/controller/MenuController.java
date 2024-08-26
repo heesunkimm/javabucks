@@ -101,6 +101,7 @@ public class MenuController {
 		return "/menu/store_allmd";
 	}
 	
+	// 조건에 해당하는 음료 리스트 뽑기
 	@PostMapping("/searchDrinks.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params,
@@ -110,21 +111,19 @@ public class MenuController {
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
 	    
-	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
-	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
+	    menuCate = "no".equals(menuCate) ? "" : menuCate;
+	    menuBase = "no".equals(menuBase) ? "" : menuBase;
 
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
 		searchParams.put("menuBase", menuBase);
 		
-//		System.out.println("Search Parameters: " + searchParams);
-		
 		int searchCount = menuMapper.searchDrinksCount(searchParams); // 검색결과별 리스트 수
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
 	    int startRow = (pageNum - 1) * pageSize + 1;
 	    int endRow = startRow + pageSize - 1;	
-	    if (endRow > searchCount) endRow = searchCount;		
+	    if (endRow > searchCount) endRow = searchCount;
 	    int no = searchCount - startRow + 1;				
 	    int pageBlock = 3;
 	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
@@ -140,7 +139,13 @@ public class MenuController {
 	    
 	    drinkList = menuMapper.searchDrinks(searchParams);
 	    
-	    //System.out.println(drinkList.size());
+	    System.out.println("Drink List:");
+	    for (StoreMenuDTO drink : drinkList) {
+	        System.out.println("1. 메뉴명: " + drink.getMenuName());
+	        System.out.println("2. 메뉴추가가능: " + drink.getMenuEnable());
+	        System.out.println("3. 메뉴주문가능: " + drink.getStoremenuStatus());
+	        System.out.println("3. id" + drink.getBucksId());
+	    }
 	    
 	    req.setAttribute("searchCount", searchCount);
 	    req.setAttribute("drinkList", drinkList);
@@ -156,7 +161,51 @@ public class MenuController {
 	    return drinkList;
 	}
 	
-	// 메뉴 키워드 검색 리스트 뽑기
+	// 조건에 해당하는 디저트 리스트 뽑기
+	@PostMapping("/searchDessert.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchDessert(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		
+		String bucksId = (String) params.get("bucksId");
+	    String menuCate = (String) params.get("menu_cate");
+	    
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCate", menuCate);
+		
+	    List<StoreMenuDTO> dessertList = menuMapper.searchDessert(searchParams);
+		
+//	    System.out.println("Drink List:");
+//	    for (StoreMenuDTO dessert : dessertList) {
+//	        System.out.println("1. " + " " + dessert.getMenuName());
+//	        System.out.println("2. enable" + " " + dessert.getStoreEnable());
+//	        System.out.println("3. status" + " " +dessert.getStoremenuStatus());
+//	        System.out.println("3. id" + " " +dessert.getBucksId());
+//	    }
+
+	    req.setAttribute("dessertList", dessertList);
+	    return dessertList;
+	}
+	
+	// 조건에 해당하는 MD 리스트 뽑기
+	@PostMapping("/searchMd.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchMd(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		
+		String bucksId = (String) params.get("bucksId");
+		String menuCate = (String) params.get("menu_cate");
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCate", menuCate);
+		
+		List<StoreMenuDTO> mdList = menuMapper.searchMd(searchParams);
+		
+		req.setAttribute("mdList", mdList);
+		return mdList;
+	}
+	
+	// 음료 키워드 검색 리스트 뽑기
 	@PostMapping("/searchDrinksList.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchDrinksList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
@@ -173,6 +222,44 @@ public class MenuController {
 	    List<StoreMenuDTO> filterList = menuMapper.searchDrinksList(searchParams);
 	    
 	    return filterList;
+	}
+	
+	// 디저트 키워드 검색 리스트 뽑기
+	@PostMapping("/searchDessertList.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchDessertList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		
+		String bucksId = (String) params.get("bucksId");
+		String searchCont = (String) params.get("menuName");
+		
+		searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("searchCont", searchCont);
+		
+		List<StoreMenuDTO> filterList = menuMapper.searchDessertList(searchParams);
+		
+		return filterList;
+	}
+	
+	// MD 키워드 검색 리스트 뽑기
+	@PostMapping("/searchMdList.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchMdList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		
+		String bucksId = (String) params.get("bucksId");
+		String searchCont = (String) params.get("menuName");
+		
+		searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("searchCont", searchCont);
+		
+		List<StoreMenuDTO> filterList = menuMapper.searchMdList(searchParams);
+		
+		return filterList;
 	}
 	
 	// 주문막기 - 상태변경
@@ -197,8 +284,6 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCode", menuCode);
-		
-		// System.out.println(searchParams);
 		
 		int res = menuMapper.deleteMenu(searchParams);
 		

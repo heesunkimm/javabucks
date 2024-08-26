@@ -6,7 +6,7 @@ public class StoreMenuDTO {
 	private String menuCode; // 본사메뉴코드
 	private String bucksId; // 지점아이디
 	private String storemenuStatus; // 지점메뉴상태 - 메뉴주문가능 Y / 메뉴주문불가 N
-	private String storeEnable; // 지점메뉴 추가 여부 - 추가 Y / 미추가 N
+	private String storeEnable; // 지점메뉴 추가 여부 - 추가가능 Y / 삭제가능 N
 
 	public int getStoremenuCode() {
 		return storemenuCode;
