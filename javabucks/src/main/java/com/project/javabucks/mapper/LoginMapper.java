@@ -35,11 +35,14 @@ public class LoginMapper {
 	}
 	
 	// 아이디찾기 이메일인증 
-	public UserDTO emailForId(Map<String, String> params) {
-		return sqlSession.selectOne("emailForId",params);
+//	public UserDTO emailForId(Map<String, String> params) {
+//		return sqlSession.selectOne("emailForId",params);
+//	}
+	
+	// 아이디 찾기 
+	public UserDTO findUserById2(Map<String, String> paramMap) {
+		return sqlSession.selectOne("findUserById2",paramMap);
 	}
-	
-	
 	
 	
 }

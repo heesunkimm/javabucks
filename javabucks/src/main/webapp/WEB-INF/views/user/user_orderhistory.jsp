@@ -22,11 +22,10 @@
                 <label>
                     <select name="">
                         <option value="">주문상태 (전체)</option>
-                        <option value="">결제완료</option>
-                        <option value="">준비완료</option>
-                        <option value="">배달준비</option>
-                        <option value="">배달완료</option>
-                        <option value="">결제취소</option>
+                        <option value="">주문완료</option>
+                        <option value="">제조중</option>
+                        <option value="">제조완료</option>
+                        <option value="">주문취소</option>
                     </select>
                 </label>
             </div>
