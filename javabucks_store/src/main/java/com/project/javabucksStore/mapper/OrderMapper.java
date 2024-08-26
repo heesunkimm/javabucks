@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.OrderOptDTO;
+import com.project.javabucksStore.dto.StockUseDTO;
 
 @Repository
 public class OrderMapper {
@@ -104,5 +105,60 @@ public class OrderMapper {
         return sqlSession.selectOne("getWhipPrice", whipNum);
     }
 	
-
+	public int getStoreOrderListCount(String bucksId) {
+		return sqlSession.selectOne("getStoreOrderListCount", bucksId);
+	}
+	
+	public List<OrderDTO> getStoreOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getStoreOrderList", params);
+	}
+	
+	public int getDeliverOrderListCount(String bucksId) {
+		return sqlSession.selectOne("getDeliverOrderListCount", bucksId);
+	}
+		
+	public List<OrderDTO> getDeliverOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getDeliverOrderList", params);
+	}
+	
+	public List<OrderDTO> getAllOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getAllOrderList", params);
+	}
+	
+	public List<StockUseDTO> getUseList(String menuOptCode){
+		return sqlSession.selectList("getUseList", menuOptCode);
+	}
+	
+	public int updateCountMinus(Map<String, Object> params) {
+		return sqlSession.update("updateCountMinus", params);
+	}
+	
+	public int getStoreStocksCount(Map<String, Object> params) {
+		System.out.println(params);
+		return sqlSession.selectOne("getStoreStocksCount", params);
+	}
+	
+	public String getSyrupCode(String syrupType) {
+		return sqlSession.selectOne("getSyrupCode", syrupType);
+	}
+	
+	public String getMilkCode(String milkType) {
+		return sqlSession.selectOne("getMilkCode", milkType);
+	}
+	
+	public String getStockListCode(String menuName) {
+		return sqlSession.selectOne("getStockListCode", menuName);
+	}
+	
+	public int updateOrderStatus(String orderCode) {
+		return sqlSession.update("updateOrderStatus", orderCode);
+	}
+	
+	public int getMakingListCount(String bucksId) {
+		return sqlSession.selectOne("getMakingListCount", bucksId);
+	}
+	
+	public List<OrderDTO> getMakingList(Map<String, Object> params){
+		return sqlSession.selectList("getMakingList", params);
+	}
 }

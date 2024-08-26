@@ -62,3 +62,21 @@
     </div>
 </section>
 <%@ include file="../store_bottom.jsp"%>
+<script type="text/javascript" >
+document.addEventListener('DOMContentLoaded', function() {
+	var optElement = document.querySelectorAll('.menu_opt');
+	//console.log(optElement);
+	
+	optElement.forEach(function(optElement, index){
+			var opt = optElement.textContent;
+			//console.log(opt); //- SHOT : 기본 추가 1회 (600원)
+			var price = opt.match(/\((\d+)원\)/);
+			//console.log(price); //(600원)
+			//console.log(price[1]); // 600
+			
+			if(price && price[1] === '99999'){
+				optElement.style.display = 'none';
+			}
+	});
+});
+</script> 

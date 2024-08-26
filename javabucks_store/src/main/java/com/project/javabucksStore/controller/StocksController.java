@@ -210,22 +210,23 @@ public class StocksController {
 	@ResponseBody
 	@PostMapping("/addStocksCart.ajax")
 	public ResponseEntity<Map<String, Object>> addStocksCart(String stockListCode, int quantity) {	
-		// 지점 아이디 받아오는거 추가 필요		
-		List<StockCartDTO> list = mapper.stockCartList();
+		// 지점 아이디 받아오는거 추가 필요
+		String bucksId = "bucks_1115";
+		List<StockCartDTO> list = mapper.stockCartList(bucksId);
 		Map<String, Object> response = new HashMap<>();
 		
 		boolean tag = false;
 		
 		// 리스트가 null인 경우
 		if(list.isEmpty()) {
-			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity, bucksId);
 			response.put("response", addCartResult);
 			return ResponseEntity.ok(response);
 		} 		
 		// 리스트가 null이 아니고 이미 해당 코드가 있는 경우 수량만 update
 		for(StockCartDTO dto : list) {
 			if (dto.getStockListCode().equals(stockListCode)) {
-				int updateCartQuantity = mapper.updateCartQuantity(stockListCode, quantity);
+				int updateCartQuantity = mapper.updateCartQuantity(stockListCode, quantity, bucksId);
 				response.put("response", updateCartQuantity);
 				tag = true;
 				break;
@@ -233,7 +234,7 @@ public class StocksController {
 		}				
 		// 리스트가 null이 아닌데 해당 코드는 없는 경우 코드와 수량 insert
 		if(!tag) {
-			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity, bucksId);
 			response.put("response", addCartResult);
 		}
 		
@@ -245,7 +246,8 @@ public class StocksController {
 	@GetMapping("/stocksCart.do")
 	public String stocksCart(HttpServletRequest req) {
 		// 지점 아이디 받아서 추가하는 작업 필요
-		List<StockCartDTO> list = mapper.stockCartList();
+		String bucksId = "bucks_1115";
+		List<StockCartDTO> list = mapper.stockCartList(bucksId);
 		Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -262,8 +264,9 @@ public class StocksController {
 	@PostMapping("/updateQuantity.ajax")
 	public ResponseEntity<Map<String, Object>> updateQuantity(String stockListCode, int quantity) {
 		// 지점 아이디 받아오는거 추가 필요
+		String bucksId = "bucks_1115";
 		Map<String, Object> response = new HashMap<>();
-		int updateQuantity = mapper.updateQuantity(stockListCode, quantity);
+		int updateQuantity = mapper.updateQuantity(stockListCode, quantity, bucksId);
 		response.put("response", updateQuantity);	
 		return ResponseEntity.ok(response);		
 	}
@@ -273,7 +276,7 @@ public class StocksController {
 	@PostMapping("/deleteCart.ajax")
 	public ResponseEntity<Map<String, Object>> deleteCart(String stockListCode) {
 		// 지점 아이디 받아오는거 추가 필요
-		String bucksId = "bucks001";
+		String bucksId = "bucks_1115";
 		
 		Map<String, Object> response = new HashMap<>();
 		int deleteCart = mapper.deleteCart(stockListCode, bucksId);
@@ -288,7 +291,7 @@ public class StocksController {
 								@RequestParam("stockListCode") List<String> stockListCode,
 								@RequestParam("stockCartNum") List<Integer> stockCartNum) throws JsonProcessingException {
 		// 지점 아이디 받아오기
-		String bucksId = "bucks001";
+		String bucksId = "bucks_1115";
 		
 		// 총 주문금액
 		int price = 0;

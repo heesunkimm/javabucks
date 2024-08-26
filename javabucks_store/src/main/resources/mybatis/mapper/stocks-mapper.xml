@@ -192,7 +192,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		insert into javabucks_stockCart 
    		(stockCartNum, bucksId, stockListCode, stockCartCount, stockCartRegDate) 
     	values 
-    	(seq_stockCartNum.NEXTVAL, 'bucks001', #{stockListCode}, #{quantity}, SYSDATE)
+    	(seq_stockCartNum.NEXTVAL, #{bucksId}, #{stockListCode}, #{quantity}, SYSDATE)
 	</insert>	
 	<!-- e: 재고 장바구니 추가 -->
 	
@@ -201,17 +201,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update javabucks_stockCart
 		set stockCartCount = stockCartCount + #{quantity}
 		where stockListCode = #{stockListCode}
-				and bucksid = 'bucks001'
+				and bucksId = #{bucksId}
 	</update>	
 	<!-- e: 장바구니 재고 수량 추가 -->		
 	
 	<!-- s: 재고 장바구니 조회 -->
-	<select id="stockCartList" resultType="StockCartDTO">
+	<select id="stockCartList" parameterType="String" resultType="StockCartDTO">
 		select A.stockCartNum, A.stockListCode, A.stockCartCount, A.stockCartRegDate, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 		from javabucks_stockCart A
 		join javabucks_stockList B
 		on A.stockListCode = B.stockListCode
-	    where bucksid = 'bucks001' and A.stockCartStatus = '주문대기'
+	    where bucksid = #{bucksId} and A.stockCartStatus = '주문대기'
 		order by stockCartRegDate desc
 	</select>	
 	<!-- e: 재고 장바구니 조회 -->
@@ -221,7 +221,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update javabucks_stockCart
 		set stockCartCount = #{quantity}
 		where stockListCode = #{stockListCode}
-			  and bucksid = 'bucks001'
+			  and bucksid = #{bucksId}
 	</update>	
 	<!-- e: 장바구니 재고 수량 변경 -->	
 	

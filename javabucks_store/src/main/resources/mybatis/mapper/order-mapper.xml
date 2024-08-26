@@ -15,21 +15,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="searchOrderInfo" parameterType="java.util.Map" resultType="OrderDTO">
 		select * from javabucks_order
 		where bucksId = #{bucksId}
-		<choose>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
-				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
-				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-			</when>
-			<when test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<otherwise>
-			</otherwise>
-		</choose>
-				and orderType = 'order'
+		<if test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
+			and orderCode like concat('%', #{searchOpt_orderCode})
+		</if>
+		<if test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
+		</if>
+		<if test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
+			and orderCode like concat('%', #{searchOpt_orderCode})
+		</if>
+			and orderType = 'order'
 		order by orderDate desc	
 	</select>
 	
@@ -44,20 +40,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="searchDeliversOrderInfo" parameterType="java.util.Map" resultType="OrderDTO">
 		select * from javabucks_order
 		where bucksId = #{bucksId}
-		<choose>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
+			<if test="searchOpt_orderDate != '' and searchOpt_orderCode != ''">
 				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<when test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
+				and orderCode like concat('%', #{searchOpt_orderCode})
+			</if>
+			<if test="searchOpt_orderDate != '' and searchOpt_orderCode == ''">
 				and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-			</when>
-			<when test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
-				and orderCode = #{searchOpt_orderCode}
-			</when>
-			<otherwise>
-			</otherwise>
-		</choose>
+			</if>
+			<if test="searchOpt_orderDate == '' and searchOpt_orderCode != ''">
+				and orderCode like concat('%', #{searchOpt_orderCode})
+			</if>
 				and orderType = 'delivers'
 		order by orderDate desc	
 	</select>
@@ -132,6 +124,101 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where whipNum = #{whipNum}
 	</select>
 	
+	<select id="getStoreOrderListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '주문완료'
+			and orderType = 'order'
+	</select>
 	
+	<select id="getStoreOrderList" parameterType="java.util.Map" resultType="OrderDTO">
+		select * 
+		from ( select rownum rn, A.*
+				from ( select * from javabucks_order
+					   where bucksId = #{bucksId}
+							and orderStatus = '주문완료'
+							and orderType = 'order'
+					   order by orderDate asc) A)
+		where rn between #{startRow} and #{endRow}	
+	</select>
 	
+	<select id="getDeliverOrderListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '주문완료'
+			and orderType = 'delivers'
+	</select>
+		
+	<select id="getDeliverOrderList" parameterType="java.util.Map" resultType="OrderDTO">
+		select * 
+		from ( select rownum rn, A.*
+				from ( select * from javabucks_order
+					   where bucksId = #{bucksId}
+							and orderStatus = '주문완료'
+							and orderType = 'delivers'
+					   order by orderDate asc) A)
+		where rn between #{startRow} and #{endRow}	
+	</select>
+	
+	<select id="getAllOrderList" parameterType="java.util.Map" resultType="orderDTO">
+		select * from javabucks_order
+		where bucksId = #{bucksId}
+			and orderCode = #{orderCode}
+	</select>
+	
+	<select id="getUseList" parameterType="String" resultType="stockUseDTO">
+		select * from javabucks_stockUse
+		where stockUseCode = #{menuOptCode}
+		
+	</select>
+	
+	<update id="updateCountMinus" parameterType="java.util.Map">
+		update javabucks_storeStocks 
+		set stocksCount = stocksCount - #{value}
+		where bucksId = #{bucksId}
+			and stockListCode = #{stockListCode}
+	</update>
+	
+	<select id="getStoreStocksCount" parameterType="java.util.Map" resultType="int">
+		select stocksCount from javabucks_storeStocks
+		where bucksId = #{bucksId}
+			and stockListCode = #{stockListCode}
+	</select>
+	
+	<select id="getSyrupCode" parameterType="String" resultType="String">
+		select stockListCode from javabucks_stocklist
+		where stockListName = #{syrupType}
+	</select>
+	
+	<select id="getMilkCode" parameterType="String" resultType="String">
+		select stockListCode from javabucks_stocklist
+		where stockListName like concat(#{milkType}, '%')
+	</select>
+	
+	<select id="getStockListCode" parameterType="String" resultType="String">
+		select stockListCode from javabucks_stocklist
+		where stockListName  = #{menuNmae}
+	</select>
+	
+	<update id="updateOrderStatus" parameterType="String">
+		update javabucks_order
+		set orderStatus = '제조중'
+		where orderCode = #{orderCode}
+	</update>
+	
+	<select id="getMakingListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '제조중'
+	</select>
+	
+	<select id="getMakingList" parameterType="java.util.Map" resultType="OrderDTO">
+		select * 
+		from ( select rownum rn, A.*
+				from ( select * from javabucks_order
+					   where bucksId = #{bucksId}
+							and orderStatus = '제조중'
+					   order by orderDate asc) A)
+		where rn between #{startRow} and #{endRow}	
+	</select>
 </mapper>
