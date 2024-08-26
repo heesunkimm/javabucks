@@ -13,6 +13,23 @@
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="../js/store.js"></script>
     </head>
+    <script>
+		$(document).ready(function(){
+			$.ajax({
+				url: "sessionUserCheck",
+				type: "get",
+				success: function(resp){
+					if(!resp){
+						alert("올바르지 않은 경로입니다. 로그인 후 이용해주세요.");
+						window.location.href = 'admin_login';
+					}
+				},
+				error: function(err){
+					console.log(err);
+				}
+			});
+		});
+		</script>
 <body>
     <header class="bg_beige">
         <div class="logo_box img_box">
@@ -61,6 +78,6 @@
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">JavaBucks **지점</em> 환영합니다.</a>
+            <a href="javascript:;"><em class="font_green">${inBucks.bucksId} 님</em> 환영합니다.</a>
         </div>
     </header>
