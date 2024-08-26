@@ -1,22 +1,53 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    <style>
+	    /* store_adddrink */
+		#store_adddrink .mixed_box, 
+		#store_adddrink .code_box {padding: 20px; background-color: #f6f5ef;}
+		#store_adddrink label, 
+		#store_adddrink input, 
+		#store_adddrink select, 
+		#store_adddrink button {font-size: 18px;}
+		
+		#store_adddrink label {display: inline-flex; align-items: center; font-size: 16px;}
+		#store_adddrink input[type="checkbox"] {margin-left: 12px; width: 15px; height: 15px;}
+		#store_adddrink .mixed_box > label + label, 
+		#store_adddrink .mixed_box .temp_box {margin-top: 8px;}
+		#store_adddrink .mixed_box > label, 
+		#store_adddrink .code_box p {width: 100%; font-size: 18px;}
+		#store_adddrink .mixed_box > label span, #store_adddrink .temp_box > span {display: inline-block; width: 140px; font-size: 18px;}
+		#store_adddrink .mixed_box select {width: 100px; padding: 3px 0;}
+		
+		#store_adddrink .mixed_box .temp_box label + label {margin-left: 6px;}
+		#store_adddrink .code_box {margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 10px 23px;}
+		
+		#store_adddrink .menu_list {margin-top: 20px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
+		#store_adddrink .menu_list li + li {border-top: 1px solid #ccc;}
+		#store_adddrink .menu_list .menu_item {display: flex; align-items: center; justify-content: space-between; padding: 16px 30px;}
+		#store_adddrink .menu_list .menu_item .menu_info {display: flex; align-items: center; gap: 30px;}
+		#store_adddrink .menu_list .menu_item .img_box {width: 100px; height: 100px; border: 1px solid #ccc;}
+		#store_adddrink .menu_list .menu_item .txt_box {width: 820px;}
+		#store_adddrink .menu_list .menu_item .txt_box .txt_tit {font-size: 17px;}
+		#store_adddrink .menu_list .menu_item .txt_box .txt_price {margin-top: 6px; font-size: 15px;}
+		#store_adddrink .menu_list .menu_item .txt_box .txt_desc {margin-top: 6px; font-size: 14px; color: #555;}
+		#store_adddrink .menu_list .menu_item .btn_box button {width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+    </style>
 <%@ include file="../store_top.jsp"%>
 	<!-- s: content -->
-    <section id="store_adddrink" class="content addmenu">
+    <section id="store_adddrink" class="content">
         <div class="inner_wrap">
             <div class="tit_box">
                 <p>메뉴 추가</p>
             </div>
-            
-            <div class="btn_box">
-            	<a class="listbtn" href="/store_alldrink">메뉴 목록 보기</a>
-            </div>
-            
-            <form name="f" method="post">
+			
+			<form name="f" method="post">
 	            <div class="mixed_box">
 	                <label>
 	                    <span>구분 코드</span>
 	                    <select name="menu_divide">
+	                        <option value="">-</option>
 	                        <option value="BD">BD</option>
 	                        <option value="BL">BL</option>
 	                        <option value="BR">BR</option>
@@ -30,14 +61,14 @@
 	                    </select>
 	                </label>
 	                <label>
-	                    <span>베이스 코드</span>
+	                    <span>베이스코드 코드</span>
 	                    <select name="menu_base">
+	                        <option value="">-</option>
 	                        <option value="B">B</option>
 	                        <option value="C">C</option>
 	                        <option value="D">D</option>
 	                        <option value="E">E</option>
 	                        <option value="F">F</option>
-	                        <option value="J">J</option>
 	                        <option value="L">L</option>
 	                        <option value="M">M</option>
 	                        <option value="N">N</option>
@@ -47,21 +78,40 @@
 	                    </select>
 	                </label>
 	                <div class="temp_box">
-	                    <span>ICE/HOT</span>
+	                	<span>ICE/HOT</span>
 	                    <label>ICE
-	                        <input type="checkbox" name="menu_temp" value="I" checked>
+	                        <input type="checkbox" name="menu_temp" value="I">
 	                    </label>
 	                    <label>HOT
 	                        <input type="checkbox" name="menu_temp" value="H">
 	                    </label>
 	                </div>
-	            </div>
 	                <input type="hidden" name="menuoptCode" value="">
-            </form>
+	            </div>
+			</form>
+
+            <div class="code_box">
+                <p>메뉴 코드</p>
+                <label>FWH  아이스 플랫화이트
+                    <input type="checkbox" name="" value="">
+                </label>
+            </div>
 
             <ul class="menu_list">
                 <li class="menu_item">
-                	<!-- 해당 검색 결과에 맞는 메뉴 리스트 뿌려지는 곳 -->
+                    <div class="menu_info">
+                        <div class="img_box">
+                            <!-- <img src="" alt=""> -->
+                        </div>
+                        <div class="txt_box">
+                            <p class="txt_tit">메뉴명</p>
+                            <p class="txt_price">메뉴가격</p>
+                            <p class="txt_desc">메뉴설명</p>
+                        </div>
+                    </div>
+                    <div class="btn_box">
+                        <button type="button">메뉴 추가</button>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -69,147 +119,29 @@
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
 <script>
-	$(document).ready(function() {
-	    getSelectMenu();
-	    updateStatus();
-	});
-	
-	$('input[type="checkbox"]').on('click', function() {
-       	$('input[name="menu_temp"]').not(this).prop('checked', false);
-        if ($('input[name="menu_base"]:checked').length === 0) {
-			$(this).prop('checked', true);
-        }
-	    // 체크박스 변경시 메뉴 재정렬
-	    getSelectMenu();
-	});
-	// select option 변경시 메뉴 재정렬
-	$('select[name="menu_divide"], select[name="menu_base"]').change(getSelectMenu);
-	
-	// 선택된 옵션에 맞는 메뉴 실시간 리스트업
-	function getSelectMenu() {
-	    let selectedDivide = $('select[name="menu_divide"]').val();
-	    let selectedBase = $('select[name="menu_base"]').val();
-	    let selectedTemp = $('input[name="menu_temp"]:checked').val();
-	    let selectedOptCode = selectedDivide + selectedBase + selectedTemp;
-	    $('input[name="menuoptCode"]').val(selectedOptCode);
-	    let menuOpt = $('input[name="menuoptCode"]').val();
-	    
-	    let data = {
-	        menuoptCode: menuOpt
-	    };
-	    
-	    $.ajax({
-	        url: '${pageContext.request.contextPath}/getSelectMenu.ajax',
-	        type: 'POST',
-	        data: JSON.stringify(data),
-	        contentType: "application/json",
-	        dataType: "json",
-	        success: function(res) {
-	            $('.menu_list').empty();
-	            
-	            if(res.length === 0) {
-	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
-	            } else {
-	                res.forEach(function(item) {
-	                	// 메뉴 추가시 클래스 추가
-	                    let btnClass = item.storeEnable === 'N' ? 'btn_disable' : '';
-	                    
-	                    $('.menu_list').append(
-	                        '<li class="menu_item">' + 
-	                            '<div class="menu_info">' + 
-	                                '<div class="img_box">' + 
-	                                    '<img src="../../images/upload_menuImages/' + item.menuImages + '" alt="' + item.menuName + '">' + 
-	                                '</div>' + 
-	                                '<div class="txt_box">' + 
-	                                    '<p class="txt_tit">' + item.menuName + '</p>' + 
-	                                    '<p class="txt_desc">' + item.menuDesc + '</p>' + 
-	                                '</div>' + 
-	                            '</div>' + 
-	                            '<div class="btn_box">' + 
-	                                '<button class="menuAddBtn ' + btnClass + 
-	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
-	                                '" data-name="' + item.menuName + '" data-enable="' + (item.storeEnable === 'N' ? 'N' : 'Y') + 
-	                                '" type="button">메뉴 추가</button>' + 
-	                            '</div>' + 
-	                        '</li>'
-	                    );
-	                });
-	            }
-	            
-	            // 버튼 상태 업데이트
-	            updateStatus();
-	        },
-	        error: function(err) {
-	            console.log('Error: ', err);
-	        }
-	    });
-	}
-	
-	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
-	function updateStatus() {
-	    let storeId = 'bucks_1111';
-	    
-	    $.ajax({
-	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
-	        type: 'GET',
-	        data: { 
-	        	bucksId: storeId,
-	        	
-	        	},
-	        dataType: 'json',
-	        success: function(res) {
-	            // 메뉴 리스트 새로 업데이트
-	            $('.menu_list .menu_item').each(function () {
-	                let $btn = $(this).find('.menuAddBtn');
-	                let menuCode = $btn.data('code');
+    $('input[type="checkbox"]').on('click', function() {
+       if ($(this).prop('checked')) {
+           $('input[name="menu_divide"], input[name="menu_base"], input[name="menu_temp"]').prop('checked', false);
+           $(this).prop('checked', true);
+       }
+    });
+    
+    
+    
+    $('select[name="menu_divide"], select[name="menu_base"], input[name="menu_temp"]').change(function() {
+        let menuDivide = $("select[name='menu_divide']").val();
+        let menuBase = $("select[name='menu_base']").val();
+        let menuTemp = '';
+        
+        $("input[name='menu_temp']:checked").each(function() {
+            menuTemp += $(this).val();
+        });
 
-	                let item = res.find(item => item.menuCode === menuCode);
-	                if (item && item.storemenuStatus === 'Y') {
-	                    $btn.addClass('btn_disable').attr('data-enable', 'N');
-	                }
-	            });
-	        },
-	        error: function(err) {
-	            console.error('AJAX 요청 실패:', err);
-	        }
-	    });
-	}
-	
-	// 메뉴 추가 버튼 클릭 시 이벤트
-	$(document).on('click', '.menuAddBtn', function() {
-		let $btn = $(this);
-		let menuName = $(this).data('name');
-		let storeId = $(this).data('store');
-		let menuCode = $(this).data('code');
-		
-	    let data = {
-	    		bucksId: storeId,
-	    		menuCode: menuCode,
-	    		menuName: menuName,
-	    		storemenuStatus: 'Y', 
-	    }
-	    
-	    // 이미 비활성화 된 버튼 클릭 블가
-	    if ($btn.hasClass('btn_disable')) {
-	        return;
-	    }
-	    
-	    $.ajax({
-	        url: '${pageContext.request.contextPath}/addMenu.ajax',
-	        type: 'POST',
-	        data: JSON.stringify(data),
-	        contentType: "application/json",
-	        dataType: "text",
-	        success: function(res) {
-	        	// 메뉴추가 aelrt
-	        	alert(res);
-	        	$btn.addClass('btn_disable').attr('data-enable', 'N');
-	        	// 버튼상태 업데이트
-	        	updateStatus();
-	        },
-	        error: function(err) {
-	            console.log('Error: ', err);
-	        }
-    	}); 
-	});
+        let menuOpt = menuDivide + menuBase + menuTemp;
+        
+        
+    });
+
+    
+    
 </script>
