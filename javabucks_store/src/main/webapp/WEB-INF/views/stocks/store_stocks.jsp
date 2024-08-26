@@ -70,7 +70,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${bevStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>	
 	                            </div>
 	                        </div>
@@ -152,7 +152,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${fooStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>	
 	                            </div>
 	                        </div>
@@ -235,7 +235,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${cupStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>	
 	                            </div>
 	                        </div>
@@ -318,7 +318,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${syrStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>	
 	                            </div>
 	                        </div>
@@ -401,7 +401,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${whiStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>
 	                            </div>
 	                        </div>
@@ -484,7 +484,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${milStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>
 	                            </div>
 	                        </div>
@@ -567,7 +567,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${tumStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>
 	                            </div>
 	                        </div>
@@ -650,7 +650,7 @@
 		                        		<button type="button" onclick="addCart(this)">담기</button>
 		                        	</c:if>
 		                        	<c:if test="${wonStocks.stockListStatus eq 'N'}">
-		                        		<button type="button" onclick="addCart(this)" style="background:grey" disabled>담기</button>
+		                        		<button type="button" onclick="noti(this)" style="background:grey">담기</button>
 		                        	</c:if>
 	                            </div>
 	                        </div>
@@ -770,6 +770,10 @@
 	    	alert("수량을 입력해주세요.")
 	    }
 		
+	}
+	
+	function noti(element){
+		alert("해당 상품은 발주되지 않습니다. 본사에 문의해주세요.");
 	}
 	
 </script>

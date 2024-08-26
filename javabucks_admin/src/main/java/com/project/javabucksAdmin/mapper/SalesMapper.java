@@ -200,6 +200,7 @@ public class SalesMapper {
  	public List<PayhistoryDTO> searchDailySales(Map<String, Object> params) {
  		return sqlSession.selectList("searchDailySales",params);
  	}
+
  			
 	 
 }

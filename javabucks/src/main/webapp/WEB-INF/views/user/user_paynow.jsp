@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,21 +91,76 @@
 
             <ul class="store_confirm">
                 <li>주문하신 매장을 확인해주세요!</li>
-                <li>지점명<span class="font_gray">To-go/매장이용</span></li>
-                <li>지점주소</li>
+                <li>${bucksName}<span class="font_gray">${pickup}</span></li>
+                <li>${bucksLocation}</li>
             </ul>
 
             <div class="btn_box">
                 <button class="toggle_btn t_active" type="button" data-toggle="orderlist">주문 내역</button>
             </div>
             <ul id="orderlist" class="pay_list toggle-content">
+            <c:if test="${cart=='imme'}">
+            	<li class="pay_item">
+                    <div class="img_box">
+                        <img src="/upload_menuImages/${menu.menuImages}" alt="">
+                    </div>
+                    <div class="txt_box">
+                        <dl>
+                            <dt class="txt_tit"><span>${mdto.menuName}</span> * <span>${quantity}</span></dt>
+                            <dd class="txt_total">${(mdto.menuPrice)*quantity}원</dd>
+                        </dl>
+                        <dl class="font_gray">
+                        	<c:set var="iceOrHot" value="${fn:substring(mdto.menuoptCode, 3, 4)}" />
+                        	<c:if test="${iceOrHot=='I'||iceOrHot=='i'}">
+                            <dt><span>ICE</span> | <span>${cupdto.cupType} * ${quantity}</span></dt>
+                            </c:if>
+                            <c:if test="${iceOrHot=='H'||iceOrHot=='h'}">
+                            <dt><span>HOT</span> | <span>${cupdto.cupType} * ${quantity}</span></dt>
+                            </c:if>
+                            <dd>+${cupdto.cupPrice*quantity}원</dd>
+                        </dl>
+                        <dl class="opt_item font_gray">
+                        	<c:if test="${not empty icedto}">
+                        	<dt>얼음 ${icedto.iceType}</dt>
+                        	</c:if>
+                        </dl>
+                        <dl class="opt_item font_gray">
+                        	<c:if test="${not empty shotdto}">
+                        	<dt>샷 ${shotdto.shotType} (+${optdto.optShotCount}) * ${quantity}</dt>
+                        	<dd>+${optdto.optShotCount*600*quantity}원</dd>
+                        	</c:if>
+                        </dl>
+                        <dl class="opt_item font_gray">
+                        	<c:if test="${not empty syrupdto}">
+                        	<dt>${syrupdto.syrupType} (+${optdto.optSyrupCount}) * ${quantity}</dt>
+                        	<dd>+${optdto.optSyrupCount*600*quantity}원</dd>
+                        	</c:if>
+                        </dl>
+                        <dl class="opt_item font_gray">
+                        	<c:if test="${not empty milkdto}">
+                        	<dt>우유 ${milkdto.milkType} * ${quantity}</dt>
+                        	<dd>+${milkdto.milkPrice*quantity}원</dd>
+                        	</c:if>
+                        </dl>
+                        <dl class="opt_item font_gray">
+                        	<dt>총 추가금액</dt>
+                        	<dd>${optPrice*quantity}원</dd>
+                        </dl>
+                        <dl>
+                        	<dt class="txt_tit">총 금액</dt>
+                        	<dd class="txt_total">${(mdto.menuPrice*quantity)+(optPrice*quantity)}원</dd>
+                        </dl>	
+                    </div>
+                </li>
+            </c:if>
+            <c:if test="${cart=='cart'}">
                 <li class="pay_item">
                     <div class="img_box">
                         <!-- <img src="" alt=""> -->
                     </div>
                     <div class="txt_box">
                         <dl>
-                            <dt class="txt_tit">메뉴명</dt>
+                            <dt class="txt_tit"><span>메뉴명</span> * <span>수량</span></dt>
                             <dd class="txt_total">총금액</dd>
                         </dl>
                         <dl class="font_gray">
@@ -116,6 +173,7 @@
                         </dl>
                     </div>
                 </li>
+            </c:if>
             </ul>
 
             <div class="cpn_box">
@@ -138,6 +196,7 @@
                     <div style="width: 768px; overflow: hidden;">
                         <div class="cardlist swiper">
                             <ul class="card_wrapper swiper-wrapper">
+                                <c:forEach var="card" items="${listCard}">
                                 <li class="card_slide swiper-slide">
                                     <a href="javascript:;">
                                         <div class="img_box">
@@ -145,10 +204,11 @@
                                         </div>
                                     </a>
                                         <div class="txt_box">
-                                            <p class="txt_name">카드이름</p>
-                                            <p class="txt_price">잔액</p>
+                                            <p class="txt_name">${card.cardName}</p>
+                                            <p class="txt_price">${card.cardPrice}원</p>
                                         </div>
                                 </li>
+                                </c:forEach>        
                                 <li class="add_slide card_slide swiper-slide">
                                     <a href="javascript:;">
                                         <p>JavaBucks 카드를 등록하고 <br/>다양한 혜택을 누려보세요!</p>
@@ -173,15 +233,15 @@
                 <form name="" action="" method="post">
                     <dl>
                         <dt>주문 금액</dt>
-                        <dd>0,000원</dd>
+                        <dd>${(mdto.menuPrice*quantity)+(optPrice*quantity)}</dd>
                     </dl>
                     <dl class="font_gray">
-                        <dt>상품 금액</dt>
-                        <dd>0,000원</dd>
+                        <dt>할인 금액</dt>
+                        <dd></dd>
                     </dl>
                     <dl>
                         <dt>최종 결제 금액</dt>
-                        <dd>0,000원</dd>
+                        <dd>${(mdto.menuPrice*quantity)+(optPrice*quantity)}</dd>
                     </dl>
                     <button class="pay_btn" type="submit">결제하기</button>
                 </form>
@@ -219,4 +279,6 @@
     </section>
     <!-- e: content -->
     
-<%@ include file="user_bottom.jsp" %>    
+<%@ include file="user_bottom.jsp" %>
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>\
+	

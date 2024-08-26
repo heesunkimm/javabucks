@@ -26,7 +26,7 @@
             <li class="nav_item">
                 <a href="javascript:;">계정관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">관리자 계정 관리</a></li>
+                    <li><a href="adminmanage.do">관리자 계정 관리</a></li>
                     <li><a href="storemanage.do">지점 계정 관리 </a></li>
                     <li><a href="javascript:;">유저 계정 관리</a></li>
                 </ul>

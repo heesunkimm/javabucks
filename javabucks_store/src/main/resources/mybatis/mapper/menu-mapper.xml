@@ -29,13 +29,15 @@
 	<select id="searchDrinks" parameterType="java.util.Map" resultType="StoreMenuDTO">
 	    SELECT * 
 	    FROM (
-	        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.* 
+	        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.*, 
+	        		sm.bucksId, sm.storemenuStatus, sm.storeEnable 
 	        FROM javabucks_storemenu sm 
 	        JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
 	        WHERE sm.bucksId = #{bucksId} 
 	          AND sm.storemenuStatus = 'Y' 
+	          AND sm.storeEnable = 'N' 
+		      and m.menuCode like 'B%' 
 	          AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
-	          AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
 	          AND m.menuEnable = 'Y' 
 	    ) drinks 
 	    WHERE rn BETWEEN #{startRow} AND #{endRow}
@@ -47,9 +49,38 @@
 	    FROM javabucks_storemenu sm
 	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode
 	    WHERE sm.bucksId = #{bucksId}
-	      AND sm.storemenuStatus = 'Y'
+	      AND sm.storemenuStatus = 'Y' 
+	          AND sm.storeEnable = 'N' 
+	      and m.menuCode like 'B%' 
 	      AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate})
 	      AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
+	      AND m.menuEnable = 'Y'
+	</select>
+	
+	<!-- 조건에 해당하는 디저트 리스트 뽑기 -->
+	<select id="searchDessert" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	    SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.*, 
+	    		sm.bucksId, sm.storemenuStatus, sm.storeEnable 
+	    FROM javabucks_storemenu sm 
+	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
+	    WHERE sm.bucksId = #{bucksId} 
+	        AND sm.storemenuStatus = 'Y' 
+	        AND m.menuCode LIKE 'C%' 
+	        AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
+	        AND m.menuEnable = 'Y'
+	</select>
+	
+	
+	<!-- 조건에 해당하는 MD 리스트 뽑기 -->
+	<select id="searchMd" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	    SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.* 
+	    		sm.storemenuStatus, sm.storeEnable 
+	    FROM javabucks_storemenu sm 
+	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
+	    WHERE sm.bucksId = #{bucksId} 
+	      AND sm.storemenuStatus = 'Y' 
+	      and m.menuCode like 'M%'	
+	      AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
 	      AND m.menuEnable = 'Y'
 	</select>
 	
@@ -61,6 +92,31 @@
         join javabucks_menu m on sm.menuCode = m.menuCode
         where sm.bucksId = #{bucksId} 
           and sm.storemenuStatus = 'Y'
+          and m.menuCode like 'B%'
+          and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+	</select>
+	
+	<!-- 디저트 키워드 검색 리스트 뽑기 -->
+	<select id="searchDessertList" parameterType="java.util.Map" resultType="StoreMenuDTO">
+        select row_number() over (order by m.menuregDate desc) as rn,
+               m.* 
+        from javabucks_storemenu sm 
+        join javabucks_menu m on sm.menuCode = m.menuCode
+        where sm.bucksId = #{bucksId} 
+          and sm.storemenuStatus = 'Y'
+          and m.menuCode like 'C%'
+          and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+	</select>
+	
+	<!-- MD 키워드 검색 리스트 뽑기 -->
+	<select id="searchMdList" parameterType="java.util.Map" resultType="StoreMenuDTO">
+        select row_number() over (order by m.menuregDate desc) as rn,
+               m.* 
+        from javabucks_storemenu sm 
+        join javabucks_menu m on sm.menuCode = m.menuCode
+        where sm.bucksId = #{bucksId} 
+          and sm.storemenuStatus = 'Y'
+          and m.menuCode like 'M%'
           and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
 	</select>
 	

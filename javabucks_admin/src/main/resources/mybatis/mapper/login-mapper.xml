@@ -8,5 +8,9 @@
 	<select id="findAdminById" parameterType="String" resultType="AdminDTO">
 		select * from javabucks_admin where adminId = #{adminId}
 	</select>
+	
+	<update id="updatePasswd" parameterType="AdminDTO">
+		UPDATE javabucks_admin SET adminPasswd = #{adminPasswd} WHERE adminId = #{adminId}
+	</update>
 	 
 </mapper>
