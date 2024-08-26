@@ -340,6 +340,54 @@
  		 SELECT *
  		 FROM javabucks_bucks		 
  		 WHERE bucksId = #{bucksId}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="PayInfoByHistoryNum" parameterType="Integer" resultType="PayhistoryDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_payhistory		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="NicknameByHistoryNum" parameterType="Integer" resultType="String"> 
+ 		 SELECT ju.userNickname
+ 		 FROM javabucks_payhistory jp join javabucks_user ju
+ 		 ON jp.userId = ju.userId		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="CardInfoByHistoryNum" parameterType="Integer" resultType="CardDTO"> 
+ 		 SELECT jc.*
+ 		 FROM javabucks_payhistory jp join javabucks_card jc
+ 		 ON jp.userId = jc.userId		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="OrderListByUserid" parameterType="Integer" resultType="CardDTO"> 
+ 		 SELECT jc.*
+ 		 FROM javabucks_payhistory jp join javabucks_order jo
+ 		 ON jp.orderCode = jo.orderCode
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+ 	
+	<!-- 아이디로 장바구니 조회 -->
+ 	<select id="CartListByHistoryNum" parameterType="String" resultType="CardDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}	 				 	  		 
+ 	</select>	
+ 	
+ 	<!-- 장바구니에서 메뉴찾기 -->
+ 	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu		 
+ 		 WHERE menuCode = #{menuCode}	 				 	  		 
+ 	</select>	
+ 	
+ 	<!-- 메뉴 옵션찾기 -->
+ 	<select id="OptionByHistoryNum" parameterType="String" resultType="orderOptDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_menu		 
+ 		 WHERE menuCode = #{menuCode}	 				 	  		 
  	</select>	
  	
  </mapper>
