@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../store_top.jsp"%>
+	<style>
+		.allMenu .menu_list .menu_item .btn_box .holdBtn.btn_disable {background: #ccc!important;}
+	</style>
 	<!-- s: content -->
     <section id="store_alldessert" class="content allMenu">
         <div class="inner_wrap">
@@ -68,16 +71,15 @@
 	// 로그인 매장 변수 선언
 	let bucksId =$("input[name='bucksId']").val();
 	
-	// 디폴트 옵션 - 전체보기
-	let defaultMenuCate = '';
-	
 	// 화면 접속완료 시 메뉴 리스트 로딩 함수 실행하여 디폴트 옵션 표출
 	$(document).ready(function() {
-        loadMenuList(defaultMenuCate);
+        loadMenuList();
     });
 	
-	// 메뉴 리스트 로딩 함수
-    function loadMenuList(menuCate) {
+	// 체크박스 메뉴 리스트 로딩 함수
+    function loadMenuList() {
+	    let menuCate = $('input[name="menu_cate"]:checked').val() || '';
+	    
         $.ajax({
             url: '${pageContext.request.contextPath}/searchDessert.ajax',
             type: 'POST',
@@ -97,7 +99,7 @@
                     // 선택된 옵션에 해당하는 메뉴가 있을때
                     res.forEach(function(item) {
                         let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
-                        /* let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : ''; */
+                        let btnText = item.storemenuStatus === 'N' ? '주문풀기' : '주문막기';
                         
                         $('.checkbox_cont .menu_list').append(
                             '<li class="menu_item">' +
@@ -110,7 +112,7 @@
                                         '<p class="txt_desc">' + item.menuDesc + '</p>' +
                                     '</div>' +
                                     '<div class="btn_box">' +
-                                        '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storeStatus + '">주문막기</button>' +
+                                        '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storemenuStatus + '">' + btnText + '</button>' +
                                         '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
                                     '</div>' +
                                 '</div>' +
@@ -119,6 +121,7 @@
                     });
                 }
                 bindEvents();
+	        	updateStatus();
             },
             error: function(err) {
                 console.log("Error: ", err);
@@ -126,7 +129,7 @@
         });
     }
 	
- 	// 카테고리 체크박스 조건 선택시 메뉴 리스트 재정렬
+	// 카테고리 체크박스 조건 선택시 메뉴 리스트 재정렬
 	$('input[name="menu_cate"]').on('change', function() {
     	let menuCate = $(this).val();
 
@@ -134,31 +137,10 @@
         if ($('input[name="menu_cate"]:checked').length === 0) {
             $(this).prop('checked', true);
         }
-    	
-    	$.ajax({
-    	    url: '${pageContext.request.contextPath}/searchDessert.ajax',
-    	    type: 'POST',
-    	    data: JSON.stringify({
-    	        menu_cate: menuCate,
-    	        bucksId: bucksId
-    	    }),
-    	    contentType: 'application/json',
-	        dataType: "json",
-	        success: function(res) {
-	        	let menuCate = $('input[name="menu_cate"]:checked').val();
-
-	            if (menuCate === '') {
-	                menuCate = defaultMenuCate;
-	            }
-
-	            loadMenuList(menuCate, '');
-	        },
-    	    error: function(err) {
-    	        console.log("Error: ", err);
-    	    }
-    	});
+        
+        loadMenuList();
     });
-	
+
 	// 키워드 검색 시 일치하는 메뉴 리스트 불러오기 함수
 	function searchKeyword() {
         let searchCont = $("input[name='menu_name']").val();
@@ -168,34 +150,36 @@
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                menuName: searchCont,
+            	menu_name: searchCont,
                 bucksId: bucksId
             }),
             success: function(res) {
                 $(".searchbox_cont .menu_list").empty();  // 기존 리스트 비우기
-                
+
                 if (res.length > 0) {
                     res.forEach(function(item) {
-                    	let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
-                    	
+                        let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
+
                         $('.searchbox_cont .menu_list').append(
                             '<li class="menu_item">' +
-                                '<div class="menu_img img_box">' +
-                                    '<img src="../../images/upload_menuImages/' + item.menuImages + '" alt="' + item.menuName + '">' +
-                                '</div>' +
-                                '<div class="menu_info">' +
-                                    '<div class="txt_box">' +
-                                        '<p class="txt_tit">' + item.menuName + '</p>' +
-                                        '<p class="txt_desc">' + item.menuDesc + '</p>' +
-                                    '</div>' +
-                                    '<div class="btn_box">' +
-                                    '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storeStatus + '">주문막기</button>' +
-                                    '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
-                                    '</div>' +
-                                '</div>' +
+	                            '<div class="menu_img img_box">' +
+	                            	'<img src="../../images/upload_menuImages/' + item.menuImages + '" alt="' + item.menuName + '">' +
+	                            '</div>' +
+	                            '<div class="menu_info">' +
+		                            '<div class="txt_box">' +
+			                            '<p class="txt_tit">' + item.menuName + '</p>' +
+			                            '<p class="txt_desc">' + item.menuDesc + '</p>' +
+		                            '</div>' +
+		                            '<div class="btn_box">' +
+			                            '<button class="holdBtn' + btnClass + '" type="button" data-code="' + item.menuCode + '" data-status="' + item.storemenuStatus + '">주문막기</button>' +
+			                            '<button class="delBtn" type="button" data-code="' + item.menuCode + '">메뉴삭제</button>' +
+		                            '</div>' +
+	                            '</div>' +
                             '</li>'
                         );
                     });
+                    bindEvents();
+                    updateStatus();
                 } else {
                     $(".searchbox_cont .menu_list").append('<li class="menu_item noMenu">해당하는 검색어와 일치하는 메뉴가 없습니다.</li>');
                 }
@@ -221,37 +205,82 @@
     
     // 다른 탭 이동시 검색 창, 리스트 리셋
     $(".tab_btn").each(function() {
-		$(this).click(function(e) {
-			let $btn = $(this).data('tab');
-			
-			if($btn === 'cate_cont') {
-				$(".searchbox_cont .search_list input").val("");
-				$(".searchbox_cont .menu_list").empty();
-				$('.searchbox_cont .menu_list').append('<li class="menu_item noMenu">메뉴명을 검색하세요.</li>');
-			}
-		});
-	})
+        $(this).click(function(e) {
+            let $btn = $(this).data('tab');
 
+            if ($btn === 'cate_cont') {
+                loadMenuList();
+            } else if ($btn === 'menu_cont') {
+                $(".searchbox_cont .search_list input").val("");
+                $(".searchbox_cont .menu_list").empty();
+                $('.searchbox_cont .menu_list').append('<li class="menu_item noMenu">메뉴명을 검색하세요.</li>');
+            }
+        });
+    })
+	
+	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
+	function updateStatus() {
+	    $.ajax({
+	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
+	        type: 'GET',
+	        data: {bucksId: bucksId},
+	        dataType: 'json',
+	        success: function(res) {
+	            // 메뉴 리스트 새로 업데이트
+	            $('.menu_list .menu_item').each(function () {
+                    let $btn = $(this).find('.holdBtn');
+                    let menuCode = $btn.data('code');
+                    let menuStatus = $btn.data('status');
+                    
+
+                    let item = res.find(item => item.menuCode === menuCode);
+                    
+                    if (item) {
+                        let btnClass = menuStatus === 'N' ? 'btn_disable' : '';
+                        if(menuStatus === 'N'){
+                        	$btn.addClass("btn_disable").text("주문풀기");
+                        }else {
+                        	$btn.removeClass("btn_disable").text("주문막기");
+                        }
+                    }
+                });
+	        },
+	        error: function(err) {
+	            console.error('AJAX 요청 실패:', err);
+	        }
+	    });
+	}
+    
+    // 주문막기, 메뉴삭제 함수
 	function bindEvents() {
-    	// 주문막기 버튼 선택 시 이벤트 처리
+		// 주문막기 버튼 선택 시 이벤트 처리
 		$('.menu_list .holdBtn').off('click').on('click', function() {
+			let $btn = $(this);
 			let menuCode = $(this).data('code');
 			let menuStatus = $(this).data('status');
-				console.log("메뉴코드: " + menuCode)
-				console.log("메뉴상태: " + menuStatus)
+	        let newStatus = menuStatus === 'N' ? 'Y' : 'N'; // 메뉴 상태 변경
+	        let menuCate = $('input[name="menu_cate"]:checked').val() || '';
 			
 			$.ajax({
 	    	    url: '${pageContext.request.contextPath}/menuStatusUpdate.ajax',
 	    	    type: 'POST',
 	    	    data: JSON.stringify({
 	    	    	menuCode: menuCode,
-	    	    	storemenuStatus: menuStatus,
+	    	    	storemenuStatus: newStatus, // 변경된 상태 전송
 	    	        bucksId: bucksId
 	    	    }),
 	    	    contentType: 'application/json',
 		        dataType: "text",
 		        success: function(res) {
-		        	console.log(res)
+		        	// 메뉴 주문막기 alert
+		        	alert(res);
+		        	if ($('#menu_cont').hasClass('s_active')) {
+		            	// 메뉴명탭 활성화시 실행
+	                    searchKeyword();
+	                } else {
+		            	// 카테고리, 베이스 탭 활성화시 실행
+	                    loadMenuList();
+	                }
 		        },
 	    	    error: function(err) {
 	    	        console.log("Error: ", err);
@@ -263,7 +292,6 @@
 		$('.menu_list .delBtn').off('click').on('click', function() {
 	        let menuCode = $(this).data('code');
 	        let menuCate = $('input[name="menu_cate"]:checked').val() || '';
-	        let menuBase = $('input[name="menu_base"]:checked').val() || '';
 	    
 	        $.ajax({
 	            url: '${pageContext.request.contextPath}/deleteMenu.ajax',
@@ -277,7 +305,13 @@
 	            success: function(res) {
 	            	// 메뉴 삭제 alert
 	                alert(res);
-	                loadMenuList(menuCate, menuBase);
+	                if ($('#menu_cont').hasClass('s_active')) {
+		            	// 메뉴명탭 활성화시 실행
+	                    searchKeyword();
+	                } else {
+		            	// 카테고리, 베이스 탭 활성화시 실행
+	                    loadMenuList();
+	                }
 	            },
 	            error: function(err) {
 	                console.log("Error: ", err);

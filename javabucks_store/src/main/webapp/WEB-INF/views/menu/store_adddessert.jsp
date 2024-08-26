@@ -30,11 +30,13 @@
                 	<!-- 해당 검색 결과에 맞는 메뉴 리스트 뿌려지는 곳 -->
                 </li>
             </ul>
+            <button class="moreBtn" onclick="moreBtnEvt()" type="button">더보기</button>
         </div>
     </section>
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
 <script>
+	
 	$(document).ready(function() {
 	    getSelectMenu();
 	    updateStatus();

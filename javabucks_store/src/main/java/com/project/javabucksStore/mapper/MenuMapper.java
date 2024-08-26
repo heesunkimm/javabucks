@@ -28,6 +28,10 @@ public class MenuMapper {
 	public StoreMenuDTO getMenuByStore(Map<String, Object> params) {
 	    return sqlSession.selectOne("getMenuByStore", params);
 	}
+	// 지점에 등록된 메뉴 중 이미 주문막기 처리가 됐는지 여부 확인
+	public StoreMenuDTO getMenuByStatus(Map<String, Object> params) {
+		return sqlSession.selectOne("getMenuByStatus", params);
+	}
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	public List<StoreMenuDTO> getSelectedMenu(String bucksId) {
 		return sqlSession.selectList("getSelectedMenu", bucksId);
@@ -60,7 +64,7 @@ public class MenuMapper {
 	public List<StoreMenuDTO> searchMdList(Map<String, Object> params) {
 		return sqlSession.selectList("searchMdList", params);
 	}
-	// 주문막기 - 상태변경
+	// 주문막기 상태 업데이트
 	public int menuStatusUpdate(StoreMenuDTO dto) {
 		return sqlSession.update("menuStatusUpdate", dto);
 	}
