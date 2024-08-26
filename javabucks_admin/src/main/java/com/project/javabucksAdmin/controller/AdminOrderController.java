@@ -1,12 +1,12 @@
 package com.project.javabucksAdmin.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.javabucksAdmin.dto.AdminDTO;
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BaljooOrder;
+import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.StockListDTO;
 import com.project.javabucksAdmin.mapper.OrderMapper;
 
@@ -27,7 +29,7 @@ public class AdminOrderController {
 	@Autowired
 	private OrderMapper mapper;
 	
-	
+	// 재고현황 조회
 	@GetMapping("/adminStockList.do")
 	public String stockList(HttpServletRequest req,
 							@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
@@ -50,7 +52,7 @@ public class AdminOrderController {
 		return "/order/admin_stocklist";
 	}
 	
-	
+	// 재고현황 검색
 	@GetMapping("/findAdminStockList.do")
 	public String stockList(HttpServletRequest req,
 							@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
@@ -118,7 +120,7 @@ public class AdminOrderController {
 		return pagingMap;
 	}
 	
-	
+	// 재고확충
 	@ResponseBody
 	@PostMapping("/stockPlus.ajax")
 	public Map<String, Object> stockPlus(String stockListCode, String stockCount) {
@@ -139,7 +141,7 @@ public class AdminOrderController {
 		return response;
 	}
 	
-
+	// 발주막기
 	@ResponseBody
 	@PostMapping("/adminOrderBlock.ajax")
 	public Map<String, Object> adminOrderBlock(String stockListCode){
@@ -160,6 +162,7 @@ public class AdminOrderController {
 		return response;
 	}
 	
+	// 발주풀기
 	@ResponseBody
 	@PostMapping("/adminOrderRelease.ajax")
 	public Map<String, Object> adminOrderRelease(String stockListCode){
@@ -180,20 +183,53 @@ public class AdminOrderController {
 		return response;
 	}
 	
-	
+	// 발주현황 메뉴
 	@GetMapping("/adminStoreOrder.do")
 	public String adminStoreOrder(HttpServletRequest req,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
+		// 검색 년도 설정
+		LocalDate date = LocalDate.now(); // 현재날짜		
+		int year = date.getYear();
+		
+		List<Integer> yearList = new ArrayList();
+		for(int i=year; i>year-3; i--) {
+			yearList.add(i);
+		}
+
+		// 검색 월 설정
+		int month = date.getMonthValue();
+		
+		String stringMonth = null;
+		if (month < 10) {
+			stringMonth = "0"+ String.valueOf(month);
+		}else {
+			stringMonth = String.valueOf(month);
+		}
+		
+		List<Integer> monthList = new ArrayList();
+		for(int i=month; i>=1; i--) {
+			monthList.add(i);
+		}
+		
+		// 검색 지점명 설정
+		List<BucksDTO> storeNamelist = mapper.getStoreName();
+
+		Map<String, Object> params = new HashMap<>();
+		
+		// 테이블 데이터 추출
+		params.put("selectYear", year);
+		params.put("selectMonth", stringMonth);
+		
 		int baljooListCount = mapper.baljooCount();
 		Map<String, Object> pagingMap = paging_baljoo(baljooListCount, pageNum);
 				
-		Map<String, Object> params = new HashMap<>();
 		params.put("startRow", pagingMap.get("startRow"));
 		params.put("endRow", pagingMap.get("endRow"));
 		
 		List<BaljooDTO> baljooList = mapper.baljooList(params);
 		
+		// 테이블 발주품목 컬럼 추출
 		ObjectMapper objectMapper = new ObjectMapper();
 		for(BaljooDTO baljooDTO : baljooList) {
 			try {
@@ -231,9 +267,17 @@ public class AdminOrderController {
 				baljooDTO.setBaljooListbyBaljooOrder(updateBaljooList);
 				
 			}catch(Exception e) {
+				System.out.println("JSON String 변환 과정에서 에러");
 				e.printStackTrace();
 			}
-		}		
+		}
+		
+		// 검색 데이터
+		req.setAttribute("yearList", yearList);
+		req.setAttribute("monthList", monthList);
+		req.setAttribute("storeNamelist", storeNamelist);
+		
+		// 데이터
 		req.setAttribute("startPage", (int)pagingMap.get("startPage"));
 		req.setAttribute("endPage", (int)pagingMap.get("endPage"));
 		req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
@@ -242,6 +286,95 @@ public class AdminOrderController {
 		
 		return "/order/admin_storeorder";
 	}
+	
+	// 발주현황 검색
+	@GetMapping("/searchAdminStoreOrder.do")
+	public String searchAdminStoreOrder(HttpServletRequest req, String selectYear, String selectMonth, String unproCheck, String selectStore, String selectNum,
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+		
+		// 검색조건 확인
+		System.out.println("selectYear : " + selectYear);
+		System.out.println("selectMonth : " + selectMonth);
+		System.out.println("unproCheck : " + unproCheck); // null, checked
+		System.out.println("selectStore : " + selectStore); 
+		System.out.println("selectNum : " + selectNum); // ''
+		
+
+		
+		// 검색 년도 설정
+		LocalDate date = LocalDate.now(); // 현재날짜		
+		int year = date.getYear();
+		
+		List<Integer> yearList = new ArrayList();
+		for(int i=year; i>year-3; i--) {
+			yearList.add(i);
+		}
+
+		// 검색 월 설정
+		int month = date.getMonthValue();
+		
+		List<Integer> monthList = new ArrayList();
+		for(int i=month; i>=1; i--) {
+			monthList.add(i);
+		}
+		
+		// 검색 지점명 설정
+		List<BucksDTO> storeNamelist = mapper.getStoreName();
+		
+		String zeroMonth = null;
+		if(Integer.parseInt(selectMonth) < 10) {
+			zeroMonth = "0"+selectMonth;
+		}
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("selectYear", selectYear);
+		params.put("selectMonth", zeroMonth);
+		params.put("unproCheck", unproCheck);
+		params.put("selectStore", selectStore);
+		params.put("selectNum", selectNum);
+		
+		// 검색 데이터 추출
+		int searchBaljooCount = mapper.searchBaljooCount(params);
+		System.out.println("searchBaljooCount:"+searchBaljooCount);
+		Map<String, Object> pagingMap = paging_baljoo(searchBaljooCount, pageNum);
+				
+		
+		params.put("startRow", pagingMap.get("startRow"));
+		params.put("endRow", pagingMap.get("endRow"));
+		
+		List<BaljooDTO> searchBaljooList = mapper.searchBaljooList(params);
+		
+		
+		// 테이블 발주품목 컬럼 추출
+		
+		
+		
+		
+		
+		
+		
+		// 검색 데이터
+		req.setAttribute("yearList", yearList);
+		req.setAttribute("monthList", monthList);
+		req.setAttribute("storeNamelist", storeNamelist);
+		
+		// 검색 조건
+		req.setAttribute("selectYear", selectYear);
+		req.setAttribute("selectMonth", selectMonth);
+		req.setAttribute("unproCheck", unproCheck);
+		req.setAttribute("selectStore", selectStore);
+		req.setAttribute("selectNum", selectNum);
+		
+		// 데이터
+		req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+		req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+		req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+		req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
+		req.setAttribute("searchBaljooList", searchBaljooList);
+		
+		return "/order/admin_storeorder";
+	}
+	
 	
 	
 	// 페이징 처리 메서드
