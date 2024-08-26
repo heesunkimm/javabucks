@@ -291,13 +291,8 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_recepit")
-<<<<<<< HEAD
-	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params) {
-
-=======
 	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params, String mode) {
 		
->>>>>>> user-채성진2
 		UserDTO dto = userMapper.getInfoById();
 		String userId = dto.getUserId();
 		params.put("userId", userId);
@@ -377,33 +372,6 @@ public class UserController {
 //	        }
 //			
 //		}else {		
-<<<<<<< HEAD
-		String startDate = oneMonthAgo.format(formatter);
-		// period_setting 문자열을 생성합니다.
-		String period_setting = startDate + " ~ " + endDate;
-		// 초기화면 기간 데이터
-		req.setAttribute("period_setting", period_setting);
-
-		params.put("startDate", startDate);
-		params.put("endDate", endDate);
-		List<PayhistoryDTO> list = userMapper.RecepitByUserid(userId);
-		for (PayhistoryDTO phis : list) {
-			totalPrice += phis.getPayhistoryPrice();
-			number = number + 1;
-		}
-		req.setAttribute("recepitList", list);
-		req.setAttribute("totalPrice", totalPrice);
-		req.setAttribute("number", number);
-
-		String bucksId = params.get("bucksId");
-		BucksDTO dto2 = userMapper.StoreInfoByBucksId(bucksId);
-		req.setAttribute("", dto2);
-//        }
-
-		return "/user/user_recepit";
-	}
-
-=======
 			String startDate = oneMonthAgo.format(formatter);
 			// period_setting 문자열을 생성합니다.
 	        String period_setting = startDate + " ~ " + endDate;
@@ -485,7 +453,6 @@ public class UserController {
 		return "/user/user_cart";
 
 	}
->>>>>>> user-채성진2
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 
