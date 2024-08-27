@@ -87,8 +87,8 @@
  	</select>
  	
  	<!-- javabucks_order_opt 인서트 -->	
- 	<insert id="orderOptInsert" parameterType="OrderOptDTO" useGeneratedKeys="true" keyProperty="optId">
- 		INSERT INTO javabucks_order_opt (optId, cupNum, shotNum, optShotCount, syrupNum, optSyrupCount, milkNum, iceNum, whipNum) 
+ 	<insert id="orderOptInsert" parameterType="OrderOptDTO">
+ 		INSERT INTO javabucks_order_opt
  		VALUES (seq_optId.nextval, #{cupNum}, #{shotNum}, #{optShotCount}, #{syrupNum}, #{optSyrupCount},
         <if test="milkNum != null and milkNum != ''">
             #{milkNum}
@@ -111,6 +111,7 @@
     )
  	</insert>
  	
+ 	<!-- 가장 나중에 만들어진 optId 찾기 -->
  	<select id="orderOptIdsearch" resultType="Integer">
 	    SELECT optId 
 	    FROM javabucks_order_opt 
@@ -205,22 +206,48 @@
 	    WHERE orderCode LIKE #{pickData} || '%'
  	</select>
  	
+ 	<!-- 페이히스토리 주문결제 -->
+ 	<insert id="payhistoryOrder" parameterType="PayhistoryDTO">
+		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
+		VALUES (seq_payhistoryNum.nextval, #{userId}, 
+		<if test="cardRegNum != null and cardRegNum != ''">
+            #{cardRegNum}
+        </if>
+        <if test="cardRegNum == null or cardRegNum == ''">
+            NULL
+        </if>,
+        , #{bucksId}, #{orderCode},
+        <if test="cpnListNum != null and cpnListNum != ''">
+            #{cpnListNum}
+        </if>
+        <if test="cpnListNum == null or cpnListNum == ''">
+            NULL
+        </if>,
+        sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
+ 	</insert>
+ 	
  	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" resultType="UserDTO">
  		SELECT * FROM javabucks_user WHERE userId= 'user001'
  	</select>
  	
- 	<select id="getFrequencyById" resultType="FrequencyDTO"> 
+ 	<select id="getFrequencyById" parameterType="String" resultType="FrequencyDTO"> 
  		SELECT jf.* 
  		FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
- 		WHERE jf.userId = 'user001'
+ 		WHERE jf.userId = #{userId}
  	</select>
  	
  	<select id="getCouponListById"  resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc 
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
  		WHERE cl.userId = 'user001' and cl.cpnListStatus = 'useable' 
+ 	</select>
+ 	
+ 	<select id="getBucksinfoById" resultType="BucksDTO">
+ 		SELECT *
+ 		FROM javabucks_bucks
+ 		WHERE bucksID = #{bucksId}
  	</select>
  	
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 

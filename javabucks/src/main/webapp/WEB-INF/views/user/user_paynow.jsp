@@ -92,8 +92,8 @@
 
             <ul class="store_confirm">
                 <li>주문하신 매장을 확인해주세요!</li>
-                <li>${bucksName}<span class="font_gray">${pickup}</span></li>
-                <li>${bucksLocation}</li>
+                <li>${bdto.bucksName}<span class="font_gray">${pickup}</span></li>
+                <li>${bdto.bucksLocation}</li>
             </ul>
 
             <div class="btn_box">
@@ -107,16 +107,16 @@
                     </div>
                     <div class="txt_box">
                         <dl>
-                            <dt class="txt_tit"><span>${mdto.menuName}</span> * <span>${quantity}</span></dt>
+                            <dt class="txt_tit"><span>${mdto.menuName}</span> X <span>${quantity}</span></dt>
                             <dd class="txt_total"><fmt:formatNumber value="${(mdto.menuPrice) * quantity}" pattern="#,###"/>원</dd>
                         </dl>
                         <dl class="font_gray">
                         	<c:set var="iceOrHot" value="${fn:substring(mdto.menuoptCode, 3, 4)}" />
                         	<c:if test="${iceOrHot=='I'||iceOrHot=='i'}">
-                            <dt><span>ICE</span> | <span>${cupdto.cupType} * ${quantity}</span></dt>
+                            <dt><span>ICE</span> | <span>${cupdto.cupType} X ${quantity}</span></dt>
                             </c:if>
                             <c:if test="${iceOrHot=='H'||iceOrHot=='h'}">
-                            <dt><span>HOT</span> | <span>${cupdto.cupType} * ${quantity}</span></dt>
+                            <dt><span>HOT</span> | <span>${cupdto.cupType} X ${quantity}</span></dt>
                             </c:if>
                             <dd>+<fmt:formatNumber value="${cupdto.cupPrice*quantity}" pattern="#,###"/>원</dd>
                         </dl>
@@ -127,19 +127,19 @@
                         </dl>
                         <dl class="opt_item font_gray">
                         	<c:if test="${optdto.optShotCount != 0}">
-                        	<dt>샷 ${shotdto.shotType} (+${optdto.optShotCount}) * ${quantity}</dt>
+                        	<dt>샷 ${shotdto.shotType} (+${optdto.optShotCount}) X ${quantity}</dt>
                         	<dd>+<fmt:formatNumber value="${optdto.optShotCount*600*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
                         	<c:if test="${optdto.optSyrupCount != 0}">
-                        	<dt>${syrupdto.syrupType} (+${optdto.optSyrupCount}) * ${quantity}</dt>
+                        	<dt>${syrupdto.syrupType} (+${optdto.optSyrupCount}) X ${quantity}</dt>
                         	<dd>+<fmt:formatNumber value="${optdto.optSyrupCount*syrupdto.syrupPrice*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
                         	<c:if test="${not empty milkdto}">
-                        	<dt>우유 ${milkdto.milkType} * ${quantity}</dt>
+                        	<dt>우유종류 ${milkdto.milkType} X ${quantity}</dt>
                         	<dd>+<fmt:formatNumber value="${milkdto.milkPrice*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
@@ -192,7 +192,7 @@
             <ul id="howtopay" class="pay_list toggle-content">
                 <li>
                     <label style="display: flex; align-items: center;">
-                        <input type="radio" class="pay_starbucks" name="payhistoryPayWay" value="">자바벅스 카드
+                        <input type="radio" class="pay_starbucks" name="PayWay" value="자바벅스카드">자바벅스 카드
                     </label>
                     <div style="width: 768px; overflow: hidden;">
                         <div class="cardlist swiper">
@@ -206,6 +206,7 @@
                                     </a>
                                         <div class="txt_box">
                                             <p class="txt_name">${card.cardName}</p>
+                                        	<p class="txt_cardNum">${card.cardRegNum}</p>
                                             <p class="txt_price">잔액 <fmt:formatNumber value="${card.cardPrice}" pattern="#,###"/>원</p>
                                         </div>
                                 </li>
@@ -225,13 +226,13 @@
                 </li>
                 <li>
                     <label style="display: flex; align-items: center;">
-                        <input type="radio" name="payhistoryPayWay" value="">카카오 페이
+                        <input type="radio" name="PayWay" value="카카오페이">카카오 페이
                     </label>
                 </li>
             </ul>
 
             <div class="pricecheck_box">
-                <form name="" action="" method="post">
+                <form name="payOrder" action="orderPayOk" method="post">
                     <dl>
                         <dt>주문 금액</dt>
                         <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
@@ -244,7 +245,10 @@
                         <dt>최종 결제 금액</dt>
                         <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
                     </dl>
-                    <button class="pay_btn" type="submit">결제하기</button>
+                    <input type="hidden" name="cardRegNum">
+                    <input type="hidden" name="payhistoryPayWay" id="payhistoryPayWay">
+                    <input type="hidden" name="payhistoryPayType" value=${pickup}>
+                    <button class="pay_btn" type="button" onclick="requestPay()">결제하기</button>
                 </form>
             </div>
         </div>
@@ -283,7 +287,111 @@
 <%@ include file="user_bottom.jsp" %>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+		    // 라디오 버튼 그룹과 숨겨진 입력 필드를 선택합니다.
+		    const radioButtons = document.querySelectorAll('#howtopay input[name="PayWay"]');
+		    const hiddenInput = document.getElementById('payhistoryPayWay');
+		
+		    // 라디오 버튼 그룹에 이벤트 리스너를 추가하여 값이 변경될 때마다 숨겨진 입력 필드 업데이트
+		    radioButtons.forEach(radio => {
+		        radio.addEventListener('change', function() {
+		            // 선택된 라디오 버튼의 값을 숨겨진 입력 필드에 설정
+		            if (this.checked) {
+		                hiddenInput.value = this.value;
+		            }
+		        });
+		    });
+		
+		    // 페이지가 로드되면 초기 선택된 라디오 버튼의 값을 숨겨진 입력 필드에 설정
+		    const selectedRadio = document.querySelector('#howtopay input[name="PayWay"]:checked');
+		    if (selectedRadio) {
+		        hiddenInput.value = selectedRadio.value;
+		    }
+		    
+		});
 
+		$(document).ready(function(){
+		    // 카드 이미지 클릭 이벤트
+		    $('.card_slide').on('click', function(){
+		        // 클릭된 카드 슬라이드에서 카드 이름과 잔액을 선택
+		        var cardRegNum = $(this).find('.txt_cardNum').text();
+		        var cardName = $(this).find('.txt_name').text();
+		        var cardPrice = $(this).find('.txt_price').text();
+		
+		        $("input[name='cardRegNum']").val(cardRegNum);
+		        console.log($("input[name='cardRegNum']").val());
+		    });
+		});
 
+		
+		function requestPay() {
+            IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
+            let chargeAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
+            let payhistoryPayType = $("input[name='payhistoryPayType']").val();
+            let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
+            let payUser = '${inUser.userId}';
+            let orderName = "${mdto.menuName} ${quantity}개";
+            
+            let bucksId = "${bdto.bucksId}";
+            let menuPrice = "${(mdto.menuPrice) * quantity}";
+            let optPrice = "${optPrice*quantity}";
+            
+            
+            // 주문 데이터
+            let orders = [
+            	{ menuCode: '${mdto.menuCode}', optId: ${optId}, quantity: ${quantity} }
+            ];
+         	// JSON 배열 생성 및 문자열 변환
+            let orderJson = orders.map(order => `${mdto.menuCode}:${optId}:${quantity}`);
+            let orderList = JSON.stringify(orderJson);
+        	
+            // 결제 요청
+            IMP.request_pay({
+                pg: 'kakaopay.TC0ONETIME',
+                pay_method: 'card',
+                merchant_uid: 'JAVABUCKS_' + new Date().getTime(), // 주문번호
+                name: orderList, // 결제할 orderList
+                amount: chargeAmount, // 결제할 금액
+                buyer_name: payUser // 구매자 이름
+            }, function (rsp) {
+                if (rsp.success) {
+                    // 결제 성공 시 서버에 데이터 전송
+                     $.ajax({
+                    url: 'orderPayCheck.ajax',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        imp_uid: rsp.imp_uid,
+                        merchant_uid: rsp.merchant_uid,
+                        paid_amount: rsp.paid_amount,
+                        userId: payUser,
+                        bucksId: bucksId,
+                        orderPrice: chargeAmount,
+                        payhistoryPrice: chargeAmount,
+                        payhistoryPayType: payhistoryPayType,
+                        payhistoryPayWay: payhistoryPayWay,
+                        orderType: payhistoryPayType,
+                        orderList: orderList, 
+                        menuPrice: menuPrice,
+                        optPrice: optPrice
+                    }),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('결제가 성공적으로 완료되었습니다.');
+                        } else {
+                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('처리 중 오류가 발생했습니다:', error);
+                    }
+                });
+                } else {
+                    // 결제 실패 시 처리
+                    alert(rsp.error_msg);
+                }
+            });
+        }
 </script>	
 	

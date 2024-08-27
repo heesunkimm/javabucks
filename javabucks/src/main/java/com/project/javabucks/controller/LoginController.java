@@ -155,14 +155,7 @@ public class LoginController {
 	 
 	// 로그인 ---------------------------------
 	// 로그인을 누르면 user_index 창으로 이동
-	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
-	@GetMapping("/user_index")
-	public String user_index() {
-		return "user/user_index";
-	}
-	
-	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
-	@PostMapping("/user_index")
+	@PostMapping("/logincheck")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
 
