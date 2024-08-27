@@ -8,11 +8,11 @@
 	<insert id="insertUser" parameterType="UserDTO">
 			INSERT INTO javabucks_user (
 		    userId, userPasswd, userName, userGender, userBirth, 
-		    userEmail1, userEmail2, userTel1, userTel2, userTel3
+		    userEmail1, userEmail2, userTel1, userTel2, userTel3, gradeCode
 		) 
 		VALUES (
 		    #{userId}, #{userPasswd}, #{userName}, #{userGender}, #{userBirth}, 
-		   #{userEmail1}, #{userEmail2}, #{userTel1}, #{userTel2}, #{userTel3}
+		   #{userEmail1}, #{userEmail2}, #{userTel1}, #{userTel2}, #{userTel3} , #{gradeCode}
 		) 
 	</insert>
 	
@@ -35,5 +35,18 @@
 	 <select id="findUserById2" parameterType="java.util.Map" resultType="UserDTO">
 		select userId from javabucks_user where userEmail1 = #{userEmail1} and userEmail2 = #{userEmail2}
 	</select>
+	
+	<update id="updateInfo" parameterType="UserDTO">
+		update javabucks_user 
+		set 
+		userNickname = #{userNickname}, 
+		userPasswd = #{userPasswd}, 
+		userTel1 = #{userTel1}, 
+		userTel2 = #{userTel2}, 
+		userTel3 = #{userTel3}, 
+		userEmail1 = #{userEmail1}, 
+		userEmail2= #{userEmail2} 
+		where userId = #{userId}
+	</update>
 
 </mapper>
