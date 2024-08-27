@@ -118,11 +118,6 @@ public class BucksDTO {
 
 	public void setOrderEnalbe(String orderEnalbe) {
 		this.orderEnalbe = orderEnalbe;
-<<<<<<< HEAD
+
 	}	
-=======
-	}
-	
-	
->>>>>>> user-jinyoung
 }

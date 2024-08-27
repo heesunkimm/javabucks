@@ -31,18 +31,26 @@ public class LoginMapper {
 	
 	// 로그인하기 위해 아이디가 있는지 확인  
 	public UserDTO findUserById(String userId) {
+		// System.out.println("???"); 찍힌다 
 		return sqlSession.selectOne("findUserById",userId);
 	}
 	
 	// 아이디찾기 이메일인증 
 //	public UserDTO emailForId(Map<String, String> params) {
 //		return sqlSession.selectOne("emailForId",params);
-//	}
+//	} 
 	
 	// 아이디 찾기 
 	public UserDTO findUserById2(Map<String, String> paramMap) {
 		return sqlSession.selectOne("findUserById2",paramMap);
 	}
+ 
+	// 개인정보 수정 
+	public int updateInfo(UserDTO dto) {
+		return sqlSession.update("updateInfo", dto);
+	}
+		
+	// 탈퇴 
 	
 	
 }
