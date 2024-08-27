@@ -103,6 +103,7 @@ public class UserController {
 		if (mode != null) {
 			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
 			req.setAttribute("storeList", list);
+			System.out.println(list);
 		}
 
 		return "/user/user_delivers";
