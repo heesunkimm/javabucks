@@ -13,19 +13,19 @@
             <div class="select_box">
                 <form name="" action="/searchMonthSales.do" method="post">
                     <div class="count_box">
-                        <span>연월</span>
-                        <div class="minus_btn img_box">
-                            <img src="../images/icons/minus.png" alt="minus" class="minusBtn">
-                        </div>
-                        <input type="text" class="dateInput" name="orderDate" value="" readonly>
-                        <div class="plus_btn img_box">
-                            <img src="../images/icons/plus.png" alt="plus" class="plusBtn">
-                        </div>
-                        <label>지점명
-                        <input type="text" name="bucksName" value="" style="border: 1px solid #666; width: 200px;">
-                    </label>
-                        <button type="submit">검색</button>
-                    </div>
+        <span>연월</span>
+        <div class="minus_btn img_box">
+            <img src="../images/icons/minus.png" alt="minus" class="minusBtn">
+        </div>
+        <input type="text" class="dateInput" name="orderDate" value="${orderDate}" readonly>
+        <div class="plus_btn img_box">
+            <img src="../images/icons/plus.png" alt="plus" class="plusBtn">
+        </div>
+        <label>지점명
+            <input type="text" name="bucksName" value="${bucksName}" style="border: 1px solid #666; width: 200px;">
+        </label>
+        <button type="submit">검색</button>
+    </div>
                 </form>
 
                 <div class="list_box">
@@ -82,49 +82,52 @@
  <script>
 //검색 기능시간 
 	document.addEventListener('DOMContentLoaded', function() {
-	    const dateInput = document.querySelector('.dateInput');
-	    const minusBtn = document.querySelector('.minusBtn');
-	    const plusBtn = document.querySelector('.plusBtn');
+    const dateInput = document.querySelector('.dateInput');
+    const minusBtn = document.querySelector('.minusBtn');
+    const plusBtn = document.querySelector('.plusBtn');
 
-	    // 현재 날짜로 초기화
-	    const now = new Date();
-	    let year = now.getFullYear();
-	    let month = now.getMonth() + 1; // 0부터 시작하므로 +1
+    // 서버에서 전달된 값이 없을 경우 현재 날짜로 초기화
+    if (!dateInput.value) {
+        const now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth() + 1; // 0부터 시작하므로 +1
 
-	    // 월이 한 자리 숫자일 경우 앞에 0을 추가
-	    month = month < 10 ? "0" + month : month;
+        // 월이 한 자리 숫자일 경우 앞에 0을 추가
+        month = month < 10 ? "0" + month : month;
 
-	    // 초기 값 설정
-	    dateInput.value = year + "-" + month;
+        // 초기 값 설정
+        dateInput.value = year + "-" + month;
+    }
 
-	    function updateDate(offset) {
-	        month = parseInt(month) + offset;
+    function updateDate(offset) {
+        let [year, month] = dateInput.value.split('-').map(Number);
 
-	        if (month > 12) {
-	            month = 1;
-	            year++;
-	        } else if (month < 1) {
-	            month = 12;
-	            year--;
-	        }
+        month += offset;
 
-	        // 월이 한 자리 숫자일 경우 앞에 0을 추가
-	        month = month < 10 ? "0" + month : month;
+        if (month > 12) {
+            month = 1;
+            year++;
+        } else if (month < 1) {
+            month = 12;
+            year--;
+        }
 
-	        dateInput.value = year + "-" + month;
-	    }
+        // 월이 한 자리 숫자일 경우 앞에 0을 추가
+        month = month < 10 ? "0" + month : month;
 
-	    minusBtn.addEventListener('click', function() {
-	        updateDate(-1);
-	    });
+        dateInput.value = year + "-" + month;
+    }
 
-	    plusBtn.addEventListener('click', function() {
-	        updateDate(1);
-	    });
-	    
-	});
-	
-	
+    minusBtn.addEventListener('click', function() {
+        updateDate(-1);
+    });
+
+    plusBtn.addEventListener('click', function() {
+        updateDate(1);
+    });
+});
+
+
 	function MonthlyDetails(bucksId, payhistoryYearMonth) {
 	    console.log("bucksId:", bucksId); 
 	    console.log("payhistoryYearMonth:", payhistoryYearMonth); 
@@ -157,7 +160,7 @@
 	                        // 각 카테고리와 매출액, 비중을 cont_detail 리스트에 추가
 	                        $('.sales_cont').append(
 	                            '<li><ul class="cont_details"><li>' + category + '</li> ' +
-	                            '<li>' + totalSales + '원</li>' + '<li>' + percentage + '%</li></ul></li>'
+	                            '<li>' + totalSales.toLocaleString('ko-KR') + '원</li>' + '<li>' + percentage + '%</li></ul></li>'
 	                        );
 	                    }
 	                });
