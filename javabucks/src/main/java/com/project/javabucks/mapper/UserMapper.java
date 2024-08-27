@@ -137,16 +137,32 @@ public class UserMapper {
 		return sqlSession.selectOne("getInfoById");
 	}
 
-	public FrequencyDTO getFrequencyById() {
-		return sqlSession.selectOne("getFrequencyById");
+	public List<FrequencyDTO> getFrequencyById(String userId) {
+		return sqlSession.selectList("getFrequencyById", userId);
 	}
-
-	public List<CouponListDTO> getCouponListById() {
-		return sqlSession.selectList("getCouponListById");
+	
+	public int updateGreen(String userId) {
+		return sqlSession.update("updateGreen", userId);
+	}
+	
+	public int updateGold(String userId) {
+		return sqlSession.update("updateGold", userId);
+	}
+	
+	public int updateGoldAfter(String userId) {
+		return sqlSession.update("updateGoldAfter", userId);
+	}
+	
+	public List<CouponListDTO> getCouponListById(String userId) {
+		return sqlSession.selectList("getCouponListById", userId);
 	}
 
 	public List<BucksDTO> getStoreList(String storeSearch) {
 		return sqlSession.selectList("getStoreList", storeSearch);
+	}
+	
+	public List<BucksDTO> getStoreList2(List<String> searchTerms) {
+		return sqlSession.selectList("getStoreList2", searchTerms);
 	}
 
 	public List<MenuDTO> getStoreDrinkList(String storeName) {

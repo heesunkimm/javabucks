@@ -34,7 +34,7 @@
                 </div>
                 <ul class="cart_list">
                 	<c:forEach var ="dto" items="${cart}">
-                    <li class="cart_item">
+                    <li class="cart_item">                    
                         <div class="top_box">
                             <label>
                                 <input type="checkbox" class = "item-checkbox" name="" value="">

@@ -65,7 +65,6 @@ public class LoginController {
 		// System.out.println("req:"+req); 
 //		System.out.println("dto.id:"+dto.getUserId());
 		int res =  loginMapper.insertUser(dto);
-		System.out.println("res:"+res); // 1 
 		 
 		if(res>0) {
 			req.setAttribute("msg","회원가입성공! 로그인 페이지로 이동합니다.");
@@ -154,35 +153,22 @@ public class LoginController {
 	 
 	 
 	// 로그인 ---------------------------------
-	// 로그인을 누르면 user_index 창으로 이동
-	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
-	@GetMapping("/user_index")
-	public String user_index() {
-		return "user/user_index";
-	}
-	
-	// 중요) 성진님과 중복이니 꼭 협의 후에 커밋할 것 !!!  
-	@PostMapping("/user_index")
+	// 로그인을 누르면 user_index 창으로 이동  
+	 @RequestMapping("/Logincheck")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
-
+		
 		String userId = params.get("userId");
 		String userPasswd = params.get("userPasswd");
 		String saveId = params.containsKey("saveId") ? "on" : "off";
-		
-		System.out.println("userId: "+ userId); 
-		System.out.println("userPasswd: "+ userPasswd); 
-		System.out.println("saveId: "+ saveId); 
-		System.out.println("params : " + params);
-		
+
 		// 아이디로 사용자 정보 가져오기 
 		UserDTO user = loginMapper.findUserById(userId); 
-		
+		System.out.println(user);
 		// user가 존재하면
 		if(user != null) {
 			// DB에 저장된 비밀번호와 입력한 비밀번호가 일치한지 확인
 			if(user.getUserPasswd().equals(userPasswd)) { 
-				System.out.println("로그인");
 				
 				// 세션에 사용자 정보 저장하여 로그인상태 유지
 				req.getSession().setAttribute("inUser", user); 
@@ -208,13 +194,11 @@ public class LoginController {
 			}
 			// 비밀번호 불일치
 			else if(!(user.getUserPasswd().equals(userPasswd))){
-				System.out.println("비밀번호 불일치");
 				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인후 로그인 해주세요");
 				req.setAttribute("url", "user_login");
 			}
 		// user가 존재하지 않으면 
 		}else {
-			System.out.println("누구세요?");
 			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인후 로그인 해주세요.");
 			req.setAttribute("url", "user_login");
 		}
@@ -274,7 +258,6 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
 					return "FAIL";
 				}
 
@@ -298,14 +281,12 @@ public class LoginController {
 					String email1 = params.get("userEmail1");
 					String email2 = params.get("userEmail2");
 					String email3 = email1 + "@" + email2;
-					System.out.println(params);
 
 					Map<String, String> paramMap = new HashMap<>();
 					paramMap.put("userEmail1", email1);
 					paramMap.put("userEmail2", email2);
 
 					UserDTO dto = loginMapper.findUserById2(paramMap);
-					System.out.println("dto:"+dto);
 
 					if (dto != null) {
 						// 이메일 전송 로직
@@ -328,7 +309,6 @@ public class LoginController {
 						mailSender.send(msg);
 						return "OK";
 					} else {
-						System.out.println("누구?");
 						return "FAIL";
 					}
 
@@ -383,7 +363,6 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
 					return "FAIL";
 				}
 
@@ -436,7 +415,6 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
 					return "FAIL";
 				}
 

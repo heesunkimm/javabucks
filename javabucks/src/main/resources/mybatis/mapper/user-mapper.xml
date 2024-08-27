@@ -207,20 +207,60 @@
  	
  	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
- 	<select id="getInfoById" resultType="UserDTO">
- 		SELECT * FROM javabucks_user WHERE userId= 'user001'
+ 	<select id="getInfoById" parameterType="String" resultType="UserDTO">
+ 		SELECT * FROM javabucks_user WHERE userId= #{userId}
  	</select>
  	
- 	<select id="getFrequencyById" resultType="FrequencyDTO"> 
+ 	<select id="getFrequencyById" parameterType="String" resultType="FrequencyDTO"> 
  		SELECT jf.* 
  		FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
- 		WHERE jf.userId = 'user001'
+ 		WHERE jf.userId = #{userId}
+ 		AND ju.userGradedate &lt; jf.frequencyRegDate
  	</select>
  	
- 	<select id="getCouponListById"  resultType="CouponListDTO"> 
+ 	<update id="updateGreen" parameterType="String"> 
+ 		UPDATE javabucks_user ju
+		SET ju.gradeCode = 'green', ju.userGradedate = sysdate
+		WHERE ju.gradeCode = 'welcome'
+		  AND (
+		    SELECT SUM(jf.frequencyCount)
+		    FROM javabucks_frequency jf
+		    WHERE jf.userId = ju.userId
+		      AND ju.userGradedate &lt; jf.frequencyRegDate
+		  ) > 5
+		  AND ju.userId = #{userId}	
+ 	</update>
+ 	
+ 	<update id="updateGold" parameterType="String"> 
+ 		UPDATE javabucks_user ju
+		SET ju.gradeCode = 'gold', ju.userGradedate = sysdate
+		WHERE ju.gradeCode = 'green'
+		  AND (
+		    SELECT SUM(jf.frequencyCount)
+		    FROM javabucks_frequency jf
+		    WHERE jf.userId = ju.userId
+		      AND ju.userGradedate &lt; jf.frequencyRegDate
+		  ) > 15
+		  AND ju.userId = #{userId}	
+ 	</update>
+ 	
+ 	<update id="updateGoldAfter" parameterType="String"> 
+ 		UPDATE javabucks_user ju
+		SET ju.userGradedate = sysdate
+		WHERE ju.gradeCode = 'gold'
+		  AND (
+		    SELECT SUM(jf.frequencyCount)
+		    FROM javabucks_frequency jf
+		    WHERE jf.userId = ju.userId
+		      AND ju.userGradedate &lt; jf.frequencyRegDate
+		  ) > 30
+		  AND ju.userId = #{userId}	
+ 	</update>
+ 	
+ 	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc 
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
- 		WHERE cl.userId = 'user001' and cl.cpnListStatus = 'useable' 
+ 		WHERE cl.userId = 'user001' and cl.cpnListStatus = '발급완료' 
  	</select>
  	
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
@@ -229,7 +269,20 @@
    		 WHERE bucksEnable = 'y'	
    		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
       	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
- 	</select> 	
+ 	</select>
+ 	
+ 	<select id="getStoreList2"  parameterType="map" resultType="BucksDTO"> 
+ 		 SELECT *
+	     FROM javabucks_bucks
+	     WHERE bucksEnable = 'Y'
+	     AND (
+	       <foreach item="term" collection="list" open="(" separator=" AND " close=")">
+	           (bucksName LIKE '%' || #{term} || '%' 
+	           OR bucksLocation LIKE '%' || #{term} || '%')
+	       </foreach>
+	     )
+ 	</select>
+ 	 	
  	
  	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  
@@ -239,6 +292,15 @@
    		 WHERE jb.bucksName = #{storeName} 
    		 AND jm.menuCode LIKE 'B%' 	  		 
  	</select>
+ 	
+ 	<select id="getDrinkStatus"  parameterType="String" resultType="String"> 
+ 		 SELECT jm.*  
+   		 FROM javabucks_storemenu js 
+   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId   		    
+   		 WHERE jb.bucksName = #{storeName} 
+   		 AND jm.menuCode LIKE 'B%' 	  		 
+ 	</select>
+ 	
  	
  	<select id="getStoreFoodList" parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  

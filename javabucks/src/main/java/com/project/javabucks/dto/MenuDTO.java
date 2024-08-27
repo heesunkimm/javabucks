@@ -10,6 +10,7 @@ public class MenuDTO {
 	private String menuEnable;
 	private String menuoptCode;
 	private String menuregDate;
+	private String storemenuStatus;
 	
 	public String getMenuCode() {
 		return menuCode;
@@ -59,5 +60,15 @@ public class MenuDTO {
 	public void setMenuregDate(String menuregDate) {
 		this.menuregDate = menuregDate;
 	}
+	
+	// [채성진] join용 데이터 변수 설정
+	public String getStoremenuStatus() {
+		return storemenuStatus;
+	}
+	public void setStoremenuStatus(String storemenuStatus) {
+		this.storemenuStatus = storemenuStatus;
+	}
+	
+	
 }
 

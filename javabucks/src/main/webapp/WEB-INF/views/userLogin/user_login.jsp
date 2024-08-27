@@ -68,7 +68,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="user_index" method="post">
+            <form name="f" action="Logincheck" method="post">
                 <div class="input_box">
                     <label>
                     	<c:if test="${empty cookie['saveId']}">
