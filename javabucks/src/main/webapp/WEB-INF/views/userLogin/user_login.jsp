@@ -49,9 +49,15 @@
             #user_login .popup_box .confirm_box {margin-top: 10px;}
             #user_login .popup_box .confirm_box label {position: relative;}
             #user_login .popup_box .confirm_box input { width: 200px; height: 36px; padding: 0 6px; font-size: 14px;}
+<<<<<<< HEAD
             /* #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */
             #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
             
+=======
+            
+            /* #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */ 
+            #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
+>>>>>>> dev-user-mihyun
             #user_login .popup_box .confirm_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
             #user_login .popup_box .btn_box {text-align: center;}
             #user_login .popup_box .btn_box .setting_btn {position: relative; font-size: 14px; line-height: 18px; color: #555;}
@@ -72,7 +78,11 @@
                 <div class="input_box">
                     <label>
                     	<c:if test="${empty cookie['saveId']}">
+<<<<<<< HEAD
                         	<input type="text" id="userId" name="userId" value="" placeholder="아이디 입력" required>
+=======
+                        	<input type="text" name="userId" value="" placeholder="아이디 입력" required>
+>>>>>>> dev-user-mihyun
                     	</c:if>
                     	<c:if test="${not empty cookie['saveId']}">
                         	<input type="text" name="userId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
@@ -110,7 +120,11 @@
                         </label>
                         @
                         <label>
+<<<<<<< HEAD
                             <select class="userEmail2" name="userEmail2">
+=======
+                            <select class="userEmail2" name="userEmail2" >
+>>>>>>> dev-user-mihyun
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
                                 <option value="gmail.com">gmail.com</option>
@@ -120,11 +134,20 @@
                 </div>
                 <div class="confirm_box">
                     <label>
+<<<<<<< HEAD
                         <input type="text" class="code1" name="code1" value="" placeholder="인증번호 입력" required>
                         <span id="timerMin">3</span>:<span id="timerSec">00</span>
                     </label>
                     <button class="confirm_btn1" type="button"  onclick="sendEmail_id()">인증번호 발송</button>
                     <button class="verify_btn1" type="button" onclick="verifyCode_id()">인증번호 확인</button>
+=======
+                        <input type="text" name="code" value="" placeholder="인증번호 입력" required>
+                        <!-- <span>00:00</span> -->
+                        <span id="timerMin">3</span>:
+                        <span id="timerSec">00</span>
+                    </label>
+                    <button class="confirm_btn" type="button" onclick="sendEmail()">인증번호 발송</button>
+>>>>>>> dev-user-mihyun
                 </div>
                 <div class="pbtn_box">
                     <button class="submit_btn" type="submit">확인</button>
@@ -145,18 +168,32 @@
                         </label>
                         @
                         <label>
+<<<<<<< HEAD
                             <select class="pw_email2" name="pw_email2">
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
                                 <option value="gamil.com">gmail.com</option>
+=======
+                            <select name="">
+                                <option value="">naver.com</option>
+                                <option value="">nate.com</option>
+                                <option value="">gmail.com</option>
+>>>>>>> dev-user-mihyun
                             </select>
                         </label>
                     </div>
                 </div>
                 <div class="confirm_box">
                     <label>
+<<<<<<< HEAD
                         <input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
                         <span id="pwTimerMin">3</span> : <span id="pwTimerSec">00</span>
+=======
+                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
+                        <!-- <span>00:00</span> -->
+                        <span id="timerMin">3</span>:
+                        <span id="timerSec">00</span>
+>>>>>>> dev-user-mihyun
                     </label>
                     <button class="confirm_btn" type="button" onclick="sendEmail()">인증번호 발송</button>
 					<button class="verify_btn" type="button" onclick="verifyCode()">인증번호 확인</button>
@@ -170,6 +207,7 @@
     </section>
     <!-- e: content -->
 </body>
+<<<<<<< HEAD
 
 <script type="text/javascript">
 
@@ -399,3 +437,64 @@
  
 </script>
 </html>  
+=======
+<script type="text/javascript">
+	let timer;
+	let timeRemaining = 180;
+
+	function startTimer(){
+		let timerMinId = document.getElementById('timerMin');
+		let timerSecId = document.getElementById('timerSec');
+		
+		timer = setInterval(()=>{
+			if(timeRemaining<=0){
+				clearInterval(timer);
+				alert("인증 시간이 초과되었습니다.");
+				return;
+			}
+			timeRemaining--;
+			
+			let minutes = Math.floor(timeRemaining / 60);
+			let seconds = timeRemaining % 60;
+			
+			timerMinId.textContent = minutes;
+			timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+		},1000);
+	}
+	
+	function sendEmail(){
+		let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
+		let email2 = $('.userEmail2').val();
+		
+		// 이메일 입력이 안되어있으면 focus
+		if(email1 ==""){
+			alert("이메일 주소를 입력해주세요")
+			return $('.userEmail1').focus();
+			
+		}else if(email2 == ""){
+			// $('.confirm_box').show();
+			// $('.confirm_box').style.display="block";
+		}
+		timeRemaining = 180;
+		startTimer();
+		
+		$.ajax({
+			url : 'findId',
+			type : 'POST',
+			data : { "userEmail1" : email1,
+					"userEmail2" : email2
+			},
+			success : function(res){
+				if(res == 'OK'){
+					alert("인증메일을 발송하였습니다.");
+				} 
+			},
+			error : function(err){
+				console.log(err);
+				alert("서버 요청 실패! 네트워크 상태를 확인해주세요.")
+			}
+		})
+	}
+</script>
+</html>
+>>>>>>> dev-user-mihyun
