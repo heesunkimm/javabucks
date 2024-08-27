@@ -66,6 +66,6 @@
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">관리자 OOO</em> 로그인하셨습니다.</a>
+            <a href="javascript:;"><em class="font_green">${inAdmin.adminId}</em> 로그인하셨습니다.</a>
         </div>
     </header>

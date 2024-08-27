@@ -25,8 +25,8 @@ public class StocksMapper {
 		return list;
 	 }	
 	
-	 public int bevCount() {
-		 int bevCount = sqlSession.selectOne("bevCount");
+	 public int bevCount(String bucksId) {
+		 int bevCount = sqlSession.selectOne("bevCount", bucksId);
 		 return bevCount;
 	 }
 	 
@@ -36,8 +36,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int fooCount() {
-		 int fooCount = sqlSession.selectOne("fooCount");
+	 public int fooCount(String bucksId) {
+		 int fooCount = sqlSession.selectOne("fooCount", bucksId);
 		 return fooCount;
 	 }
 	 
@@ -48,8 +48,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int cupCount() {
-		 int cupCount = sqlSession.selectOne("cupCount");
+	 public int cupCount(String bucksId) {
+		 int cupCount = sqlSession.selectOne("cupCount", bucksId);
 		 return cupCount;
 	 }
 	 
@@ -59,8 +59,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int syrCount() {
-		 int syrCount = sqlSession.selectOne("syrCount");
+	 public int syrCount(String bucksId) {
+		 int syrCount = sqlSession.selectOne("syrCount", bucksId);
 		 return syrCount;
 	 }
 	 
@@ -70,8 +70,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int whiCount() {
-		 int whiCount = sqlSession.selectOne("whiCount");
+	 public int whiCount(String bucksId) {
+		 int whiCount = sqlSession.selectOne("whiCount", bucksId);
 		 return whiCount;
 	 }
 	 
@@ -81,8 +81,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int milCount() {
-		 int milCount = sqlSession.selectOne("milCount");
+	 public int milCount(String bucksId) {
+		 int milCount = sqlSession.selectOne("milCount", bucksId);
 		 return milCount;
 	 }
 	 
@@ -92,8 +92,8 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int tumCount() {
-		 int tumCount = sqlSession.selectOne("tumCount");
+	 public int tumCount(String bucksId) {
+		 int tumCount = sqlSession.selectOne("tumCount", bucksId);
 		 return tumCount;
 	 }
 	 
@@ -103,18 +103,20 @@ public class StocksMapper {
 		return list;
 	 }
 
-	 public int wonCount() {
-		 int wonCount = sqlSession.selectOne("wonCount");
+	 public int wonCount(String bucksId) {
+		 int wonCount = sqlSession.selectOne("wonCount", bucksId);
 		 return wonCount;
 	 }
 	 // e: 지점 재고현황 조회
 	 
 	
 	 // s: 재고 장바구니 추가
-	 public int addStocksCart(String stockListCode, int quantity) {
+	 public int addStocksCart(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
 		 params.put("quantity", quantity);
+		 params.put("bucksId", bucksId);
+
 		 int addCartResult = sqlSession.insert("addStocksCart", params);
 		 return addCartResult;
 	 }
@@ -122,27 +124,29 @@ public class StocksMapper {
 	 
 	 
 	 // s: 재고 장바구니 조회
-	 public List<StockCartDTO> stockCartList(){
-		 List<StockCartDTO> list = sqlSession.selectList("stockCartList");
+	 public List<StockCartDTO> stockCartList(String bucksId){
+		 List<StockCartDTO> list = sqlSession.selectList("stockCartList", bucksId);
 		 return list;
 	 }	 
 	 // e: 재고 장바구니 조회
 	 
 	 // s: 장바구니 수량 추가
-	 public int updateCartQuantity(String stockListCode, int quantity) {
+	 public int updateCartQuantity(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
-		 params.put("quantity", quantity);		 
+		 params.put("quantity", quantity);
+		 params.put("bucksId", bucksId);
 		 int updateResult = sqlSession.update("updateCartQuantity", params);		 
 		 return updateResult;
 	 }
 	 // e: 장바구니 수량 추가
 	 
 	 // s: 재고 장바구니 수량 변경
-	 public int updateQuantity(String stockListCode, int quantity) {
+	 public int updateQuantity(String stockListCode, int quantity, String bucksId) {
 		 Map<String, Object> params = new HashMap<>();
 		 params.put("stockListCode", stockListCode);
-		 params.put("quantity", quantity);		 
+		 params.put("quantity", quantity);		
+		 params.put("bucksId", bucksId);
 		 int updateResult = sqlSession.update("updateQuantity", params);		 
 		 return updateResult;
 	 }

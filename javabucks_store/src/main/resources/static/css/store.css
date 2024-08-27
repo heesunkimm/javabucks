@@ -148,7 +148,6 @@ header .store_box {font-size: 16px;}
 
 .allMenu .select_box .select_list {margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 39px; padding: 20px; background-color: #f6f5ef;}
 .allMenu .select_box .select_list label {display: flex; align-items: center; gap: 12px; width: 180px;}
-
 .allMenu .select_box .cont_box {margin-top: 20px;}
 .allMenu .select_box .cont_box .select_tit {padding: 20px; background-color: #f6f5ef; font-size: 20px;}
 
@@ -169,6 +168,7 @@ header .store_box {font-size: 16px;}
 .allMenu .menu_list .menu_item .txt_box .txt_desc {margin-top: 6px; font-size: 14px; color: #555;}
 .allMenu .menu_list .menu_item .btn_box {display: flex; gap: 8px;} 
 .allMenu .menu_list .menu_item .btn_box button {width: 80px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.allMenu .menu_list .menu_item .btn_box .holdBtn.btn_disable {background: #ccc; cursor: default;}
 .allMenu .menu_list .menu_item .btn_box button.delBtn {background: transparent; border: 1px solid #006241; color: #006241;}
 
 /* store_stocks */
@@ -221,8 +221,9 @@ header .store_box {font-size: 16px;}
 #store_ordermanage .order_box .btn_box {margin-bottom: 20px; text-align: right;}
 #store_ordermanage .order_box .btn_box button {width: 80px; height: 26px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 #store_ordermanage .order_box .order_wrap .orders_tit {font-size: 20px; margin-bottom: 10px;}
-#store_ordermanage .order_box .order_wrap .making_list {width: 500px; max-height: 400px; overflow-y: scroll;}
-#store_ordermanage .order_box .order_wrap .list_item {width: 460px; padding: 16px 20px; border-radius: 2px;}
+#store_ordermanage .order_box .order_wrap .making_list {width: 500px; height: 400px; overflow-y: scroll;}
+#store_ordermanage .order_box .order_wrap .list_item {width: 460px; min-height: 115px; padding: 16px 20px; border-radius: 2px;}
+#store_ordermanage .order_box .order_wrap .making_item {width: 440px;}
 #store_ordermanage .order_box .order_wrap .list_item .menu_list .menu_item + .menu_item {margin-top: 6px;}
 #store_ordermanage .order_box .order_wrap .list_item .menu_list .menu_item {margin-top: 10px; font-size: 18px;}
 #store_ordermanage .order_box .order_wrap .list_item .menu_list .menu_opt {margin-top: 4px; padding-left: 6px; font-size: 16px; color: #555;}
@@ -234,7 +235,7 @@ header .store_box {font-size: 16px;}
 #store_ordermanage .order_box .order_wrap .orders + .orders {margin-top: 20px;}
 #store_ordermanage .order_box .order_wrap .orders, 
 #store_ordermanage .order_box .making_box {padding: 20px; background-color: #fefefe;}
-#store_ordermanage .order_box .order_wrap .orders .order_list {width: 500px; height: 115px;}
+#store_ordermanage .order_box .order_wrap .orders .order_list {width: 500px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list:last-child {margin-top: 20px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item {display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item dl, 

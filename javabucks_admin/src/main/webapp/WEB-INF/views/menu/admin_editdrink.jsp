@@ -100,7 +100,7 @@
 	    });
 	    
 	    // 메뉴가격 입력 이벤트
-	    $('input[name="menuPrice"]').on('input', function() {
+	    /* $('input[name="menuPrice"]').on('input', function() {
 	        // 입력값에서 숫자만 남기고 제거
 	        let value = $(this).val().replace(/[^\d]/g, '');
 
@@ -109,13 +109,13 @@
 	            value = parseInt(value, 10).toLocaleString('en-US');
 	        }
 	        $(this).val(value);
-	    });
+	    }); */
 	    // 데이터 전송시 , 제거
-	    $('#admin_adddrink form').on('submit', function(event) {
+	    /* $('#admin_editdrink form').on('submit', function(event) {
 	        $('input[name="menuPrice"]').val(function(i, value) {
 	            return value.replace(/,/g, '');
 	        });
-	    });
+	    }); */
 	    
 	    function delMenu() {
 	        if (confirm('메뉴를 삭제하시겠습니까?')) {

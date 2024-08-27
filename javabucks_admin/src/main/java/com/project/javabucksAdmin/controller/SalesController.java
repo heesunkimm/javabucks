@@ -132,7 +132,6 @@ public class SalesController {
 		public Map<String, Object> searchBucks(
 		        @RequestParam(value = "bucksName", required = false) String bucksName,
 		        @RequestParam(value = "bucksId", required = false) String bucksId,
-		        @RequestParam(value = "bucksLocation", required = false) String bucksLocation,
 		        @RequestParam(value = "startDate", required = false) String startDate,
 		        @RequestParam(value = "endDate", required = false) String endDate,
 		        @RequestParam(value = "page", defaultValue = "1") int page) {
@@ -142,11 +141,10 @@ public class SalesController {
 		    int endIndex = page * itemsPerPage;
 
 		    Map<String, Object> params = new HashMap<>();
-		    params.put("bucksName", bucksName);
-		    params.put("bucksId", bucksId);
-		    params.put("bucksLocation", bucksLocation);
-		    params.put("startDate", startDate);
-		    params.put("endDate", endDate);
+		    params.put("bucksName", bucksName != null ? bucksName : ""); // 널값이면 빈 문자열로 처리
+		    params.put("bucksId", bucksId != null ? bucksId : ""); // 널값이면 빈 문자열로 처리
+		    params.put("startDate", startDate != null ? startDate : ""); // 널값이면 빈 문자열로 처리
+		    params.put("endDate", endDate != null ? endDate : ""); // 널값이면 빈 문자열로 처리
 		    params.put("startIndex", startIndex);
 		    params.put("endIndex", endIndex);
 		    System.out.println(startIndex);
@@ -474,11 +472,31 @@ public class SalesController {
 			
 			//일별 매출관리 
 			@GetMapping("/bucksSalesD.do")
-			public String dailyBucksSales(Model model) {
+			public String dailyBucksSales(Model model,@RequestParam(value = "page", defaultValue = "1") int page,
+                    @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+				
+				
 				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales();
 				//model.addAttribute("list",orderList);
+				
+				// 페이징 처리를 위해 필요한 변수들 계산
+			    int totalItems = orderList.size(); // 전체 아이템 수
+			    int totalPages = (int) Math.ceil((double) totalItems / pageSize); // 총 페이지 수 계산
+			    int fromIndex = (page - 1) * pageSize; // 시작 인덱스 계산
+			    int toIndex = Math.min(fromIndex + pageSize, totalItems); // 끝 인덱스 계산
+
+			    // 잘라낸 서브리스트를 모델에 추가
+			    List<PayhistoryDTO> paginatedList = orderList.subList(fromIndex, toIndex);
+			    model.addAttribute("list", paginatedList);
+
+			    // 페이징 정보도 모델에 추가
+			    model.addAttribute("currentPage", page);
+			    model.addAttribute("totalPages", totalPages);
+			    model.addAttribute("pageSize", pageSize);
+			    
 				// 지점별로 카테고리별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
+			    Map<String, Integer> branchTotalSalesMap = new HashMap<>(); // 지점별 총 매출을 저장하는 맵
 			    int totalSalesSum = 0;  // 전체 총 매출액
 			    
 			    for (PayhistoryDTO order : orderList) {
@@ -490,7 +508,9 @@ public class SalesController {
 
 			     // 지점과 날짜별 매출 데이터를 초기화
 			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
+			       
 			        branchSalesMap.putIfAbsent(branchDateKey, new HashMap<>());
+			        System.out.println(branchSalesMap);
 			        Map<String, Integer> totalSalesByCategory = branchSalesMap.get(branchDateKey);
 			        
 			        
@@ -525,6 +545,8 @@ public class SalesController {
 			            // 해당 카테고리의 매출 합산
 			            totalSalesByCategory.put(category, totalSalesByCategory.get(category) + totalPrice);
 
+			            branchTotalSalesMap.put(branchId, branchTotalSalesMap.getOrDefault(branchId, 0) + totalPrice);
+			            
 			            // 각 주문 항목에 카테고리와 계산된 가격을 추가
 			            order.setCategory(category); // 카테고리 설정
 			            order.setTotalSales(totalPrice); // 매출액 설정
@@ -534,10 +556,13 @@ public class SalesController {
 
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
 			    model.addAttribute("branchSalesMap", branchSalesMap);
+			    model.addAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
 			    //System.out.println(branchSalesMap);
 
 			    // 주문 내역 리스트를 모델에 추가
-			    model.addAttribute("list", orderList);
+			    //model.addAttribute("list", orderList);
+			 // 주문 내역 리스트를 모델에 추가
+			    model.addAttribute("list", paginatedList);
 			    //System.out.println(orderList);
 			    
 			    model.addAttribute("total", totalSalesSum);
@@ -554,7 +579,9 @@ public class SalesController {
 			public String searchDailySales(@RequestParam("startDate") String startDate,
 		            						@RequestParam("endDate") String endDate,
 		            						@RequestParam("bucksName") String bucksName,
-		            						@RequestParam("category") String category, Model model) {
+		            						@RequestParam("category") String category,
+		            						@RequestParam(value = "page", defaultValue = "1") int page,
+		            	                    @RequestParam(value = "pageSize", defaultValue = "5") int pageSize, Model model) {
 				System.out.println(startDate);
 				System.out.println(endDate);
 				System.out.println(bucksName);
@@ -569,8 +596,25 @@ public class SalesController {
 			    List<PayhistoryDTO> orderList = salesMapper.searchDailySales(params);
 				//System.out.println(orderList);
 				
+			 // 페이징 처리를 위해 필요한 변수들 계산
+			    int totalItems = orderList.size(); // 전체 아이템 수
+			    int totalPages = (int) Math.ceil((double) totalItems / pageSize); // 총 페이지 수 계산
+			    int fromIndex = (page - 1) * pageSize; // 시작 인덱스 계산
+			    int toIndex = Math.min(fromIndex + pageSize, totalItems); // 끝 인덱스 계산
+
+			    // 잘라낸 서브리스트를 모델에 추가
+			    List<PayhistoryDTO> paginatedList = orderList.subList(fromIndex, toIndex);
+			    model.addAttribute("list", paginatedList);
+			    
+			 // 페이징 정보도 모델에 추가
+			    model.addAttribute("currentPage", page);
+			    model.addAttribute("totalPages", totalPages);
+			    model.addAttribute("pageSize", pageSize);
+			    
+			    
 			 /// 지점별로 일자별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
+			    Map<String, Integer> branchTotalSalesMap = new HashMap<>(); // 지점별 총 매출을 저장하는 맵
 			    int totalSalesSum = 0;  // 전체 총 매출액
 			    
 			    for (PayhistoryDTO order : orderList) {
@@ -641,13 +685,18 @@ public class SalesController {
 			            
 			            totalSalesSum += totalPrice;  // 총 매출액 합산
 			            
+			            branchTotalSalesMap.put(branchId, branchTotalSalesMap.getOrDefault(branchId, 0) + totalPrice);
+			            
 			         // 정상적으로 매핑되었을 때 출력
 			            System.out.println("cate after mapping: " + cate);
 			        }
 			    }
+			    
+			    
 
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
 			    model.addAttribute("branchSalesMap", branchSalesMap);
+			    model.addAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
 			    //System.out.println(branchSalesMap);
 
 			    // 주문 내역 리스트를 모델에 추가
@@ -661,7 +710,7 @@ public class SalesController {
 			}
 			
             
-            
+
 			
 	
 }

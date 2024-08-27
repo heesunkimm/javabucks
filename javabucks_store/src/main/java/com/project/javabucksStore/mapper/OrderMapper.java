@@ -1,5 +1,6 @@
 package com.project.javabucksStore.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.OrderOptDTO;
+import com.project.javabucksStore.dto.StockUseDTO;
+import com.project.javabucksStore.dto.StoreMenuDTO;
 
 @Repository
 public class OrderMapper {
@@ -104,5 +107,89 @@ public class OrderMapper {
         return sqlSession.selectOne("getWhipPrice", whipNum);
     }
 	
-
+	public int getStoreOrderListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getStoreOrderListCount", params);
+	}
+	
+	public List<OrderDTO> getStoreOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getStoreOrderList", params);
+	}
+	
+	public int getDeliverOrderListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getDeliverOrderListCount", params);
+	}
+		
+	public List<OrderDTO> getDeliverOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getDeliverOrderList", params);
+	}
+	
+	public List<OrderDTO> getAllOrderList(Map<String, Object> params){
+		return sqlSession.selectList("getAllOrderList", params);
+	}
+	
+	public List<StockUseDTO> getUseList(String menuOptCode){
+		return sqlSession.selectList("getUseList", menuOptCode);
+	}
+	
+	public int updateCountMinus(Map<String, Object> params) {
+		return sqlSession.update("updateCountMinus", params);
+	}
+	
+	public int getStoreStocksCount(Map<String, Object> params) {
+		System.out.println(params);
+		return sqlSession.selectOne("getStoreStocksCount", params);
+	}
+	
+	public String getSyrupCode(String syrupType) {
+		return sqlSession.selectOne("getSyrupCode", syrupType);
+	}
+	
+	public String getMilkCode(String milkType) {
+		return sqlSession.selectOne("getMilkCode", milkType);
+	}
+	
+	public String getStockListCode(String menuName) {
+		return sqlSession.selectOne("getStockListCode", menuName);
+	}
+	
+	public int updateOrderStatus(String orderCode) {
+		return sqlSession.update("updateOrderStatus", orderCode);
+	}
+	
+	public int getMakingListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getMakingListCount", params);
+	}
+	
+	public List<OrderDTO> getMakingList(Map<String, Object> params){
+		return sqlSession.selectList("getMakingList", params);
+	}
+	
+	public int orderStatusUpdateCancel(Map<String, Object> params) {
+		return sqlSession.update("orderStatusUpdateCancel", params);
+	}
+	
+	public int orderStatusUpdateFinish(Map<String, Object> params) {
+		return sqlSession.update("orderStatusUpdateFinish", params);
+	}
+	
+	public int storemenuStatusStop(String bucksId) {
+		return sqlSession.update("storemenuStatusStop", bucksId);
+	}
+	
+	public List<StoreMenuDTO> getStoreMenuStatus(String bucksId){
+		return sqlSession.selectList("getStoreMenuStatus", bucksId);
+	}
+	
+	public int storemenuStatusRestart(String bucksId) {
+		return sqlSession.update("storemenuStatusRestart", bucksId);
+	}
 }

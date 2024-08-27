@@ -50,20 +50,19 @@
      <!-- 특정 검색에 해당하는 지점 리스트 -->
      <select id="searchBucks" parameterType="map" resultType="BucksDTO">
     SELECT * FROM (
-        SELECT ROWNUM rnum, a.*
-        FROM (
-            SELECT *
-            FROM javabucks_bucks
-            WHERE 
-                (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
-                AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
-                AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%')
-                AND (
-                    (#{startDate} IS NULL OR #{endDate} IS NULL) 
-                    OR bucksJoindate BETWEEN #{startDate} AND #{endDate}
-                )
-            ORDER BY bucksJoindate DESC
-        ) a
+    SELECT ROWNUM rnum, a.*
+    FROM (
+        SELECT *
+        FROM javabucks_bucks
+        WHERE 
+            (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%')
+            AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%')
+            AND (
+                (#{startDate} IS NULL AND #{endDate} IS NULL) 
+                OR (bucksJoindate BETWEEN #{startDate} AND #{endDate})
+            )
+        ORDER BY bucksJoindate DESC
+    ) a
         WHERE ROWNUM &lt;= #{endIndex}
     )
     WHERE rnum &gt;= #{startIndex}
@@ -74,7 +73,6 @@
 			SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_bucks 
 			WHERE (#{bucksName} IS NULL OR bucksName LIKE '%' || #{bucksName} || '%') 
 			AND (#{bucksId} IS NULL OR bucksId LIKE '%' || #{bucksId} || '%') 
-			AND (#{bucksLocation} IS NULL OR bucksLocation LIKE '%' || #{bucksLocation} || '%') 
 			AND ( (#{startDate} IS NOT NULL AND #{endDate} IS NOT NULL AND bucksJoindate BETWEEN #{startDate} 
 			AND #{endDate}) OR (#{startDate} IS NULL AND #{endDate} IS NULL) ) </select>
 			
@@ -304,47 +302,19 @@
 	    WHERE cl.cpnListNum = #{coupon}
 	</select>
 	
-	<!-- daily Sales -->
-	<select id="dailyBucksSales" resultType="PayhistoryDTO">
-    		SELECT
-		        TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,  <!-- 날짜를 'YYYY-MM-DD' 형식으로 변환 -->
-		        p.payhistoryPrice AS payhistoryPrice,
-		        p.bucksId,
-		        o.orderCode AS orderCode,
-		        o.orderList AS orderList,
-		        b.bucksName AS branchName,
-		        b.bucksOwner
-		    FROM
-		        javabucks_payhistory p
-		    JOIN
-		        javabucks_order o ON p.orderCode = o.orderCode
-		    JOIN
-		        javabucks_bucks b ON p.bucksId = b.bucksId
-		    WHERE
-		        TRUNC(p.payhistoryDate) = TRUNC(SYSDATE)
+	<!--  daily Sales  -->
+		<select id="dailyBucksSales" resultType="PayhistoryDTO">
+		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
+		<!--  날짜를 'YYYY-MM-DD' 형식으로 변환  -->
+		p.payhistoryPrice AS payhistoryPrice, p.bucksId, o.orderCode AS orderCode, o.orderList AS orderList, b.bucksName AS branchName, b.bucksOwner FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE TRUNC(p.payhistoryDate) = TRUNC(SYSDATE)
 		</select>
-		
 		<select id="searchDailySales" parameterType="map" resultType="PayhistoryDTO">
-    SELECT
-        TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,  <!-- 날짜를 'YYYY-MM-DD' 형식으로 변환 -->
-        p.payhistoryPrice AS payhistoryPrice,
-        p.bucksId,
-        o.orderCode AS orderCode,
-        o.orderList AS orderList,
-        b.bucksName AS branchName,
-        b.bucksOwner
-    FROM
-        javabucks_payhistory p
-    JOIN
-        javabucks_order o ON p.orderCode = o.orderCode
-    JOIN
-        javabucks_bucks b ON p.bucksId = b.bucksId
-    WHERE
-        p.payhistoryDate BETWEEN #{startDate} AND #{endDate}  <!-- 기간 필터링 -->
-         
-            AND b.bucksName LIKE '%' || #{bucksName} || '%'  <!-- Oracle에서는 || 연산자로 문자열 결합 -->
-        
-</select>
-	
+		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
+		<!--  날짜를 'YYYY-MM-DD' 형식으로 변환  -->
+		p.payhistoryPrice AS payhistoryPrice, p.bucksId, o.orderCode AS orderCode, o.orderList AS orderList, b.bucksName AS branchName, b.bucksOwner FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE p.payhistoryDate BETWEEN #{startDate} AND #{endDate}
+		<!--  기간 필터링  -->
+		AND b.bucksName LIKE '%' || #{bucksName} || '%'
+		<!--  Oracle에서는 || 연산자로 문자열 결합  -->
+		</select>
 		
   </mapper>

@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="mybatis.mapper.stocks-mapper">
 
 	<!-- s: 재고 현황 조회 --> 
-	<select id="bevStocksList" resultType="StoreStocksDTO">
+	<select id="bevStocksList" parameterType="java.util.Map" resultType="StoreStocksDTO">
 		select * 
 		from ( select rownum rn, C.*
 				from ( select A.*, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'BEV'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -26,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'CAK' or stockCateCode = 'SAN'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -38,6 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'CUP'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -50,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'SYR'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -62,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'WHI'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -74,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'MIL'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -86,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'TUM'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -98,6 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 			   join javabucks_stockList B
 					   on A.stockListCode = B.stockListCode
 					   where stockCateCode = 'WON'
+					   		and bucksId = #{bucksId}
 					   order by A.stockListCode asc) C)
 		where rn between #{startRow} and #{endRow}		
 	</select>
@@ -111,6 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'BEV'
+					and bucksId = #{bucksId}
 		)
 	</select>
 	
@@ -121,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'CAK' or stockCateCode = 'SAN'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -131,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'CUP'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -141,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'SYR'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -152,6 +164,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'WHI'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -163,6 +176,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'MIL'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -173,6 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'TUM'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	
@@ -183,6 +198,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				join javabucks_stockList B
 				on A.stockListCode = B.stockListCode
 				where stockCateCode = 'WON'
+					and bucksId = #{bucksId}
 		)	
 	</select>
 	<!-- e: 재고 리스트 개수 -->
@@ -192,7 +208,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		insert into javabucks_stockCart 
    		(stockCartNum, bucksId, stockListCode, stockCartCount, stockCartRegDate) 
     	values 
-    	(seq_stockCartNum.NEXTVAL, 'bucks001', #{stockListCode}, #{quantity}, SYSDATE)
+    	(seq_stockCartNum.NEXTVAL, #{bucksId}, #{stockListCode}, #{quantity}, SYSDATE)
 	</insert>	
 	<!-- e: 재고 장바구니 추가 -->
 	
@@ -201,17 +217,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update javabucks_stockCart
 		set stockCartCount = stockCartCount + #{quantity}
 		where stockListCode = #{stockListCode}
-				and bucksid = 'bucks001'
+				and bucksId = #{bucksId}
 	</update>	
 	<!-- e: 장바구니 재고 수량 추가 -->		
 	
 	<!-- s: 재고 장바구니 조회 -->
-	<select id="stockCartList" resultType="StockCartDTO">
+	<select id="stockCartList" parameterType="String" resultType="StockCartDTO">
 		select A.stockCartNum, A.stockListCode, A.stockCartCount, A.stockCartRegDate, B.stockCateCode, B.stockListName, B.stockListPrice, B.stockListImage, B.stockListStatus
 		from javabucks_stockCart A
 		join javabucks_stockList B
 		on A.stockListCode = B.stockListCode
-	    where bucksid = 'bucks001' and A.stockCartStatus = '주문대기'
+	    where bucksId = #{bucksId} 
+	    		and A.stockCartStatus = '주문대기'
 		order by stockCartRegDate desc
 	</select>	
 	<!-- e: 재고 장바구니 조회 -->
@@ -221,7 +238,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update javabucks_stockCart
 		set stockCartCount = #{quantity}
 		where stockListCode = #{stockListCode}
-			  and bucksid = 'bucks001'
+			  and bucksId = #{bucksId}
 	</update>	
 	<!-- e: 장바구니 재고 수량 변경 -->	
 	

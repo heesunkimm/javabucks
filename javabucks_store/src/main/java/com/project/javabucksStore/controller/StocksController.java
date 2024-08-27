@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.javabucksStore.dto.BucksDTO;
 import com.project.javabucksStore.dto.StockCartDTO;
 import com.project.javabucksStore.dto.StoreStocksDTO;
 import com.project.javabucksStore.mapper.StocksMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class StocksController {
@@ -40,13 +42,20 @@ public class StocksController {
 			@RequestParam(value = "tum_pageNum", required = false, defaultValue = "1") int tum_pageNum,
 			@RequestParam(value = "won_pageNum", required = false, defaultValue = "1") int won_pageNum) {
 			
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
 		// 음료 탭
-		int bev_list_count = mapper.bevCount();
+		int bev_list_count = mapper.bevCount(bucksId);
 		Map<String, Object> bev_pagingMap = paging(bev_list_count, pageNum);
 		
 		Map<String, Object> bev_params = new HashMap<>();
 		bev_params.put("startRow", bev_pagingMap.get("startRow"));
 		bev_params.put("endRow", bev_pagingMap.get("endRow"));
+		bev_params.put("bucksId", bucksId);
+		
 		
 		List<StoreStocksDTO> bev_list = mapper.bevStocksList(bev_params);		
 		
@@ -58,12 +67,13 @@ public class StocksController {
 		
 		
 		// 푸드탭
-		int foo_list_count = mapper.fooCount();
+		int foo_list_count = mapper.fooCount(bucksId);
 		Map<String, Object> foo_pagingMap = paging(foo_list_count, foo_pageNum);
 		
 		Map<String, Object> foo_params = new HashMap<>();
 		foo_params.put("startRow", foo_pagingMap.get("startRow"));
 		foo_params.put("endRow", foo_pagingMap.get("endRow"));
+		foo_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> foo_list = mapper.fooStocksList(foo_params);		
 		
@@ -75,12 +85,13 @@ public class StocksController {
 		
 		
 		// 컵탭
-		int cup_list_count = mapper.cupCount();
+		int cup_list_count = mapper.cupCount(bucksId);
 		Map<String, Object> cup_pagingMap = paging(cup_list_count, cup_pageNum);
 		
 		Map<String, Object> cup_params = new HashMap<>();
 		cup_params.put("startRow", cup_pagingMap.get("startRow"));
 		cup_params.put("endRow", cup_pagingMap.get("endRow"));
+		cup_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> cup_list = mapper.cupStocksList(cup_params);		
 		
@@ -92,12 +103,13 @@ public class StocksController {
 
 		
 		// 시럽탭
-		int syr_list_count = mapper.syrCount();
+		int syr_list_count = mapper.syrCount(bucksId);
 		Map<String, Object> syr_pagingMap = paging(syr_list_count, syr_pageNum);
 		
 		Map<String, Object> syr_params = new HashMap<>();
 		syr_params.put("startRow", syr_pagingMap.get("startRow"));
 		syr_params.put("endRow", syr_pagingMap.get("endRow"));
+		syr_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> syr_list = mapper.syrStocksList(syr_params);		
 		
@@ -109,12 +121,13 @@ public class StocksController {
 		
 		
 		// 휘핑크림탭
-		int whi_list_count = mapper.whiCount();
+		int whi_list_count = mapper.whiCount(bucksId);
 		Map<String, Object> whi_pagingMap = paging(whi_list_count, whi_pageNum);
 		
 		Map<String, Object> whi_params = new HashMap<>();
 		whi_params.put("startRow", whi_pagingMap.get("startRow"));
 		whi_params.put("endRow", whi_pagingMap.get("endRow"));
+		whi_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> whi_list = mapper.whiStocksList(whi_params);		
 		
@@ -126,12 +139,13 @@ public class StocksController {
 		
 		
 		// 우유 탭
-		int mil_list_count = mapper.milCount();
+		int mil_list_count = mapper.milCount(bucksId);
 		Map<String, Object> mil_pagingMap = paging(mil_list_count, mil_pageNum);
 		
 		Map<String, Object> mil_params = new HashMap<>();
 		mil_params.put("startRow", mil_pagingMap.get("startRow"));
 		mil_params.put("endRow", mil_pagingMap.get("endRow"));
+		mil_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> mil_list = mapper.milStocksList(mil_params);		
 		
@@ -143,12 +157,13 @@ public class StocksController {
 				
 		
 		// 텀블러 탭
-		int tum_list_count = mapper.tumCount();
+		int tum_list_count = mapper.tumCount(bucksId);
 		Map<String, Object> tum_pagingMap = paging(tum_list_count, tum_pageNum);
 		
 		Map<String, Object> tum_params = new HashMap<>();
 		tum_params.put("startRow", tum_pagingMap.get("startRow"));
 		tum_params.put("endRow", tum_pagingMap.get("endRow"));
+		tum_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> tum_list = mapper.tumStocksList(tum_params);		
 		
@@ -160,12 +175,13 @@ public class StocksController {
 				
 		
 		// 원두 탭
-		int won_list_count = mapper.wonCount();
+		int won_list_count = mapper.wonCount(bucksId);
 		Map<String, Object> won_pagingMap = paging(won_list_count, won_pageNum);
 		
 		Map<String, Object> won_params = new HashMap<>();
 		won_params.put("startRow", won_pagingMap.get("startRow"));
 		won_params.put("endRow", won_pagingMap.get("endRow"));
+		won_params.put("bucksId", bucksId);
 		
 		List<StoreStocksDTO> won_list = mapper.wonStocksList(won_params);		
 		
@@ -209,23 +225,28 @@ public class StocksController {
 	// 재고 장바구니 추가 AJAX
 	@ResponseBody
 	@PostMapping("/addStocksCart.ajax")
-	public ResponseEntity<Map<String, Object>> addStocksCart(String stockListCode, int quantity) {	
-		// 지점 아이디 받아오는거 추가 필요		
-		List<StockCartDTO> list = mapper.stockCartList();
+	public ResponseEntity<Map<String, Object>> addStocksCart(HttpServletRequest req, String stockListCode, int quantity) {	
+		
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		List<StockCartDTO> list = mapper.stockCartList(bucksId);
 		Map<String, Object> response = new HashMap<>();
 		
 		boolean tag = false;
 		
 		// 리스트가 null인 경우
 		if(list.isEmpty()) {
-			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity, bucksId);
 			response.put("response", addCartResult);
 			return ResponseEntity.ok(response);
 		} 		
 		// 리스트가 null이 아니고 이미 해당 코드가 있는 경우 수량만 update
-		for(StockCartDTO dto : list) {
-			if (dto.getStockListCode().equals(stockListCode)) {
-				int updateCartQuantity = mapper.updateCartQuantity(stockListCode, quantity);
+		for(StockCartDTO cdto : list) {
+			if (cdto.getStockListCode().equals(stockListCode)) {
+				int updateCartQuantity = mapper.updateCartQuantity(stockListCode, quantity, bucksId);
 				response.put("response", updateCartQuantity);
 				tag = true;
 				break;
@@ -233,7 +254,7 @@ public class StocksController {
 		}				
 		// 리스트가 null이 아닌데 해당 코드는 없는 경우 코드와 수량 insert
 		if(!tag) {
-			int addCartResult = mapper.addStocksCart(stockListCode, quantity);
+			int addCartResult = mapper.addStocksCart(stockListCode, quantity, bucksId);
 			response.put("response", addCartResult);
 		}
 		
@@ -244,15 +265,26 @@ public class StocksController {
 	// 재고 장바구니
 	@GetMapping("/stocksCart.do")
 	public String stocksCart(HttpServletRequest req) {
-		// 지점 아이디 받아서 추가하는 작업 필요
-		List<StockCartDTO> list = mapper.stockCartList();
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		// 카트 List 조회
+		List<StockCartDTO> list = mapper.stockCartList(bucksId);
 		Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String tommorow = formatter.format(calendar.getTime());
         
+        
+        // 주소꺼내기
+        String address = dto.getBucksLocation();
+        
+        req.setAttribute("address", address);
 		req.setAttribute("stockCartList", list);	
 		req.setAttribute("tommorow", tommorow);
+		
 		return "/stocks/store_cart";
 	}
 		
@@ -260,10 +292,14 @@ public class StocksController {
 	// 재고 장바구니 수량 업데이트
 	@ResponseBody
 	@PostMapping("/updateQuantity.ajax")
-	public ResponseEntity<Map<String, Object>> updateQuantity(String stockListCode, int quantity) {
-		// 지점 아이디 받아오는거 추가 필요
+	public ResponseEntity<Map<String, Object>> updateQuantity(HttpServletRequest req, String stockListCode, int quantity) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
 		Map<String, Object> response = new HashMap<>();
-		int updateQuantity = mapper.updateQuantity(stockListCode, quantity);
+		int updateQuantity = mapper.updateQuantity(stockListCode, quantity, bucksId);
 		response.put("response", updateQuantity);	
 		return ResponseEntity.ok(response);		
 	}
@@ -271,9 +307,11 @@ public class StocksController {
 	// 재고 장바구니 삭제
 	@ResponseBody
 	@PostMapping("/deleteCart.ajax")
-	public ResponseEntity<Map<String, Object>> deleteCart(String stockListCode) {
-		// 지점 아이디 받아오는거 추가 필요
-		String bucksId = "bucks001";
+	public ResponseEntity<Map<String, Object>> deleteCart(HttpServletRequest req, String stockListCode) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
 		
 		Map<String, Object> response = new HashMap<>();
 		int deleteCart = mapper.deleteCart(stockListCode, bucksId);
@@ -283,12 +321,15 @@ public class StocksController {
 	
 	// 주문하기
 	@PostMapping("/addStoreOrder.do")
-	public String addStoreOrder(@RequestParam("stockCartCount") List<Integer> stockCartCount, 
+	public String addStoreOrder(HttpServletRequest req,
+								@RequestParam("stockCartCount") List<Integer> stockCartCount, 
 								@RequestParam("stockListPrice") List<Integer> stockListPrice, 
 								@RequestParam("stockListCode") List<String> stockListCode,
 								@RequestParam("stockCartNum") List<Integer> stockCartNum) throws JsonProcessingException {
-		// 지점 아이디 받아오기
-		String bucksId = "bucks001";
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
 		
 		// 총 주문금액
 		int price = 0;
