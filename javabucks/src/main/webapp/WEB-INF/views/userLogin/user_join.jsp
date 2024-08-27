@@ -65,6 +65,7 @@
             </div>
             <form name="f" action="user_join" method="post" onsubmit="return check()">
                 <div class="input_box">
+                <input type="hidden" name="gradeCode" id="gradeCode" value="green">
                     <label>
                         <input type="text" class="userName" name="userName" value="" placeholder="이름 입력" required>
                     </label>
@@ -149,6 +150,28 @@
 	let timer; 
 	let timeRemaining = 180; // 3분 
 	
+	// 이메일 인증 타이머 
+	function startTimer(){
+		let timerMinId = document.getElementById('timerMin');
+		let timerSecId = document.getElementById('timerSec');
+		
+		timer = setInterval(()=>{
+			if(timeRemaining<=0){
+				clearInterval(timer);
+				timer = null; // 타이머 변수 초기화
+				alert("인증 시간이 초과되었습니다.");
+				return;
+			}
+			timeRemaining--;
+			
+			let minutes = Math.floor(timeRemaining / 60);
+			let seconds = timeRemaining % 60;
+			
+			timerMinId.textContent = minutes;
+			timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+		},1000);
+	}
+	
 // 중복확인 버튼 유효성검사 	
 function idCheck() {
     // 입력된 아이디 값을 가져옵니다
@@ -212,25 +235,8 @@ function duplicateCheck() {
     document.querySelector('.dupcate_btn').style.display = 'none';
      
 }
-function startTimer(){
-	let timerMinId = document.getElementById('timerMin');
-	let timerSecId = document.getElementById('timerSec');
-	
-	timer = setInterval(()=>{
-		if(timeRemaining<=0){
-			clearInterval(timer);
-			alert("인증 시간이 초과되었습니다.");
-			return;
-		}
-		timeRemaining--;
-		
-		let minutes = Math.floor(timeRemaining / 60);
-		let seconds = timeRemaining % 60;
-		
-		timerMinId.textContent = minutes;
-		timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
-	},1000);
-}
+ 
+
 // 이메일인증 버튼 클릭시 유효성검사
 function sendEmail(){
 	let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
@@ -271,8 +277,18 @@ function sendEmail(){
 		}
 	})
 }
+
+// 타이머 멈추는 함수
+function stopTimer(){
+		if(timer){
+			clearInterval(timer);
+			timer = null; // 타이머 변수 초기화 
+		}
+	}
+ 
 // 이메일 인증번호  
 function codeCheck(){
+		
 	let code = $('.code').val();
 	$.ajax({
 		url : 'codeCheck',
@@ -282,6 +298,8 @@ function codeCheck(){
 			if(res=='OK'){
 				alert("인증 성공");
 				mck = true ;
+				stopTimer(); // 인증 성공시 타이머 멈추기
+				
 			}else{
 				alert("인증 실패! 다시 입력해주세요.");
 				$(".code").val("");
