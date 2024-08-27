@@ -47,7 +47,7 @@
                                 <th>주문내역</th>
                                 <th>결제금액</th>
                                 <th>주문상태</th>
-                                <th>결제취소</th>
+                                <!-- <th>결제취소</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -69,7 +69,7 @@
                                             </td>
                                             <td>${bal.baljooPrice}</td>
                                             <td>${bal.baljooStatus}</td>
-                                            <td><a href="javascript:;">취소</a></td>
+                                           <!--  <td><a href="javascript:;">취소</a></td> -->
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
