@@ -40,7 +40,7 @@
                 <li class="history_item">
                     <!-- 메뉴준비 상태, 갯수에 따라 딤처리 menu_status 추가 -->
                     <div class="img_box">
-                        <!-- <img src="" alt=""> -->
+                        <img src="../images/logo/starbucks_logo_black.png" alt="">
                     </div>
                     <div class="txt_box">
                         <p class="txt_tit">아이스 카페 아메리카노 외</p>

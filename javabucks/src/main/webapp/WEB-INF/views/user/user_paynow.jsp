@@ -102,7 +102,7 @@
             <c:if test="${cart=='imme'}">
             	<li class="pay_item">
                     <div class="img_box">
-                        <img src="/upload_menuImages/${menu.menuImages}" alt="">
+                        <img src="/upload_menuImages/${mdto.menuImages}" alt="">
                     </div>
                     <div class="txt_box">
                         <dl>

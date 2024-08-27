@@ -369,6 +369,13 @@
  		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
  	</select>
  	
+ 	<!-- 장바구니 id로 조회 -->
+ 	<select id="CartByUserid" parameterType="String" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}	 				 	  		 
+ 	</select>	
+ 	
 	<!-- 아이디로 장바구니 조회 -->
  	<select id="CartListByHistoryNum" parameterType="String" resultType="CardDTO"> 
  		 SELECT *
@@ -384,10 +391,9 @@
  	</select>	
  	
  	<!-- 메뉴 옵션찾기 -->
- 	<select id="OptionByHistoryNum" parameterType="String" resultType="orderOptDTO"> 
+ 	<select id="OptionByHistoryNum" parameterType="String" resultType="OrderOptDTO"> 
  		 SELECT *
  		 FROM javabucks_menu		 
  		 WHERE menuCode = #{menuCode}	 				 	  		 
- 	</select>	
- 	
+ 	</select>			
  </mapper>
