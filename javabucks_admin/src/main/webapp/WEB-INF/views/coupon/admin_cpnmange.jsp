@@ -136,7 +136,7 @@
 <script type="text/javascript">
 	$('input[name="cpnCode"]').on('input', function() {
         // 입력값에서 영어, 숫자, _만 남기고 제거
-        let value = $(this).val().replace(/[^A-Za-z0-9_]/g, '');
+        let value = $(this).val().replace(/[^A-Za-z0-9-]/g, '');
         $(this).val(value);
         $(this).val().toUpperCase();
     });

@@ -13,12 +13,12 @@ public class UserDTO {
 	private String userTel1;
 	private String userTel2;
 	private String userTel3;
-	private String gradeCode;
+	private String gradeCode; // welcome, green, gold
 	private String userGradedate;
 	private String userJoindate;
 	private String userEnable;
 	private String userFrequencyCount;
-
+	
 	public String getUserId() {
 		return userId;
 	}
