@@ -64,8 +64,11 @@ public class LoginController {
 	public String join_form(HttpServletRequest req, @ModelAttribute UserDTO dto) {
 		// System.out.println("req:"+req); 
 //		System.out.println("dto.id:"+dto.getUserId());
+//		System.out.println("dto.gradecode :"+dto.getGradeCode()); 
+		
 		int res =  loginMapper.insertUser(dto);
-		System.out.println("res:"+res); // 1 
+//		System.out.println("res:"+res); // 1 
+		
 		 
 		if(res>0) {
 			req.setAttribute("msg","회원가입성공! 로그인 페이지로 이동합니다.");
@@ -108,6 +111,8 @@ public class LoginController {
 		        String code = String.valueOf(random.nextInt(900000) + 100000);
 		        Cookie cookie = new Cookie("checkCode",code);
 		        // cookie.setMaxAge(60*3);
+		        cookie.setMaxAge(24 * 60 * 60);
+		        cookie.setPath("/");
 		        resp.addCookie(cookie);
 		        
 		        UserDTO dto = loginMapper.findUserByEmail(paramMap);
@@ -153,8 +158,8 @@ public class LoginController {
 	 }
 	 
 	 
-	// 로그인 ---------------------------------
-	// 로그인을 누르면 user_index 창으로 이동
+	// 로그인 --------------------------------
+
 	@PostMapping("/logincheck")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
@@ -163,10 +168,10 @@ public class LoginController {
 		String userPasswd = params.get("userPasswd");
 		String saveId = params.containsKey("saveId") ? "on" : "off";
 		
-		System.out.println("userId: "+ userId); 
-		System.out.println("userPasswd: "+ userPasswd); 
-		System.out.println("saveId: "+ saveId); 
-		System.out.println("params : " + params);
+//		System.out.println("userId: "+ userId); 
+//		System.out.println("userPasswd: "+ userPasswd); 
+//		System.out.println("saveId: "+ saveId); 
+//		System.out.println("params : " + params);
 		
 		// 아이디로 사용자 정보 가져오기 
 		UserDTO user = loginMapper.findUserById(userId); 
@@ -175,7 +180,7 @@ public class LoginController {
 		if(user != null) {
 			// DB에 저장된 비밀번호와 입력한 비밀번호가 일치한지 확인
 			if(user.getUserPasswd().equals(userPasswd)) { 
-				System.out.println("로그인");
+				//System.out.println("로그인");
 				
 				// 세션에 사용자 정보 저장하여 로그인상태 유지
 				req.getSession().setAttribute("inUser", user); 
@@ -201,13 +206,13 @@ public class LoginController {
 			}
 			// 비밀번호 불일치
 			else if(!(user.getUserPasswd().equals(userPasswd))){
-				System.out.println("비밀번호 불일치");
+				//System.out.println("비밀번호 불일치");
 				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인후 로그인 해주세요");
 				req.setAttribute("url", "user_login");
 			}
 		// user가 존재하지 않으면 
 		}else {
-			System.out.println("누구세요?");
+			//System.out.println("누구세요?");
 			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인후 로그인 해주세요.");
 			req.setAttribute("url", "user_login");
 		}
@@ -255,7 +260,8 @@ public class LoginController {
 					String code1 = String.valueOf(random.nextInt(900000) + 100000);
 
 					Cookie cookie = new Cookie("checkCode1", code1);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					cookie.setMaxAge(24 * 60 * 60);
 					cookie.setPath("/");
 					resp.addCookie(cookie);
 
@@ -267,7 +273,7 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
+					//System.out.println("누구?");
 					return "FAIL";
 				}
 
@@ -291,14 +297,14 @@ public class LoginController {
 					String email1 = params.get("userEmail1");
 					String email2 = params.get("userEmail2");
 					String email3 = email1 + "@" + email2;
-					System.out.println(params);
+					// System.out.println(params);
 
 					Map<String, String> paramMap = new HashMap<>();
 					paramMap.put("userEmail1", email1);
 					paramMap.put("userEmail2", email2);
 
 					UserDTO dto = loginMapper.findUserById2(paramMap);
-					System.out.println("dto:"+dto);
+					// System.out.println("dto:"+dto);
 
 					if (dto != null) {
 						// 이메일 전송 로직
@@ -309,7 +315,8 @@ public class LoginController {
 						String code1 = String.valueOf(random.nextInt(900000) + 100000);
 
 						Cookie cookie = new Cookie("checkCode1", code1);
-						cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+						// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+						cookie.setMaxAge(24 * 60 * 60);
 						cookie.setPath("/");
 						resp.addCookie(cookie);
 
@@ -321,7 +328,7 @@ public class LoginController {
 						mailSender.send(msg);
 						return "OK";
 					} else {
-						System.out.println("누구?");
+						// System.out.println("누구?");
 						return "FAIL";
 					}
 
@@ -364,7 +371,8 @@ public class LoginController {
 					String code = String.valueOf(random.nextInt(900000) + 100000);
 
 					Cookie cookie = new Cookie("checkCode1", code);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					cookie.setMaxAge(24 * 60 * 60);
 					cookie.setPath("/");
 					resp.addCookie(cookie);
 
@@ -376,7 +384,7 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
+					// System.out.println("누구?");
 					return "FAIL";
 				}
 
@@ -417,7 +425,8 @@ public class LoginController {
 					String code = String.valueOf(random.nextInt(900000) + 100000);
 
 					Cookie cookie = new Cookie("checkCode", code);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
+					cookie.setMaxAge(24 * 60 * 60);
 					cookie.setPath("/");
 					resp.addCookie(cookie);
 
@@ -429,7 +438,7 @@ public class LoginController {
 					mailSender.send(msg);
 					return "OK";
 				} else {
-					System.out.println("누구?");
+					// System.out.println("누구?");
 					return "FAIL";
 				}
 
@@ -438,6 +447,65 @@ public class LoginController {
 				return "FAIL";
 			}
 		}
+		
+		
+//		@PostMapping("/userInfo")
+//		public String userInfo(@RequestParam Map<String, String> params) {
+//			System.out.println("userId:" + params.get("userId"));
+//			System.out.println("userName:" + params.get("userName"));
+//			System.out.println("userBirth:" + params.get("userBirth"));
+//			System.out.println("userNickname:" + params.get("userNickname"));
+//			System.out.println("userPasswd:" + params.get("userPasswd"));
+//			System.out.println("userTel1:" + params.get("userTel1"));
+//			System.out.println("userTel2:" + params.get("userTel2"));
+//			System.out.println("userTel3: " +params.get("userTel3"));
+//			System.out.println("userEmail1:" +params.get("userEmail1"));
+//			System.out.println("userEmail2:" +params.get("userEmail2"));
+//			
+//		//	UserDTO dto = loginMapper.findUserById(id);
+//			
+//			return "";
+//		}
+		
+		// 개인정보 수정 
+		@PostMapping("/userInfo")
+		public String userInfo(HttpServletRequest req,
+				@RequestParam(value = "userId", required = false) String userId,
+				@RequestParam(value = "userNickname", required = false) String userNickname,
+			    @RequestParam(value = "userPasswd", required = false) String userPasswd,
+			    @RequestParam(value = "userTel1", required = false) String userTel1,
+			    @RequestParam(value = "userTel2", required = false) String userTel2,
+			    @RequestParam(value = "userTel3", required = false) String userTel3,
+			    @RequestParam(value = "userEmail1", required = false) String userEmail1,
+			    @RequestParam(value = "userEmail2", required = false) String userEmail2) {
+			
+		    UserDTO dto = new UserDTO();
+		    dto.setUserId(userId);  // userId를 DTO에 설정
+		    dto.setUserNickname(userNickname);
+		    dto.setUserPasswd(userPasswd);
+		    dto.setUserTel1(userTel1);
+		    dto.setUserTel2(userTel2);
+		    dto.setUserTel3(userTel3);
+		    dto.setUserEmail1(userEmail1);
+		    dto.setUserEmail2(userEmail2); 
+		    // System.out.println("....."); // 찍힌다 
+			
+			int res = loginMapper.updateInfo(dto);
+			
+			if(res > 0) {
+				req.getSession().setAttribute("inUser", dto);
+				req.setAttribute("msg", "정보가 수정되었습니다.");
+				req.setAttribute("url", "user_other");
+			}else {
+				req.setAttribute("msg", "정보수정에 실패했습니다. 정보를 다시 입력해 주세요");
+				req.setAttribute("url", "user_info");
+			}
+			
+			return "message";
+			
+		}
+		
+		
 } 
  
 	 

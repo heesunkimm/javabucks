@@ -184,6 +184,27 @@
 		pwTimeRemaining: 180  // 3분
 	}; 
 	
+	
+	// 아이디 찾기 타이머 중지 함수
+	function stopIdTimer(){
+		if (timers.idTimer) {
+	        clearInterval(timers.idTimer);  
+	        timers.idTimer = null;  
+	    }
+	    timersRemaining.idTimeRemaining = 0; 
+	}
+	
+	// 비밀번호 찾기 타이머 중지 함수
+	function stopPwTimer(){
+		if (timers.pwTimer) {
+	        clearInterval(timers.pwTimer);  
+	        timers.pwTimer = null;  
+	    }
+	    timersRemaining.pwTimeRemaining = 0; 
+	}
+	
+	
+	
 	// 아이디 타이머 
 	function startIdTimer() {
 	    clearTimer(timers.idTimer); // 기존 타이머를 정리
@@ -239,7 +260,7 @@
 		let email2 = $('select[name="userEmail2"]').val().trim();
 		
 		timersRemaining.idTimeRemaining = 180;
-		// startIdTimer();
+		startIdTimer();
 		
 		if (email1 === '' || email2 === '') {
 			alert("이메일 입력란을 모두 입력해주세요.");
@@ -256,11 +277,11 @@
 	        success: function(res) {
 	            if (res === 'OK') {
 	                alert("인증메일을 발송하였습니다.");
-	                startIdTimer();
 	                console.log("인증메일 발송완료");
 	            } else {
 	                alert("이메일 전송에 실패하였습니다. 아이디를 다시 확인해주세요");
 	                console.log("email1: " + email1 + ", email2: " + email2);
+	                stopIdTimer();
 	            }
 	        },
 	        error: function(err) {
@@ -288,6 +309,7 @@
 	            success: function(res) {
 	                if (res === 'OK') {
 	                    alert("인증번호가 일치합니다. \n아이디를 메일로 발송하였습니다. 이메일을 통해 아이디를 확인해주세요. ");
+	                    stopIdTimer(); // 아이디 인증번호 일치하면 타이머 중지
 	                    
 	                } else {
 	                    alert("아이디 전송에 실패하였습니다. 이메일을 다시 확인해주세요.");
@@ -323,7 +345,7 @@
 		let email2 = $('.pw_email2').val(); 
 		
 		timersRemaining.pwTimeRemaining = 180;
-    	// startPwTimer();
+    	startPwTimer();
  
 	    $.ajax({
 	        url: 'findByPw',
@@ -336,7 +358,6 @@
 	        success: function(res) {
 	            if (res === 'OK') {
 	                alert("인증메일을 발송하였습니다.");
-	                startPwTimer();
 	                console.log("인증메일 발송완료");
 	            } else {
 	                alert("이메일 전송에 실패하였습니다. 아이디를 다시 확인해주세요");
@@ -368,6 +389,7 @@
 	            success: function(res) {
 	                if (res === 'OK') {
 	                    alert("인증번호가 일치합니다. \n비밀번호를 메일로 발송하였습니다. 이메일을 통해 비밀번호 확인해주세요. ");
+	                    stopPwTimer();
 	                    
 	                } else {
 	                    alert("비밀번호 전송에 실패하였습니다. 아이디와 이메일을 다시 확인해주세요.");
