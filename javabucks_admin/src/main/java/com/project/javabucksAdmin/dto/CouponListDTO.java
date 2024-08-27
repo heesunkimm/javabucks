@@ -3,13 +3,12 @@ package com.project.javabucksAdmin.dto;
 public class CouponListDTO {
 
 	private int cpnListNum;
-	private String cpnListCode;
+	private String cpnCode;
 	private String userId;
-	private String cpnListStatus; // 쿠폰상태
+	private String cpnListStatus; // 쿠폰상태: 발급완료, 사용완료, 기간만료
 	private String cpnListStartDate;
 	private String cpnListEndDate;
 	private String cpnListUseDate;
-	
 	
 	public int getCpnListNum() {
 		return cpnListNum;
@@ -17,11 +16,11 @@ public class CouponListDTO {
 	public void setCpnListNum(int cpnListNum) {
 		this.cpnListNum = cpnListNum;
 	}
-	public String getCpnListCode() {
-		return cpnListCode;
+	public String getCpnCode() {
+		return cpnCode;
 	}
-	public void setCpnListCode(String cpnListCode) {
-		this.cpnListCode = cpnListCode;
+	public void setCpnCode(String cpnCode) {
+		this.cpnCode = cpnCode;
 	}
 	public String getUserId() {
 		return userId;
