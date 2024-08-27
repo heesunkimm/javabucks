@@ -12,6 +12,7 @@ import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.CartDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.MenuDTO;
@@ -222,5 +223,9 @@ public class UserMapper {
 	
 	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {	
 		return sqlSession.selectOne("CardInfoByHistoryNum", payhistoryNum);
+	}
+	
+	public List<CartDTO> CartByUserid(String userId) {	
+		return sqlSession.selectList("CartByUserid", userId);
 	}
 }

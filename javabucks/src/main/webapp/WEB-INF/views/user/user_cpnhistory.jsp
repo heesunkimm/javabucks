@@ -27,7 +27,7 @@
                 <!-- 쿠폰 사용완료시 <li class="cpn_item">에 use_complete 클래스 추가하면 딤처리됨 -->
                 <li class="cpn_item">
                     <div class="img_box">
-                        <!-- <img src="" alt=""> -->
+                        <img src="../images/icons/javabucks_cupon.png" alt="">
                     </div>
                     <div class="txt_box">
                         <p class="txt_sub">JabaBucks</p>

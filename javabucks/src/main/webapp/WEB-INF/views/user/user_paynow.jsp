@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,12 +103,12 @@
             <c:if test="${cart=='imme'}">
             	<li class="pay_item">
                     <div class="img_box">
-                        <img src="/upload_menuImages/${menu.menuImages}" alt="">
+                        <img src="/upload_menuImages/${mdto.menuImages}" alt="">
                     </div>
                     <div class="txt_box">
                         <dl>
                             <dt class="txt_tit"><span>${mdto.menuName}</span> * <span>${quantity}</span></dt>
-                            <dd class="txt_total">${(mdto.menuPrice)*quantity}원</dd>
+                            <dd class="txt_total"><fmt:formatNumber value="${(mdto.menuPrice) * quantity}" pattern="#,###"/>원</dd>
                         </dl>
                         <dl class="font_gray">
                         	<c:set var="iceOrHot" value="${fn:substring(mdto.menuoptCode, 3, 4)}" />
@@ -117,7 +118,7 @@
                             <c:if test="${iceOrHot=='H'||iceOrHot=='h'}">
                             <dt><span>HOT</span> | <span>${cupdto.cupType} * ${quantity}</span></dt>
                             </c:if>
-                            <dd>+${cupdto.cupPrice*quantity}원</dd>
+                            <dd>+<fmt:formatNumber value="${cupdto.cupPrice*quantity}" pattern="#,###"/>원</dd>
                         </dl>
                         <dl class="opt_item font_gray">
                         	<c:if test="${not empty icedto}">
@@ -125,30 +126,30 @@
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
-                        	<c:if test="${not empty shotdto}">
+                        	<c:if test="${optdto.optShotCount != 0}">
                         	<dt>샷 ${shotdto.shotType} (+${optdto.optShotCount}) * ${quantity}</dt>
-                        	<dd>+${optdto.optShotCount*600*quantity}원</dd>
+                        	<dd>+<fmt:formatNumber value="${optdto.optShotCount*600*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
-                        	<c:if test="${not empty syrupdto}">
+                        	<c:if test="${optdto.optSyrupCount != 0}">
                         	<dt>${syrupdto.syrupType} (+${optdto.optSyrupCount}) * ${quantity}</dt>
-                        	<dd>+${optdto.optSyrupCount*600*quantity}원</dd>
+                        	<dd>+<fmt:formatNumber value="${optdto.optSyrupCount*syrupdto.syrupPrice*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
                         	<c:if test="${not empty milkdto}">
                         	<dt>우유 ${milkdto.milkType} * ${quantity}</dt>
-                        	<dd>+${milkdto.milkPrice*quantity}원</dd>
+                        	<dd>+<fmt:formatNumber value="${milkdto.milkPrice*quantity}" pattern="#,###"/>원</dd>
                         	</c:if>
                         </dl>
                         <dl class="opt_item font_gray">
                         	<dt>총 추가금액</dt>
-                        	<dd>${optPrice*quantity}원</dd>
+                        	<dd><fmt:formatNumber value="${optPrice*quantity}" pattern="#,###"/>원</dd>
                         </dl>
                         <dl>
                         	<dt class="txt_tit">총 금액</dt>
-                        	<dd class="txt_total">${(mdto.menuPrice*quantity)+(optPrice*quantity)}원</dd>
+                        	<dd class="txt_total"><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
                         </dl>	
                     </div>
                 </li>
@@ -191,7 +192,7 @@
             <ul id="howtopay" class="pay_list toggle-content">
                 <li>
                     <label style="display: flex; align-items: center;">
-                        <input type="radio" class="pay_starbucks" name="paytype" value="">스타벅스 카드
+                        <input type="radio" class="pay_starbucks" name="payhistoryPayWay" value="">자바벅스 카드
                     </label>
                     <div style="width: 768px; overflow: hidden;">
                         <div class="cardlist swiper">
@@ -205,7 +206,7 @@
                                     </a>
                                         <div class="txt_box">
                                             <p class="txt_name">${card.cardName}</p>
-                                            <p class="txt_price">${card.cardPrice}원</p>
+                                            <p class="txt_price">잔액 <fmt:formatNumber value="${card.cardPrice}" pattern="#,###"/>원</p>
                                         </div>
                                 </li>
                                 </c:forEach>        
@@ -224,7 +225,7 @@
                 </li>
                 <li>
                     <label style="display: flex; align-items: center;">
-                        <input type="radio" name="paytype" value="">카카오 페이
+                        <input type="radio" name="payhistoryPayWay" value="">카카오 페이
                     </label>
                 </li>
             </ul>
@@ -233,15 +234,15 @@
                 <form name="" action="" method="post">
                     <dl>
                         <dt>주문 금액</dt>
-                        <dd>${(mdto.menuPrice*quantity)+(optPrice*quantity)}</dd>
+                        <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
                     </dl>
                     <dl class="font_gray">
                         <dt>할인 금액</dt>
-                        <dd></dd>
+                        <dd><fmt:formatNumber value="" pattern="#,###"/>원</dd>
                     </dl>
                     <dl>
                         <dt>최종 결제 금액</dt>
-                        <dd>${(mdto.menuPrice*quantity)+(optPrice*quantity)}</dd>
+                        <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
                     </dl>
                     <button class="pay_btn" type="submit">결제하기</button>
                 </form>
@@ -280,5 +281,9 @@
     <!-- e: content -->
     
 <%@ include file="user_bottom.jsp" %>
-	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>\
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript">
+
+
+</script>	
 	

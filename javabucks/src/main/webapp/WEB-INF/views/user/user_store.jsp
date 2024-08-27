@@ -39,7 +39,7 @@
                 <li class="store_item">
                     <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
                         <div class="img_box">
-                            <!-- <img src="" alt=""> -->
+                           <img src="../images/logo/starbucks_logo_black.png" alt="">
                         </div>
                         
                         <div class="txt_box">

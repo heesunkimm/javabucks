@@ -310,6 +310,7 @@ public class MenuController {
         req.setAttribute("menu", menu);
         return "/menu/" + viewName;
     }
+	
 	// 메뉴수정 공통 메소드
 	private String MenuEdit(HttpServletRequest req, MenuDTO dto,
             MultipartFile uploadImages, String redirectUrl) throws IOException {

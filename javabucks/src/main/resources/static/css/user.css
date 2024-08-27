@@ -171,7 +171,7 @@ body {max-width: 768px!important;}
 /* order */
 
 /* user_delivers */
-#user_delivers .top_box {position: fixed; top: 0; width: 768px; padding: 40px 0 20px; background-color: #fff; border-bottom: 1px solid #ccc;}
+#user_delivers .top_box {width: 768px; padding: 40px 0 20px; background-color: #fff; border-bottom: 1px solid #ccc;}
 #user_delivers .top_box .tit_box {margin-bottom: 20px; font-size: 32px;}
 
 #user_delivers .search_box form {display: flex; flex-direction: column; align-items: center; justify-content: space-between;}

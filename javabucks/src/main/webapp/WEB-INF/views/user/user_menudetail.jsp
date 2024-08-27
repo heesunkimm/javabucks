@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>   
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +29,7 @@
 		            <div class="txt_box">
 		                <p class="txt_tit">${menu.menuName}</p>
 		                <p class="txt_desc">${menu.menuDesc}</p>
-		                <p class="txt_price">${menu.menuPrice} 원</p>
+		                <p class="txt_price"><fmt:formatNumber value="${menu.menuPrice}" pattern="#,###"/>원</p>
 		            </div>
 					<c:if test="${not empty drink}">
 		            <div class="btn_box">
@@ -68,7 +69,7 @@
 		                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('shot_count')">
 		                            </div>
 		                            <label>
-		                                <input type="text" id= "shot_count" name="optShotCount" value="0" readonly>
+		                                <input type="text" id="shot_count" name="optShotCount" value="0" readonly>
 		                                <input type="hidden" name="shotNum" value="${shot.shotNum}">
 		                            </label>
 		                            <div class="plus_btn click_icon img_box">
@@ -88,15 +89,15 @@
 		                        <p>${syrup.syrupType}</p>
 		                        <div class="count_box">
 		                            <div class="minus_btn click_icon img_box">
-		                                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('${syrup.syrupType}')">
-		                            </div>
-		                            <label>
-		                                <input type="text" id= "${syrup.syrupType}" name="optSyrupCount" value="0" readonly>
-		                                <input type="hidden" name="syrupNum" value="${syrup.syrupNum}">
-		                            </label>
-		                            <div class="plus_btn click_icon img_box">
-		                                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('${syrup.syrupType}')">
-		                            </div>
+						                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('${syrup.syrupType}_count')">
+						            </div>
+						            <label>
+						                <input type="text" id="${syrup.syrupType}_count" name="optSyrupCount_${syrup.syrupNum}" value="0" readonly>
+						                <input type="hidden" id="${syrup.syrupNum}" name="" value="0">
+						            </label>
+						            <div class="plus_btn click_icon img_box">
+						                <img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('${syrup.syrupType}_count')">
+						            </div>
 		                        </div>
 		                    </div>
 		                    </c:forEach>                                    
@@ -159,6 +160,8 @@
 		                <input type="hidden" name="iceNum" id="iceNum">
 		                <input type="hidden" name="milkNum" id="milkNum">
 		                <input type="hidden" name="whipNum" id="whipNum">
+		                <input type="hidden" name="syrupNum" id="syrupNum">
+		                <input type="hidden" name="optSyrupCount" id="optSyrupCount">
 		            </div>
 		        </div>
 		            <div class="order_box">
@@ -184,26 +187,143 @@
 <%@ include file="user_bottom.jsp"%>
 
 <script type="text/javascript">
-		// 감소 버튼 클릭 시 호출되는 함수
-	    function minus(fieldId) {
-	        var input = document.getElementById(fieldId);
-	        var value = parseInt(input.value, 10); // 현재 값 가져오기
-	        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
-	        value--; // 감소
-	        if (value < 0) value = 0; // 음수 방지
-	        input.value = value; // 값 적용
-	    }
+		// 현재 선택된 시럽의 ID를 저장하는 변수
+		var selectedSyrup = null;
+		
+		// 증가 버튼 클릭 시 호출되는 함수
+		function plus(fieldId) {
+		    if (fieldId === 'shot_count') {
+		        // 샷의 수량 조정
+		        var input = document.getElementById(fieldId);
+		        var value = parseInt(input.value, 10); // 현재 값 가져오기
+		        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+		        value++;  // 값 증가
+		        input.value = value;
+		
+		        var hiddenInput = document.querySelector(`input[name="optShotCount"]`);
+		        if (hiddenInput) {
+		            hiddenInput.value = value;
+		        }
+		        return; // 샷 수량 조정 후 종료
+		    }
+		
+		    if (fieldId === 'quantity') {
+		        // 수량 조정
+		        var input = document.getElementById(fieldId);
+		        var value = parseInt(input.value, 10); // 현재 값 가져오기
+		        value = isNaN(value) ? 1 : value; // 숫자가 아닌 경우 처리, 기본값 1로 설정
+		        value++;  // 값 증가
+		        input.value = value;
+		
+		        var hiddenInput = document.querySelector(`input[name="quantity"]`);
+		        if (hiddenInput) {
+		            hiddenInput.value = value;
+		        }
+		        return; // 수량 조정 후 종료
+		    }
+		
+		    // 시럽의 수량 조정
+		    if (selectedSyrup && selectedSyrup !== fieldId) {
+		        // 다른 시럽이 선택된 상태에서 시럽을 증가시키면 알림
+		        alert('하나의 시럽만 선택할 수 있습니다.');
+		        return;
+		    }
+		
+		    var input = document.getElementById(fieldId);
+		    var value = parseInt(input.value, 10); // 현재 값 가져오기
+		    value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+		    value++;  // 값 증가
+		    input.value = value;
+		
+		    var hiddenInput = document.querySelector(`input[name="optSyrupCount"]`);
+		    if (hiddenInput) {
+		        hiddenInput.value = value;
+		    }
+		
+		    // 선택된 시럽 설정
+		    selectedSyrup = fieldId;
+			// 선택된 시럽의 카운트를 업데이트
+	        updateOptSyrupCount();
+		}
+		
+			// 감소 버튼 클릭 시 호출되는 함수
+			function minus(fieldId) {
+	        // 샷의 수량 조정
+	        if (fieldId === 'shot_count') {
+	            var input = document.getElementById(fieldId);
+	            var value = parseInt(input.value, 10);
+	            value = isNaN(value) ? 0 : value;
+	            value--;
+	            if (value < 0) value = 0;
+	            input.value = value;
 	
-	    // 증가 버튼 클릭 시 호출되는 함수
-	    function plus(fieldId) {
+	            var hiddenInput = document.querySelector(`input[name="optShotCount"]`);
+	            if (hiddenInput) {
+	                hiddenInput.value = value;
+	            }
+	            return;
+	        }
+	
+	        // 수량 조정
+	        if (fieldId === 'quantity') {
+	            var input = document.getElementById(fieldId);
+	            var value = parseInt(input.value, 10);
+	            value = isNaN(value) ? 1 : value;
+	            value--;
+	            if (value < 1) value = 1;  // 수량은 최소 1로 유지
+	            input.value = value;
+	
+	            var hiddenInput = document.querySelector(`input[name="quantity"]`);
+	            if (hiddenInput) {
+	                hiddenInput.value = value;
+	            }
+	            return;
+	        }
+	
+	        // 시럽의 수량 조정
 	        var input = document.getElementById(fieldId);
-	        var value = parseInt(input.value, 10); // 현재 값 가져오기
-	        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
-	        value++; // 증가
-	        input.value = value; // 값 적용
+	        var value = parseInt(input.value, 10);
+	        value = isNaN(value) ? 0 : value;
+	        value--;
+	        if (value < 0) value = 0;  // 음수 방지
+	        input.value = value;
+	
+	        var hiddenInput = document.querySelector(`input[name="optSyrupCount"]`);
+	        if (hiddenInput) {
+	            hiddenInput.value = value;
+	        }
+	
+	        // 시럽 수량이 0이 되면 선택된 시럽 해제
+	        if (value === 0) {
+	            if (selectedSyrup === fieldId) {
+	                selectedSyrup = null;
+	            }
+	        }
+	    
 	    }
-	    // 눌린 버튼 따라 hidden input 넣기
-	    document.querySelectorAll('input[type="button"]').forEach(button => {
+		
+			// 시럽 수량에 따라 syrupNum 필드를 업데이트하는 함수
+			function updateSyrupNum() {
+			    var syrupNumField = document.getElementById('syrupNum');
+			    var syrupNums = []; // 수량이 0보다 큰 시럽의 syrupNum을 저장할 배열
+
+			    // 모든 시럽 수량 입력 필드를 확인합니다.
+			    document.querySelectorAll('input[name^="optSyrupCount_"]').forEach(function(input) {
+			        var syrupNum = input.name.split('_').pop(); // input name에서 syrupNum 추출
+			        var count = parseInt(input.value, 10);
+
+			        // 수량이 0보다 크면 배열에 syrupNum 추가
+			        if (count > 0) {
+			            syrupNums.push(syrupNum);
+			        }
+			    });
+
+			    // 배열을 콤마로 구분된 문자열로 변환하여 hidden 필드에 설정
+			    syrupNumField.value = syrupNums.join(',');
+			}
+	    
+		    // 눌린 버튼 따라 hidden input 넣기
+		    document.querySelectorAll('input[type="button"]').forEach(button => {
 	        button.addEventListener('click', function() {
 	            // 버튼의 data-* 속성 값 읽기
 	            const cupNum = this.getAttribute('data-cupNum');
@@ -256,6 +376,7 @@
 		            }
 		        }
 			}
+			updateSyrupNum();
 			orderOptInsert(cupNum, whipNum, iceNum, milkNum);
 	    }
 		
@@ -297,5 +418,4 @@
 	            }
 	        });
 	    }
-	    
 </script>

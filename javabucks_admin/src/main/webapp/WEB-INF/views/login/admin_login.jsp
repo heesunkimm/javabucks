@@ -66,7 +66,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="admin_index" method="post">
+            <form name="f" action="admin_adminmanage" method="post">
                 <div class="input_box">
                     <label>
                         <input type="text" name="adminId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>

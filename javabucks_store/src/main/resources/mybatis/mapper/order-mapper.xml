@@ -238,4 +238,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		set orderStatus = '제조완료'
 		where orderCode = #{orderCode}	
 	</update>
+	
+	<update id="storemenuStatusStop" parameterType="String">
+		update javabucks_storeMenu
+		set storeMenuStatus = 'N'
+		where bucksId = #{bucksId}
+	</update>
+	
+	<select id="getStoreMenuStatus" parameterType="String" resultType="storeMenuDTO">
+		select storeMenuStatus from javabucks_storeMenu
+		where bucksId = #{bucksId}
+	</select>
+	
+	<update id="storemenuStatusRestart" parameterType="String">
+		update javabucks_storeMenu
+		set storeMenuStatus = 'Y'
+		where bucksId = #{bucksId}
+	</update>
 </mapper>

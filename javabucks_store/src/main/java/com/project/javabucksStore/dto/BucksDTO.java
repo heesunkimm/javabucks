@@ -14,6 +14,7 @@ public class BucksDTO {
 	private String bucksTel3;
 	private String bucksJoindate;
 	private String bucksEnable;
+	private String orderEnalbe;
 
 	public String getBucksId() {
 		return bucksId;
@@ -111,4 +112,13 @@ public class BucksDTO {
 		this.bucksEnable = bucksEnable;
 	}
 
+	public String getOrderEnalbe() {
+		return orderEnalbe;
+	}
+
+	public void setOrderEnalbe(String orderEnalbe) {
+		this.orderEnalbe = orderEnalbe;
+	}
+	
+	
 }

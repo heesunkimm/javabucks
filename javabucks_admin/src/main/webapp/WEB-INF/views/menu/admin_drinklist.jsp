@@ -103,7 +103,7 @@
 	                            <td>${fn:substring(dto.menuCode,4,5)}</td>
 	                            <td>${dto.menuCode}</td>
 	                            <td><a class="menu_btn" href="admin_editdrink?menuCode=${dto.menuCode}" data-menucode="${dto.menuCode}">${dto.menuName}</a></td>
-	                            <td><fmt:formatNumber value="${dto.menuPrice}" pattern="###,###"/></td>
+	                            <td><fmt:formatNumber value="${dto.menuPrice}" pattern="###,###"/>원</td>
 	                            <td>
 		                            <c:choose>
 									    <c:when test="${dto.menuEnable eq 'N'}">
