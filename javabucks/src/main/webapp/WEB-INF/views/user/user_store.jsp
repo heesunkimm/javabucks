@@ -57,7 +57,7 @@
                 	<c:choose>
 						<c:when test="${dto.orderEnalbe eq 'N'}">
 							<c:set var="activeClass" value="pdt_dimm" />
-		                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
+		                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksId="${dto.bucksId}" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
 		                        <div class="img_box">
 		                           <img src="../images/logo/starbucks_logo_black.png" alt="">
 		                        </div>                                              
@@ -83,6 +83,7 @@
                  <input type="hidden" name="store" value="">
                  <input type="hidden" name="pickup" value="">
                  <input type="hidden" name="storeName" value="">
+                 <input type="hidden" name="bucksId" value="">
                 <div class="select_box">
                     <a class="select_btn" href="javascript:;" onclick="submitForm('매장이용')">
                         <div class="img_box">
@@ -121,11 +122,13 @@
 		
 		        // 선택한 매장 정보 가져오기
 		        let bucksName = $(this).data('bucksname');
+		        let bucksId = $(this).data('bucksid');
 		        let popupId = $(this).data('popup');
 		
 		        // 팝업 내의 요소들에 매장 정보 삽입
 		        $("#pickupselect input[name='storeName']").val(bucksName);
-		
+		        $("#pickupselect input[name='bucksId']").val(bucksId);
+		        
 		        // 팝업 열기
 		        $('#' + popupId).show();
 		        $('.dimm').show();

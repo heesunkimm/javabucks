@@ -31,7 +31,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -52,7 +52,7 @@
                     <li class="menu_item">
                    	<c:choose>
 						<c:when test="${dto.storemenuStatus eq 'Y'}">
-	                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
+	                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
 	                            <div class="img_box">
 	                                <img src="upload_menuImages/${dto.menuImages}" alt="">
 	                            </div>
@@ -76,7 +76,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
+                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>

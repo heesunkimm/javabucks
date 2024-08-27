@@ -52,8 +52,8 @@
                     <input type="hidden" name="chargeAmount" >
                     <input type="hidden" name="cardRegNum" value="${card.cardRegNum}">
                     <input type="hidden" name="cardName" value="${card.cardName}">
-                    <input type="hidden" name="payhistoryPayType" value="charge">
-                    <input type="hidden" name="payhistoryPayWay" value="kakaopay">
+                    <input type="hidden" name="payhistoryPayType" value="충전">
+                    <input type="hidden" name="payhistoryPayWay" value="카카오페이">
                     <button class="pay_btn" type="button" onclick="requestPay()">충전하기</button>
                 </form>
             </div>

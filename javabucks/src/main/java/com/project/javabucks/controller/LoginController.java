@@ -191,8 +191,13 @@ public class LoginController {
 	 
 	 
 	// 로그인 ---------------------------------
+<<<<<<< HEAD
 	// 로그인을 누르면 user_index 창으로 이동  
 	 @RequestMapping("/Logincheck")
+=======
+	// 로그인을 누르면 user_index 창으로 이동
+	@PostMapping("/logincheck")
+>>>>>>> user-jinyoung
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
 		

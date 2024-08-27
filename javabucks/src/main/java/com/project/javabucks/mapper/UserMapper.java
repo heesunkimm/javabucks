@@ -31,6 +31,10 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
+	
+	public BucksDTO getBucksinfoById(String bucksId) {
+		return sqlSession.selectOne("getBucksinfoById", bucksId);
+	}
 
 	public int addNewCard(CardDTO dto) {
 		return sqlSession.insert("addNewCard", dto);
@@ -65,6 +69,11 @@ public class UserMapper {
 		return sqlSession.insert("paychargeCard", dto);
 	}
 
+	// Payhistory 주문결제 기록.
+	public int payhistoryOrder(PayhistoryDTO dto) {
+		return sqlSession.insert("payhistoryOrder", dto);
+	}
+
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
 		return sqlSession.update("plusCardPrice", params);
@@ -84,8 +93,8 @@ public class UserMapper {
 	}
 
 	// 주문옵션 javabucks_order_opt 테이블인서트
-	public void orderOptInsert(OrderOptDTO dto) {
-		sqlSession.insert("orderOptInsert", dto);
+	public int orderOptInsert(OrderOptDTO dto) {
+		return sqlSession.insert("orderOptInsert", dto);
 	}
 
 	// 인서트된 optId 바로 뽑기
@@ -228,20 +237,20 @@ public class UserMapper {
 	public BucksDTO StoreInfoByBucksId(String bucksId) {
 		return sqlSession.selectOne("StoreInfoByBucksId", bucksId);
 	}
-	
-	public PayhistoryDTO PayInfoByHistoryNum(int payhistoryNum) {	
+
+	public PayhistoryDTO PayInfoByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("PayInfoByHistoryNum", payhistoryNum);
 	}
-	
+
 	public String NicknameByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("NicknameByHistoryNum", payhistoryNum);
 	}
-	
-	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {	
+
+	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("CardInfoByHistoryNum", payhistoryNum);
 	}
-	
-	public List<CartDTO> CartByUserid(String userId) {	
+
+	public List<CartDTO> CartByUserid(String userId) {
 		return sqlSession.selectList("CartByUserid", userId);
 	}
 }
