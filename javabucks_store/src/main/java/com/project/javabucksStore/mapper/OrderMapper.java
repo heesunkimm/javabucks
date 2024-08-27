@@ -1,5 +1,6 @@
 package com.project.javabucksStore.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,16 +106,22 @@ public class OrderMapper {
         return sqlSession.selectOne("getWhipPrice", whipNum);
     }
 	
-	public int getStoreOrderListCount(String bucksId) {
-		return sqlSession.selectOne("getStoreOrderListCount", bucksId);
+	public int getStoreOrderListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getStoreOrderListCount", params);
 	}
 	
 	public List<OrderDTO> getStoreOrderList(Map<String, Object> params){
 		return sqlSession.selectList("getStoreOrderList", params);
 	}
 	
-	public int getDeliverOrderListCount(String bucksId) {
-		return sqlSession.selectOne("getDeliverOrderListCount", bucksId);
+	public int getDeliverOrderListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getDeliverOrderListCount", params);
 	}
 		
 	public List<OrderDTO> getDeliverOrderList(Map<String, Object> params){
@@ -154,11 +161,22 @@ public class OrderMapper {
 		return sqlSession.update("updateOrderStatus", orderCode);
 	}
 	
-	public int getMakingListCount(String bucksId) {
-		return sqlSession.selectOne("getMakingListCount", bucksId);
+	public int getMakingListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getMakingListCount", params);
 	}
 	
 	public List<OrderDTO> getMakingList(Map<String, Object> params){
 		return sqlSession.selectList("getMakingList", params);
+	}
+	
+	public int orderStatusUpdateCancel(Map<String, Object> params) {
+		return sqlSession.update("orderStatusUpdateCancel", params);
+	}
+	
+	public int orderStatusUpdateFinish(Map<String, Object> params) {
+		return sqlSession.update("orderStatusUpdateFinish", params);
 	}
 }

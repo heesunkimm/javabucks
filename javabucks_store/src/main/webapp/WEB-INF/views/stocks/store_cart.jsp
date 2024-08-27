@@ -68,7 +68,7 @@
                     </dl>
                     <dl>
                         <dt>배송지:</dt>
-                        <dd>지점주소</dd>
+                        <dd>${address}</dd>
                     </dl>
                 </div>
                 <div style="text-align: right;">

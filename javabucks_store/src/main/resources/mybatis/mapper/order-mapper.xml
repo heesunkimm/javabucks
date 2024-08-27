@@ -128,6 +128,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(*) from javabucks_order
 		where bucksId = #{bucksId}
 			and orderStatus = '주문완료'
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 			and orderType = 'order'
 	</select>
 	
@@ -138,6 +139,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					   where bucksId = #{bucksId}
 							and orderStatus = '주문완료'
 							and orderType = 'order'
+							and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 					   order by orderDate asc) A)
 		where rn between #{startRow} and #{endRow}	
 	</select>
@@ -146,6 +148,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(*) from javabucks_order
 		where bucksId = #{bucksId}
 			and orderStatus = '주문완료'
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 			and orderType = 'delivers'
 	</select>
 		
@@ -156,6 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					   where bucksId = #{bucksId}
 							and orderStatus = '주문완료'
 							and orderType = 'delivers'
+							and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 					   order by orderDate asc) A)
 		where rn between #{startRow} and #{endRow}	
 	</select>
@@ -218,7 +222,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				from ( select * from javabucks_order
 					   where bucksId = #{bucksId}
 							and orderStatus = '제조중'
+							and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 					   order by orderDate asc) A)
 		where rn between #{startRow} and #{endRow}	
 	</select>
+	
+	<update id="orderStatusUpdateCancel" parameterType="java.util.Map">
+		update javabucks_order
+		set orderStatus = '주문취소'
+		where orderCode = #{orderCode}	
+	</update>
+	
+	<update id="orderStatusUpdateFinish" parameterType="java.util.Map">
+		update javabucks_order
+		set orderStatus = '제조완료'
+		where orderCode = #{orderCode}	
+	</update>
 </mapper>
