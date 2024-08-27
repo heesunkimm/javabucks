@@ -3,6 +3,7 @@ package com.project.javabucks.controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,39 +57,74 @@ public class UserController {
 	@RequestMapping("/user_index")
 	public String userIndex(HttpSession session, HttpServletRequest req) {
 
+		// 등급(리워드)
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-		List<FrequencyDTO> list = userMapper.getFrequencyById(userId);
+		// 음료 주문해서 적립 됐을때 등급 업그레이드!, 쿠폰까지 발행하기!
+		// 등급 업그레이드
+//				if(udto.getGradeCode().equals("welcome")) {
+//					int res = userMapper.updateGreen(userId);
+//				}else if(udto.getGradeCode().equals("green")) {			
+//					int res = userMapper.updateGold(userId);
+//				}else {
+//					int res = userMapper.updateGoldAfter(userId);
+//				}
+
+		// 별 갯수 구하기
 		int frequencyById = 0;
-		for (FrequencyDTO dto : list) {
-			frequencyById = frequencyById + dto.getFrequencyCount();
+		List<FrequencyDTO> list = userMapper.getFrequencyById(userId);
+		// 등급 업데이트되면 별 갯수 초기화
+		if (list == null) {
+			frequencyById = 0;
+			// 등급 업데이트 후 별 갯수
+		} else {
+			for (FrequencyDTO dto : list) {
+				frequencyById = frequencyById + dto.getFrequencyCount();
+			}
 		}
-
+		// 현재 등급별 별 필요 갯수 및 게이지
 		if (udto.getGradeCode().equals("green")) {
-			int frequency = 30 - frequencyById;
-			int gage = (int) ((frequencyById / 30.0) * 100);
-			req.setAttribute("maxStar", "30");
+			// gold 가려면 15
+			int frequency = 15 - frequencyById;
+			int gage = (int) ((frequencyById / 15.0) * 100);
+			req.setAttribute("maxStar", "15");
 			req.setAttribute("frequency", frequency);
-			req.setAttribute("until", "Gold");
+			req.setAttribute("until", "Gold Level");
 			req.setAttribute("progress_bar", gage);
-
 		} else if (udto.getGradeCode().equals("welcome")) {
+			// green 가려면 5개
 			int frequency = 5 - frequencyById;
 			int gage = (int) ((frequencyById / 5.0) * 100);
 			req.setAttribute("maxStar", "5");
 			req.setAttribute("frequency", frequency);
-			req.setAttribute("until", "Green");
+			req.setAttribute("until", "Green Level");
+			req.setAttribute("progress_bar", gage);
+			// 골드 등급
+		} else {
+			// gold에서 별 적립 30개 넘으면
+
+			if (frequencyById > 30) {
+				// 30개 넘으면 다시 별 갯수 초기화 위해서
+				int res = userMapper.updateGoldAfter(userId);
+				frequencyById = frequencyById - 30;
+			}
+			int frequency = 30 - frequencyById;
+			int gage = (int) ((frequencyById / 30.0) * 100);
+			req.setAttribute("maxStar", "30");
+			req.setAttribute("frequency", frequency);
+			req.setAttribute("until", "next Reward");
 			req.setAttribute("progress_bar", gage);
 		}
 		req.getSession().setAttribute("inUser", udto);
 		return "/user/user_index";
+
 	}
 
 	@RequestMapping("/user_cpnhistory")
-	public String ListCpnhistory(HttpServletRequest req) {
-		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();
-		List<CouponListDTO> list = userMapper.getCouponListById();
+	public String ListCpnhistory(HttpSession session, HttpServletRequest req) {
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		List<CouponListDTO> list = userMapper.getCouponListById(userId);
 		req.setAttribute("couponlist", list);
 		return "/user/user_cpnhistory";
 	}
@@ -98,27 +134,39 @@ public class UserController {
 			String storeSearch) {
 		// 매장 검색하기
 		if (mode != null) {
-			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
-			req.setAttribute("storeList", list);
-			System.out.println(list);
+			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
+				// 공백을 기준으로 문자열을 분리하여 List로 저장
+				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
+				// 파라미터를 Map에 담아 전달
+				Map<String, Object> paramMap = new HashMap<>();
+				paramMap.put("searchTerms", searchTerms);
+				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+				req.setAttribute("storeList", list);
+			} else {
+				List<BucksDTO> list2 = userMapper.getStoreList(storeSearch);
+				req.setAttribute("storeList", list2);
+			}
 		}
 
 		return "/user/user_delivers";
 	}
 
 	@RequestMapping("/user_order")
-	public String orderMenu(HttpServletRequest req, String storeName, String pickup, String bucksId) {
+	public String orderMenu(HttpServletRequest req, String storeName, String pickup) {
 
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
+//		for(MenuDTO md : list) {
+//			String menuStatus = userMapper.getDrinkStatus(md.getMenuCode());
+//			md.setStoremenuStatus(menuStatus);
+//		}
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
 		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
+
 		req.setAttribute("drinkList", list);
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
 		req.setAttribute("store", storeName);
 		req.setAttribute("pickup", pickup);
-		req.setAttribute("bucksId", bucksId);
-		System.out.println(bucksId);
 		return "/user/user_order";
 	}
 
@@ -163,10 +211,11 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_starhistory")
-	public String userStarhistory(HttpServletRequest req, @RequestParam Map<String, String> params) {
+	public String userStarhistory(HttpSession session, HttpServletRequest req,
+			@RequestParam Map<String, String> params) {
 
-		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
 		params.put("userId", userId);
 		int star = 0;
 
@@ -267,10 +316,11 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_mymenu")
-	public String userMymenu(HttpServletRequest req, String mode, @RequestParam Map<String, String> params) {
+	public String userMymenu(HttpSession session, HttpServletRequest req, String mode,
+			@RequestParam Map<String, String> params) {
 
-		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
 
 		// 나만의메뉴 X 눌렀을때
 		if (mode != null) {
@@ -295,10 +345,11 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_recepit")
-	public String userRecepit(HttpServletRequest req, @RequestParam Map<String, String> params, String mode) {
+	public String userRecepit(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params,
+			String mode) {
 
-		UserDTO dto = userMapper.getInfoById();
-		String userId = dto.getUserId();
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
 		params.put("userId", userId);
 		int totalPrice = 0;
 		int number = 0;
@@ -700,13 +751,13 @@ public class UserController {
 		List<CardDTO> list = userMapper.listRegCardById(userId);
 		model.addAttribute("listCard", list);
 
-
 		return "/user/user_paynow";
 	}
 
 	// 주문 결제
 	@PostMapping("/orderPayCheck.ajax")
-	public ResponseEntity<Map<String, String>> orderPayOk(HttpSession session,@RequestBody OrderDTO odto ,@RequestBody PayhistoryDTO pdto) {
+	public ResponseEntity<Map<String, String>> orderPayOk(HttpSession session, @RequestBody OrderDTO odto,
+			@RequestBody PayhistoryDTO pdto) {
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		if (udto == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -717,7 +768,7 @@ public class UserController {
 		headers.add("Content-Type", "application/json; charset=UTF-8");
 		Map<String, Object> params = new HashMap<>();
 		params.put("payhistoryPrice", pdto.getPayhistoryPrice());
-		
+
 //		// 현재 날짜 + pickUp + 숫자 로 orderCode 만들기
 //		String orderCode = generateOrderCode(params.get("pickup"));
 //		// 단일주문내역 JSON Parsing
@@ -733,11 +784,11 @@ public class UserController {
 //		odto.setOptPrice(optPrice);
 //		odto.setOrderType(params.get("pickup"));
 //		odto.setOrderStatus("주문대기");
-		
+
 		try {
 			int res = userMapper.paychargeCard(pdto);
 			if (res > 0) {
-				
+
 				response.put("status", "success");
 				response.put("message", "결제가 완료되었습니다.");
 				return ResponseEntity.ok().headers(headers).body(response);

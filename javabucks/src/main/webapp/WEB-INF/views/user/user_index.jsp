@@ -32,7 +32,7 @@
                     <p class="remain_count font_green">
                         <span class="star_count">${frequency}</span>
                         <span class="star_icon star_icon--01"></span>
-                        <span class="grade_name">until ${until} Level</span>
+                        <span class="grade_name">until ${until}</span>
                     </p>
                     <div class="progress_box">
                         <progress class="progress_bar"  min="0" max="100" value="${progress_bar}"></progress>

@@ -37,16 +37,37 @@
         		</c:if>
         		<c:forEach var ="dto" items="${storeList}">
                 <li class="store_item">
-                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksId="${dto.bucksId}" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
-                        <div class="img_box">
-                           <img src="../images/logo/starbucks_logo_black.png" alt="">
-                        </div>
-                        
-                        <div class="txt_box">
-                         	  <p class="txt_store">${dto.bucksName}</p>
-             				  <p class="txt_location">${dto.bucksLocation}</p>
-                        </div>
-                    </a>
+                    <c:choose>
+                        <c:when test="${dto.orderEnalbe eq 'Y'}">
+                            <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
+                                <div class="img_box">
+                                   <img src="../images/logo/starbucks_logo_black.png" alt="">
+                                </div>                                              
+                                <div class="txt_box">
+                                       <p class="txt_store">${dto.bucksName}</p>
+                                       <p class="txt_location">${dto.bucksLocation}</p>
+                                </div>
+                            </a>
+                        </c:when>
+                    </c:choose>
+                </li>
+                </c:forEach>
+                <c:forEach var ="dto" items="${storeList}">
+                <li class="store_item">
+                    <c:choose>
+                        <c:when test="${dto.orderEnalbe eq 'N'}">
+                            <c:set var="activeClass" value="pdt_dimm" />
+                            <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
+                                <div class="img_box">
+                                   <img src="../images/logo/starbucks_logo_black.png" alt="">
+                                </div>                                              
+                                <div class="txt_box">
+                                       <p class="txt_store">${dto.bucksName}</p>
+                                       <p class="txt_location">${dto.bucksLocation}</p>
+                                </div>
+                            </a>
+                        </c:when>
+                    </c:choose>
                 </li>
                 </c:forEach>
             </ul>

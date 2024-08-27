@@ -31,7 +31,7 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	public BucksDTO getBucksinfoById(String bucksId) {
 		return sqlSession.selectOne("getBucksinfoById", bucksId);
 	}
@@ -150,12 +150,28 @@ public class UserMapper {
 		return sqlSession.selectList("getFrequencyById", userId);
 	}
 
-	public List<CouponListDTO> getCouponListById() {
-		return sqlSession.selectList("getCouponListById");
+	public int updateGreen(String userId) {
+		return sqlSession.update("updateGreen", userId);
+	}
+
+	public int updateGold(String userId) {
+		return sqlSession.update("updateGold", userId);
+	}
+
+	public int updateGoldAfter(String userId) {
+		return sqlSession.update("updateGoldAfter", userId);
+	}
+
+	public List<CouponListDTO> getCouponListById(String userId) {
+		return sqlSession.selectList("getCouponListById", userId);
 	}
 
 	public List<BucksDTO> getStoreList(String storeSearch) {
 		return sqlSession.selectList("getStoreList", storeSearch);
+	}
+
+	public List<BucksDTO> getStoreList2(List<String> searchTerms) {
+		return sqlSession.selectList("getStoreList2", searchTerms);
 	}
 
 	public List<MenuDTO> getStoreDrinkList(String storeName) {

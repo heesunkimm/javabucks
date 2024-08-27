@@ -10,54 +10,79 @@ public class MenuDTO {
 	private String menuEnable;
 	private String menuoptCode;
 	private String menuregDate;
-	
+	private String storemenuStatus;
+
 	public String getMenuCode() {
 		return menuCode;
 	}
+
 	public void setMenuCode(String menuCode) {
 		this.menuCode = menuCode;
 	}
+
 	public String getMenuName() {
 		return menuName;
 	}
+
 	public void setMenuName(String menuName) {
 		this.menuName = menuName;
 	}
+
 	public String getMenuImages() {
 		return menuImages;
 	}
+
 	public void setMenuImages(String menuImages) {
 		this.menuImages = menuImages;
 	}
+
 	public int getMenuPrice() {
 		return menuPrice;
 	}
+
 	public void setMenuPrice(int menuPrice) {
 		this.menuPrice = menuPrice;
 	}
+
 	public String getMenuDesc() {
 		return menuDesc;
 	}
+
 	public void setMenuDesc(String menuDesc) {
 		this.menuDesc = menuDesc;
 	}
+
 	public String getMenuEnable() {
 		return menuEnable;
 	}
+
 	public void setMenuEnable(String menuEnable) {
 		this.menuEnable = menuEnable;
 	}
+
 	public String getMenuoptCode() {
 		return menuoptCode;
 	}
+
 	public void setMenuoptCode(String menuoptCode) {
 		this.menuoptCode = menuoptCode;
 	}
+
 	public String getMenuregDate() {
 		return menuregDate;
 	}
+
 	public void setMenuregDate(String menuregDate) {
 		this.menuregDate = menuregDate;
 	}
-}
 
+	// [채성진] join용 데이터 변수 설정
+	public String getStoremenuStatus() {
+		return storemenuStatus;
+	}
+
+	public void setStoremenuStatus(String storemenuStatus) {
+		this.storemenuStatus = storemenuStatus;
+	}
+
+}
