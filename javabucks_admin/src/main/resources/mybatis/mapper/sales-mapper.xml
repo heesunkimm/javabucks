@@ -20,7 +20,7 @@
      	INSERT INTO javabucks_bucks (
             bucksId, bucksPasswd, bucksOwner, bucksName, bucksLocation, bucksEmail1, 
             bucksEmail2, bucksTel1, bucksTel2, bucksTel3, 
-            bucksJoindate, bucksEnable) VALUES (
+            bucksJoindate, bucksEnable, orderEnable ) VALUES (
             #{bucksId},
             #{bucksPasswd},
             #{bucksOwner},
@@ -32,6 +32,7 @@
             #{bucksTel2},
             #{bucksTel3},
             SYSDATE,
+            DEFAULT,
             DEFAULT
         )
      </insert>
