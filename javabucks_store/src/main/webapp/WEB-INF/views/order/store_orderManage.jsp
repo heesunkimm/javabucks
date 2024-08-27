@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="../store_top.jsp"%>
+<style>
+	#store_ordermanage .order_box .order_wrap .orders .order_list {min-height: 115px!important; height: auto;}
+	#store_ordermanage .order_box .order_wrap .list_item.making_item {width: 440px;}
+</style>
 <!-- s: content -->
 <section id="store_ordermanage" class="content">
     <div class="inner_wrap">
@@ -36,20 +40,20 @@
 		                                    </dl>
 		                                    <ul class="menu_list">
 		                                    	<c:forEach var="menuOrder" items="${order.orderListbyMenuOrder}">
-			                                        <li class="menu_item">${menuOrder.menuName} ${menuOrder.quantity}개</li>
-							                        <li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외</li>
+			                                        <li class="menu_item">${menuOrder.menuName} - ${menuOrder.quantity}개</li>
+			                                        <c:if test="${not empty menuOrder.cupType}">
+			                                        	<li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외 옵션</li>
 	<%-- 						                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
-							                        <li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
-							                        <li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
-							                        <li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
-							                        <li class="menu_opt" id="milk_opt">- MILK : ${menuOrder.milkType}</li>  --%>
+							                       		<li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
+							                        	<li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
+							                        	<li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
+							                        	<li class="menu_opt" id="milk_opt">- MILK : ${menuOrder.milkType}</li>  --%>
+			                                        </c:if>
 		                                        </c:forEach>
 		                                    </ul>
 		                                </div>
-		                                <form action="/startOrder.do" method="GET">
-		                                	<input type="hidden" name="orderCode" value="${order.orderCode}">
-		                                	<button type="submit">주문접수</button>
-		                                </form>	                                
+		                                <button type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${order.orderCode}">주문접수</button>
+		                                <button type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${order.orderCode}">주문취소</button>                           
 		                            </li>
 		                        </ul>
 	                       	</c:forEach>
@@ -86,20 +90,20 @@
 		                                    </dl>
 		                                    <ul class="menu_list">
 		                                        <c:forEach var="menuOrder" items="${deliver.orderListbyMenuOrder}">
-			                                        <li class="menu_item">${menuOrder.menuName} ${menuOrder.quantity}개</li>
-							                        <li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외</li>
-	<%--						                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
-	 						                        <li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
-							                        <li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
-							                        <li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
-							                        <li class="menu_opt" id="milk_opt">- MILK : ${menuOrder.milkType}</li>  --%>
+			                                        <li class="menu_item">${menuOrder.menuName} - ${menuOrder.quantity}개</li>
+							                        <c:if test="${not empty menuOrder.cupType}">
+			                                        	<li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외 옵션</li>
+	<%-- 						                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
+							                       		<li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
+							                        	<li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
+							                        	<li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
+							                        	<li class="menu_opt" id="milk_opt">- MILK : ${menuOrder.milkType}</li>  --%>
+			                                        </c:if>
 			                                    </c:forEach>
 		                                    </ul>
 		                                </div>
-		                                <form action="/startOrder.do" method="GET">
-		                                	<input type="hidden" name="orderCode" value="${deliver.orderCode}">
-		                                	<button type="submit">주문접수</button>
-		                                </form>	                                
+		                                <button type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${deliver.orderCode}">주문접수</button>
+		                                <button type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${deliver.orderCode}">주문취소</button>                      
 		                            </li>
 		                        </ul>
 		                    </c:forEach>
@@ -137,7 +141,7 @@
 		                                </dl>
 		                                <ul class="menu_list">
 		                                    <c:forEach var="menuOrder" items="${making.orderListbyMenuOrder}">
-			                                        <li class="menu_item">${menuOrder.menuName} ${menuOrder.quantity}개</li>
+			                                        <li class="menu_item">${menuOrder.menuName} - ${menuOrder.quantity}개</li>
 							                        <li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType}</li>
 							                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
 	 						                        <li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
@@ -147,11 +151,7 @@
 			                                </c:forEach>
 		                                </ul>
 		                            </div>
-		                            <form action="/endOrder.do" method="GET">
-		                                <input type="hidden" name="orderCode" value="${making.orderCode}">
-		                                <button type="submit">제조완료</button>
-		                            </form>	
-		                            <div class="pagination"></div>
+		                            <button type="button" name="orderButton" onclick="orderFinish(this)" data-orderCode="${making.orderCode}">제조완료</button>
 		                        </li>
 		                    </ul>
 		                </c:forEach>
@@ -170,6 +170,7 @@
 
         </div>
     </div>
+    <div id="messageContainer" data-message="${sessionScope.message}"></div>
 </section>
 <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
@@ -200,7 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	});
 	
+	
+	
 });
+
 
 
 
@@ -228,6 +232,81 @@ function makingNext(){
 	window.location.href='orderManage.do?storeOrder_pageNum=${storeOrder_startPage}&deliverOrder_pageNum=${deliverOrder_startPage}&making_pageNum=${making_startPage+1}'
 }
 
+function orderStart(element){
+	var orderCode = element.getAttribute('data-orderCode');
+	
+	$.ajax({
+		type : "POST",
+		url : "orderStart.ajax",
+		data : {
+			orderCode : orderCode
+		},
+		success : function(response){
+			console.log(response);
+			var resp = response;
+			var respVal = resp.response;
+			if(respVal === "success"){
+				alert("주문번호 " +orderCode + "번의 주문이 접수되었습니다.");
+			} else if (respVal === "notEnough"){
+				alert("재고가 부족하여 주문번호 " +orderCode + "번의 주문을 접수할 수 없습니다.");
+			} else if(respVal === "fail"){
+				alert("주문 접수 실패. 관리자에게 문의하세요.");
+			} else {
+				alert("주문 접수 실패. 관리자에게 문의하세요.");
+			}
+			window.location.href = "/orderManage.do"; 
+		},
+		error : function(error){
+			alert("에러 발생. 관리자에게 문의하세요.");
+			window.location.href = "/orderManage.do";
+		}		
+	});
+}
+
+
+
+function orderCancel(element){
+	const orderCode = element.getAttribute('data-orderCode');
+	console.log(orderCode);
+	
+	$.ajax({
+		type : "POST",
+		url : "orderCancel.ajax",
+		data : {
+			orderCode : orderCode
+		},
+		success : function(response){
+			alert("주문번호 " +orderCode + "번의 주문이 취소되었습니다.");
+			window.location.href = "/orderManage.do";
+		},
+		error : function(error){
+			alert("주문 취소에 실패했습니다.");
+			window.location.href = "/orderManage.do";
+		}		
+	});
+}
+
+
+function orderFinish(element){
+	const orderCode = element.getAttribute('data-orderCode');
+	console.log(orderCode);
+	
+	$.ajax({
+		type : "POST",
+		url : "orderFinish.ajax",
+		data : {
+			orderCode : orderCode
+		},
+		success : function(response){
+			alert("주문번호 " +orderCode + "번 주문의 제조가 완료되었습니다.");
+			window.location.href = "/orderManage.do";
+		},
+		error : function(error){
+			alert("주문 제조완료에 실패했습니다.");
+			window.location.href = "/orderManage.do";
+		}		
+	});
+}
 
 </script> 
 

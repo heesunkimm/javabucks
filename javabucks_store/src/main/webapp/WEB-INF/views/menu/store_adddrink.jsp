@@ -65,6 +65,7 @@
                 </li>
             </ul>
         </div>
+    <input type="hidden" name="bucksId" value="${inBucks.bucksId}">
     </section>
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
@@ -147,15 +148,18 @@
 	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
-	    let storeId = 'bucks_1111';
+	    let storeId = $("input[name='bucksId']").val();
+	    
+	    let data = { 
+        	bucksId: storeId
+    	}
 	    
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
 	        data: { 
-	        	bucksId: storeId,
-	        	
-	        	},
+	            bucksId: storeId
+	        },
 	        dataType: 'json',
 	        success: function(res) {
 	            // 메뉴 리스트 새로 업데이트
@@ -164,7 +168,7 @@
 	                let menuCode = $btn.data('code');
 
 	                let item = res.find(item => item.menuCode === menuCode);
-	                if (item && item.storemenuStatus === 'Y') {
+	                if (item) {
 	                    $btn.addClass('btn_disable').attr('data-enable', 'N');
 	                }
 	            });
@@ -210,6 +214,6 @@
 	        error: function(err) {
 	            console.log('Error: ', err);
 	        }
-    	}); 
+    	});
 	});
 </script>

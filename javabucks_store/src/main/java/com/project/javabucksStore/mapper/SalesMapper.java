@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.javabucksStore.dto.BaljooDTO;
+import com.project.javabucksStore.dto.BucksDTO;
+import com.project.javabucksStore.dto.UserDTO;
 
 @Repository
 public class SalesMapper {
@@ -16,8 +18,8 @@ public class SalesMapper {
 	private SqlSession sqlSession;
 	
 	
-	public List<BaljooDTO> baljooList(String userId){
-		return sqlSession.selectList("baljooList",userId);
+	public List<BaljooDTO> baljooList(String bucksId){
+		return sqlSession.selectList("baljooList",bucksId);
 	}
 	
 	public Map<String, Object> getStockInfo(String stockCode){

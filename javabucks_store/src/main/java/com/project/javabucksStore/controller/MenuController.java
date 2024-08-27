@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.project.javabucksStore.dto.BucksDTO;
 import com.project.javabucksStore.dto.MenuDTO;
 import com.project.javabucksStore.dto.StoreMenuDTO;
 import com.project.javabucksStore.mapper.MenuMapper;
@@ -106,13 +107,16 @@ public class MenuController {
 	@ResponseBody
 	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params,
 	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
 		
-		String bucksId = (String) params.get("bucksId");
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
 	    
-	    menuCate = "no".equals(menuCate) ? "" : menuCate;
-	    menuBase = "no".equals(menuBase) ? "" : menuBase;
+	    menuCate = "".equals(menuCate) ? "" : menuCate;
+	    menuBase = "".equals(menuBase) ? "" : menuBase;
 
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
@@ -122,11 +126,11 @@ public class MenuController {
 		int searchCount = menuMapper.searchDrinksCount(searchParams); // 검색결과별 리스트 수
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
 	    int startRow = (pageNum - 1) * pageSize + 1;
-	    int endRow = startRow + pageSize - 1;	
+	    int endRow = startRow + pageSize - 1;
 	    if (endRow > searchCount) endRow = searchCount;
-	    int no = searchCount - startRow + 1;				
+	    int no = searchCount - startRow + 1;
 	    int pageBlock = 3;
-	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
+	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);	
 	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
 	    int endPage = startPage + pageBlock - 1;
 	    if (endPage > pageCount) endPage = pageCount;
@@ -139,13 +143,13 @@ public class MenuController {
 	    
 	    drinkList = menuMapper.searchDrinks(searchParams);
 	    
-	    System.out.println("Drink List:");
-	    for (StoreMenuDTO drink : drinkList) {
-	        System.out.println("1. 메뉴명: " + drink.getMenuName());
-	        System.out.println("2. 메뉴추가가능: " + drink.getMenuEnable());
-	        System.out.println("3. 메뉴주문가능: " + drink.getStoremenuStatus());
-	        System.out.println("3. id" + drink.getBucksId());
-	    }
+//	    System.out.println("Drink List:");
+//	    for (StoreMenuDTO drink : drinkList) {
+//	        System.out.println("1. 메뉴명: " + drink.getMenuName());
+//	        System.out.println("2. 메뉴추가가능: " + drink.getMenuEnable());
+//	        System.out.println("3. 메뉴주문가능: " + drink.getStoremenuStatus());
+//	        System.out.println("3. id" + drink.getBucksId());
+//	    }
 	    
 	    req.setAttribute("searchCount", searchCount);
 	    req.setAttribute("drinkList", drinkList);
@@ -161,57 +165,17 @@ public class MenuController {
 	    return drinkList;
 	}
 	
-	// 조건에 해당하는 디저트 리스트 뽑기
-	@PostMapping("/searchDessert.ajax")
-	@ResponseBody
-	public List<StoreMenuDTO> searchDessert(HttpServletRequest req, @RequestBody Map<String, Object> params) {
-		
-		String bucksId = (String) params.get("bucksId");
-	    String menuCate = (String) params.get("menu_cate");
-	    
-		Map<String, Object> searchParams = new HashMap<>();
-		searchParams.put("bucksId", bucksId);
-		searchParams.put("menuCate", menuCate);
-		
-	    List<StoreMenuDTO> dessertList = menuMapper.searchDessert(searchParams);
-		
-//	    System.out.println("Drink List:");
-//	    for (StoreMenuDTO dessert : dessertList) {
-//	        System.out.println("1. " + " " + dessert.getMenuName());
-//	        System.out.println("2. enable" + " " + dessert.getStoreEnable());
-//	        System.out.println("3. status" + " " +dessert.getStoremenuStatus());
-//	        System.out.println("3. id" + " " +dessert.getBucksId());
-//	    }
-
-	    req.setAttribute("dessertList", dessertList);
-	    return dessertList;
-	}
-	
-	// 조건에 해당하는 MD 리스트 뽑기
-	@PostMapping("/searchMd.ajax")
-	@ResponseBody
-	public List<StoreMenuDTO> searchMd(HttpServletRequest req, @RequestBody Map<String, Object> params) {
-		
-		String bucksId = (String) params.get("bucksId");
-		String menuCate = (String) params.get("menu_cate");
-		
-		Map<String, Object> searchParams = new HashMap<>();
-		searchParams.put("bucksId", bucksId);
-		searchParams.put("menuCate", menuCate);
-		
-		List<StoreMenuDTO> mdList = menuMapper.searchMd(searchParams);
-		
-		req.setAttribute("mdList", mdList);
-		return mdList;
-	}
-	
 	// 음료 키워드 검색 리스트 뽑기
 	@PostMapping("/searchDrinksList.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchDrinksList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
 
-	    String bucksId = (String) params.get("bucksId");
-	    String searchCont = (String) params.get("menuName");
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+	    String searchCont = (String) params.get("menu_name");
 
 	    searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
 	    
@@ -224,13 +188,38 @@ public class MenuController {
 	    return filterList;
 	}
 	
+	// 조건에 해당하는 디저트 리스트 뽑기
+	@PostMapping("/searchDessert.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchDessert(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+	    String menuCate = (String) params.get("menu_cate");
+	    
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCate", menuCate);
+		
+	    List<StoreMenuDTO> dessertList = menuMapper.searchDessert(searchParams);
+
+	    req.setAttribute("dessertList", dessertList);
+	    return dessertList;
+	}
+	
 	// 디저트 키워드 검색 리스트 뽑기
 	@PostMapping("/searchDessertList.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchDessertList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
 		
-		String bucksId = (String) params.get("bucksId");
-		String searchCont = (String) params.get("menuName");
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		String searchCont = (String) params.get("menu_name");
 		
 		searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
 		
@@ -243,13 +232,39 @@ public class MenuController {
 		return filterList;
 	}
 	
+	// 조건에 해당하는 MD 리스트 뽑기
+	@PostMapping("/searchMd.ajax")
+	@ResponseBody
+	public List<StoreMenuDTO> searchMd(HttpServletRequest req, @RequestBody Map<String, Object> params) {
+		
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		String menuCate = (String) params.get("menu_cate");
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("bucksId", bucksId);
+		searchParams.put("menuCate", menuCate);
+		
+		List<StoreMenuDTO> mdList = menuMapper.searchMd(searchParams);
+		
+		req.setAttribute("mdList", mdList);
+		return mdList;
+	}
+	
 	// MD 키워드 검색 리스트 뽑기
 	@PostMapping("/searchMdList.ajax")
 	@ResponseBody
 	public List<StoreMenuDTO> searchMdList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
 		
-		String bucksId = (String) params.get("bucksId");
-		String searchCont = (String) params.get("menuName");
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		String searchCont = (String) params.get("menu_name");
 		
 		searchCont = (searchCont == null || searchCont.isEmpty()) ? "" : searchCont;
 		
@@ -263,22 +278,53 @@ public class MenuController {
 	}
 	
 	// 주문막기 - 상태변경
-//	@PostMapping("/menuStatusUpdate.ajax")
-//	@ResponseBody
-//	public String menuStatusUpdate(@RequestBody StoreMenuDTO dto) {
-//		int res= menuMapper.menuStatusUpdate(dto);
-//		
-//		
-//		
-//		return "";
-//	}
+	@PostMapping("/menuStatusUpdate.ajax")
+	@ResponseBody
+	public String menuStatusUpdate(HttpServletRequest req, @RequestBody StoreMenuDTO dto) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO bdto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = bdto.getBucksId();
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("menuCode", dto.getMenuCode());
+	    params.put("bucksId", bucksId);
+	    
+		// 지점에 등록된 메뉴 중 이미 주문막기 처리가 됐는지 여부 확인
+		StoreMenuDTO statusCheck = menuMapper.getMenuByStatus(params);
+		
+		int res = 0;
+		
+	    if (statusCheck != null) {
+	        if (statusCheck.getStoremenuStatus().equals("N")) {
+	            dto.setStoremenuStatus("Y");
+	            res = menuMapper.menuStatusUpdate(dto);
+	        }
+	    } else {
+	        dto.setStoremenuStatus("N");
+	        res = menuMapper.menuStatusUpdate(dto);
+	    }
+	    
+	    if (res > 0) {
+	        if (statusCheck != null) {
+	            return "해당 메뉴의 주문막기를 해제했습니다.";
+	        }
+	        return "해당 메뉴의 주문을 막았습니다.";
+	    } else {
+	        return "해당 메뉴의 주문을 막는데 실패하였습니다.";
+	    }
+	}
 	
 	// 메뉴삭제 - 지점에 추가한 메뉴 삭제
 	@PostMapping("/deleteMenu.ajax")
 	@ResponseBody
-	public String delDrinkList(@RequestBody Map<String, Object> params) {
+	public String delDrinkList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
 		
-		String bucksId = (String) params.get("bucksId");
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+				
 	    String menuCode = (String) params.get("menuCode");
 		
 		Map<String, Object> searchParams = new HashMap<>();

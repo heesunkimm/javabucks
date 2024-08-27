@@ -15,7 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.project.javabucksStore.dto.BaljooDTO;
+import com.project.javabucksStore.dto.BucksDTO;
+import com.project.javabucksStore.dto.UserDTO;
 import com.project.javabucksStore.mapper.SalesMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 
 @Controller
 public class SalesController {
@@ -25,10 +32,13 @@ public class SalesController {
 	
 	@GetMapping("/store_baljooManage.do")
 	public String baljooManage(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
-		String userId = "bucks_0016";
+            @RequestParam(value = "size", defaultValue = "5") int size, Model model, HttpServletRequest req) {
+		 HttpSession session = req.getSession();
+	      BucksDTO bdto = (BucksDTO)session.getAttribute("inBucks");
+	      String bucksId = bdto.getBucksId();
+	      //System.out.println(bucksId);
 		
-		List<BaljooDTO> list = salesMapper.baljooList(userId);
+		List<BaljooDTO> list = salesMapper.baljooList(bucksId);
 		
 		// 총 발주 금액 계산 (전체 리스트의 합계)
 	    double totalBaljooPrice = 0;
@@ -52,6 +62,7 @@ public class SalesController {
             baljooOrder.put("baljooNum", dto.getBaljooNum());  
             baljooOrder.put("baljooDate", dto.getBaljooDate());  
             baljooOrder.put("baljooPrice", dto.getBaljooPrice()); 
+            baljooOrder.put("baljooStatus", dto.getBaljooStatus()); 
             baljooOrder.put("stockList", new ArrayList<Map<String, Object>>());  
             
 
@@ -73,7 +84,7 @@ public class SalesController {
             updateOrderList.add(baljooOrder);
         }
         model.addAttribute("updateOrderList", updateOrderList);
-        System.out.println(updateOrderList);
+        //System.out.println(updateOrderList);
         
         model.addAttribute("totalBaljooPrice", totalBaljooPrice);
 
@@ -85,12 +96,17 @@ public class SalesController {
 	@RequestMapping("/searchBaljoo.do")
 	public String searchBaljoo(@RequestParam("year") int year,
             @RequestParam("month") int month , @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size, Model model) {
+            @RequestParam(value = "size", defaultValue = "5") int size, Model model, HttpServletRequest req) {
 			
-		System.out.println(year);
-		String userId = "bucks_0016";
+		
+		HttpSession session = req.getSession();
+	      BucksDTO bdto = (BucksDTO)session.getAttribute("inBucks");
+	      String bucksId = bdto.getBucksId();
+	     // System.out.println(bucksId);
+		//System.out.println(year);
+		
 		Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
+        params.put("userId", bucksId);
         params.put("year", year);
         params.put("month", month);
 
@@ -119,6 +135,7 @@ public class SalesController {
            baljooOrder.put("baljooNum", dto.getBaljooNum());  
            baljooOrder.put("baljooDate", dto.getBaljooDate());  
            baljooOrder.put("baljooPrice", dto.getBaljooPrice()); 
+           baljooOrder.put("baljooStatus", dto.getBaljooStatus()); 
            baljooOrder.put("stockList", new ArrayList<Map<String, Object>>());  
            
            
@@ -141,7 +158,7 @@ public class SalesController {
            updateOrderList.add(baljooOrder);
        }
        model.addAttribute("updateOrderList", updateOrderList);
-       System.out.println(updateOrderList);
+       //System.out.println(updateOrderList);
        
        model.addAttribute("totalBaljooPrice", totalBaljooPrice);
        
@@ -150,6 +167,12 @@ public class SalesController {
 		
 		return "sales/store_baljooManage";
 	}
+	
+	@RequestMapping("/store_sales.do")
+	public String storeSales() {
+		return "sales/store_salesmanage";
+	}
+	
 	
 	
 }

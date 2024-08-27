@@ -24,7 +24,7 @@
                 <div class="search_box">
                     <form name="" action="user_delivers?mode=store" method="post">
                     	<label>
-	                    	<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="" readonly>
+	                    	<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" readonly>
                     	</label>
                         <label>
                             <input type="text" name="storeSearch" value="" placeholder="주소 검색">                        </label>
@@ -48,6 +48,7 @@
                        </div>
                 </li>
                 </c:forEach>
+
             </ul>
         </div>
         

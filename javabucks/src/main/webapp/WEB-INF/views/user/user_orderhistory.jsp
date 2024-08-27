@@ -22,11 +22,10 @@
                 <label>
                     <select name="">
                         <option value="">주문상태 (전체)</option>
-                        <option value="">결제완료</option>
-                        <option value="">준비완료</option>
-                        <option value="">배달준비</option>
-                        <option value="">배달완료</option>
-                        <option value="">결제취소</option>
+                        <option value="">주문완료</option>
+                        <option value="">제조중</option>
+                        <option value="">제조완료</option>
+                        <option value="">주문취소</option>
                     </select>
                 </label>
             </div>
@@ -40,7 +39,7 @@
                 <li class="history_item">
                     <!-- 메뉴준비 상태, 갯수에 따라 딤처리 menu_status 추가 -->
                     <div class="img_box">
-                        <!-- <img src="" alt=""> -->
+                        <img src="../images/logo/starbucks_logo_black.png" alt="">
                     </div>
                     <div class="txt_box">
                         <p class="txt_tit">아이스 카페 아메리카노 외</p>

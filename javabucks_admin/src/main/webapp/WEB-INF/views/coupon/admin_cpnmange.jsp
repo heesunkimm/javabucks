@@ -114,7 +114,7 @@
                     	<label>쿠폰코드
                             <select id="cpnList" name="cpnCode">
 	                        <c:forEach var="cpn" items="${cpnList}">
-                           	<option value="${cpn.cpnCode}">${cpn.cpnName}</option>
+                           	<option value="${cpn.cpnCode}">[${cpn.cpnCode}] ${cpn.cpnName}</option>
 	                        </c:forEach>
                             </select>
                         </label>
@@ -209,18 +209,14 @@
 	        dataType: "text",
 	        success: function (res) {
 	        	// 쿠폰명, 쿠폰코드 중복체크
-	        	if (res === "중복 쿠폰 확인") {
-	                alert("해당하는 쿠폰명 또는 쿠폰코드로 등록된 쿠폰이 존재합니다.");
-	            } else {
-	                alert(couponName + " 쿠폰이 등록되었습니다.");
-	                $(".cpn_popup").removeClass("s_active");
-	                $(".dimm").removeClass("s_active");
-	                $("input[type='text']").val("");
-	                $("textarea").val("");
-		        	
-		        	// 쿠폰 등록후 리스트 다시 가져오기
-		        	loadCpnList();
-	        	}
+                alert(res);
+                $(".cpn_popup").removeClass("s_active");
+                $(".dimm").removeClass("s_active");
+                $("input[type='text']").val("");
+                $("textarea").val("");
+	        	
+	        	// 쿠폰 등록후 리스트 다시 가져오기
+	        	loadCpnList();
 	        },
 	        error: function (xhr, status, err) {
 	            console.error('AJAX 요청 실패:', status, err);
@@ -239,7 +235,7 @@
 			cpnCode: $("#cpnList").val()
 	    };
 
-		if (confirm('쿠폰을 삭제하시겠습니까?')) {
+		if (confirm(cpnName + '명의 쿠폰을 삭제하시겠습니까?')) {
 			$.ajax({
 		        url: '${pageContext.request.contextPath}/deleteCoupon.ajax',
 		        type: "POST",
@@ -247,7 +243,7 @@
 		        contentType: "application/json",
 		        dataType: "text",
 		        success: function (res) {
-		        	alert(cpnName +" 쿠폰이 삭제되었습니다.");
+		        	alert(res);
 		        	$(".cpn_popup").removeClass("s_active");
 		        	$(".dimm").removeClass("s_active");
 		        	$("input[type='text']").val("");
