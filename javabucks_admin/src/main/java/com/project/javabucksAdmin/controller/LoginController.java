@@ -48,17 +48,18 @@ public class LoginController {
 		return req.getSession() != null && req.getSession().getAttribute("inAdmin") != null;
 	}
 	
-	@GetMapping("/admin_index")
+	@GetMapping("/admin_adminmanage")
 	public String admin_index(HttpServletRequest req) {
 		if (req.getSession().getAttribute("inAdmin") == null) {
 	        // 로그인되지 않은 상태에서 접근 시 로그인 페이지로 리다이렉트
 	        return "redirect:/admin_login";
 	    }
-	    return "account/admin_index";
+	    // return "account/admin_index";
+		return "account/admin_adminmanage";
 	}
 
 	// 로그인 
-	@PostMapping("/admin_index")
+	@PostMapping("/admin_adminmanage")
 	public String admin_login(@RequestParam Map<String, String> params, HttpServletRequest req,
 			HttpServletResponse resp) {
 		String adminId = params.get("adminId");
@@ -80,7 +81,7 @@ public class LoginController {
 				// 세션에 사용자 정보 저장하여 로그인상태 유지
 				req.getSession().setAttribute("inAdmin", admin);
 				req.setAttribute("msg", admin.getAdminId() + "님이 로그인하셨습니다. 메인 페이지로 이동합니다");
-				req.setAttribute("url", "admin_index");
+				req.setAttribute("url", "admin_adminmanage");
 				
 				// 쿠키처리
 				if("on".equals(saveId)) {

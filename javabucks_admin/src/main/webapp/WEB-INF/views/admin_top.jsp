@@ -26,7 +26,7 @@
             <li class="nav_item">
                 <a href="javascript:;">계정관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="adminmanage.do">관리자 계정 관리</a></li>
+                    <li><a href="javascript:;">관리자 계정 관리</a></li>
                     <li><a href="storemanage.do">지점 계정 관리 </a></li>
                     <li><a href="javascript:;">유저 계정 관리</a></li>
                 </ul>
@@ -66,6 +66,6 @@
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">관리자 OOO</em> 로그인하셨습니다.</a>
+            <a href="javascript:;"><em class="font_green">${inAdmin.adminId}</em> 로그인하셨습니다.</a>
         </div>
     </header>
