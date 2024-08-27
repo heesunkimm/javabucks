@@ -1,13 +1,15 @@
 package com.project.javabucksAdmin.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.javabucksAdmin.dto.AlarmDTO;
 import com.project.javabucksAdmin.dto.CouponDTO;
+import com.project.javabucksAdmin.dto.CouponListDTO;
+import com.project.javabucksAdmin.dto.UserDTO;
 
 
 @Service
@@ -32,6 +34,21 @@ public class CouponMapper {
 	public int deleteCoupon(String cpnCode) {
 		return sqlSession.delete("deleteCoupon", cpnCode);
 	}
-	// 
+	// 유저 정보 조회
+	public List<UserDTO> getUserInfo() {
+		return sqlSession.selectList("getUserInfo");
+	}
+	// 등록된 쿠폰리스트 조회
+	public List<CouponListDTO> getUserCpnList() {
+		return sqlSession.selectList("getUserCpnList");
+	}
+	// 유저에게 등록된 쿠폰 등록
+	public int toUserCoupon(CouponListDTO dto) {
+		return sqlSession.insert("toUserCoupon", dto);
+	}
+	// 유저에게 등록된 쿠폰 알림 전송
+	public int toUserAlarm(AlarmDTO dto) {
+		return sqlSession.insert("toUserAlarm", dto);
+	}
 }
 

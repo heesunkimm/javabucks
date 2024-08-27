@@ -31,7 +31,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -44,28 +44,39 @@
                    </c:forEach>
                 </ul>
             </div>
+            
+            
             <div id="cate_foond" class="tab-content">
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${foodList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
-                            <div class="img_box">
-                                <img src="upload_menuImages/${dto.menuImages}" alt="">
-                            </div>
-                            <div class="txt_box">
-                                <p class="txt_tit">${dto.menuName}</p>
-                                <p class="txt_price">${dto.menuPrice}</p>
-                            </div>
-                        </a>
+                   	<c:choose>
+						<c:when test="${dto.storemenuStatus eq 'Y'}">
+	                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
+	                            <div class="img_box">
+	                                <img src="upload_menuImages/${dto.menuImages}" alt="">
+	                            </div>
+	                            <div class="txt_box">
+	                                <p class="txt_tit">${dto.menuName}</p>
+	                                <p class="txt_price">${dto.menuPrice}</p>
+	                            </div>
+	                        </a>
+                      	</c:when>
+                      	<c:when test="${dto.storemenuStatus eq 'N'}">
+                      	
+                      	</c:when>
+                     </c:choose>  
                     </li>
                     </c:forEach>
                 </ul>
             </div>
+            
+            
             <div id="cate_pdt" class="tab-content">
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                     <li class="menu_item">
-                        <a href="user_menudetail?store=${store}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
+                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
                             <div class="img_box">
                                <img src="upload_menuImages/${dto.menuImages}" alt="">
                             </div>
@@ -78,6 +89,8 @@
                     </c:forEach>
                 </ul>
             </div>
+            
+            
             <div class="cart_box">
                 <!-- 클릭시 매장 선택 페이지로 재이동 -->
                 <c:if test="${pickup=='매장이용'}">

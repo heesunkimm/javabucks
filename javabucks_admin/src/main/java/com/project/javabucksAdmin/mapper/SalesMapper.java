@@ -33,9 +33,9 @@ public class SalesMapper {
         String bucksId;
         do {
         	bucksId = "bucks_" + generateNumericUUID(4);
-            System.out.println("Generated Bucks ID: " + bucksId); // 디버깅용 출력
+           // System.out.println("Generated Bucks ID: " + bucksId); // 디버깅용 출력
         } while (checkBucksId(bucksId)); // 중복 확인
-        System.out.println("Unique Bucks ID confirmed: " + bucksId); // 디버깅용 출력
+       // System.out.println("Unique Bucks ID confirmed: " + bucksId); // 디버깅용 출력
         return bucksId;
     }
     

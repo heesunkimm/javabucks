@@ -153,7 +153,13 @@
 	         xhr.send();
 	    }
 
-
+		window.onload = function() {
+	        const urlParams = new URLSearchParams(window.location.search);
+	        const registerSuccess = urlParams.get('registerSuccess');
+	        if (registerSuccess === "true") {
+	            alert("등록이 완료되었습니다!");
+	        }
+	    };
 		
 					
 </script>

@@ -12,14 +12,35 @@
 	<select id="listCoupon" resultType="CouponDTO">
   		select * from javabucks_coupon
   	</select>
+  	
   	<!-- 쿠폰리스트 - 쿠폰명, 쿠폰코드 중복체크 -->
   	<select id="cpnCheck" parameterType="CouponDTO" resultType="CouponDTO">
   		select * from javabucks_coupon where cpnName = #{cpnName} or cpnCode = #{cpnCode}
   	</select>
-  	
+  		
   	<!-- 쿠폰삭제 -->
   	<delete id="deleteCoupon" parameterType="String">
   		delete from javabucks_coupon where cpnCode =#{cpnCode}
   	</delete>
+  	
+  	<!-- 유저 정보 조회 -->
+  	<select id="getUserInfo" resultType="userDTO">
+  		select * from javabucks_user
+  	</select>
+  	
+  	<!-- 등록된 쿠폰리스트 조회 -->
+  	<select id="getUserCpnList" resultType="CouponListDTO">
+  		select * from javabucks_couponList
+  	</select>
+  	
+  	<!-- 유저에게 쿠폰 등록 -->
+  	<insert id="toUserCoupon" parameterType="CouponListDTO">
+  		insert into javabucks_couponList (cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) values (seq_cpnListNum.nextval, #{cpnCode}, #{userId}, #{cpnListStatus}, sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+  	</insert>
+  	
+  	<!-- 유저에게 등록된 쿠폰 알림 전송 -->
+  	<insert id="toUserAlarm" parameterType="AlarmDTO">
+  		insert into javabucks_alarm (alarmNum, userId, alarmIsRead, alarmCate, alarmCont, alarmRegDate) values (seq_alarmnum.nextval, #{userId}, default, #{alarmCate}, #{alarmCont}, default)
+  	</insert>
 
   </mapper>

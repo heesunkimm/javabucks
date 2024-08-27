@@ -15,7 +15,12 @@
         </div>
 
         <div class="order_box">
-            <button type="button">신규주문 정지</button>
+        	<c:if test="${orderStopCheck eq true}">
+        		<button type="button" style="background : #ff5a4a; color:white;" onclick="restartOrder()">신규주문 재시작</button>
+        	</c:if>
+        	<c:if test="${orderStopCheck eq false}">
+            	<button type="button" style="background : #ff5a4a; color:white;" onclick="stopOrder()">신규주문 정지</button>
+            </c:if>
             <div class="order_wrap">
                 <div>
                     <div class="orders">
@@ -254,11 +259,11 @@ function orderStart(element){
 			} else {
 				alert("주문 접수 실패. 관리자에게 문의하세요.");
 			}
-			window.location.href = "/orderManage.do"; 
+			location.reload();
 		},
 		error : function(error){
 			alert("에러 발생. 관리자에게 문의하세요.");
-			window.location.href = "/orderManage.do";
+			location.reload();
 		}		
 	});
 }
@@ -277,11 +282,11 @@ function orderCancel(element){
 		},
 		success : function(response){
 			alert("주문번호 " +orderCode + "번의 주문이 취소되었습니다.");
-			window.location.href = "/orderManage.do";
+			location.reload();
 		},
 		error : function(error){
 			alert("주문 취소에 실패했습니다.");
-			window.location.href = "/orderManage.do";
+			location.reload();
 		}		
 	});
 }
@@ -299,14 +304,82 @@ function orderFinish(element){
 		},
 		success : function(response){
 			alert("주문번호 " +orderCode + "번 주문의 제조가 완료되었습니다.");
-			window.location.href = "/orderManage.do";
+			location.reload();
 		},
 		error : function(error){
 			alert("주문 제조완료에 실패했습니다.");
-			window.location.href = "/orderManage.do";
+			location.reload();
 		}		
 	});
 }
+
+
+function stopOrder(){
+	$.ajax({
+		type : "POST",
+		url : "orderStop.ajax",
+		data : { },
+		success : function(response){
+			var resp = response;
+			var respVal = resp.response;
+			
+			if(respVal === "success"){
+				alert("지점의 모든 주문 기능이 정지되었습니다.");
+				location.reload();
+			} else if (respVal === "fail"){
+				alert("주문 기능 정지에 실패했습니다.");
+				location.reload();
+			}			
+		},
+		error : function(error){
+			alert("에러 발생. 관리지에게 문의하세요.");
+			location.reload();
+		}		
+	});
+}
+
+function restartOrder(){
+	$.ajax({
+		type : "POST",
+		url : "orderRestart.ajax",
+		data : { },
+		success : function(response){
+			var resp = response;
+			var respVal = resp.response;
+			
+			if(respVal === "success"){
+				alert("지점의 모든 주문이 오픈되었습니다.");
+				location.reload();
+			} else if (respVal === "fail"){
+				alert("주문 기능 오픈에 실패했습니다.");
+				location.reload();
+			}			
+		},
+		error : function(error){
+			alert("에러 발생. 관리지에게 문의하세요.");
+			location.reload();
+		}		
+	});
+}
+
+
+function checkNewOrder() {
+    $.ajax({
+        url: "/checkNewOrder.ajax",
+        type: "GET",
+        success: function(response) {
+        	console.log(response.newOrder);
+            if (response.newOrder) {
+                location.reload();  // 화면 새로고침
+            }
+        },
+        error: function(error) {
+            console.error('주문 새로고침 에러 발생:', error);
+        }
+    });
+}
+
+setInterval(checkNewOrder, 30000);
 
 </script> 
 

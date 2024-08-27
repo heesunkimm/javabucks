@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.OrderOptDTO;
 import com.project.javabucksStore.dto.StockUseDTO;
+import com.project.javabucksStore.dto.StoreMenuDTO;
 
 @Repository
 public class OrderMapper {
@@ -178,5 +179,17 @@ public class OrderMapper {
 	
 	public int orderStatusUpdateFinish(Map<String, Object> params) {
 		return sqlSession.update("orderStatusUpdateFinish", params);
+	}
+	
+	public int storemenuStatusStop(String bucksId) {
+		return sqlSession.update("storemenuStatusStop", bucksId);
+	}
+	
+	public List<StoreMenuDTO> getStoreMenuStatus(String bucksId){
+		return sqlSession.selectList("getStoreMenuStatus", bucksId);
+	}
+	
+	public int storemenuStatusRestart(String bucksId) {
+		return sqlSession.update("storemenuStatusRestart", bucksId);
 	}
 }

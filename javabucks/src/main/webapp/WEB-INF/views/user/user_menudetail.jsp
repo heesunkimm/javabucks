@@ -16,10 +16,10 @@
 <body>
     <!-- s: content -->
     <section id="user_menudetail" class="content">
-				<form name="optplus" action="user_paynow" method="post">
+				<form name="optplus" action="user_paynow" method="POST">
 				<input type="hidden" name="menuCode" value="${menu.menuCode}">
 				<input type="hidden" name="menuoptCode" value="${menu.menuoptCode}">
-				<input type="hidden" name="store" value="${store}">
+				<input type="hidden" name="bucksId" value="${bucksId}">
 				<input type="hidden" name="pickup" value="${pickup}">
 		        <div class="inner_wrap">
 		            <div class="menu_img img_box">
@@ -242,8 +242,6 @@
 		
 		    // 선택된 시럽 설정
 		    selectedSyrup = fieldId;
-			// 선택된 시럽의 카운트를 업데이트
-	        updateOptSyrupCount();
 		}
 		
 			// 감소 버튼 클릭 시 호출되는 함수
@@ -387,6 +385,17 @@
 			var syrupNum = $("input[name='syrupNum']").val();
 			var optSyrupCount = $("input[name='optSyrupCount']").val();
 			
+			console.log({
+			    cupNum: cupNum,
+			    whipNum: whipNum,
+			    iceNum: iceNum,
+			    milkNum: milkNum,
+			    shotNum: shotNum,
+			    syrupNum: syrupNum,
+			    optShotCount: optShotCount,
+			    optSyrupCount: optSyrupCount
+			});
+			
 	        $.ajax({
 	            url: '/orderOptInsert.ajax', // 요청할 URL
 	            type: 'POST',
@@ -413,7 +422,8 @@
 	            	}
 	            },
 	            error: function(error) {
-	                alert('처리 중 오류가 발생했습니다.');
+	                alert('ajax 처리 중 오류가 발생했습니다.');
+	                console.log(error);
 	                return;
 	            }
 	        });
