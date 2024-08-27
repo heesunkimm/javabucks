@@ -1,7 +1,10 @@
 package com.project.javabucks.controller;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
 import com.project.javabucks.dto.CardListDTO;
+import com.project.javabucks.dto.CartDTO;
 import com.project.javabucks.dto.CouponListDTO;
 import com.project.javabucks.dto.FrequencyDTO;
 import com.project.javabucks.dto.MenuDTO;
@@ -36,6 +39,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.MenuOrder;
 import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
@@ -99,6 +103,7 @@ public class UserController {
 		if (mode != null) {
 			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
 			req.setAttribute("storeList", list);
+			System.out.println(list);
 		}
 
 		return "/user/user_delivers";
@@ -446,13 +451,59 @@ public class UserController {
 	@RequestMapping("/user_cart")
 	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
 		
-		String quantity = params.get("quantity");
-		session.setAttribute("quantity", quantity);
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		// ID로 장바구니 조회
+		List<CartDTO> list = userMapper.CartByUserid(userId);
+		List<CartDTO> list2 = new ArrayList<>();
+		// 장바구니 담긴 메뉴코드로 메뉴 정보 조회
+		for(CartDTO CartDTO: list) {
+			String menuCode = CartDTO.getMenuCode();
+			// 메뉴코드로 메뉴 정보 조회
+			MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
+						
+			CartDTO.setMenuname(mdto.getMenuName());
+			CartDTO.setMenuimages(mdto.getMenuImages());
+			CartDTO.setMenuprice(mdto.getMenuPrice());
+			int optId = CartDTO.getOptId();
+			// 받은 optId 로 optDTO 만들기
+			OrderOptDTO optdto = userMapper.findOrderOpt(optId);
+			CartDTO.setShotCount(optdto.getOptShotCount());
+			CartDTO.setSyrupCount(optdto.getOptSyrupCount());
+			MenuOptCupDTO cupdto = userMapper.getCupInfo(optId);
+			CartDTO.setCupType(cupdto.getCupType());
+			CartDTO.setCupPrice(cupdto.getCupPrice());
+			MenuOptIceDTO icedto = userMapper.getIceInfo(optId);
+			CartDTO.setIceType(icedto.getIceType());
+			CartDTO.setIcePrice(icedto.getIcePrice());
+			MenuOptShotDTO shotdto = userMapper.getShotInfo(optId);			
+			CartDTO.setShotPrice(shotdto.getShotPrice());
+			CartDTO.setShotType(shotdto.getShotType());
+			MenuOptWhipDTO whipdto = userMapper.getWhipInfo(optId);
+			CartDTO.setWhipPrice(whipdto.getWhipPrice());
+			CartDTO.setWhipType(whipdto.getWhipType());
+			MenuOptSyrupDTO syrupdto = userMapper.getSyrupInfo(optId);
+			CartDTO.setSyrupType(syrupdto.getSyrupType());
+			CartDTO.setSyrupPrice(syrupdto.getSyrupPrice());
+			MenuOptMilkDTO milkdto = userMapper.getMilkInfo(optId);
+			CartDTO.setMilkType(milkdto.getMilkType());
+			CartDTO.setMilkPrice(milkdto.getMilkPrice());
+			
+			int totprice = 	mdto.getMenuPrice() + 
+							cupdto.getCupPrice() +
+							icedto.getIcePrice() + 
+							shotdto.getShotPrice() * optdto.getOptShotCount() +
+							whipdto.getWhipPrice() + 
+							syrupdto.getSyrupPrice() * optdto.getOptSyrupCount() +
+							milkdto.getMilkPrice();	
+			totprice = totprice * CartDTO.getcartCnt();
+			CartDTO.setTotprice(totprice);
+		}				
+		req.setAttribute("cart", list);
 		
-		req.setAttribute("quantity", quantity);
 		return "/user/user_cart";
-
 	}
+
 	// ------------------------------------------------------------------------------------
 	@RequestMapping("/user_pay")
 
@@ -619,7 +670,7 @@ public class UserController {
 
 		// 받은 optId 로 optDTO 만들기
 		OrderOptDTO optdto = userMapper.findOrderOpt(optId);
-
+		
 		MenuOptCupDTO cupdto = userMapper.getCupInfo(optId);
 		MenuOptIceDTO icedto = userMapper.getIceInfo(optId);
 		MenuOptShotDTO shotdto = userMapper.getShotInfo(optId);

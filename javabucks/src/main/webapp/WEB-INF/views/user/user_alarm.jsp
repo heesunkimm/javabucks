@@ -41,7 +41,7 @@
             	<c:forEach var="alarm" items="${listAlarm}">
                 <li class="history_item">
                     <div class="img_box">
-                        <!-- <img src="" alt=""> -->
+                        <img src="../images/icons/star_line.png" alt="">
                     </div>
                     <div class="txt_box">
                         <p class="txt_tit">

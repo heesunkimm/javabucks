@@ -1,115 +1,43 @@
 package com.project.javabucks.dto;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class CartDTO {
-
-	private int cartNum;
-	private String userId;
-	private String bucksId;
-	private String menuCode;
-	private int cartCnt;
-	private int optId;
-	private String cartRegDate;
-	private String cartType;
-	private String menuname;
-	private String menuimages;
-	private int menuprice;
-	
-
-	public int getCartNum() {
-		return cartNum;
-	}
-
-	public void setCartNum(int cartNum) {
-		this.cartNum = cartNum;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getBucksId() {
-		return bucksId;
-	}
-
-	public void setBucksId(String bucksId) {
-		this.bucksId = bucksId;
-	}
-
+public class MenuOrder {
+    private String menuCode; // BESWHAMC
+    private String optionId;
+    private int quantity;
+    private String menuName;
+    
+    // 생성자
+    public MenuOrder(String menuCode, String optionId, int quantity) {
+        this.menuCode = menuCode;
+        this.optionId = optionId;
+        this.quantity = quantity;
+    }
+    
 	public String getMenuCode() {
 		return menuCode;
 	}
-
 	public void setMenuCode(String menuCode) {
 		this.menuCode = menuCode;
 	}
-
-	public int getcartCnt() {
-		return cartCnt;
+	public String getOptionId() {
+		return optionId;
 	}
-
-	public void setcartCnt(int cartCnt) {
-		this.cartCnt = cartCnt;
+	public void setOptionId(String optionId) {
+		this.optionId = optionId;
 	}
-
-	public int getOptId() {
-		return optId;
+	public int getQuantity() {
+		return quantity;
 	}
-
-	public void setOptId(int optId) {
-		this.optId = optId;
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
-
-	public String getCartRegDate() {
-		return cartRegDate;
+	public String getMenuName() {
+		return menuName;
 	}
-
-	public void setCartRegDate(String cartRegDate) {
-		this.cartRegDate = cartRegDate;
-	}
-
-	public String getCartType() {
-		return cartType;
-	}
-
-	public void setCartType(String cartType) {
-		this.cartType = cartType;
-	}
-
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}	
 	
-	// [채성진] join용 변수설정
-	public String getMenuname() {
-		return menuname;
-	}
-
-	public void setMenuname(String menuname) {
-		this.menuname = menuname;
-	}
-
-	public String getMenuimages() {
-		return menuimages;
-	}
-
-	public void setMenuimages(String menuimages) {
-		this.menuimages = menuimages;
-	}
-
-	public int getMenuprice() {
-		return menuprice;
-	}
-
-	public void setMenuprice(int menuprice) {
-		this.menuprice = menuprice;
-	}
 	
 	// 옵션
 	
@@ -127,126 +55,89 @@ public class CartDTO {
 	private int whipPrice;
 	private String milkType;
 	private int milkPrice;
-	private int totprice;
-	
 	public String getCupType() {
 		return cupType;
 	}
 	public void setCupType(String cupType) {
 		this.cupType = cupType;
 	}
-	
 	public int getCupPrice() {
 		return cupPrice;
 	}
-	
 	public void setCupPrice(int cupPrice) {
 		this.cupPrice = cupPrice;
 	}
-	
 	public String getShotType() {
 		return shotType;
 	}
-	
 	public void setShotType(String shotType) {
 		this.shotType = shotType;
 	}
-	
 	public int getShotCount() {
 		return shotCount;
 	}
-	
 	public void setShotCount(int shotCount) {
 		this.shotCount = shotCount;
 	}
-	
 	public int getShotPrice() {
 		return shotPrice;
 	}
-	
 	public void setShotPrice(int shotPrice) {
 		this.shotPrice = shotPrice;
 	}
-	
 	public String getSyrupType() {
 		return syrupType;
 	}
-	
 	public void setSyrupType(String syrupType) {
 		this.syrupType = syrupType;
 	}
-	
 	public int getSyrupCount() {
 		return syrupCount;
 	}
-	
 	public void setSyrupCount(int syrupCount) {
 		this.syrupCount = syrupCount;
 	}
-	
 	public int getSyrupPrice() {
 		return syrupPrice;
 	}
-	
 	public void setSyrupPrice(int syrupPrice) {
 		this.syrupPrice = syrupPrice;
 	}
-	
 	public String getIceType() {
 		return iceType;
 	}
-	
 	public void setIceType(String iceType) {
 		this.iceType = iceType;
 	}
-	
 	public int getIcePrice() {
 		return icePrice;
 	}
-	
 	public void setIcePrice(int icePrice) {
 		this.icePrice = icePrice;
 	}
-	
 	public String getWhipType() {
 		return whipType;
 	}
-	
 	public void setWhipType(String whipType) {
 		this.whipType = whipType;
 	}
-	
 	public int getWhipPrice() {
 		return whipPrice;
 	}
-	
 	public void setWhipPrice(int whipPrice) {
 		this.whipPrice = whipPrice;
 	}
-	
 	public String getMilkType() {
 		return milkType;
 	}
-	
 	public void setMilkType(String milkType) {
 		this.milkType = milkType;
 	}
-	
 	public int getMilkPrice() {
 		return milkPrice;
 	}
-	
 	public void setMilkPrice(int milkPrice) {
 		this.milkPrice = milkPrice;
 	}
-
-	public int getTotprice() {
-		return totprice;
-	}
-
-	public void setTotprice(int totprice) {
-		this.totprice = totprice;
-	}
-	
-	
+ 
 }
