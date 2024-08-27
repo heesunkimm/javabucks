@@ -48,20 +48,20 @@
                 <form name="dailySearchForm" action="/searchDailySales.do" method="post">
                     <div class="search_box">
                         <label>기간
-                            <input type="date" name="startDate" value="" required>
+                            <input type="date" name="startDate" value="${startDate}"  required>
                             ~
-                            <input type="date" name="endDate" value="" required>
+                            <input type="date" name="endDate" value="${endDate}" required>
                         </label>
                         
                         <label>지점명
-                            <input type="text" name="bucksName" required>
+                            <input type="text" name="bucksName"  value="${bucksName}">
                         </label>
                         <label>메뉴 카테고리
                             <select name="category">
-                            	<option value="">전체</option>
-                                <option value="음료">음료</option>
-                                <option value="디저트">디저트</option>
-                                <option value="MD상품">MD상품</option>
+                            	<option value="" ${category == '' ? 'selected' : ''}>전체</option>
+				                <option value="음료" ${category == '음료' ? 'selected' : ''}>음료</option>
+				                <option value="디저트" ${category == '디저트' ? 'selected' : ''}>디저트</option>
+				                <option value="MD상품" ${category == 'MD상품' ? 'selected' : ''}>MD상품</option>
                             </select>
                         </label>
                         <button type="submit">검색</button>
@@ -90,39 +90,39 @@
                             </c:when>
                             <c:otherwise>
                                 <c:forEach items="${branchSalesMap}" var="entry">
-    <c:set var="alreadyPrinted" value="false" />
-    <c:forEach var="dlist" items="${list}">
-        <c:set var="branchDateKey" value="${dlist.bucksId}_${dlist.payhistoryDate}" />
-        <c:if test="${branchDateKey eq entry.key && alreadyPrinted eq false}">
-            <c:set var="alreadyPrinted" value="true" /> <!-- 해당 지점과 날짜가 이미 출력된 경우 -->
-            
-            <!-- 지점 정보 출력 -->
-            <tr>
-                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.payhistoryDate}"/></td>
-                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.branchName}"/></td>
-                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksId}"/></td>
-                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksOwner}"/></td>
-            </tr>
-            <!-- 각 카테고리 및 매출액 출력 -->
-            <c:forEach items="${entry.value}" var="categoryEntry">
-                <tr>
-                    <td><c:out value="${categoryEntry.key}"/></td> <!-- 메뉴 카테고리 -->
-                    <td><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</td> <!-- 매출액 -->
-                </tr>
-            </c:forEach>
-            
-            <!-- 지점별 총 매출 합계 출력 -->
-            
-            <tr>
-    <td></td><td></td><td></td><td></td>
-    <td><strong>총 합</strong></td>
-    <c:set var="branchId" value="${dlist.bucksId}"/>
-    <td><strong><fmt:formatNumber value="${branchTotalSalesMap[branchId]}" pattern="#,##0"/>원</strong></td>
-</tr>
-                
-        </c:if>
-    </c:forEach>
-</c:forEach>
+							    <c:set var="alreadyPrinted" value="false" />
+							    <c:forEach var="dlist" items="${list}">
+							        <c:set var="branchDateKey" value="${dlist.bucksId}_${dlist.payhistoryDate}" />
+							        <c:if test="${branchDateKey eq entry.key && alreadyPrinted eq false}">
+							            <c:set var="alreadyPrinted" value="true" /> <!-- 해당 지점과 날짜가 이미 출력된 경우 -->
+							            
+							            <!-- 지점 정보 출력 -->
+							            <tr>
+							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.payhistoryDate}"/></td>
+							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.branchName}"/></td>
+							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksId}"/></td>
+							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksOwner}"/></td>
+							            </tr>
+							            <!-- 각 카테고리 및 매출액 출력 -->
+							            <c:forEach items="${entry.value}" var="categoryEntry">
+							                <tr>
+							                    <td><c:out value="${categoryEntry.key}"/></td> <!-- 메뉴 카테고리 -->
+							                    <td><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</td> <!-- 매출액 -->
+							                </tr>
+							            </c:forEach>
+							            
+							            <!-- 지점별 총 매출 합계 출력 -->
+							            
+							            <tr>
+							    <td></td><td></td><td></td><td></td>
+							    <td><strong>총 합</strong></td>
+							    <c:set var="branchId" value="${dlist.bucksId}"/>
+							    <td><strong><fmt:formatNumber value="${branchTotalSalesMap[branchId]}" pattern="#,##0"/>원</strong></td>
+							</tr>
+							                
+							        </c:if>
+							    </c:forEach>
+							</c:forEach>
                             </c:otherwise>
                         </c:choose>
                         </tbody>
@@ -130,7 +130,7 @@
                     <!-- 페이징 -->
                     <div class="paging">
 					    <c:if test="${currentPage > 1}">
-					        <a href="?page=${currentPage - 1}&pageSize=${pageSize}">&laquo; 이전</a>
+					        <a href="?page=${currentPage - 1}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">&laquo; 이전</a>
 					    </c:if>
 					
 					    <c:forEach var="i" begin="1" end="${totalPages}">
@@ -138,12 +138,12 @@
 					            <strong>${i}</strong>
 					        </c:if>
 					        <c:if test="${i != currentPage}">
-					            <a href="?page=${i}&pageSize=${pageSize}">${i}</a>
+					            <a href="?page=${i}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">${i}</a>
 					        </c:if>
 					    </c:forEach>
 					
 					    <c:if test="${currentPage < totalPages}">
-					        <a href="?page=${currentPage + 1}&pageSize=${pageSize}">다음 &raquo;</a>
+					        <a href="?page=${currentPage + 1}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">다음 &raquo;</a>
 					    </c:if>
 					</div>
         <!-- e:페이징 -->   

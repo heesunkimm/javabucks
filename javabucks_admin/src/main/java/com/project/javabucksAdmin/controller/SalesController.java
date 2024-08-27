@@ -51,8 +51,8 @@ public class SalesController {
 		    Map<String, Object> params = new HashMap<>();
 		    params.put("startIndex", startIndex);
 		    params.put("endIndex", endIndex);
-		    System.out.println(startIndex);
-		    System.out.println(endIndex);
+		    //System.out.println(startIndex);
+		    //System.out.println(endIndex);
 		    
 			List<BucksDTO> list = salesMapper.bucksList(params);
 			int totalCount = salesMapper.bucksListCount();
@@ -123,7 +123,7 @@ public class SalesController {
         
         salesMapper.addBucks(dto);
 
-        return "account/admin_storemanage"; // 성공 시 이동할 페이지
+        return "redirect:/storemanage.do";
     }
 	
 	//특정 검색 지점 리스트 
@@ -334,22 +334,33 @@ public class SalesController {
 			
 			//검색한 지점과 날짜로 월별매출
 			@PostMapping("/searchMonthSales.do")
-			public String searchMonthSales(@RequestParam("orderDate") String orderDate, @RequestParam("bucksName") String bucksName, Model model) {
-			    System.out.println(bucksName);
-			    System.out.println(orderDate);
-				
-			    Map<String, Object> params = new HashMap<>();
-			    params.put("bucksName", bucksName);
-			    params.put("monthDate", orderDate);
-			    
-			    List<PayhistoryDTO> monthSal = salesMapper.searchMonth(params);
-			    model.addAttribute("list", monthSal);
-			    System.out.println(monthSal);			    
+			public String searchMonthSales(@RequestParam("orderDate") String orderDate, 
+                    @RequestParam("bucksName") String bucksName, 
+                    Model model) {
 
-			    //model.addAttribute("bucksBal", result);
-			    return "sales/admin_monthlysales";
-			}
-			
+				// 검색 조건을 로그로 출력 (디버깅 용도)
+				System.out.println("검색한 지점명: " + bucksName);
+				System.out.println("검색한 날짜: " + orderDate);
+				
+				// 검색 조건을 Map에 추가하여 검색 수행
+				Map<String, Object> params = new HashMap<>();
+				params.put("bucksName", bucksName);
+				params.put("monthDate", orderDate);
+				
+				// 검색 결과를 가져옴
+				List<PayhistoryDTO> monthSal = salesMapper.searchMonth(params);
+				
+				// 검색 결과를 Model에 추가
+				model.addAttribute("list", monthSal);
+				
+				// 사용자가 입력한 검색 조건을 Model에 추가하여 JSP로 전달
+				model.addAttribute("orderDate", orderDate);
+				model.addAttribute("bucksName", bucksName);
+				
+				// 결과를 보여줄 JSP 페이지로 이동
+			return "sales/admin_monthlysales";
+				}
+							
 			//월별 매출 상세보기 
 			@PostMapping("/MonthlyDetails.do")
 			@ResponseBody
@@ -575,18 +586,18 @@ public class SalesController {
 			
 			
 			//검색한 지점과 날짜로 일별매출
-			@PostMapping("/searchDailySales.do")
+			@RequestMapping("/searchDailySales.do")
 			public String searchDailySales(@RequestParam("startDate") String startDate,
 		            						@RequestParam("endDate") String endDate,
 		            						@RequestParam("bucksName") String bucksName,
 		            						@RequestParam("category") String category,
 		            						@RequestParam(value = "page", defaultValue = "1") int page,
 		            	                    @RequestParam(value = "pageSize", defaultValue = "5") int pageSize, Model model) {
-				System.out.println(startDate);
-				System.out.println(endDate);
-				System.out.println(bucksName);
-				System.out.println(category);
-				
+//				System.out.println(startDate);
+//				System.out.println(endDate);
+//				System.out.println(bucksName);
+//				System.out.println(category);
+			
 				Map<String, Object> params = new HashMap<>();
 			    params.put("startDate", startDate);
 			    params.put("endDate", endDate);
@@ -601,7 +612,7 @@ public class SalesController {
 			    int totalPages = (int) Math.ceil((double) totalItems / pageSize); // 총 페이지 수 계산
 			    int fromIndex = (page - 1) * pageSize; // 시작 인덱스 계산
 			    int toIndex = Math.min(fromIndex + pageSize, totalItems); // 끝 인덱스 계산
-
+			    
 			    // 잘라낸 서브리스트를 모델에 추가
 			    List<PayhistoryDTO> paginatedList = orderList.subList(fromIndex, toIndex);
 			    model.addAttribute("list", paginatedList);
@@ -704,12 +715,19 @@ public class SalesController {
 			    //System.out.println(orderList);
 			    
 			    model.addAttribute("total", totalSalesSum);
+			    
+			 // 검색 조건을 모델에 추가
+			    model.addAttribute("startDate", startDate);
+			    model.addAttribute("endDate", endDate);
+			    model.addAttribute("bucksName", bucksName);
+			    model.addAttribute("category", category);
 
 			    // 결과 페이지로 이동
 			    return "sales/admin_dailysales";
 			}
 			
             
+			
 
 			
 	
