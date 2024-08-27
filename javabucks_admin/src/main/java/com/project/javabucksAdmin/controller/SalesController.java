@@ -132,7 +132,6 @@ public class SalesController {
 		public Map<String, Object> searchBucks(
 		        @RequestParam(value = "bucksName", required = false) String bucksName,
 		        @RequestParam(value = "bucksId", required = false) String bucksId,
-		        @RequestParam(value = "bucksLocation", required = false) String bucksLocation,
 		        @RequestParam(value = "startDate", required = false) String startDate,
 		        @RequestParam(value = "endDate", required = false) String endDate,
 		        @RequestParam(value = "page", defaultValue = "1") int page) {
@@ -142,11 +141,10 @@ public class SalesController {
 		    int endIndex = page * itemsPerPage;
 
 		    Map<String, Object> params = new HashMap<>();
-		    params.put("bucksName", bucksName);
-		    params.put("bucksId", bucksId);
-		    params.put("bucksLocation", bucksLocation);
-		    params.put("startDate", startDate);
-		    params.put("endDate", endDate);
+		    params.put("bucksName", bucksName != null ? bucksName : ""); // 널값이면 빈 문자열로 처리
+		    params.put("bucksId", bucksId != null ? bucksId : ""); // 널값이면 빈 문자열로 처리
+		    params.put("startDate", startDate != null ? startDate : ""); // 널값이면 빈 문자열로 처리
+		    params.put("endDate", endDate != null ? endDate : ""); // 널값이면 빈 문자열로 처리
 		    params.put("startIndex", startIndex);
 		    params.put("endIndex", endIndex);
 		    System.out.println(startIndex);
