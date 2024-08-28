@@ -57,7 +57,6 @@ public class UserController {
 	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
 	public String userIndex(HttpSession session, HttpServletRequest req) {
-
 		// 등급(리워드)
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
@@ -540,7 +539,6 @@ public class UserController {
 		String userId = udto.getUserId();
 		// ID로 장바구니 조회
 		List<CartDTO> list = userMapper.CartByUserid(userId);
-		List<CartDTO> list2 = new ArrayList<>();
 		// 장바구니 담긴 메뉴코드로 메뉴 정보 조회
 		for (CartDTO CartDTO : list) {
 			String menuCode = CartDTO.getMenuCode();
@@ -574,11 +572,12 @@ public class UserController {
 			CartDTO.setMilkType(milkdto.getMilkType());
 			CartDTO.setMilkPrice(milkdto.getMilkPrice());
 
-			int totprice = mdto.getMenuPrice() + cupdto.getCupPrice() + icedto.getIcePrice()
+			int oneprice = mdto.getMenuPrice() + cupdto.getCupPrice() + icedto.getIcePrice()
 					+ shotdto.getShotPrice() * optdto.getOptShotCount() + whipdto.getWhipPrice()
 					+ syrupdto.getSyrupPrice() * optdto.getOptSyrupCount() + milkdto.getMilkPrice();
-			totprice = totprice * CartDTO.getcartCnt();
-			CartDTO.setTotprice(totprice);
+			int totprice = oneprice * CartDTO.getcartCnt();
+			CartDTO.setEachPrice(oneprice);
+			CartDTO.setTotPrice(totprice);
 		}
 		req.setAttribute("cart", list);
 
