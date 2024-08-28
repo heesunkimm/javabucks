@@ -25,7 +25,7 @@
 					<form name="" action="user_delivers?mode=store" method="post">
 						<label> <input type="text" id="deliveryAddress"
 							name="deliveryAddress" value="${param.deliveryAddress}" readonly>
-						</label> <label> <input type="text" name="storeSearch" value=""
+						</label> <label> <input type="text" name="storeSearch" value="${storeSearch}"
 							placeholder="지점명 검색">
 						</label>
 						<button type="submit">검색</button>
@@ -37,36 +37,38 @@
 				<c:if test="${empty storeList}">
         			검색된 결과가 없습니다.
         		</c:if>
-				<c:forEach var="dto" items="${storeList}">				
-					<li class="store_item">
-						<c:choose>
-							<c:when test="${dto.orderEnalbe eq 'Y'}">
+        		<c:if test="${not empty storeList}">
+				<c:forEach var="dto" items="${storeList}">
+					<c:choose>
+						<c:when test="${dto.orderEnalbe eq 'Y'}">
+							<li class="store_item">
 								<div class="img_box">
-									<!-- <img src="" alt=""> -->
+									<img src="../images/logo/starbucks_logo_black.png" style="width: 50px; height: auto;" alt="">
 								</div> 
-									<a href="user_order?storeName=${dto.bucksName}">${dto.bucksName}</a>
-									<a href="user_order?storeName=${dto.bucksName}">${dto.bucksLocation}</a>
-								</c:when>				
-						</c:choose>
-						<div class="txt_box"></div>
-					</li>
+								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksName}</a>
+								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksLocation}</a>
+								<div class="txt_box"></div>
+							</li>
+						</c:when>
+					</c:choose>					
 				</c:forEach>
-				<c:forEach var="dto" items="${storeList}">				
-					<li class="store_item">
-						<c:choose>				
-							<c:when test="${dto.orderEnalbe eq 'N'}">
-								<c:set var="activeClass" value="pdt_dimm" />
+				<!-- 주문 불가한 매장은 아래쪽으로 -->
+				<c:forEach var="dto" items="${storeList}">
+					<c:choose>
+						<c:when test="${dto.orderEnalbe eq 'N'}">
+							<c:set var="activeClass" value="pdt_dimm" />
+							<li class="store_item">
 								<div class="img_box">
-									<!-- <img src="" alt=""> -->
+									<img src="../images/logo/starbucks_logo_black.png" style="width: 50px; height: auto;" alt="">
 								</div> 
-									<a href="user_order?storeName=${dto.bucksName}">${dto.bucksName}</a>
-									<a href="user_order?storeName=${dto.bucksName}">${dto.bucksLocation}</a>
-								</c:when>
-						</c:choose>
-						<div class="txt_box"></div>
-					</li>
+								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksName}</a>
+								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksLocation}</a>
+								<div class="txt_box"></div>
+							</li>
+						</c:when>
+					</c:choose>
 				</c:forEach>
-
+				</c:if>
 			</ul>
 		</div>
 

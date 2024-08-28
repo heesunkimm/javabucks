@@ -30,17 +30,35 @@
             <div id="cate_drink" class="tab-content s_active">
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
-                    <li class="menu_item">
-                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
-                            <div class="img_box">
-                               <img src="upload_menuImages/${dto.menuImages}" alt="">
-                            </div>
-                            <div class="txt_box">
-                                <p class="txt_tit">${dto.menuName}</p>
-                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
-                            </div>
-                        </a>
-                    </li>
+                		<c:choose>
+							<c:when test="${dto.storemenuStatus eq 'Y'}">
+			                    <li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+			                            <div class="img_box">
+			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName}</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+			                    </li>
+		                    </c:when>
+		                    <c:when test="${dto.storemenuStatus eq 'N'}">
+		                    	<c:set var="activeClass" value="pdt_dimm" />
+			                    <li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+			                            <div class="img_box">
+			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+			                    </li>
+		                    </c:when>
+	                    </c:choose>
                    </c:forEach>
                 </ul>
             </div>
@@ -48,25 +66,36 @@
             
             <div id="cate_foond" class="tab-content">
                 <ul class="menu_list">
-                	<c:forEach var = "dto" items="${foodList}">
-                    <li class="menu_item">
-                   	<c:choose>
-						<c:when test="${dto.storemenuStatus eq 'Y'}">
-	                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
-	                            <div class="img_box">
-	                                <img src="upload_menuImages/${dto.menuImages}" alt="">
-	                            </div>
-	                            <div class="txt_box">
-	                                <p class="txt_tit">${dto.menuName}</p>
-	                                <p class="txt_price">${dto.menuPrice}</p>
-	                            </div>
-	                        </a>
-                      	</c:when>
-                      	<c:when test="${dto.storemenuStatus eq 'N'}">
-                      	
-                      	</c:when>
-                     </c:choose>  
-                    </li>
+                	<c:forEach var ="dto" items="${foodList}">
+	                   	<c:choose>
+							<c:when test="${dto.storemenuStatus eq 'Y'}">
+		                   		<li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
+			                            <div class="img_box">
+			                                <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName}</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+		                        </li>
+	                      	</c:when>
+	                      	<c:when test="${dto.storemenuStatus eq 'N'}">
+	                      		<c:set var="activeClass" value="pdt_dimm" />
+	                      		<li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
+			                            <div class="img_box">
+			                                <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+		                        </li>
+	                      	</c:when>
+	                     </c:choose>  
                     </c:forEach>
                 </ul>
             </div>
@@ -75,17 +104,35 @@
             <div id="cate_pdt" class="tab-content">
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
-                    <li class="menu_item">
-                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
-                            <div class="img_box">
-                               <img src="upload_menuImages/${dto.menuImages}" alt="">
-                            </div>
-                            <div class="txt_box">
-                                <p class="txt_tit">${dto.menuName}</p>
-                                <p class="txt_price">${dto.menuPrice}</p>
-                            </div>
-                        </a>
-                    </li>
+                		<c:choose>
+							<c:when test="${dto.storemenuStatus eq 'Y'}">
+			                    <li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
+			                            <div class="img_box">
+			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName}</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+			                    </li>
+		                    </c:when>
+		                    <c:when test="${dto.storemenuStatus eq 'N'}">
+		                   		<c:set var="activeClass" value="pdt_dimm" />
+			                    <li class="menu_item">
+			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
+			                            <div class="img_box">
+			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
+			                            </div>
+			                            <div class="txt_box">
+			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
+			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
+			                            </div>
+			                        </a>
+			                    </li>
+		                    </c:when>
+	                    </c:choose>
                     </c:forEach>
                 </ul>
             </div>
