@@ -33,17 +33,20 @@ public class SalesController {
 	@GetMapping("/store_baljooManage.do")
 	public String baljooManage(@RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "5") int size, Model model, HttpServletRequest req) {
-		 HttpSession session = req.getSession();
+		 
+		  HttpSession session = req.getSession();
 	      BucksDTO bdto = (BucksDTO)session.getAttribute("inBucks");
 	      String bucksId = bdto.getBucksId();
-	      //System.out.println(bucksId);
+	      
 		
 		List<BaljooDTO> list = salesMapper.baljooList(bucksId);
-		
+				
 		// 총 발주 금액 계산 (전체 리스트의 합계)
 	    double totalBaljooPrice = 0;
 	    for (BaljooDTO dto : list) {
-	        totalBaljooPrice += dto.getBaljooPrice();
+	    	if ("접수완료".equals(dto.getBaljooStatus())) { 
+	            totalBaljooPrice += dto.getBaljooPrice();
+	        }
 	    }
 		
 		// 페이징 처리
@@ -74,8 +77,9 @@ public class SalesController {
                 String stockCode = parts[0].trim();
                 int quantity = Integer.parseInt(parts[1].trim());
 
-                Map<String, Object> stockInfo = salesMapper.getStockInfo(stockCode);
 
+                Map<String, Object> stockInfo = salesMapper.getStockInfo(stockCode);
+                //System.out.println("stockInfo : "+stockInfo);
                 stockInfo.put("quantity", quantity);
 
                 ((List<Map<String, Object>>) baljooOrder.get("stockList")).add(stockInfo);
@@ -116,7 +120,9 @@ public class SalesController {
 		// 총 발주 금액 계산 (전체 리스트의 합계)
 	    double totalBaljooPrice = 0;
 	    for (BaljooDTO dto : list) {
-	        totalBaljooPrice += dto.getBaljooPrice();
+	    	if ("접수완료".equals(dto.getBaljooStatus())) { 
+	            totalBaljooPrice += dto.getBaljooPrice();
+	        }
 	    }
 		
 		// 페이징 처리

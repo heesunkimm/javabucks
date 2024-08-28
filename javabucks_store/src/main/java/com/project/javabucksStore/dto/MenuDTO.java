@@ -59,4 +59,15 @@ public class MenuDTO {
 	public void setMenuregDate(String menuregDate) {
 		this.menuregDate = menuregDate;
 	}
+	
+	//조인값
+	 private int orderCount;
+
+	public int getOrderCount() {
+		return orderCount;
+	}
+	public void setOrderCount(int orderCount) {
+		this.orderCount = orderCount;
+	}
+	 
 }
