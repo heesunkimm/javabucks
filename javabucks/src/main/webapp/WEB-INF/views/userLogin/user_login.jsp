@@ -49,15 +49,9 @@
             #user_login .popup_box .confirm_box {margin-top: 10px;}
             #user_login .popup_box .confirm_box label {position: relative;}
             #user_login .popup_box .confirm_box input { width: 200px; height: 36px; padding: 0 6px; font-size: 14px;}
-<<<<<<< HEAD
             /* #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */
             #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
             
-=======
-            
-            /* #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */ 
-            #user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
->>>>>>> dev-user-mihyun
             #user_login .popup_box .confirm_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
             #user_login .popup_box .btn_box {text-align: center;}
             #user_login .popup_box .btn_box .setting_btn {position: relative; font-size: 14px; line-height: 18px; color: #555;}
@@ -74,26 +68,18 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-<<<<<<< HEAD
-            <form name="f" action="Logincheck" method="post">
-=======
             <form name="f" action="logincheck" method="post">
->>>>>>> user-jinyoung
                 <div class="input_box">
                     <label>
                     	<c:if test="${empty cookie['saveId']}">
-<<<<<<< HEAD
-                        	<input type="text" id="userId" name="userId" value="" placeholder="아이디 입력" required>
-=======
                         	<input type="text" name="userId" value="" placeholder="아이디 입력" required>
->>>>>>> dev-user-mihyun
                     	</c:if>
                     	<c:if test="${not empty cookie['saveId']}">
                         	<input type="text" name="userId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
                     	</c:if>
                     </label>
                     <label>
-                        <input type="password" id="userPasswd" name="userPasswd" value="" placeholder="비밀번호 입력" required>
+                        <input type="password" name="userPasswd" value="" placeholder="비밀번호 입력" required>
                     </label>
                 </div>
                 <button class="login_btn" type="submit">로그인</button>
@@ -116,19 +102,15 @@
         <div id="findbyid" class="popup_box" style="display: none;">
             <p class="popup_title">아이디 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbyid"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="POST">
+            <form name="f" action="emailForId" method="POST">
                 <div class="input_box">
                     <div class="email_box">
                         <label>
-                            <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일입력" required>
+                            <input type="text" name="userEmail1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-<<<<<<< HEAD
-                            <select class="userEmail2" name="userEmail2">
-=======
-                            <select class="userEmail2" name="userEmail2" >
->>>>>>> dev-user-mihyun
+                            <select name="userEmail2">
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
                                 <option value="gmail.com">gmail.com</option>
@@ -138,72 +120,47 @@
                 </div>
                 <div class="confirm_box">
                     <label>
-<<<<<<< HEAD
-                        <input type="text" class="code1" name="code1" value="" placeholder="인증번호 입력" required>
+                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
                         <span id="timerMin">3</span>:<span id="timerSec">00</span>
                     </label>
-                    <button class="confirm_btn1" type="button"  onclick="sendEmail_id()">인증번호 발송</button>
-                    <button class="verify_btn1" type="button" onclick="verifyCode_id()">인증번호 확인</button>
-=======
-                        <input type="text" name="code" value="" placeholder="인증번호 입력" required>
-                        <!-- <span>00:00</span> -->
-                        <span id="timerMin">3</span>:
-                        <span id="timerSec">00</span>
-                    </label>
-                    <button class="confirm_btn" type="button" onclick="sendEmail()">인증번호 발송</button>
->>>>>>> dev-user-mihyun
+                    <button class="confirm_btn" type="button" onclick="emailForId()">인증번호 발송</button>
                 </div>
                 <div class="pbtn_box">
-                    <button class="submit_btn" type="submit">확인</button>
+                    <button class="submit_btn" type="submit" onclick="LoginPage(event)">확인</button>
                 </div>
             </form>
         </div>
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="" method="POST">
+            <form name="f" action="emailForPw" method="POST">
                 <div class="input_box">
                     <label>
-                        <input type="text" class="pw_id" name="pw_id" value="" placeholder="아이디 입력" required>
+                        <input type="text" name="findbypw_id" value="" placeholder="아이디 입력" required>
                     </label>
                     <div class="email_box">
                         <label>
-                            <input type="text" class="pw_email1" name="pw_email1" value="" placeholder="이메일입력" required>
+                            <input type="text" name="findbypw_email1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-<<<<<<< HEAD
-                            <select class="pw_email2" name="pw_email2">
+                            <select name="findbypw_email2">
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
                                 <option value="gamil.com">gmail.com</option>
-=======
-                            <select name="">
-                                <option value="">naver.com</option>
-                                <option value="">nate.com</option>
-                                <option value="">gmail.com</option>
->>>>>>> dev-user-mihyun
                             </select>
                         </label>
                     </div>
                 </div>
                 <div class="confirm_box">
                     <label>
-<<<<<<< HEAD
-                        <input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
-                        <span id="pwTimerMin">3</span> : <span id="pwTimerSec">00</span>
-=======
                         <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <!-- <span>00:00</span> -->
-                        <span id="timerMin">3</span>:
-                        <span id="timerSec">00</span>
->>>>>>> dev-user-mihyun
+                        <span id="timerMin">3</span>:<span id="timerSec">00</span>
                     </label>
-                    <button class="confirm_btn" type="button" onclick="sendEmail()">인증번호 발송</button>
-					<button class="verify_btn" type="button" onclick="verifyCode()">인증번호 확인</button>
+                    <button class="confirm_btn" type="button" onclick="emailForPw()">인증번호 발송</button>
                 </div>
                 <div class="pbtn_box">
-                    <button class="submit_btn" type="submit" onclick="submitForm()">확인</button>
+                    <button class="submit_btn" type="submit">확인</button>
                 </div>
             </form>
         </div>
@@ -211,106 +168,48 @@
     </section>
     <!-- e: content -->
 </body>
-<<<<<<< HEAD
 
 <script type="text/javascript">
-
-	// 타이머 객체
-	let timers = {
-		idTimer: null,
-		pwTimer: null
-	}; 
 	
-	let timersRemaining = {
-		idTimeRemaining: 180, // 3분
-		pwTimeRemaining: 180  // 3분
-	}; 
+	// 3분 타이머 
+	function startTimer(){
+	let timerMinId = document.getElementById('timerMin');
+	let timerSecId = document.getElementById('timerSec');
 	
-	
-	// 아이디 찾기 타이머 중지 함수
-	function stopIdTimer(){
-		if (timers.idTimer) {
-	        clearInterval(timers.idTimer);  
-	        timers.idTimer = null;  
-	    }
-	    timersRemaining.idTimeRemaining = 0; 
-	}
-	
-	// 비밀번호 찾기 타이머 중지 함수
-	function stopPwTimer(){
-		if (timers.pwTimer) {
-	        clearInterval(timers.pwTimer);  
-	        timers.pwTimer = null;  
-	    }
-	    timersRemaining.pwTimeRemaining = 0; 
-	}
-	
-	
-	
-	// 아이디 타이머 
-	function startIdTimer() {
-	    clearTimer(timers.idTimer); // 기존 타이머를 정리
-	    
-	    timers.idTimer = setInterval(() => {
-	        if (timersRemaining.idTimeRemaining <= 0) {
-	            clearTimer(timers.idTimer);
-	            alert("인증 시간이 초과되었습니다.");
-	            return;
-	        }
-	        timersRemaining.idTimeRemaining--;
-	        
-	        let minutes = Math.floor(timersRemaining.idTimeRemaining / 60);
-	        let seconds = timersRemaining.idTimeRemaining % 60;
-	        
-	        document.getElementById('timerMin').textContent = minutes;
-	        document.getElementById('timerSec').textContent = seconds < 10 ? '0' + seconds : seconds;
-	    }, 1000);
-	}
-
-	// 비밀번호 타이머 
-	function startPwTimer() {
-	    clearTimer(timers.pwTimer); // 기존 타이머를 정리
-	    
-	    timers.pwTimer = setInterval(() => {
-	        if (timersRemaining.pwTimeRemaining <= 0) {
-	            clearTimer(timers.pwTimer);
-	            alert("인증 시간이 초과되었습니다.");
-	            return;
-	        }
-	        timersRemaining.pwTimeRemaining--;
-	        
-	        let minutes = Math.floor(timersRemaining.pwTimeRemaining / 60);
-	        let seconds = timersRemaining.pwTimeRemaining % 60;
-	        
-	        document.getElementById('pwTimerMin').textContent = minutes;
-	        document.getElementById('pwTimerSec').textContent = seconds < 10 ? '0' + seconds : seconds;
-	    }, 1000);
-	}
-
-	// 타이머 초기화 
-	function clearTimer(timer) {
-	    if (timer) {
-	        clearInterval(timer);
-	    }
-	}
- 
-	// 아이디 -----------------------------------------------------------------------------------
-	
-	// 아이디 찾기 - 이메일 발송 
-	function sendEmail_id(){
-		let email1 = $('input[name="userEmail1"]').val().trim();
-		let email2 = $('select[name="userEmail2"]').val().trim();
-		
-		timersRemaining.idTimeRemaining = 180;
-		startIdTimer();
-		
-		if (email1 === '' || email2 === '') {
-			alert("이메일 입력란을 모두 입력해주세요.");
-			return; // 빈 필드가 있을 경우, AJAX 요청을 보내지 않음
+	timer = setInterval(()=>{
+		if(timeRemaining<=0){
+			clearInterval(timer);
+			alert("인증 시간이 초과되었습니다.");
+			return;
 		}
+		timeRemaining--;
+		
+		let minutes = Math.floor(timeRemaining / 60);
+		let seconds = timeRemaining % 60;
+		
+		timerMinId.textContent = minutes;
+		timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+	},1000);
+}
+	// 아이디 찾기 
+	function emailForId() {
+	    let email1 = $('input[name="userEmail1"]').val();
+	    let email2 = $('select[name="userEmail2"]').val();
  
+	    timeRemaining = 180;
+	    startTimer();
+
+	    // 이메일 입력이 안 되어 있으면 focus
+	    if (email1 === "") {
+	        alert("이메일 주소를 입력해주세요");
+	        return $('input[name="userEmail1"]').focus();
+	    }
+	    if (email2 === "") {
+	        
+	    }
+
 	    $.ajax({
-	        url: 'findById',
+	        url: 'emailForId',
 	        type: 'POST',
 	        data: {
 	            "userEmail1": email1,
@@ -321,206 +220,91 @@
 	                alert("인증메일을 발송하였습니다.");
 	                console.log("인증메일 발송완료");
 	            } else {
-	                alert("이메일 전송에 실패하였습니다. 아이디를 다시 확인해주세요");
+	                alert("이메일 전송에 실패하였습니다.");
 	                console.log("email1: " + email1 + ", email2: " + email2);
-	                stopIdTimer();
 	            }
 	        },
 	        error: function(err) {
 	            console.log(err);
+	            alert("서버 요청 실패! 네트워크 상태를 확인해주세요.");
 	        }
-	    })
+	    });
 	}
 	
-	function verifyCode_id(){
-	    let codeInput = $('.code1').val();
-	    let storedCode = getCookie('checkCode1'); // 쿠키에서 인증번호 가져오기
-	    //alert('aaa')
-		//alert(codeInput)
-		//alert(storedCode)
-	    if (codeInput === storedCode) {
-	        // 인증번호가 일치하는 경우 비밀번호 이메일 전송 요청
-	        // alert('bbb')
-	        $.ajax({
-	            url: 'verifyCode_id',
-	            type: 'POST',
-	            data: {
-	                "userEmail1": $('.userEmail1').val(),
-	                "userEmail2": $('.userEmail2').val()
-	            },
-	            success: function(res) {
-	                if (res === 'OK') {
-	                    alert("인증번호가 일치합니다. \n아이디를 메일로 발송하였습니다. 이메일을 통해 아이디를 확인해주세요. ");
-	                    stopIdTimer(); // 아이디 인증번호 일치하면 타이머 중지
-	                    
-	                } else {
-	                    alert("아이디 전송에 실패하였습니다. 이메일을 다시 확인해주세요.");
-	                }
-	            },
-	            error: function(err) {
-	                console.log(err);
-	            }
-	        });
-	    } else {
-	        alert("email인증번호가 일치하지 않습니다.");
+	// 비밀번호 찾기
+	function emailForPw(){
+		 
+		let id = $('input[name="findbypw_id"]').val().trim();
+		let email1 = $('input[name="findbypw_email1"]').val().trim();
+	    let email2 = $('select[name="findbypw_email2"]').val().trim();
+	    
+	    alert(id)
+	    alert(email1)
+	    alert(email2)
+	    
+	    timeRemaining = 180;
+	    startTimer();
+	    
+	 // 이메일 입력이 안 되어 있으면 focus
+	    if (email1 === "") {
+	        alert("이메일 주소를 입력해주세요");
+	        return $('input[name="findbypw_email1"]').focus();
 	    }
-	}
-	
-	// 쿠키 값을 가져오는 함수
- 	function getCookie(name) {
-	    let cookieArr = document.cookie.split(";");
-	    for (let i = 0; i < cookieArr.length; i++) {
-	        let cookiePair = cookieArr[i].split("=");
-	        if (name === cookiePair[0].trim()) {
-	            return decodeURIComponent(cookiePair[1]);
-	        }
+	    if (email2 === "") {
+	        
 	    }
-	    return null;
-	} 
-	
-	// 비밀번호 -----------------------------------------------------------------------------------
-	
-	// 비밀번호 찾기 - 이메일 발송 
-	function sendEmail(){
-		let id = $('.pw_id').val(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
-		let email1 = $('.pw_email1').val(); 
-		let email2 = $('.pw_email2').val(); 
-		
-		timersRemaining.pwTimeRemaining = 180;
-    	startPwTimer();
- 
+	    console.log("아이디:"+id);
+	    
 	    $.ajax({
-	        url: 'findByPw',
+	        url: 'emailForPw',
 	        type: 'POST',
 	        data: {
-	        	"pw_id": id,
-	            "pw_email1": email1,
-	            "pw_email2": email2
+	        	"findbypw_id" : id,
+	            "findbypw_email1": email1,
+	            "findbypw_email2": email2
 	        },
 	        success: function(res) {
 	            if (res === 'OK') {
 	                alert("인증메일을 발송하였습니다.");
 	                console.log("인증메일 발송완료");
 	            } else {
-	                alert("이메일 전송에 실패하였습니다. 아이디를 다시 확인해주세요");
-	                console.log("email1: " + email1 + ", email2: " + email2);
+	                alert("이메일 전송에 실패하였습니다.");
+	                 
 	            }
 	        },
 	        error: function(err) {
 	            console.log(err);
+	            alert("서버 요청 실패! 네트워크 상태를 확인해주세요.");
 	        }
-	    })
+	    });
+	     
 	}
 	
-	function verifyCode(){
-	    let codeInput = $('.code').val();
-	    let storedCode = getCookie('checkCode1'); // 쿠키에서 인증번호 가져오기
-	    console.log("pw1 "+codeInput);
-	    console.log("pw2 "+storedCode); 
-
-	    if (codeInput === storedCode) {
-	        // 인증번호가 일치하는 경우 비밀번호 이메일 전송 요청
-	        $.ajax({
-	            url: 'verifyCode',
-	            type: 'POST',
-	            data: {
-	                "pw_id": $('.pw_id').val(),
-	                "pw_email1": $('.pw_email1').val(),
-	                "pw_email2": $('.pw_email2').val()
-	            },
-	            success: function(res) {
-	                if (res === 'OK') {
-	                    alert("인증번호가 일치합니다. \n비밀번호를 메일로 발송하였습니다. 이메일을 통해 비밀번호 확인해주세요. ");
-	                    stopPwTimer();
-	                    
-	                } else {
-	                    alert("비밀번호 전송에 실패하였습니다. 아이디와 이메일을 다시 확인해주세요.");
-	                }
-	            },
-	            error: function(err) {
-	                console.log(err);
-	            }
-	        });
-	    } else {
-	        alert("pw인증번호가 일치하지 않습니다.");
+	
+	
+	// 확인 버튼을 누를때 발생하는 이벤트 처리 
+	function LoginPage(event){
+		
+		// 기본 폼 제출 동작을 막음
+		if(event){
+			event.preventDefault(); // 기본동작취소 // preventDefault : 주로 이벤트 핸들러 내에서 사용되어 특정 이벤트가 발생할 때 브라우저의 기본 동작을 막고, 개발자가 원하는 커스텀 동작을 수행
+		}
+		
+		let email1 = $('input[name="userEmail1"]').val();
+		
+	    // 입력 필드 검증
+	    if (email1.trim() === "") {
+	        alert("아이디를 입력해 주세요.");
+	        $('input[name="userEmail1"]').focus(); // 입력 필드에 포커스 이동
+	        return; // 함수 종료
 	    }
+	    
+	    // 유효성 검사 완료되면 login 페이지로 이동
+		window.location.href = 'user_login';
+	    
+	    // 인증번호 일치해야 아이디 알려주기 
+		alert("찾으시는 아이디는 "+ email1 + "입니다.");
 	}
-	
-	// 쿠키 값을 가져오는 함수
- 	function getCookie(name) {
-	    let cookieArr = document.cookie.split(";");
-	    for (let i = 0; i < cookieArr.length; i++) {
-	        let cookiePair = cookieArr[i].split("=");
-	        if (name === cookiePair[0].trim()) {
-	            return decodeURIComponent(cookiePair[1]);
-	        }
-	    }
-	    return null;
-	} 
-	
- 	 // 이벤트 핸들러 등록
-    $('.verify_btn').on('click', verifyCode);
  
 </script>
 </html>  
-=======
-<script type="text/javascript">
-	let timer;
-	let timeRemaining = 180;
-
-	function startTimer(){
-		let timerMinId = document.getElementById('timerMin');
-		let timerSecId = document.getElementById('timerSec');
-		
-		timer = setInterval(()=>{
-			if(timeRemaining<=0){
-				clearInterval(timer);
-				alert("인증 시간이 초과되었습니다.");
-				return;
-			}
-			timeRemaining--;
-			
-			let minutes = Math.floor(timeRemaining / 60);
-			let seconds = timeRemaining % 60;
-			
-			timerMinId.textContent = minutes;
-			timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
-		},1000);
-	}
-	
-	function sendEmail(){
-		let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
-		let email2 = $('.userEmail2').val();
-		
-		// 이메일 입력이 안되어있으면 focus
-		if(email1 ==""){
-			alert("이메일 주소를 입력해주세요")
-			return $('.userEmail1').focus();
-			
-		}else if(email2 == ""){
-			// $('.confirm_box').show();
-			// $('.confirm_box').style.display="block";
-		}
-		timeRemaining = 180;
-		startTimer();
-		
-		$.ajax({
-			url : 'findId',
-			type : 'POST',
-			data : { "userEmail1" : email1,
-					"userEmail2" : email2
-			},
-			success : function(res){
-				if(res == 'OK'){
-					alert("인증메일을 발송하였습니다.");
-				} 
-			},
-			error : function(err){
-				console.log(err);
-				alert("서버 요청 실패! 네트워크 상태를 확인해주세요.")
-			}
-		})
-	}
-</script>
-</html>
->>>>>>> dev-user-mihyun

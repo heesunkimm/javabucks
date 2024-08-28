@@ -10,38 +10,39 @@
             </div>
 
             <div class="select_box">
-                <form name="" action="" method="post">
+                <form name="f" action="searchCpnData" method="post">
                     <div class="search_box">
                         <div style="width: 100%;">
                             <label>
-                                <select name="">
-                                    <option value="">쿠폰발급일</option>
-                                    <option value="">쿠폰만료일</option>
-                                    <option value="">쿠폰사용일</option>
+                                <select name="searchTitle">
+                                    <option value="cpnListStartDate">쿠폰발급일</option>
+                                    <option value="cpnListEndDate">쿠폰만료일</option>
+                                    <option value="cpnListUseDate">쿠폰사용일</option>
                                 </select>
                             </label>
                             <label>
-                                <input type="date" name="" value="">
+                                <input type="date" name="searchStartDate" value="">
                             </label>
                             <label>~
-                                <input type="date" name="" value="">
+                                <input type="date" name="searchEndDate" value="">
                             </label>
                             <label>쿠폰상태
-                                <select name="">
+                                <select name="cpnListStatus">
                                     <option value="">전체</option>
-                                    <option value="">사용완료</option>
-                                    <option value="">기한만료</option>
+                                    <option value="발급완료">발급완료</option>
+                                    <option value="사용완료">사용완료</option>
+                                    <option value="기한만료">기한만료</option>
                                 </select>
                             </label>
                         </div>
                         <label>유저아이디
-                            <input type="text" name="" value="">
+                            <input type="text" name="userId" value="">
                         </label>
-                        <label>쿠폰번호
-                            <input type="text" name="" value="">
+                        <label>쿠폰코드
+                            <input type="text" name="cpnCode" value="">
                         </label>
                         <label>쿠폰명
-                            <input type="text" name="" value="">
+                            <input type="text" name="cpnName" value="">
                         </label>
                         <button type="button">검색</button>
                     </div>
@@ -55,10 +56,10 @@
                     <table class="search_list s_table">
                         <thead>
                             <tr>
-                                <th>쿠폰발급일</th>
-                                <th>쿠폰번호</th>
-                                <th>유저아이디</th>
+                                <th>No</th>
                                 <th>쿠폰명</th>
+                                <th>유저아이디</th>
+                                <th>쿠폰발급일</th>
                                 <th>쿠폰만료일</th>
                                 <th>쿠폰사용일</th>
                                 <th>쿠폰상태</th>
@@ -66,10 +67,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>쿠폰발급일</td>
-                                <td>쿠폰번호</td>
-                                <td>유저아이디</td>
+                                <td>No</td>
                                 <td>쿠폰명</td>
+                                <td>유저아이디</td>
+                                <td>쿠폰발급일</td>
                                 <td>쿠폰만료일</td>
                                 <td>쿠폰사용일</td>
                                 <td>쿠폰상태</td>
@@ -135,7 +136,7 @@
 <jsp:include page="../admin_bottom.jsp"/>
 <script type="text/javascript">
 	$('input[name="cpnCode"]').on('input', function() {
-        // 입력값에서 영어, 숫자, _만 남기고 제거
+        // 입력값에서 영어, 숫자, -만 남기고 제거
         let value = $(this).val().replace(/[^A-Za-z0-9-]/g, '');
         $(this).val(value);
         $(this).val().toUpperCase();
