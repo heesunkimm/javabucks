@@ -83,7 +83,12 @@
 			                            </td>
 			                            <td><fmt:formatNumber value="${baljoo.baljooPrice}" pattern="###,###"/>원</td>
 			                            <td>
-			                            	<a href="javascript:;">[처리]</a>
+			                            	<c:if test="${baljoo.baljooStatus eq '주문완료'}">
+			                            		<button style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${baljoo.baljooNum}">접수</button>
+			                            	</c:if>
+			                            	<c:if test="${baljoo.baljooStatus eq '접수완료'}">
+			                            		<button style="background:grey; color:white;" onclick="storeOrderCancel(this)" data-baljooNum="${baljoo.baljooNum}">접수취소</button>
+			                            	</c:if>
 			                            </td>
 			                        </tr>
 			                	</c:forEach>
@@ -137,7 +142,12 @@
 		                            </td>
 		                            <td><fmt:formatNumber value="${search.baljooPrice}" pattern="###,###"/>원</td>
 		                            <td>
-		                            	<a href="javascript:;">[처리]</a>
+		                            	<c:if test="${search.baljooStatus eq '주문완료'}">
+		                            		<button type="button" style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${search.baljooNum}">접수</button>
+		                            	</c:if>
+		                            	<c:if test="${search.baljooStatus eq '접수완료'}">
+		                            		<button type="button" style="background:grey; color:white;" onclick="storeOrderCancel(this)" data-baljooNum="${search.baljooNum}">접수취소</button>
+		                            	</c:if>
 		                            </td>
 		                        </tr>
 		                	</c:forEach>
@@ -178,3 +188,43 @@
 </section>
 <!-- e: content -->
 <%@ include file="../admin_bottom.jsp"%>
+<script type="text/javascript">
+
+	function storeOrderOk(element){
+		const baljooNum = element.dataset.baljoonum;
+		
+		$.ajax({
+			type : "POST",
+			url : "/storeOrderOk.ajax",
+			data : {
+				baljooNum : baljooNum
+			},
+			success : function(response){
+				alert("발주번호 "+baljooNum+"번 접수완료");
+				location.reload();
+			},
+			error : function(error){
+				console.log(error);
+			}
+		});
+	}
+	
+	function storeOrderCancel(element){
+		const baljooNum = element.dataset.baljoonum;
+		
+		$.ajax({
+			type : "POST",
+			url : "/storeOrderCancel.ajax",
+			data : {
+				baljooNum : baljooNum
+			},
+			success : function(response){
+				alert("발주번호 "+baljooNum+"번 접수취소");
+				location.reload();
+			},
+			error : function(error){
+				console.log(error);
+			}
+		});
+	}
+</script>

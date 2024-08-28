@@ -83,8 +83,8 @@ public class OrderMapper {
 	}
 	
 	// 발주 리스트 개수
-	public int baljooCount() {
-		return sqlSession.selectOne("baljooCount");
+	public int baljooCount(Map<String, Object> params) {
+		return sqlSession.selectOne("baljooCount", params);
 	}
 	
 	// 품목명 조회
@@ -106,6 +106,14 @@ public class OrderMapper {
 	public List<BaljooDTO> searchBaljooList(Map<String, Object> params){
 		List<BaljooDTO> list = sqlSession.selectList("searchBaljooList", params);
 		return list;
+	}
+	
+	public int baljooStatusUpdateOk(int baljooNum) {
+		return sqlSession.update("baljooStatusUpdateOk", baljooNum);
+	}
+	
+	public int baljooStatusUpdateCancel(int baljooNum) {
+		return sqlSession.update("baljooStatusUpdateCancel", baljooNum);
 	}
 
 }
