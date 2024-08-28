@@ -19,6 +19,10 @@
                         <option value="SAN" ${searchCate == 'SAN' ? 'selected' : ''}>샌드위치(SAN)</option>
                         <option value="TUM" ${searchCate == 'TUM' ? 'selected' : ''}>텀블러(TUM)</option>
                         <option value="WON" ${searchCate == 'WON' ? 'selected' : ''}>원두(WON)</option>
+                        <option value="CUP" ${searchCate == 'CUP' ? 'selected' : ''}>컵(CUP)</option>
+                        <option value="SYR" ${searchCate == 'SYR' ? 'selected' : ''}>시럽(SYR)</option>
+                        <option value="MIL" ${searchCate == 'MIL' ? 'selected' : ''}>우유(MIL)</option>
+                        <option value="WHI" ${searchCate == 'WHI' ? 'selected' : ''}>휘핑크림(WHI)</option>
                     </select>
                 </label>
                 <label>품목명

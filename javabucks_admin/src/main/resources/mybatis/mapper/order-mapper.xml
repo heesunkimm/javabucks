@@ -179,10 +179,21 @@
 		where baljooNum = #{baljooNum}
 	</update>
 
-  	<update id="baljooStatusUpdateCancel" parameterType="int">
-		update javabucks_baljoo set baljooStatus = '주문완료'
+
+	<select id="storeOrderBaljooList" parameterType="int" resultType="BaljooDTO">
+		select * from javabucks_baljoo
 		where baljooNum = #{baljooNum}
-	</update>
+	</select>
   	
+  	<select id="getAdminStocksCount" parameterType="String" resultType="int">
+  		select stockListCount 
+  		from javabucks_stocklist
+  		where stockListCode = #{stockListCode}
+  	</select>
+  	
+  	<update id="updateCountMinus" parameterType="java.util.Map">
+  		update javabucks_stocklist set stockListCount = stockListCount - #{value}
+  		where stockListCode = #{stockListCode}
+  	</update>
   	
   </mapper>
