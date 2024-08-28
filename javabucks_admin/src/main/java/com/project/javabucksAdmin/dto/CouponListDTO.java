@@ -6,9 +6,9 @@ public class CouponListDTO {
 	private String cpnCode;
 	private String userId;
 	private String cpnListStatus; // 쿠폰상태: 발급완료, 사용완료, 기간만료
-	private String cpnListStartDate;
-	private String cpnListEndDate;
-	private String cpnListUseDate;
+	private String cpnListStartDate; // 발급일
+	private String cpnListEndDate; // 만료일
+	private String cpnListUseDate; // 사용날짜
 	
 	public int getCpnListNum() {
 		return cpnListNum;

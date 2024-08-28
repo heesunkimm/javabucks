@@ -1,6 +1,7 @@
 package com.project.javabucksAdmin.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,10 @@ public class CouponMapper {
 	public int toUserAlarm(AlarmDTO dto) {
 		return sqlSession.insert("toUserAlarm", dto);
 	}
+	// 쿠폰리스트 조회
+	/*
+	 * public List<CouponListDTO> searchCpnList(Map<String, Object> params) { return
+	 * sqlSession.selectList("searchCpnList", params); }
+	 */
 }
 
