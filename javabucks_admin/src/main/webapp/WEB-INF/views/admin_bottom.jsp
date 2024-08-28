@@ -3,7 +3,7 @@
     <footer></footer>
 </body>
 <script>
-$(document).ready(function(){
+/* $(document).ready(function(){
 	$.ajax({
 		url: "sessionUserCheck",
 		type: "get",
@@ -17,6 +17,6 @@ $(document).ready(function(){
 			console.log(err);
 		}
 	});
-});
+}); */
 </script>
 </html>

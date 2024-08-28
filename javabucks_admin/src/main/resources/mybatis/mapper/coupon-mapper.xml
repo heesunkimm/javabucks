@@ -42,5 +42,19 @@
   	<insert id="toUserAlarm" parameterType="AlarmDTO">
   		insert into javabucks_alarm (alarmNum, userId, alarmIsRead, alarmCate, alarmCont, alarmRegDate) values (seq_alarmnum.nextval, #{userId}, default, #{alarmCate}, #{alarmCont}, default)
   	</insert>
+  	
+  	<!-- 쿠폰리스트 조회 -->
+  	<!-- <select id="searchCpnList" parameterType="java.util.Map" resultType="CouponListDTO">
+	  	select * from (
+	  		select row_number() over (order by cpnListStartDate desc) as rn, cl.*, c.*
+	  		from javabucks_couponList cl 
+	  		join javabucks_coupon c on cl.cpnCode = c.cpnCode
+	  	) coupons
+	  	where rn between #{startRow} and #{endRow}
+  	</select> -->
+  	
+  	<!-- <select id="searchCpnListCount" parameterType="java.util.Map" resultType="CouponListDTO">
+	  	select count(*) from javabucks_couponList
+  	</select> -->
 
   </mapper>

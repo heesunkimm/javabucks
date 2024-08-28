@@ -39,7 +39,8 @@ public class CouponController {
 		return "/coupon/admin_cpnmange";
 	}
 	
-	@Scheduled(cron = "0 0 0 * * ?") // 매일 00시
+	// 매일 00시 스케줄링 실행
+	@Scheduled(cron = "0 0 0 * * ?") 
 	public void sendCoupon () {
 		// 생일 일주일 전인 유저에게 쿠폰 발송
 		userBirthCheck();
