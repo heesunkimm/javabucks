@@ -32,16 +32,6 @@
             </div>
 
             <div class="user_box div_box">
-<<<<<<< HEAD
-            	<!-- <p><span class="font_green">user_id</span>님 <br/>환영합니다!</p> -->
-            	<p>
-            	<c:if test="${not empty inUser.userNickname}">
-                    ${inUser.userNickname}님,
-                    </c:if>
-                    <c:if test="${empty inUser.userNickname}">
-                    ${inUser.userId}님,
-                    </c:if>
-=======
                 <p>
             	<c:if test="${not empty inUser.userNickname}">
                     ${inUser.userNickname}님,
@@ -49,7 +39,6 @@
                 <c:if test="${empty inUser.userNickname}">
                     ${inUser.userId}님,
                 </c:if>
->>>>>>> dev-user-mihyun
             	<br/>환영합니다!
             	</p>
                 <ul class="div_box">
