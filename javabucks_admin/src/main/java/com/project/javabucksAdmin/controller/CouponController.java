@@ -1,8 +1,10 @@
 package com.project.javabucksAdmin.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucksAdmin.dto.AlarmDTO;
 import com.project.javabucksAdmin.dto.CouponDTO;
 import com.project.javabucksAdmin.dto.CouponListDTO;
+import com.project.javabucksAdmin.dto.MenuDTO;
 import com.project.javabucksAdmin.dto.UserDTO;
 import com.project.javabucksAdmin.mapper.CouponMapper;
 
@@ -31,12 +35,63 @@ public class CouponController {
 	private CouponMapper couponMapper;
 	
 	@RequestMapping("/admin_cpnmange")
-	public String cpnIndex (HttpServletRequest req) {
-		// 쿠폰생성
-		List<CouponDTO> cpnList = couponMapper.listCoupon();
+	public String cpnIndex(HttpServletRequest req, @RequestParam Map<String, Object> params, 
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
-		req.setAttribute("cpnList", cpnList);
-		return "/coupon/admin_cpnmange";
+		// 쿠폰 생성 및 등록된 쿠폰명, 쿠폰 리스트 조회
+	    List<CouponDTO> cpnList = couponMapper.listCoupon();
+	    List<CouponDTO> cpnInfo = couponMapper.cpnInfoList();
+
+	    req.setAttribute("cpnList", cpnList);
+	    req.setAttribute("cpnInfo", cpnInfo);
+	    
+	    // 검색 조건 처리
+	    String searchStartDate = (String) params.get("searchStartDate");
+	    String searchEndDate = (String) params.get("searchEndDate");
+	    String cpnListStatus = (String) params.get("cpnListStatus");
+	    String userId = (String) params.get("userId");
+	    String cpnName = (String) params.get("cpnName");
+
+	    // 검색 조건이 있을 경우
+	    if (searchStartDate != null || searchEndDate != null || cpnListStatus != null || userId != null || cpnName != null) {
+	        Map<String, Object> searchParams = new HashMap<>();
+	        searchParams.put("searchStartDate", searchStartDate);
+	        searchParams.put("searchEndDate", searchEndDate);
+	        searchParams.put("cpnListStatus", cpnListStatus);
+	        searchParams.put("userId", userId);
+	        searchParams.put("cpnName", cpnName);
+	        
+	        // 페이징
+//	        int searchCount = couponMapper.searchFilterCpnCount(searchParams);
+//		    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
+//		    int startRow = (pageNum - 1) * pageSize + 1;
+//		    int endRow = startRow + pageSize - 1;	
+//		    if (endRow > searchCount) endRow = searchCount;		
+//		    int no = searchCount - startRow + 1;				
+//		    int pageBlock = 3;
+//		    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
+//		    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
+//		    int endPage = startPage + pageBlock - 1;
+//		    if (endPage > pageCount) endPage = pageCount;
+	        
+	        // 검색 조건에 맞게 필터링된 쿠폰리스트
+	        List<CouponListDTO> searchList;
+	        
+	        // 검색 조건에 따라 메뉴 리스트 가져오기
+//		    searchParams.put("startRow", startRow);
+//		    searchParams.put("endRow", endRow);
+	        
+	        searchList = couponMapper.searchFilterCpn(searchParams);
+	        
+	        req.setAttribute("searchList", searchList);
+	        req.setAttribute("searchParams", searchParams);
+	    } else {
+	        // 전체 데이터 조회
+	        List<CouponListDTO> allList = couponMapper.getUserCpnList();
+	        req.setAttribute("searchList", allList);
+	    }
+
+	    return "/coupon/admin_cpnmange";
 	}
 	
 	// 매일 00시 스케줄링 실행
