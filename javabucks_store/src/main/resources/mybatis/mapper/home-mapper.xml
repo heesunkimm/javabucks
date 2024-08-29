@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mybatis.mapper.homeMapper">
+
+	<select id="topMenuOrderList" parameterType="String" resultType="PayhistoryDTO">
+		SELECT 
+		    o.orderList        
+		FROM 
+		    javabucks_payhistory ph
+		JOIN 
+		    javabucks_order o ON ph.orderCode = o.orderCode  
+		WHERE 
+		    ph.bucksId = #{bucksId}  
+	</select>
+	
+	<select id="getMenuDetails" resultType="MenuDTO">
+	    SELECT 
+	        menuCode, menuName, menuImages
+	    FROM 
+	        javabucks_menu
+	    WHERE 
+	        menuCode IN 
+	        <foreach item="code" collection="list" open="(" separator="," close=")">
+	            #{code}
+	        </foreach>
+	</select>
+	
+	<select id="MonthlySales" resultType="map">
+        SELECT 
+            TO_CHAR(payhistoryDate, 'MM') AS month,  <!-- 월 추출 -->
+            SUM(payhistoryPrice) AS totalSales            <!-- 월별 매출 합산 -->
+        FROM 
+            javabucks_payhistory
+        WHERE 
+            bucksId = #{bucksId}                          <!-- 지점 ID 필터 -->
+            AND TO_CHAR(payhistoryDate, 'YYYY') = #{year} <!-- 연도 필터 -->
+        GROUP BY 
+            TO_CHAR(payhistoryDate, 'MM')
+        ORDER BY 
+            month                                       <!-- 월별 정렬 -->
+    </select>
+	
+	
+</mapper>

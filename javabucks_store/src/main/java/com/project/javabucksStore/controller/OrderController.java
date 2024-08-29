@@ -241,20 +241,12 @@ public class OrderController {
 		
 		// 신규 주문 막기 CHECK = 모든 스토어 메뉴가 주문 막기 되어있는지 확인
 		Boolean orderStopCheck = false;
-		int orderStopCheckCnt = 0;
-		List<StoreMenuDTO> storeMenuStatusList = mapper.getStoreMenuStatus(bucksId);
-		for (StoreMenuDTO sdto : storeMenuStatusList) {
-			if (sdto.getStoremenuStatus().equals("N")) {
-				orderStopCheckCnt = orderStopCheckCnt + 1;
-			}
-		}
-		// System.out.println("orderStopCheckCnt:"+orderStopCheckCnt);
-		// System.out.println("storeMenuStatusList.size():"+storeMenuStatusList.size());
-		if (storeMenuStatusList.size() == orderStopCheckCnt) {
+
+		String storeOrderStatus = mapper.getStoreOrderStatus(bucksId);
+		if(storeOrderStatus.equals("N")) {
 			orderStopCheck = true;
 		}
-		// System.out.println("orderStopCheck:"+orderStopCheck);
-
+		
 		model.addAttribute("orderStopCheck", orderStopCheck);
 	}
 	

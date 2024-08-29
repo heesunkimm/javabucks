@@ -23,6 +23,7 @@ public class SalesMapper {
 	}
 	
 	public Map<String, Object> getStockInfo(String stockCode){
+		//System.out.println(stockCode);
 		return sqlSession.selectOne("getStockInfo",stockCode);
 	}
 	

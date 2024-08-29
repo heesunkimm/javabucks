@@ -92,6 +92,37 @@ public class PayhistoryDTO {
 	public void setPayhistoryPayWay(String payhistoryPayWay) {
 		this.payhistoryPayWay = payhistoryPayWay;
 	}
+	
+	//조인값
+	private String orderList;
+	private int totalSales;
+	private String month;
+	
+	
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	public int getTotalSales() {
+		return totalSales;
+	}
+
+	public void setTotalSales(int totalSales) {
+		this.totalSales = totalSales;
+	}
+
+	public String getOrderList() {
+		return orderList;
+	}
+
+	public void setOrderList(String orderList) {
+		this.orderList = orderList;
+	}
 
 }
 
