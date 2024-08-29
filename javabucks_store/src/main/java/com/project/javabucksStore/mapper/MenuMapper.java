@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.javabucksStore.dto.MenuDTO;
+import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.StoreMenuDTO;
 
 @Service
@@ -48,10 +49,6 @@ public class MenuMapper {
 	public List<StoreMenuDTO> searchMd(Map<String, Object> params) {
 		return sqlSession.selectList("searchMd", params);
 	}
-	// 체크박스 조건에 해당하는 음료 리스트 갯수
-	public int searchDrinksCount(Map<String, Object> params) {
-		return sqlSession.selectOne("searchDrinksCount", params);
-	}
 	// 메뉴 키워드 검색 리스트 뽑기
 	public List<StoreMenuDTO> searchDrinksList(Map<String, Object> params) {
 		return sqlSession.selectList("searchDrinksList", params);
@@ -67,6 +64,10 @@ public class MenuMapper {
 	// 주문막기 상태 업데이트
 	public int menuStatusUpdate(StoreMenuDTO dto) {
 		return sqlSession.update("menuStatusUpdate", dto);
+	}
+	// 주문완료/제조중 상태 주문내역 확인
+	public List<OrderDTO> delOrderCheck(String bucksId) {
+		return sqlSession.selectList("delOrderCheck", bucksId);
 	}
 	// 메뉴삭제 - 지점에 추가한 메뉴 삭제
 	public int deleteMenu(Map<String, Object> params) {
