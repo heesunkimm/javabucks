@@ -261,4 +261,12 @@ public class UserMapper {
 	public List<CartDTO> CartByUserid(String userId) {
 		return sqlSession.selectList("CartByUserid", userId);
 	}
+	
+	public int deleteCart(Map<String, Object> params) {
+		return sqlSession.delete("deleteCart", params);
+	}
+	
+	public int deleteAllCart(String userId) {
+		return sqlSession.delete("deleteAllCart", userId);
+	}
 }

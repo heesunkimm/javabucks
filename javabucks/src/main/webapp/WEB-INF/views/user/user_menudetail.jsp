@@ -17,10 +17,10 @@
     <!-- s: content -->
     <section id="user_menudetail" class="content">
 				<form name="optplus" action="user_paynow" method="POST">
-				<input type="hidden" name="menuCode" value="${menu.menuCode}">
-				<input type="hidden" name="menuoptCode" value="${menu.menuoptCode}">
-				<input type="hidden" name="bucksId" value="${bucksId}">
-				<input type="hidden" name="pickup" value="${pickup}">
+					<input type="hidden" name="menuCode" value="${menu.menuCode}">
+					<input type="hidden" name="menuoptCode" value="${menu.menuoptCode}">
+					<input type="hidden" name="bucksId" value="${bucksId}">
+					<input type="hidden" name="pickup" value="${pickup}">
 		        <div class="inner_wrap">
 		            <div class="menu_img img_box">
 		                <img src="upload_menuImages/${menu.menuImages}" alt="">
@@ -165,7 +165,7 @@
 		            </div>
 		        </div>
 		            <div class="order_box">
-		                <button type="button">담기</button>
+		                <button class="popup_btn" type="button" onclick="handleButtonClick()">담기</button>
 		                <div class="minus_btn click_icon img_box">
 		                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('quantity')">
 		                </div>
@@ -175,18 +175,86 @@
 		                <div class="plus_btn click_icon img_box">
 		                	<img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('quantity')">
 		                </div>
+			                
 		                <button type="button" onclick="orderCheck()">주문하기</button>
+		                
 		                <button class="addlike" type="button">
 		                    <img src="../images/icons/like.png" alt="">
 		                </button>
 		            </div>
 			</form>
     </section>
+    
+    	<!-- 장바구니 팝업 -->
+        <div class="popup_box pickup_box" id="pickupselect" style="display: none;">
+            <div class="tit_box">
+                <p class="txt_tit">장바구니에 추가되었습니다.</p>
+            </div>
+            <form name="f" action="user_order" method="post">
+                <!-- s: 내용 작성 -->
+                 <input type="hidden" name="store" value="">
+                 <input type="hidden" name="pickup" value="">
+                 <input type="hidden" name="storeName" value="">
+                 <input type="hidden" name="bucksId" value="">
+                <div class="select_box">
+                    <a class="select_btn" href="javascript:;" onclick="window.location.href='user_cart';">
+                        <div class="txt_box">
+                            <p class="txt_tit">장바구니 가기</p>
+                        </div>
+                    </a>
+                    <a class="select_btn" href="javascript:;" onclick="window.location.href='user_order';">
+                        <div class="txt_box">
+                            <p class="txt_tit">다른 메뉴 더보기</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="btn_box">
+                    <button class="close_btn" type="button" data-popup="pickupselect">닫기</button>
+                </div>
+                <!-- e: 내용 작성 -->
+            </form>
+        </div>
+        <div class="dimm"></div>
     <!-- e: content -->
 
 <%@ include file="user_bottom.jsp"%>
 
 <script type="text/javascript">
+		
+		//팝업 열기
+		function openPopup(popupId) {
+		    $('#' + popupId).show();
+		    $('.dimm').show();
+		}
+		
+		// 유효성 검사 및 팝업 열기 함수
+		function handleButtonClick() {
+		    if (orderCheck()) {
+		    	console.log("orderCheck 잘 끝났어?~");
+		        let popupId = $(".popup_box pickup_box").data('popup');
+		        console.log("Popup ID 는 과연?:", popupId);  // Debugging line
+		        openPopup(popupId);
+		    }
+		}
+		
+		// 팝업 닫기 버튼 클릭 시
+		$(function() {
+		    $(".close_btn").on('click', function() {
+		        let popupId = $(this).data('popup');
+		        $('#' + popupId).hide();
+		        $('.dimm').hide();
+		    });
+		});
+		
+		// 팝업창에서 [장바구니/다른 메뉴 더보기] 경로 설정
+		function submitForm(pickupType) {
+		    // 선택한 pickupType (매장이용 또는 To-go)을 input에 설정
+		    $("input[name='pickup']").val(pickupType);
+
+		    // form 제출
+		    $("form[name='f']").submit();
+		}
+		
 		// 현재 선택된 시럽의 ID를 저장하는 변수
 		var selectedSyrup = null;
 		
@@ -339,44 +407,53 @@
 	    
 		// 유효성 검사
 	    function orderCheck() {
-			var qty = $("input[name='quantity']").val();
-			if (qty < 1) {
-				alert("수량은 한개 이상 선택해주세요");
-				return;
-			}
-			var drink = "${drink}";
-			if (drink === "drink") { 
-			    var isIce = "${isIce}";
-			    var isMilk = "${isMilk}";
-			    
-		        var cupNum = $('#cupNum').val();
-		        var whipNum = $('#whipNum').val();
-		        var iceNum = $('#iceNum').val();
-		        var milkNum = $('#milkNum').val();
-		        
-		        // 사이즈 체크
-		        if (!cupNum) {
-		            alert("사이즈를 선택해주세요.");
-		            return;
-		        }
-		        // 얼음량 체크 (ice 리스트가 비어 있지 않을 때만)
-		        if (isIce !== 'not' || isIce === 'ok') {
-		            if (!iceNum) {
-		                alert("얼음량을 선택해주세요.");
-		                return;
-		            }
-		        }
-		        // 우유 종류 체크 (milk 리스트가 비어 있지 않을 때만)
-		        if (isMilk !== 'not' || isMilk === 'ok') {
-		            if (!milkNum) {
-		                alert("우유 종류를 선택해주세요.");
-		                return;
-		            }
-		        }
-			}
-			updateSyrupNum();
-			orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+	    	console.log("유효성검사 들어옴");
+	    var qty = $("input[name='quantity']").val();
+
+	    if (qty < 1) {
+	        alert("수량은 한개 이상 선택해주세요");
+	        return false;
 	    }
+
+	    var drink = "${drink}";
+
+    	if (drink === "drink") { 
+	        var isIce = "${isIce}";
+	        var isMilk = "${isMilk}";
+
+	        
+	        var cupNum = $('#cupNum').val();
+	        var whipNum = $('#whipNum').val();
+	        var iceNum = $('#iceNum').val();
+	        var milkNum = $('#milkNum').val();
+        
+        // 사이즈 체크
+        if (!cupNum) {
+            console.log("컵뭘까:" + cupNum);
+            alert("사이즈를 선택해주세요.");
+            return false;
+        }
+        // 얼음량 체크
+        if (isIce !== 'not' || isIce === 'ok') {
+            if (!iceNum) {
+                alert("얼음량을 선택해주세요.");
+                return false;
+            }
+        }
+        // 우유 종류 체크
+        if (isMilk !== 'not' || isMilk === 'ok') {
+            if (!milkNum) {
+                alert("우유 종류를 선택해주세요.");
+                return false;
+            }
+        }       
+    }
+
+	    updateSyrupNum();
+	    orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+	    console.log("유효성검사 통과");
+	    return true;
+	}
 		
 		// orderOptInsert 요청 처리
 	    function orderOptInsert(cupNum, whipNum, iceNum, milkNum) {

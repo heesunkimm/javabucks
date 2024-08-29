@@ -102,79 +102,79 @@
 	</section>
 	<!-- e: content -->
 
-	<%@ include file="user_bottom.jsp"%>
-	<!-- 주소 검색 API -->
-	<script
-		src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-	<script>
-		window.onload = function() {
-			// input 필드의 value 값을 가져옴
-			var deliveryAddressValue = document
-					.getElementById("deliveryAddress").value;
+<%@ include file="user_bottom.jsp"%>
+<!-- 주소 검색 API -->
+<script
+	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+	window.onload = function() {
+		// input 필드의 value 값을 가져옴
+		var deliveryAddressValue = document
+				.getElementById("deliveryAddress").value;
 
-			// value 값이 비어 있으면 팝업을 띄움
-			if (!deliveryAddressValue) {
-				document.getElementById("insertAddress").style.display = "block";
-			}
-		};
-
-		// 배달주소 검색
-		function checkPost() {
-			new daum.Postcode(
-					{
-						oncomplete : function(data) {
-
-							var addr = ''; // 주소 변수
-							var extraAddr = ''; // 참고항목 변수
-
-							//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-							if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-								addr = data.roadAddress;
-							} else { // 사용자가 지번 주소를 선택했을 경우(J)
-								addr = data.jibunAddress;
-							}
-
-							// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-							if (data.userSelectedType === 'R') {
-								// 법정동명이 있을 경우 추가한다. (법정리는 제외)
-								// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-								if (data.bname !== ''
-										&& /[동|로|가]$/g.test(data.bname)) {
-									extraAddr += data.bname;
-								}
-								// 건물명이 있고, 공동주택일 경우 추가한다.
-								if (data.buildingName !== ''
-										&& data.apartment === 'Y') {
-									extraAddr += (extraAddr !== '' ? ', '
-											+ data.buildingName
-											: data.buildingName);
-								}
-
-							}
-							// 우편번호와 주소 정보를 해당 필드에 넣는다.
-							document.getElementById("address").value = addr;
-							// 커서를 상세주소 필드로 이동한다.
-							document.getElementById("detailAddress").focus();
-						}
-					}).open();
+		// value 값이 비어 있으면 팝업을 띄움
+		if (!deliveryAddressValue) {
+			document.getElementById("insertAddress").style.display = "block";
 		}
+	};
 
-		// 확인 버튼 클릭 시 팝업의 주소 데이터를 메인 화면으로 전달
-		document
-				.querySelector(".btn_box button[type='button']")
-				.addEventListener(
-						"click",
-						function() {
-							// 팝업의 주소와 상세주소 값을 가져옴
-							var addr1 = document.getElementById("address").value;
-							var addr2 = document
-									.getElementById("detailAddress").value;
+	// 배달주소 검색
+	function checkPost() {
+		new daum.Postcode(
+		{
+			oncomplete : function(data) {
 
-							// 메인 화면의 배달 주소지 필드에 값을 설정
-							document.getElementById("deliveryAddress").value = addr1
-									+ " " + addr2;
+				var addr = ''; // 주소 변수
+				var extraAddr = ''; // 참고항목 변수
 
-							// 팝업을 닫음
-							document.getElementById("insertAddress").style.display = "none";
-						});
-	</script>
+				//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+				if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+					addr = data.roadAddress;
+				} else { // 사용자가 지번 주소를 선택했을 경우(J)
+					addr = data.jibunAddress;
+				}
+
+				// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+				if (data.userSelectedType === 'R') {
+					// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+					// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+					if (data.bname !== ''
+							&& /[동|로|가]$/g.test(data.bname)) {
+						extraAddr += data.bname;
+					}
+					// 건물명이 있고, 공동주택일 경우 추가한다.
+					if (data.buildingName !== ''
+							&& data.apartment === 'Y') {
+						extraAddr += (extraAddr !== '' ? ', '
+								+ data.buildingName
+								: data.buildingName);
+					}
+
+				}
+				// 우편번호와 주소 정보를 해당 필드에 넣는다.
+				document.getElementById("address").value = addr;
+				// 커서를 상세주소 필드로 이동한다.
+				document.getElementById("detailAddress").focus();
+			}
+		}).open();
+	}
+
+	// 확인 버튼 클릭 시 팝업의 주소 데이터를 메인 화면으로 전달
+	document
+	.querySelector(".btn_box button[type='button']")
+	.addEventListener(
+			"click",
+			function() {
+				// 팝업의 주소와 상세주소 값을 가져옴
+				var addr1 = document.getElementById("address").value;
+				var addr2 = document
+						.getElementById("detailAddress").value;
+
+				// 메인 화면의 배달 주소지 필드에 값을 설정
+				document.getElementById("deliveryAddress").value = addr1
+						+ " " + addr2;
+
+				// 팝업을 닫음
+				document.getElementById("insertAddress").style.display = "none";
+			});
+</script>

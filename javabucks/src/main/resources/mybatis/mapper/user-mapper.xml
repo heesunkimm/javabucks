@@ -470,13 +470,19 @@
  		 FROM javabucks_cart		 
  		 WHERE userId = #{userId}	 				 	  		 
  	</select>	
- 	
-	<!-- 아이디로 장바구니 조회 -->
- 	<select id="CartListByHistoryNum" parameterType="String" resultType="CardDTO"> 
- 		 SELECT *
+ 			
+	<delete id="deleteCart" parameterType="java.util.Map"> 
+ 		 DELETE
  		 FROM javabucks_cart		 
- 		 WHERE userId = #{userId}	 				 	  		 
- 	</select>	
+ 		 WHERE cartNum = #{cartNum}		 	
+ 		 AND userId = #{userId}	  		 
+ 	</delete>
+ 	
+ 	<delete id="deleteAllCart" parameterType="String"> 
+ 		 DELETE
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}	 	  		 
+ 	</delete>
  	
  	<!-- 장바구니에서 메뉴찾기 -->
  	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 

@@ -25,6 +25,7 @@
             	<p class="txt_price">즐겨 찾는 음료나 푸드를 나만의 메뉴로 등록하고 빠르게 주문해 보세요.<br>
             	 아래 화면에서 ♥를 눌러 등록할 수 있습니다.</p>
             	</c:if>
+            	<c:if test="${not empty mymenu}">
             	<c:forEach var="menu" items="${mymenu}">
                 <li class="menu_item">
                     <div class="close_icon img_box">
@@ -45,6 +46,7 @@
                     </div>
                 </li>
                 </c:forEach>
+                </c:if>
             </ul>
     </section>
     <!-- e: content -->
