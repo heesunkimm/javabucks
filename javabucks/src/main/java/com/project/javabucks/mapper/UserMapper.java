@@ -22,6 +22,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
@@ -31,7 +32,7 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	public BucksDTO getBucksinfoById(String bucksId) {
 		return sqlSession.selectOne("getBucksinfoById", bucksId);
 	}
@@ -74,9 +75,23 @@ public class UserMapper {
 		return sqlSession.insert("payhistoryOrder", dto);
 	}
 
+	// Order 주문결제 기록
+	public int orderInsert(OrderDTO dto) {
+		return sqlSession.update("orderInsert", dto);
+	}
+
+	public int insertOrderAlarm(AlarmDTO dto) {
+		return sqlSession.insert("insertOrderAlarm", dto);
+	}
+
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
 		return sqlSession.update("plusCardPrice", params);
+	}
+
+	// 카드 충전 금액 감소
+	public int minusCardPrice(Map<String, String> params) {
+		return sqlSession.update("minusCardPrice", params);
 	}
 
 	// 해당아이디로 등록된 알람 전체리스트(날짜순)
@@ -149,19 +164,19 @@ public class UserMapper {
 	public List<FrequencyDTO> getFrequencyById(String userId) {
 		return sqlSession.selectList("getFrequencyById", userId);
 	}
-	
+
 	public int updateGreen(String userId) {
 		return sqlSession.update("updateGreen", userId);
 	}
-	
+
 	public int updateGold(String userId) {
 		return sqlSession.update("updateGold", userId);
 	}
-	
+
 	public int updateGoldAfter(String userId) {
 		return sqlSession.update("updateGoldAfter", userId);
 	}
-	
+
 	public List<CouponListDTO> getCouponListById(String userId) {
 		return sqlSession.selectList("getCouponListById", userId);
 	}
@@ -169,23 +184,23 @@ public class UserMapper {
 	public List<BucksDTO> getStoreList(String storeSearch) {
 		return sqlSession.selectList("getStoreList", storeSearch);
 	}
-	
+
 	public List<BucksDTO> getStoreList2(List<String> searchTerms) {
 		return sqlSession.selectList("getStoreList2", searchTerms);
 	}
-	
+
 	public String getOrderEnableBybucksId(String bucksId) {
 		return sqlSession.selectOne("getOrderEnableBybucksId", bucksId);
 	}
-	
+
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
-	
+
 	public String getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
 	}
-	
+
 	public List<MenuDTO> getStoreFoodList(String storeName) {
 		return sqlSession.selectList("getStoreFoodList", storeName);
 	}
