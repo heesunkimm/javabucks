@@ -47,6 +47,7 @@
 				                        <div class="txt_box">
 			                         	  <p class="txt_store">${dto.bucksName}</p>
 			             				  <p class="txt_location">${dto.bucksLocation}</p>
+										  <p class="txt_location">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 				                        </div>
 				                    </a>
 	               		 		</li>
@@ -66,6 +67,7 @@
 				                        <div class="txt_box">
 			                         	  <p class="txt_store">${dto.bucksName}</p>
 			             				  <p class="txt_location">${dto.bucksLocation}</p>
+										  <p class="txt_location">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 				                        </div>
 			                    	</a>
                 				</li>
@@ -129,7 +131,7 @@
 		        let popupId = $(this).data('popup');
 		
 		        // 팝업 내의 요소들에 매장 정보 삽입
-		        $("#pickupselect input[name='storeName']").val(bucksName);
+				$("#pickupselect input[name='storeName']").val(bucksName);
 		        $("#pickupselect input[name='bucksId']").val(bucksId);
 		        
 		        // 팝업 열기

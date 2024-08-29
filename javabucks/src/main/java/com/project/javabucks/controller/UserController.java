@@ -1,6 +1,7 @@
 package com.project.javabucks.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,7 +47,6 @@ import com.project.javabucks.dto.PayhistoryDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -167,7 +166,7 @@ public class UserController {
 
 	@RequestMapping("/user_order")
 	public String orderMenu(HttpServletRequest req, String storeName, String pickup, String bucksId) {
-
+		
 		// [음료] 정보, 주문가능한지
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
 		Map<String, String> params = new HashMap<>();
@@ -197,7 +196,7 @@ public class UserController {
 		req.setAttribute("drinkList", list);
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
-		req.setAttribute("store", storeName);
+		req.setAttribute("storeName", storeName);
 		req.setAttribute("pickup", pickup);
 		req.setAttribute("bucksId", bucksId);
 
@@ -214,6 +213,7 @@ public class UserController {
 		req.setAttribute("menu", dto);
 		req.setAttribute("drink", params.get("drink"));
 		req.setAttribute("bucksId", params.get("bucksId"));
+		req.setAttribute("storeName", params.get("storeName"));
 		req.setAttribute("pickup", params.get("pickup"));
 
 		// 음료메뉴 퍼스널옵션값 가져오기
@@ -945,6 +945,7 @@ public class UserController {
 
 		// 매장 검색하기
 		if (mode != null) {
+			
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
@@ -953,8 +954,27 @@ public class UserController {
 				paramMap.put("searchTerms", searchTerms);
 				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
 				for (BucksDTO dto : list) {
+					
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
+					// 시간가져와서 00:00식으로 변환
+					String startTime = dto.getBucksStart();
+					String st = startTime.substring(11, 16);
+					String endTime = dto.getBucksEnd();
+					String ed = endTime.substring(11, 16);
+					
+					// 시간을 비교하기 위해 LocalTime으로 변환
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+					LocalTime start = LocalTime.parse(st, formatter);
+					LocalTime end = LocalTime.parse(ed, formatter);
+					LocalTime now = LocalTime.now();
+					
+					// 현재 시간과 비교
+					if (now.isBefore(start) || now.isAfter(end)) {
+						dto.setOrderEnalbe("N");
+					}
+					dto.setBucksStart(st);
+					dto.setBucksEnd(ed);
 				}
 				req.setAttribute("storeList", list);
 				req.setAttribute("storeSearch", storeSearch);

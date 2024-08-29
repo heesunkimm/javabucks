@@ -20,6 +20,7 @@
 					<input type="hidden" name="menuCode" value="${menu.menuCode}">
 					<input type="hidden" name="menuoptCode" value="${menu.menuoptCode}">
 					<input type="hidden" name="bucksId" value="${bucksId}">
+					<input type="hidden" name="storeName" value="${storeName}">
 					<input type="hidden" name="pickup" value="${pickup}">
 		        <div class="inner_wrap">
 		            <div class="menu_img img_box">
@@ -165,7 +166,7 @@
 		            </div>
 		        </div>
 		            <div class="order_box">
-		                <button class="popup_btn" type="button" onclick="handleButtonClick()">담기</button>
+		                <button type="button" onclick="handleButtonClick()">담기</button>
 		                <div class="minus_btn click_icon img_box">
 		                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('quantity')">
 		                </div>
@@ -186,7 +187,7 @@
     </section>
     
     	<!-- 장바구니 팝업 -->
-        <div class="popup_box pickup_box" id="pickupselect" style="display: none;">
+        <div class="popup_box" id="pickupselect" style="display: none;">
             <div class="tit_box">
                 <p class="txt_tit">장바구니에 추가되었습니다.</p>
             </div>
@@ -202,7 +203,7 @@
                             <p class="txt_tit">장바구니 가기</p>
                         </div>
                     </a>
-                    <a class="select_btn" href="javascript:;" onclick="window.location.href='user_order';">
+                    <a class="select_btn" href="javascript:;" onclick="window.location.href='user_order?storeName=${storeName}&bucksId=${bucksId}';">
                         <div class="txt_box">
                             <p class="txt_tit">다른 메뉴 더보기</p>
                         </div>
@@ -230,11 +231,9 @@
 		// 유효성 검사 및 팝업 열기 함수
 		function handleButtonClick() {
 		    if (orderCheck()) {
-		    	console.log("orderCheck 잘 끝났어?~");
-		        let popupId = $(".popup_box pickup_box").data('popup');
-		        console.log("Popup ID 는 과연?:", popupId);  // Debugging line
+				let popupId = 'pickupselect';  // 명시적으로 팝업 ID를 설정
 		        openPopup(popupId);
-		    }
+		    }			
 		}
 		
 		// 팝업 닫기 버튼 클릭 시
@@ -448,9 +447,9 @@
             }
         }       
     }
-
-	    updateSyrupNum();
-	    orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+		// 주문하기 눌렀을때!
+	   //updateSyrupNum();
+	    //orderOptInsert(cupNum, whipNum, iceNum, milkNum);
 	    console.log("유효성검사 통과");
 	    return true;
 	}
