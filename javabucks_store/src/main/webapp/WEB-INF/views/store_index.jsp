@@ -15,12 +15,11 @@
 					        <li class="top_item">
 					            <p class="top_bedge">${status.count}위</p>
 					            <div class="img_box">
-					                <!-- 이미지 출력 -->
-					                <img src="${menu.menuImages}" alt="${menu.menuName}">
+					                <img src="../../images/upload_menuImages/${menu.menuImages}" alt="${menu.menuName}">
 					            </div>
 					            <div class="txt_box">
 					                <p class="txt_tit">${menu.menuName}</p>
-					                <p class="txt_count">총 주문 수량: ${menu.orderCount}건</p> <!-- 주문 횟수 출력 -->
+					                <p class="txt_count">총 주문 수량: ${menu.orderCount}건</p>
 					            </div>
 					        </li>
 					    </c:forEach>

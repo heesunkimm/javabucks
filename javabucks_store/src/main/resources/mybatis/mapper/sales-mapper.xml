@@ -27,12 +27,118 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    
 	    <select id="searchBaljooList" parameterType="map" resultType="BaljooDTO">
 	        SELECT *
-    FROM javabucks_baljoo
-    WHERE bucksId = #{userId}
-      AND EXTRACT(YEAR FROM baljooDate) = #{year}
-      AND EXTRACT(MONTH FROM baljooDate) = #{month}
+		    FROM javabucks_baljoo
+		    WHERE bucksId = #{userId}
+		      AND EXTRACT(YEAR FROM baljooDate) = #{year}
+		      AND EXTRACT(MONTH FROM baljooDate) = #{month}
 	    </select>
 	    
-	    
+	    <select id="getSalesList" parameterType="map" resultType="PayhistoryDTO">
+		    SELECT * 
+		    FROM (
+		        SELECT 
+		            p.*, 
+		            o.orderList, 
+		            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) rnum
+		        FROM javabucks_Payhistory p
+		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
+		        WHERE p.bucksId = #{bucksId}
+		    )
+		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		</select>
+		
+		<select id="getSalesCount" parameterType="string" resultType="int">
+		    SELECT COUNT(*)
+		    FROM javabucks_Payhistory
+		    WHERE bucksId = #{bucksId}
+		</select>
+		
+		<select id="MenuName" parameterType="String" resultType="String">
+    		SELECT jm.menuName FROM JAVABUCKS_MENU jm WHERE jm.MENUCODE =#{menuCode}
+		</select>
+		
+		<select id="getTotalSalesAmount" parameterType="String" resultType="int">
+		    SELECT SUM(payhistoryPrice)
+		    FROM javabucks_Payhistory
+		    WHERE bucksId = #{bucksId}
+		</select>
+		
+		
+		<!-- 매출 검색 -->
+		<!-- 기간 필터링된 매출 항목 수 가져오기 -->
+		<select id="searchSalesCount" parameterType="map" resultType="int">
+		    SELECT COUNT(*)
+		    FROM javabucks_Payhistory
+		    WHERE bucksId = #{bucksId}
+		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		</select>
+		
+		<!-- 기간 필터링된 전체 매출액 합계 가져오기 -->
+		<select id="searchTotalSalesAmount" parameterType="map" resultType="Integer">
+		    SELECT NVL(SUM(payhistoryPrice), 0)
+		    FROM javabucks_Payhistory
+		    WHERE bucksId = #{bucksId}
+		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		</select>
+		
+		<!-- 기간 필터링된 매출 리스트 가져오기 -->
+		<select id="getFilteredSalesList" parameterType="map" resultType="PayhistoryDTO">
+		    SELECT *
+		    FROM (
+		        SELECT a.*,o.orderList, ROW_NUMBER() OVER (ORDER BY payhistoryDate DESC) rnum
+		        FROM javabucks_Payhistory a
+		        JOIN javabucks_Order o ON a.orderCode = o.orderCode
+		        WHERE a.bucksId = #{bucksId}
+		            AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		    )
+		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		</select>	
+		
+					
+					<!-- 카테 매출  -->
+		<select id="getselectCateCount" parameterType="string" resultType="int">
+		    SELECT COUNT(*)
+		    FROM javabucks_Payhistory
+		    WHERE bucksId = #{bucksId}
+		</select>
+		
+		
+		<select id="getselectCateList" parameterType="map" resultType="PayhistoryDTO">
+		    SELECT * 
+		    FROM (
+		        SELECT 
+		            p.*, 
+		            o.orderList, 
+		            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) rnum
+		        FROM javabucks_Payhistory p
+		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
+		        WHERE p.bucksId = #{bucksId}
+		    )
+		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		</select>
+		
+		
+		<select id="getMenuNameByCode" parameterType="string" resultType="PayhistoryDTO">
+		    SELECT menuname, menuprice
+		    FROM javabucks_menu
+		    WHERE menucode = #{menuCode}
+		</select>
+		
+		<select id="getOptionPriceByCode" parameterType="string" resultType="int">
+		   SELECT
+	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	    FROM
+	        javabucks_order_opt o
+	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+	    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+	    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+	    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+	    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+	    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
+	    WHERE
+	        o.optId = #{optioncode}
+		</select>
+				
 		
 </mapper>
