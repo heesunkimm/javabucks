@@ -265,7 +265,7 @@
 	                    <li>
 	                        <a href="javascript:;">
 	                            <div class="img_box">
-	                                <!-- <img src="" alt=""> -->
+	                                <img src="../images/icons/javabucks_cupon.png" alt="">
 	                            </div>
 	                            <div class="txt_box">
 	                                <p class="txt_tit">${dto.cpnName}</p>
