@@ -52,6 +52,14 @@ public class CouponListDTO {
 	public void setCpnListUseDate(String cpnListUseDate) {
 		this.cpnListUseDate = cpnListUseDate;
 	}
-
 	
+	// 조인된 컬럼 추가
+	private String cpnName;
+
+	public String getCpnName() {
+		return cpnName;
+	}
+	public void setCpnName(String cpnName) {
+		this.cpnName = cpnName;
+	}
 }

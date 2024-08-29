@@ -57,7 +57,6 @@ public class UserController {
 	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
 	public String userIndex(HttpSession session, HttpServletRequest req) {
-
 		// 등급(리워드)
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
@@ -144,10 +143,21 @@ public class UserController {
 				Map<String, Object> paramMap = new HashMap<>();
 				paramMap.put("searchTerms", searchTerms);
 				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+				for(BucksDTO dto : list) {
+				String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
+				dto.setOrderEnalbe(orderEnalbe);
+				}
+				req.setAttribute("storeSearch", storeSearch);
 				req.setAttribute("storeList", list);
+				
 			} else {
 				List<BucksDTO> list2 = userMapper.getStoreList(storeSearch);
+				for(BucksDTO dto : list2) {
+					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
+					dto.setOrderEnalbe(orderEnalbe);
+					}
 				req.setAttribute("storeList", list2);
+				
 			}
 		}
 
@@ -157,13 +167,31 @@ public class UserController {
 	@RequestMapping("/user_order")
 	public String orderMenu(HttpServletRequest req, String storeName, String pickup, String bucksId) {
 
+		// [음료] 정보, 주문가능한지 
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
-//		for(MenuDTO md : list) {
-//			String menuStatus = userMapper.getDrinkStatus(md.getMenuCode());
-//			md.setStoremenuStatus(menuStatus);
-//		}
+		Map<String, String> params = new HashMap<>(); 
+		for(MenuDTO md : list) {
+			params.put("menuCode", md.getMenuCode());
+			params.put("bucksId", bucksId);
+			String menuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(menuStatus);
+		}
+		// [음식] 정보, 주문가능한지 
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
+		for(MenuDTO md : list2) {
+			params.put("menuCode", md.getMenuCode());
+			params.put("bucksId", bucksId);
+			String menuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(menuStatus);
+		}
+		// [상품] 정보, 주문가능한지 
 		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
+		for(MenuDTO md : list3) {
+			params.put("menuCode", md.getMenuCode());
+			params.put("bucksId", bucksId);
+			String menuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(menuStatus);
+		}
 
 		req.setAttribute("drinkList", list);
 		req.setAttribute("foodList", list2);
@@ -171,7 +199,7 @@ public class UserController {
 		req.setAttribute("store", storeName);
 		req.setAttribute("pickup", pickup);
 		req.setAttribute("bucksId", bucksId);
-		System.out.println(bucksId);
+		
 		return "/user/user_order";
 	}
 
@@ -511,7 +539,6 @@ public class UserController {
 		String userId = udto.getUserId();
 		// ID로 장바구니 조회
 		List<CartDTO> list = userMapper.CartByUserid(userId);
-		List<CartDTO> list2 = new ArrayList<>();
 		// 장바구니 담긴 메뉴코드로 메뉴 정보 조회
 		for (CartDTO CartDTO : list) {
 			String menuCode = CartDTO.getMenuCode();
@@ -545,11 +572,12 @@ public class UserController {
 			CartDTO.setMilkType(milkdto.getMilkType());
 			CartDTO.setMilkPrice(milkdto.getMilkPrice());
 
-			int totprice = mdto.getMenuPrice() + cupdto.getCupPrice() + icedto.getIcePrice()
+			int oneprice = mdto.getMenuPrice() + cupdto.getCupPrice() + icedto.getIcePrice()
 					+ shotdto.getShotPrice() * optdto.getOptShotCount() + whipdto.getWhipPrice()
 					+ syrupdto.getSyrupPrice() * optdto.getOptSyrupCount() + milkdto.getMilkPrice();
-			totprice = totprice * CartDTO.getcartCnt();
-			CartDTO.setTotprice(totprice);
+			int totprice = oneprice * CartDTO.getcartCnt();
+			CartDTO.setEachPrice(oneprice);
+			CartDTO.setTotPrice(totprice);
 		}
 		req.setAttribute("cart", list);
 
@@ -710,7 +738,6 @@ public class UserController {
 //		String userId = user.getUserId();
 
 		String userId = "user001";
-		System.out.println(params);
 		String bucksId = params.get("bucksId");
 		BucksDTO bdto = userMapper.getBucksinfoById(bucksId);
 
@@ -757,6 +784,16 @@ public class UserController {
 		List<CardDTO> list = userMapper.listRegCardById(userId);
 		model.addAttribute("listCard", list);
 
+		//[채성진 작업] 쿠폰 조회하기		
+		List<CouponListDTO> cplist = userMapper.getCouponListById(userId);
+		for(CouponListDTO cp : cplist) {
+			String sd = cp.getCpnListStartDate().substring(0, 10);
+			String ed = cp.getCpnListEndDate().substring(0, 10);
+			cp.setCpnListStartDate(sd);
+			cp.setCpnListEndDate(ed);
+		}
+		model.addAttribute("couponlist", cplist);
+		
 		return "/user/user_paynow";
 	}
 
@@ -812,11 +849,32 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_store")
-	public String userStore(Model model, @RequestParam Map<String, String> params, String mode, String storeSearch) {
+	public String userStore(HttpServletRequest req, @RequestParam Map<String, String> params, String mode, String storeSearch) {
+		
 		// 매장 검색하기
 		if (mode != null) {
-			List<BucksDTO> list = userMapper.getStoreList(storeSearch);
-			model.addAttribute("storeList", list);
+			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
+				// 공백을 기준으로 문자열을 분리하여 List로 저장
+				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
+				// 파라미터를 Map에 담아 전달
+				Map<String, Object> paramMap = new HashMap<>();
+				paramMap.put("searchTerms", searchTerms);
+				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+				for(BucksDTO dto : list) {
+				String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
+				dto.setOrderEnalbe(orderEnalbe);
+				}
+				req.setAttribute("storeList", list);
+				req.setAttribute("storeSearch", storeSearch);
+				
+			} else {
+				List<BucksDTO> list2 = userMapper.getStoreList(storeSearch);
+				for(BucksDTO dto : list2) {
+					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
+					dto.setOrderEnalbe(orderEnalbe);
+					}
+				req.setAttribute("storeList", list2);				
+			}
 		}
 
 		return "/user/user_store";

@@ -178,6 +178,7 @@
             </ul>
 
             <div class="cpn_box">
+            	<!-- 채성진 작업 시작 -->
                 <a class="popup_btn" href="javascript:;" data-popup="cpnpay">
                     <div class="img_box">
                         <img src="../images/icons/pay_coupon.png" alt="">
@@ -260,17 +261,19 @@
             <form name="f" action="" method="post">
                 <!-- s: 내용 작성 -->
                  <ul class="cpn_list">
-                    <li>
-                        <a href="javascript:;">
-                            <div class="img_box">
-                                <!-- <img src="" alt=""> -->
-                            </div>
-                            <div class="txt_box">
-                                <p class="txt_tit">쿠폰명</p>
-                                <p class="txt_date">쿠폰유효기간</p>
-                            </div>
-                        </a>
-                    </li>
+                 	<c:forEach var="dto" items="${couponlist}">
+	                    <li>
+	                        <a href="javascript:;">
+	                            <div class="img_box">
+	                                <img src="../images/icons/javabucks_cupon.png" alt="">
+	                            </div>
+	                            <div class="txt_box">
+	                                <p class="txt_tit">${dto.cpnName}</p>
+	                                <p class="txt_date">${dto.cpnListStartDate} ~ ${dto.cpnListEndDate}</p>
+	                            </div>
+	                        </a>
+	                    </li>
+                    </c:forEach>
                  </ul>
                 
                 <!-- e: 내용 작성 -->

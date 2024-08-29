@@ -185,11 +185,11 @@ public class OrderMapper {
 		return sqlSession.update("storemenuStatusStop", bucksId);
 	}
 	
-	public List<StoreMenuDTO> getStoreMenuStatus(String bucksId){
-		return sqlSession.selectList("getStoreMenuStatus", bucksId);
-	}
-	
 	public int storemenuStatusRestart(String bucksId) {
 		return sqlSession.update("storemenuStatusRestart", bucksId);
+	}
+	
+	public String getStoreOrderStatus(String bucksId) {
+		return sqlSession.selectOne("getStoreOrderStatus", bucksId);
 	}
 }

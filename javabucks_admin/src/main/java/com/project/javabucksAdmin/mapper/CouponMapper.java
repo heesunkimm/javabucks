@@ -51,10 +51,18 @@ public class CouponMapper {
 	public int toUserAlarm(AlarmDTO dto) {
 		return sqlSession.insert("toUserAlarm", dto);
 	}
-	// 쿠폰리스트 조회
-	/*
-	 * public List<CouponListDTO> searchCpnList(Map<String, Object> params) { return
-	 * sqlSession.selectList("searchCpnList", params); }
-	 */
+	// 등록된 쿠폰코드, 코드명 조회
+	public List<CouponDTO> cpnInfoList() {
+		return sqlSession.selectList("cpnInfoList");
+	}
+	// 검색 조건에 맞게 필터링된 쿠폰리스트
+	public List<CouponListDTO> searchFilterCpn(Map<String, Object> params) {
+		return sqlSession.selectList("searchFilterCpn", params); 
+	}
+//	 검색 조건에 맞게 필터링된 쿠폰리스트 갯수
+//	public int searchFilterCpnCount(Map<String, Object> params) {
+//		System.out.println(params.size());
+//		return sqlSession.selectOne("searchFilterCpnCount", params);
+//	}
 }
 

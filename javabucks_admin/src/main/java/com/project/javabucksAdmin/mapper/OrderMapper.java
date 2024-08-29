@@ -83,8 +83,8 @@ public class OrderMapper {
 	}
 	
 	// 발주 리스트 개수
-	public int baljooCount() {
-		return sqlSession.selectOne("baljooCount");
+	public int baljooCount(Map<String, Object> params) {
+		return sqlSession.selectOne("baljooCount", params);
 	}
 	
 	// 품목명 조회
@@ -106,6 +106,28 @@ public class OrderMapper {
 	public List<BaljooDTO> searchBaljooList(Map<String, Object> params){
 		List<BaljooDTO> list = sqlSession.selectList("searchBaljooList", params);
 		return list;
+	}
+	
+	// 발주 상태 업데이트 '접수완료'
+	public int baljooStatusUpdateOk(int baljooNum) {
+		return sqlSession.update("baljooStatusUpdateOk", baljooNum);
+	}
+
+	
+	// 발주번호로 발주리스트 조회
+	public List<BaljooDTO> storeOrderBaljooList(int baljooNum){
+		List<BaljooDTO> list = sqlSession.selectList("storeOrderBaljooList", baljooNum);
+		return list;
+	}
+	
+	// 재고코드로 어드민 재고 개수 확인
+	public int getAdminStocksCount(String stockListCode) {
+		return sqlSession.selectOne("getAdminStocksCount", stockListCode);
+	}
+	
+	// 재고 차감
+	public int updateCountMinus(Map<String, Object> params) {
+		return sqlSession.update("updateCountMinus", params);
 	}
 
 }

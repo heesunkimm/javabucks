@@ -282,7 +282,7 @@
  	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc 
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
- 		WHERE cl.userId = 'user001' and cl.cpnListStatus = '발급완료' 
+ 		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료' 
  	</select>
  	
  	<select id="getBucksinfoById" resultType="BucksDTO">
@@ -294,7 +294,7 @@
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
  		 SELECT * 
    		 FROM javabucks_bucks 
-   		 WHERE bucksEnable = 'y'	
+   		 WHERE bucksEnable = 'Y'	
    		 AND bucksName LIKE '%' || #{storeSearch} || '%' 
       	 OR bucksLocation LIKE '%' || #{storeSearch} || '%'
  	</select>
@@ -310,8 +310,14 @@
 	       </foreach>
 	     )
  	</select>
- 	 	
  	
+ 	<!-- bucksid로 주문가능 여부 조회 -->
+ 	<select id="getOrderEnableBybucksId" parameterType="String" resultType="String">
+ 		SELECT orderEnable
+ 		FROM javabucks_bucks
+ 		WHERE bucksID = #{bucksId}
+ 	</select>
+ 	 		
  	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  
    		 FROM javabucks_storemenu js 
@@ -321,12 +327,11 @@
    		 AND jm.menuCode LIKE 'B%' 	  		 
  	</select>
  	
- 	<select id="getDrinkStatus"  parameterType="String" resultType="String"> 
- 		 SELECT jm.*  
-   		 FROM javabucks_storemenu js 
-   		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId   		    
-   		 WHERE jb.bucksName = #{storeName} 
-   		 AND jm.menuCode LIKE 'B%' 	  		 
+ 	<select id="getMenuStatus"  parameterType="java.util.Map" resultType="String"> 
+ 		 SELECT storemenuStatus
+   		 FROM javabucks_storemenu	   		    
+   		 WHERE menuCode = #{menuCode}
+   		 AND bucksId = #{bucksId}   		 
  	</select>
  	
  	

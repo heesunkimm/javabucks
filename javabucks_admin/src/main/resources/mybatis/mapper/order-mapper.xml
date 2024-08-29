@@ -117,8 +117,10 @@
   		where rn between #{startRow} and #{endRow} 
   	</select>
   	
-  	<select id="baljooCount" resultType="int">
+  	<select id="baljooCount" parameterType="java.util.Map" resultType="int">
   		select count(*) from javabucks_baljoo
+  		where TO_CHAR(baljooDate, 'YYYY') = #{selectYear}
+			and TO_CHAR(baljooDate, 'MM') = #{selectMonth}
   	</select>
   	
   	<!-- 재고코드 가지고 재고명 받아오기 -->
@@ -143,7 +145,7 @@
 			<if test = "selectNum != ''">
 			and baljooNum = #{selectNum}
 			</if>
-			<if test = "unproCheck != null">
+			<if test = "unproCheck == 'checked'">
 			and baljooStatus = '주문완료'
 			</if>		
 	</select>
@@ -164,7 +166,7 @@
 									<if test = "selectNum != ''">
 									and A.baljooNum = #{selectNum}
 									</if>
-									<if test = "unproCheck == checked">
+									<if test = "unproCheck == 'checked'">
 									and A.baljooStatus = '주문완료'
 									</if>
   								order by baljooNum desc
@@ -172,7 +174,26 @@
   		where rn between #{startRow} and #{endRow} 
 	</select>
 
+	<update id="baljooStatusUpdateOk" parameterType="int">
+		update javabucks_baljoo set baljooStatus = '접수완료'
+		where baljooNum = #{baljooNum}
+	</update>
 
 
+	<select id="storeOrderBaljooList" parameterType="int" resultType="BaljooDTO">
+		select * from javabucks_baljoo
+		where baljooNum = #{baljooNum}
+	</select>
+  	
+  	<select id="getAdminStocksCount" parameterType="String" resultType="int">
+  		select stockListCount 
+  		from javabucks_stocklist
+  		where stockListCode = #{stockListCode}
+  	</select>
+  	
+  	<update id="updateCountMinus" parameterType="java.util.Map">
+  		update javabucks_stocklist set stockListCount = stockListCount - #{value}
+  		where stockListCode = #{stockListCode}
+  	</update>
   	
   </mapper>

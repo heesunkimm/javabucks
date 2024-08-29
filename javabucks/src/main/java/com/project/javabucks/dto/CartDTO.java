@@ -127,7 +127,8 @@ public class CartDTO {
 	private int whipPrice;
 	private String milkType;
 	private int milkPrice;
-	private int totprice;
+	private int eachPrice;
+	private int totPrice;
 	
 	public String getCupType() {
 		return cupType;
@@ -240,13 +241,21 @@ public class CartDTO {
 		this.milkPrice = milkPrice;
 	}
 
-	public int getTotprice() {
-		return totprice;
+	public int getEachPrice() {
+		return eachPrice;
 	}
 
-	public void setTotprice(int totprice) {
-		this.totprice = totprice;
+	public void setEachPrice(int eachPrice) {
+		this.eachPrice = eachPrice;
 	}
-	
+
+	public int getTotPrice() {
+		return totPrice;
+	}
+
+	public void setTotPrice(int totPrice) {
+		this.totPrice = totPrice;
+	}
+
 	
 }
