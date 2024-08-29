@@ -240,19 +240,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	
 	<update id="storemenuStatusStop" parameterType="String">
-		update javabucks_storeMenu
-		set storeMenuStatus = 'N'
+		update javabucks_bucks
+		set orderEnable = 'N'
+		where bucksId = #{bucksId}
+	</update>
+
+	
+	<update id="storemenuStatusRestart" parameterType="String">
+		update javabucks_bucks
+		set orderEnable = 'Y'
 		where bucksId = #{bucksId}
 	</update>
 	
-	<select id="getStoreMenuStatus" parameterType="String" resultType="storeMenuDTO">
-		select storeMenuStatus from javabucks_storeMenu
+	<select id="getStoreOrderStatus" parameterType="String" resultType="String">
+		select orderEnable from javabucks_bucks
 		where bucksId = #{bucksId}
 	</select>
 	
-	<update id="storemenuStatusRestart" parameterType="String">
-		update javabucks_storeMenu
-		set storeMenuStatus = 'Y'
-		where bucksId = #{bucksId}
-	</update>
+	
 </mapper>
