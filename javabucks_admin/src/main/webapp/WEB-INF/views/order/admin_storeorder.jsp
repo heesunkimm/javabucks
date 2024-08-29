@@ -83,38 +83,15 @@
 			                            </td>
 			                            <td><fmt:formatNumber value="${baljoo.baljooPrice}" pattern="###,###"/>원</td>
 			                            <td>
-			                            	<a href="javascript:;">[처리]</a>
+			                            	<c:if test="${baljoo.baljooStatus eq '주문완료'}">
+			                            		<button style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${baljoo.baljooNum}">접수</button>
+			                            	</c:if>
+			                            	<c:if test="${baljoo.baljooStatus eq '접수완료'}">
+			                            		<button style="background:grey; color:white;" onclick="" data-baljooNum="${baljoo.baljooNum}">접수완료</button>
+			                            	</c:if>
 			                            </td>
 			                        </tr>
-			                	</c:forEach>
-			                	
-			                	<!-- 페이징 -->
-				                <div class="pagination">
-								    <c:if test="${startPage > pageBlock}"> 
-								        <a class="page_btn prev_btn" href="adminStoreOrder.do?pageNum=${startPage-3}">
-								        이전
-								        </a>
-								    </c:if>
-								    
-								    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-								        <c:set var="activeClass" value=""/>
-								        <c:choose>
-								            <c:when test="${empty param.pageNum and i == 1}">
-								                <c:set var="activeClass" value="page_active"/>
-								            </c:when>
-								            <c:when test="${param.pageNum == i}">
-								                <c:set var="activeClass" value="page_active"/>
-								            </c:when>
-								        </c:choose>
-								        <a href="adminStoreOrder.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
-								    </c:forEach>
-								    
-								    <c:if test="${pageCount > endPage}">
-								        <a class="page_btn next_btn" href="adminStoreOrder.do?pageNum=${startPage+3}">
-								        다음
-								        </a>
-								    </c:if>
-				                </div>    
+			                	</c:forEach>   
 		                	</c:if>
 		                </c:if>
 		                
@@ -137,44 +114,114 @@
 		                            </td>
 		                            <td><fmt:formatNumber value="${search.baljooPrice}" pattern="###,###"/>원</td>
 		                            <td>
-		                            	<a href="javascript:;">[처리]</a>
+		                            	<c:if test="${search.baljooStatus eq '주문완료'}">
+		                            		<button type="button" style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${search.baljooNum}">접수</button>
+		                            	</c:if>
+		                            	<c:if test="${search.baljooStatus eq '접수완료'}">
+		                            		<button type="button" style="background:grey; color:white;" onclick="" data-baljooNum="${search.baljooNum}">접수완료</button>
+		                            	</c:if>
 		                            </td>
 		                        </tr>
 		                	</c:forEach>
-		                	<!-- 페이징 -->
-			                <div class="pagination">
-							    <c:if test="${startPage > pageBlock}"> 
-							        <a class="page_btn prev_btn" href="searchAdminStoreOrder.do?pageNum=${startPage-3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
-							        이전
-							        </a>
-							    </c:if>
-							    
-							    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-							        <c:set var="activeClass" value=""/>
-							        <c:choose>
-							            <c:when test="${empty param.pageNum and i == 1}">
-							                <c:set var="activeClass" value="page_active"/>
-							            </c:when>
-							            <c:when test="${param.pageNum == i}">
-							                <c:set var="activeClass" value="page_active"/>
-							            </c:when>
-							        </c:choose>
-							        <a href="searchAdminStoreOrder.do?pageNum=${i}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}" class="${activeClass} page_num">${i}</a>
-							    </c:forEach>
-							    
-							    <c:if test="${pageCount > endPage}">
-							        <a class="page_btn next_btn" href="searchAdminStoreOrder.do?pageNum=${startPage+3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
-							        다음
-							        </a>
-							    </c:if>
-			                </div> 
-		                </c:if>
+		            	</c:if>
                     </tbody>
                 </table>
                 
+                <c:if test="${not empty baljooList}">
+	               	<!-- 페이징 -->
+	                <div class="pagination">
+					    <c:if test="${startPage > pageBlock}"> 
+					        <a class="page_btn prev_btn" href="adminStoreOrder.do?pageNum=${startPage-3}">
+					        이전
+					        </a>
+					    </c:if>
+					    
+					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+					        <c:set var="activeClass" value=""/>
+					        <c:choose>
+					            <c:when test="${empty param.pageNum and i == 1}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					            <c:when test="${param.pageNum == i}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					        </c:choose>
+					        <a href="adminStoreOrder.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+					    </c:forEach>
+					    
+					    <c:if test="${pageCount > endPage}">
+					        <a class="page_btn next_btn" href="adminStoreOrder.do?pageNum=${startPage+3}">
+					        다음
+					        </a>
+					    </c:if>
+	                </div> 
+                </c:if>
+                
+                <c:if test="${not empty searchBaljooList}">
+                	<!-- 페이징 -->
+	                <div class="pagination">
+					    <c:if test="${startPage > pageBlock}"> 
+					        <a class="page_btn prev_btn" href="searchAdminStoreOrder.do?pageNum=${startPage-3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
+					        이전
+					        </a>
+					    </c:if>
+					    
+					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+					        <c:set var="activeClass" value=""/>
+					        <c:choose>
+					            <c:when test="${empty param.pageNum and i == 1}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					            <c:when test="${param.pageNum == i}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					        </c:choose>
+					        <a href="searchAdminStoreOrder.do?pageNum=${i}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}" class="${activeClass} page_num">${i}</a>
+					    </c:forEach>
+					    
+					    <c:if test="${pageCount > endPage}">
+					        <a class="page_btn next_btn" href="searchAdminStoreOrder.do?pageNum=${startPage+3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
+					        다음
+					        </a>
+					    </c:if>
+	                </div> 
+                </c:if>
             </div>
         </div>
     </div>
 </section>
 <!-- e: content -->
 <%@ include file="../admin_bottom.jsp"%>
+<script type="text/javascript">
+
+	function storeOrderOk(element){
+		const baljooNum = element.dataset.baljoonum;
+		
+		$.ajax({
+			type : "POST",
+			url : "/storeOrderOk.ajax",
+			data : {
+				baljooNum : baljooNum
+			},
+			success : function(response){
+				console.log(response);
+				var resp = response;
+				var respVal = resp.response;
+				if(respVal === "success"){
+					alert("주문번호 " +baljooNum + "번의 주문이 접수되었습니다.");
+				} else if (respVal === "notEnough"){
+					alert("재고가 부족하여 주문번호 " +baljooNum + "번의 주문을 접수할 수 없습니다.");
+				} else if(respVal === "fail"){
+					alert("주문 접수 실패. 관리자에게 문의하세요.");
+				} else {
+					alert("주문 접수 실패. 관리자에게 문의하세요.");
+				}
+				location.reload();
+			},
+			error : function(error){
+				console.log(error);
+			}
+		});
+	}
+
+</script>

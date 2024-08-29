@@ -3,6 +3,7 @@ package com.project.javabucksAdmin.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -221,7 +222,7 @@ public class AdminOrderController {
 		params.put("selectYear", year);
 		params.put("selectMonth", stringMonth);
 		
-		int baljooListCount = mapper.baljooCount();
+		int baljooListCount = mapper.baljooCount(params);
 		Map<String, Object> pagingMap = paging_baljoo(baljooListCount, pageNum);
 				
 		params.put("startRow", pagingMap.get("startRow"));
@@ -271,6 +272,7 @@ public class AdminOrderController {
 				e.printStackTrace();
 			}
 		}
+
 		
 		// 검색 데이터
 		req.setAttribute("yearList", yearList);
@@ -293,13 +295,11 @@ public class AdminOrderController {
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 		
 		// 검색조건 확인
-		System.out.println("selectYear : " + selectYear);
-		System.out.println("selectMonth : " + selectMonth);
-		System.out.println("unproCheck : " + unproCheck); // null, checked
-		System.out.println("selectStore : " + selectStore); 
-		System.out.println("selectNum : " + selectNum); // ''
-		
-
+		//System.out.println("selectYear : " + selectYear);
+		//System.out.println("selectMonth : " + selectMonth);
+		//System.out.println("unproCheck : " + unproCheck); // null, checked
+		//System.out.println("selectStore : " + selectStore); 
+		//System.out.println("selectNum : " + selectNum); // ''
 		
 		// 검색 년도 설정
 		LocalDate date = LocalDate.now(); // 현재날짜		
@@ -335,7 +335,7 @@ public class AdminOrderController {
 		
 		// 검색 데이터 추출
 		int searchBaljooCount = mapper.searchBaljooCount(params);
-		System.out.println("searchBaljooCount:"+searchBaljooCount);
+		//System.out.println("searchBaljooCount:"+searchBaljooCount);
 		Map<String, Object> pagingMap = paging_baljoo(searchBaljooCount, pageNum);
 				
 		
@@ -344,14 +344,48 @@ public class AdminOrderController {
 		
 		List<BaljooDTO> searchBaljooList = mapper.searchBaljooList(params);
 		
-		
 		// 테이블 발주품목 컬럼 추출
-		
-		
-		
-		
-		
-		
+		ObjectMapper objectMapper = new ObjectMapper();
+		for(BaljooDTO baljooDTO : searchBaljooList) {
+			try {
+				// baljooList 컬럼의 JSON 문자열을 List<String>으로 변환
+				List<String> baljooItems = objectMapper.readValue(baljooDTO.getBaljooList(), 
+                        					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+				
+				// 재고명까지 들어간 baljooList 업데이트용
+				List<BaljooOrder> updateBaljooList = new ArrayList<>();
+				
+				for(String items : baljooItems) {
+					String[] item = items.split(":");
+					
+					if(item.length == 2) {
+						String stockCode = item[0];
+						String quantity = item[1];
+						
+						// BaljooOrder 객체 생성
+						BaljooOrder baljooOrder = new BaljooOrder(stockCode, Integer.parseInt(quantity));
+						
+						// stockCode가지고 stockName 가져오기
+						String stockListName = mapper.getStcokName(stockCode);
+						
+						// BaljooOrder 객체에 재고명 set
+						baljooOrder.setStockListName(stockListName);
+						
+						// BaljooOrder객체를 updateBaljooList에 add
+						updateBaljooList.add(baljooOrder);
+						
+					} else {
+						System.out.println("Code:Quantity 형태가 아님");
+					}
+				}
+				// updateBaljooList를 baljooDTO에 set
+				baljooDTO.setBaljooListbyBaljooOrder(updateBaljooList);
+				
+			}catch(Exception e) {
+				System.out.println("JSON String 변환 과정에서 에러");
+				e.printStackTrace();
+			}
+		}
 		
 		// 검색 데이터
 		req.setAttribute("yearList", yearList);
@@ -374,6 +408,7 @@ public class AdminOrderController {
 		
 		return "/order/admin_storeorder";
 	}
+
 	
 	
 	
@@ -403,11 +438,148 @@ public class AdminOrderController {
 		return pagingMap;
 	}
 	
-	
-	
-	
-	
+	@ResponseBody
+	@PostMapping("/storeOrderOk.ajax")
+	public Map<String, String> storeOrderOk(int baljooNum){
+		
+		// 1. 해당 발주 품목 가져오기
+		List<BaljooDTO> baljooList = mapper.storeOrderBaljooList(baljooNum);
+		
+		// 테이블 발주품목 컬럼 추출
+		ObjectMapper objectMapper = new ObjectMapper();
+		for(BaljooDTO baljooDTO : baljooList) {
+			try {
+				// baljooList 컬럼의 JSON 문자열을 List<String>으로 변환
+				List<String> baljooItems = objectMapper.readValue(baljooDTO.getBaljooList(), 
+                        					objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+				
+				// 재고명까지 들어간 baljooList 업데이트용
+				List<BaljooOrder> updateBaljooList = new ArrayList<>();
+				
+				for(String items : baljooItems) {
+					String[] item = items.split(":");
+					
+					if(item.length == 2) {
+						String stockCode = item[0];
+						String quantity = item[1];
+						
+						// BaljooOrder 객체 생성
+						BaljooOrder baljooOrder = new BaljooOrder(stockCode, Integer.parseInt(quantity));
+						
+						// stockCode가지고 stockName 가져오기
+						String stockListName = mapper.getStcokName(stockCode);
+						
+						// BaljooOrder 객체에 재고명 set
+						baljooOrder.setStockListName(stockListName);
+						
+						// BaljooOrder객체를 updateBaljooList에 add
+						updateBaljooList.add(baljooOrder);
+						
+					} else {
+						System.out.println("Code:Quantity 형태가 아님");
+					}
+				}
+				// updateBaljooList를 baljooDTO에 set
+				baljooDTO.setBaljooListbyBaljooOrder(updateBaljooList);
+				
+			}catch(Exception e) {
+				System.out.println("JSON String 변환 과정에서 에러");
+				e.printStackTrace();
+			}
+		}
+		
+		// 어드민 재고에서 차감해야하는 발주 품목 : 수량 저장
+		Map<String, Integer> baljooItem = new HashMap<>();
+		
+		for(int i=0; i<baljooList.size(); i++) {
+			List<BaljooOrder> baljooItemList = baljooList.get(i).getBaljooListbyBaljooOrder();
+			
+			for(BaljooOrder baljoo : baljooItemList) {
+				String stockListCode = baljoo.getStockListCode();
+				int quantity = baljoo.getQuantity();
+				
+				baljooItem.put(stockListCode, quantity);
+			}
+		}
+		//System.out.println("발주 품목 :"+baljooItem);
+		
+		
+		// 2. 어드민 재고 수량 확인
+		Map<String, Integer> adminStocksCountMap = new HashMap<>();
+		
+		Iterator<String> keyIterator = baljooItem.keySet().iterator();
+		while (keyIterator.hasNext()) {
+			String code = keyIterator.next();
+			int adminStocksCount = mapper.getAdminStocksCount(code);
+			adminStocksCountMap.put(code, adminStocksCount);
+		}
+		//System.out.println("어드민 재고"+adminStocksCountMap);
+		
+		
+		// 3. 수량 비교
+		boolean baljooResult = false;
+		Iterator<String> resultIterator = baljooItem.keySet().iterator();
+		while (resultIterator.hasNext()) {
+			String code = resultIterator.next();
+			int needCount = baljooItem.get(code);
+			int remainCount = adminStocksCountMap.get(code);
+			//System.out.println("확인:" + code + "(" + needCount + "/" + remainCount + ")");
+			// 재고 수량 비교
+			if (needCount <= remainCount) {
+				baljooResult = true;
+			} else {
+				baljooResult = false;
+				break;
+			}
+		}
+		//System.out.println("재고수량 비교 결과:" + baljooResult);
+		
+		
+		
+		boolean minusResult = false;
+		boolean updateResult = false;
+		
+		// 4. 수량 충분하면 OK처리
+		Iterator<String> countMinusIterator = baljooItem.keySet().iterator();
+		if (baljooResult) {
+			while (countMinusIterator.hasNext()) {
+				String code = countMinusIterator.next(); // 발주한 재고코드
+				int value = baljooItem.get(code); // 발주수량
+				Map<String, Object> paramsCountMinus = new HashMap<>();
+				paramsCountMinus.put("stockListCode", code);
+				paramsCountMinus.put("value", value);
+				
+				
+				// 재고 차감
+				int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
+				if (countMinusResult > 0) {
+					minusResult = true;
+				} else {
+					minusResult = false;
+				}
+			}
+			// 상태 업데이트
+			int StatusUpdateResult = mapper.baljooStatusUpdateOk(baljooNum);
+			if (StatusUpdateResult > 0) {
+				updateResult = true;
+			} else {
+				updateResult = false;
+			}
+		}
 
+		Map<String, String> response = new HashMap<>();
+
+		if (baljooResult && minusResult && updateResult) {
+			response.put("response", "success");
+		} else if (!baljooResult) {
+			response.put("response", "notEnough");
+		} else {
+			response.put("response", "fail");
+		}
+
+		return response;
+	}
+	
 
 	
 	
