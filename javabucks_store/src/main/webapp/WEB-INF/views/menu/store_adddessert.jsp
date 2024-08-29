@@ -56,6 +56,7 @@
 	
 	// 선택된 옵션에 맞는 메뉴 실시간 리스트업
 	function getSelectMenu() {
+		let bucksId = `${inBucks.bucksId}`;
 		let selectedDivide = $('select[name="menu_divide"]').val();
 	    let selectedOptCode = selectedDivide + 'NN'
 	    $('input[name="menuoptCode"]').val(selectedOptCode);
@@ -93,7 +94,7 @@
 	                            '</div>' + 
 	                            '<div class="btn_box">' + 
 	                                '<button class="menuAddBtn ' + btnClass + 
-	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
+	                                '" data-store="' + bucksId + '" data-code="' + item.menuCode + 
 	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
 	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
@@ -113,12 +114,12 @@
 	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
-	    let storeId = 'bucks_1111';
+		let bucksId = `${inBucks.bucksId}`;
 	    
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
-	        data: { bucksId: storeId },
+	        data: { bucksId: bucksId },
 	        dataType: 'json',
 	        success: function(res) {
 	            // 메뉴 리스트 새로 업데이트
@@ -142,11 +143,11 @@
 	$(document).on('click', '.menuAddBtn', function() {
 		let $btn = $(this);
 		let menuName = $(this).data('name');
-		let storeId = $(this).data('store');
+		let bucksId = $(this).data('store');
 		let menuCode = $(this).data('code');
 		
 	    let data = {
-	    		bucksId: storeId,
+	    		bucksId: bucksId,
 	    		menuCode: menuCode,
 	    		storemenuStatus: 'Y', 
 	    }
@@ -163,6 +164,7 @@
 	        contentType: "application/json",
 	        dataType: "text",
 	        success: function(res) {
+	        	alert(res);
 	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
 	        	updateStatus();
 	        },
