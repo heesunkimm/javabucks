@@ -76,15 +76,23 @@
             <div class="whats_new div_box">
                 <div class="tit_box">
                     <p>What's New</p>
-                    <a class="veiw_more font_green" href="javascript:;">see all</a>
+                    <!-- <a class="veiw_more font_green" href="javascript:;">see all</a> -->
                 </div>
-                <div class="news_box">
-                    <a href="javascript:;">
-                        <div class="img_box">
-                            <!-- <img src="" alt=""> -->
-                        </div>
-                    </a>
-                </div>
+                <div class="news_box swiper">
+                        <ul class="news_wrapper swiper-wrapper">
+                            <li class="news_wrapper swiper-slide">
+                                <div class="img_box">
+                                    <img src="../images/banner/mini_banner01.jpeg" alt="">
+                                </div>
+                            </li>
+                            <li class="news_wrapper swiper-slide">
+                                <div class="img_box">
+                                    <img src="../images/banner/mini_banner02.jpeg" alt="">
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="news_pagination swiper-pagination"></div>
+                    </div>
     
             </div>
     
@@ -129,5 +137,20 @@
         </div>
     </section>
     <!-- e: content -->
-
 <%@ include file="user_bottom.jsp" %>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<script>
+        let swiper = new Swiper(".news_box", {
+            slidesPerView: 1,
+            spaceBetween: 0,
+            loop: true,
+            autoplay: {
+                delay: 7000,
+            },
+            pagination: {
+            el: ".news_pagination",
+            clickable: true,
+            }
+        });
+    </script>

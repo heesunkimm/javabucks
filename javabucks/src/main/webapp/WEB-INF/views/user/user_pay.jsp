@@ -57,9 +57,6 @@
                 </a>
             	<p class="card_num">카드번호</p>
             </div>
-            <a class="close_btn" href="javascript:;" data-popup="cardpay">
-                <img src="../images/icons/close.png" alt="">
-            </a>
             <p class="card_price">잔액: <span>0</span><fmt:formatNumber value="" pattern="#,###" />원</p>
             <div class="card_img img_box">
                 <img src="../images/icons/starbucksCard.png" alt="">
@@ -71,7 +68,7 @@
                 <!-- e: 내용 작성 -->
                 <div class="pbtn_box">
                     <button type="submit">충전하기</button>
-                    <button type="button">충전하기</button>
+                    <button class="close_btn" type="button" data-popup="cardpay">취소</button>
                 </div>
             </form>
         </div>
