@@ -449,7 +449,7 @@
     }
 		// 주문하기 눌렀을때!
 	   //updateSyrupNum();
-	    //orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+	    orderOptInsert(cupNum, whipNum, iceNum, milkNum);
 	    console.log("유효성검사 통과");
 	    return true;
 	}

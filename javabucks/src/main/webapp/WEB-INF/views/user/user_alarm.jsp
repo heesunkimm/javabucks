@@ -40,9 +40,31 @@
             <c:if test="${not empty listAlarm}">
             	<c:forEach var="alarm" items="${listAlarm}">
                 <li class="history_item">
+                	<c:if test="${alarm.alarmCate =='cpn'}">
                     <div class="img_box">
-                        <img src="../images/icons/star_line.png" alt="">
+                        <img src="../images/icons/pay_coupon.png" alt="">
                     </div>
+                    </c:if>
+                    <c:if test="${alarm.alarmCate =='order'}">
+                    <div class="img_box">
+                        <img src="../images/icons/receipt.png" alt="">
+                    </div>
+                    </c:if>
+                    <c:if test="${alarm.alarmCate =='pickUp'}">
+                    <div class="img_box">
+                        <img src="../images/icons/menu_order.png" alt="">
+                    </div>
+                    </c:if>
+                    <c:if test="${alarm.alarmCate =='grade'}">
+                    <div class="img_box">
+                        <img src="../images/logo/starbucks_logo.png" alt="">
+                    </div>
+                    </c:if>
+                    <c:if test="${alarm.alarmCate =='charge'}">
+                    <div class="img_box">
+                        <img src="../images/icons/menu_pay.png" alt="">
+                    </div>
+                    </c:if>
                     <div class="txt_box">
                         <p class="txt_tit">
                             ${alarm.alarmCont}
