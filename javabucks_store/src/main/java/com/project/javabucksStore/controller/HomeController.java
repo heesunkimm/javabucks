@@ -89,6 +89,7 @@ public class HomeController {
 	        if (!top3MenuCodes.isEmpty()) {
 	            top3MenuDetails = homeMapper.getMenuDetails(top3MenuCodes);
 	        }
+	       
 	        
 	        // 상위 3개 메뉴 정보를 원래 순서대로 정렬
 	        Map<String, MenuDTO> menuMap = new LinkedHashMap<>();
@@ -98,14 +99,15 @@ public class HomeController {
 	                menuMap.put(menu.getMenuCode(), menu);
 	            }
 	        }
-	       
+	        
 
 	        List<MenuDTO> orderedMenuDetails = new ArrayList<>();
 	        for (String code : top3MenuCodes) {
 	            orderedMenuDetails.add(menuMap.get(code));
 	        }
 	       
-	        model.addAttribute("top3MenuDetails", top3MenuDetails);
+	        model.addAttribute("top3MenuDetails", orderedMenuDetails);
+	       // System.out.println(orderedMenuDetails);
 ///////////////////
 	        
 	        int currentYear = LocalDate.now().getYear();
