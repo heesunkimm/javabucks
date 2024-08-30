@@ -40,8 +40,10 @@
 			and userId = #{userId}
 	</select>
 	
-	<select id="findUserById" parameterType="String" resultType="UserDTO">
-		select * from javabucks_user where userId = #{userId}
+	<select id="findUserByLogin" parameterType="String" resultType="UserDTO">
+		select * from javabucks_user 
+		where userId = #{userId}
+			and userEnable = 'Y'
 	</select>
 
 	<select id="findIdbyEmail" parameterType="java.util.Map" resultType="String">
@@ -67,12 +69,18 @@
 			userNickname = #{userNickname},
 			userEmail1 = #{userEmail1},
 			userEmail2 = #{userEmail2},
-			<if test ="userPassword != '' and userPassword != null">
+			<if test ="userPassWd != '' and userPassWd != null">
 				userPassWd = #{userPassWd},
 			</if>
 			userTel1 = #{userTel1},
 			userTel2 = #{userTel2},
 			userTel3 = #{userTel3}
+		where userId = #{userId}
+	</update>
+	
+	<update id="updateUserDel" parameterType="String">
+		update javabucks_user set
+			userEnable = 'N'
 		where userId = #{userId}
 	</update>
 

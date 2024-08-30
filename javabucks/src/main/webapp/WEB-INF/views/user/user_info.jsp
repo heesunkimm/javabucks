@@ -21,24 +21,24 @@
                 <p class="font_bold">개인정보 관리</p>
             </div>
             <div class="edit_form">
-                <form name="info_f" action="updateUserInfo.do" method="post" onsubmit="returm check()">
+                <form name="info_f" action="updateUserInfo.do" method="post" onsubmit="return updateCheck()">
                     <div class="read_box">
                         <label>아이디
-                            <input type="text" name="userId" value="${inUser.userId}" readonly>
+                            <input type="text" id="userId" name="userId" value="${userInfo.userId}" readonly>
                         </label>
                         <label>이름
-                            <input type="text" name="userName" value="${inUser.userName}" readonly>
+                            <input type="text" name="userName" value="${userInfo.userName}" readonly>
                         </label>
                         <label>생년월일
-                        	<c:set var="parsedDate" value="${inUser.userBirth}" />	                       
+                        	<c:set var="parsedDate" value="${userInfo.userBirth}" />	                       
 							<fmt:parseDate var="date" value="${parsedDate}" pattern="yyyy-MM-dd HH:mm:ss" />
                             <input type="text" name="userBirth" value="<fmt:formatDate value="${date}" pattern="yyyy-MM-dd" />	" readonly>
                         </label>
                         <div class="gender_box">
-                        	<c:if test="${inUser.userGender eq 'F' }">
+                        	<c:if test="${userInfo.userGender eq 'F' }">
                             <span>♀ 여자</span>
                             </c:if>
-                            <c:if test="${inUser.userGender eq 'M' }">
+                            <c:if test="${userInfo.userGender eq 'M' }">
                             <span>♂ 남자</span>
                             </c:if>
                         </div>
@@ -48,16 +48,16 @@
                         <div class="nickname_box">
                             <p>닉네임설정</p>
                             <label>
-                                <input type="text" name="userNickname" value="${inUser.userNickname }" placeholder="닉네임을 입력해주세요. (한글 최대 6자)" oninput="validateNn(this)">
+                                <input type="text" name="userNickname" value="${userInfo.userNickname }" placeholder="닉네임을 입력해주세요. (한글 최대 6자)" oninput="validateNn(this)">
                             </label>
                         </div>
                         <a class="toggle_btn" href="javascript:">비밀번호 변경 ▼</a>
                         <div class="change_pw" style="display: none;">
                             <label>
-                                <input type="password" name="userPassword" value="" placeholder="새 비밀번호 (10~20자리 이내)" oninput="validatePw(this)">
+                                <input type="password" id="userPassword" name="userPassword" value="" placeholder="새 비밀번호 (10~20자리 이내)" oninput="validatePw(this)">
                             </label>
                             <label>
-                                <input type="password" name="userPasswordChanged" value="" placeholder="새 비밀번호 확인" oninput="validatePw(this)">
+                                <input type="password" id="userPasswordChanged" name="userPasswordChanged" value="" placeholder="새 비밀번호 확인" oninput="validatePw(this)">
                             </label>
                         </div>
                         <div class="tel_box">
@@ -68,32 +68,51 @@
                                 </select>
                             </label>
                             <label>
-                                <input type="text" name="userTel2" value="${inUser.userTel2}" oninput="validateTel(this)">
+                                <input type="text" name="userTel2" value="${userInfo.userTel2}" oninput="validateTel(this)">
                             </label>
                             <label>
-                                <input type="text" name="userTel3" value="${inUser.userTel3}" oninput="validateTel(this)">
+                                <input type="text" name="userTel3" value="${userInfo.userTel3}" oninput="validateTel(this)">
                             </label>
                         </div>
                         <div class="mail_box">
                             <p>이메일</p>
                             <label>
-                                <input type="text" name="userEmail1" value="${inUser.userEmail1}" placeholder="메일 입력" oninput="validateEmail(this)">
+                                <input type="text" name="userEmail1" value="${userInfo.userEmail1}" placeholder="메일 입력" oninput="validateEmail(this)">
                             </label>
                             <label>
                                 <select name="userEmail2">
-                                    <option value="@naver.com">@naver.com</option>
-                                    <option value="@nate.com">@nate.com</option>
-                                    <option value="@gmail.com">@gmail.com</option>
-                                </select>
+								    <option value="@naver.com" 
+								    	<c:choose>
+								        	<c:when test="${userInfo.userEmail2 == '@naver.com'}">selected</c:when>
+								    	</c:choose>>@naver.com
+								    </option>
+								    
+								    <option value="@nate.com" 
+								    	<c:choose>
+								        	<c:when test="${userInfo.userEmail2 == '@nate.com'}">selected</c:when>
+								    	</c:choose>>@nate.com
+								    </option>
+								    
+								    <option value="@gmail.com" 
+								    	<c:choose>
+								        	<c:when test="${userInfo.userEmail2 == '@gmail.com'}">selected</c:when>
+								    	</c:choose>>@gmail.com
+								    </option>
+								</select>
                             </label>
                         </div>
                     </div>
 
                     <div class="btn_box">
                         <button type="submit">개인정보 수정</button>
-                        <button type="button">회원탈퇴</button>
                     </div>
                 </form>
+                <div class="btn_box">
+                	<form name="del_f" action="userDel.do" method="get">
+                    	<input type="hidden" name="userId" value="${userInfo.userId}">
+                    	<button type="submit" style="background:grey; color:white">회원탈퇴</button>
+                    </form>
+                </div>
             </div>
     </section>
     <!-- e: content -->
@@ -138,8 +157,18 @@
 	    }
 	}
 	
-	function check(){
-		const passwd = document.getElementsByName('userPassword');
-		console.log(passwd);
+	function updateCheck(){
+		var passwd = document.getElementById("userPassword").value;
+		var passwdch = document.getElementById("userPasswordChanged").value;
+
+		if(passwd === passwdch){
+			return true;
+		}else{
+			alert("입력하신 비밀번호가 일치하지 않습니다.")
+			document.getElementById("userPassword").value = '';
+        	document.getElementById("userPasswordChanged").value = '';
+        	document.getElementById("userPassword").focus();
+			return false;
+		}
 	}
 </script>

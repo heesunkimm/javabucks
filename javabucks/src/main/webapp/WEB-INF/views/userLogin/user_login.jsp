@@ -68,7 +68,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="logincheck" method="post">
+            <form name="f" action="logincheck.do" method="post">
                 <div class="input_box">
                     <label>
                     	<c:if test="${empty cookie['saveId']}">
@@ -325,6 +325,15 @@
 	    }, 1000);
 	}
 	
+	// 비밀번호 찾기 타이머 멈춤
+	function stopTimerPw() {
+	    if (timer) {
+	        clearInterval(timer);
+	        timer = null;
+	    }
+	}
+	
+	
 	// 비밀번호 찾기 메일 발송
 	function sendEmailPw() {
 		const inputId = $('.userInputId').val();
@@ -384,7 +393,7 @@
 	            success: function (res) {
 	                if (res === 'OK') {
 	                    alert("인증 성공");
-	                    stopTimer();
+	                    stopTimerPw();
 	                    const button = document.querySelector("button[onclick='codeCheckPw()']");
 	                    if (button) {
 	                        button.textContent = "인증완료";

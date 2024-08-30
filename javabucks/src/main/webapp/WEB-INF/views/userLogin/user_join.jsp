@@ -332,7 +332,7 @@ function codeCheck() {
     const code = $('.code').val();
     if(!timeout){
     	$.ajax({
-            url: 'codeCheck',
+            url: 'codeCheck.ajax',
             type: 'POST',
             data: { "code": code },
             success: function (res) {
