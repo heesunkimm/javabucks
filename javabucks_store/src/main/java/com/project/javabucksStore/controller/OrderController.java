@@ -274,7 +274,7 @@ public class OrderController {
             List<OrderDTO> storeOrderList = mapper.getStoreOrderList(storeOrder_params);
 
             // 패치 확인
-            System.out.println("매장주문 Fetched: " + date.toString());
+            //System.out.println("매장주문 Fetched: " + date.toString());
             
             
             // 배달 신규주문 불러오기

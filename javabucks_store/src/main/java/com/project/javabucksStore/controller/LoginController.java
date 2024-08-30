@@ -40,12 +40,6 @@ public class LoginController {
 		return "login/store_login";
 	}
 	
-	@GetMapping("/store_login")
-	public String login() {
-		return "login/store_login";
-	}
-	
-	
 	// 로그인 및 아이디 저장
 	@PostMapping("/store_index")
 	public String login(@RequestParam Map<String, String> params,
@@ -60,9 +54,6 @@ public class LoginController {
 		System.out.println("storePw: "+ storePw); 
 		System.out.println("saveId: "+ saveId); 
 		System.out.println("params : " + params);
-		
-		 // getOrDefault 
-		 // Java의 Map 인터페이스에서 제공하는 메서드로, 주어진 키에 대한 값을 반환하거나, 해당 키가 존재하지 않을 때 기본값을 반환
 		
 		// 아이디로 사용자 정보 가져오기 
 		BucksDTO bucks = loginMapper.findStoreById(storeId); 
@@ -108,218 +99,142 @@ public class LoginController {
 			req.setAttribute("url", "store_login");
 		}
 		return "message";
-		}
+	}
 	
 	
-	 // 아이디 찾기 -------------------------------------------------------------------------------------------------------
-
-		@ResponseBody
-		@PostMapping("/findById")
-		public String findById(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-				String email1 = params.get("bucksEmail1");
-				String email2 = params.get("bucksEmail2");
-				String email = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("bucksEmail1", email1);
-				paramMap.put("bucksEmail2", email2);
-
-				BucksDTO dto = loginMapper.findStoreById2(paramMap);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					email = params.get("bucksEmail1") + "@" + params.get("bucksEmail2");
-					Random random = new Random();
-					String code1 = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode1", code1);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("JavaBucks [아이디 찾기] 이메일 인증번호입니다.");
-					helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code1
-							+ " \n\n 아이디 찾기을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-
-		}
-		
-			// 아이디 찾기
-			@ResponseBody
-			@PostMapping("/verifyCode_id")
-			public String verifyCode_id(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-					throws Exception {
-				try {
-//							System.out.println(params.get("pw_id"));
-//							System.out.println(params.get("pw_email1"));
-//						 	System.out.println(params.get("pw_email2"));
-
-					String email1 = params.get("bucksEmail1");
-					String email2 = params.get("bucksEmail2");
-					String email3 = email1 + "@" + email2;
-					System.out.println(params);
-
-					Map<String, String> paramMap = new HashMap<>();
-					paramMap.put("bucksEmail1", email1);
-					paramMap.put("bucksEmail2", email2);
-
-					BucksDTO dto = loginMapper.findStoreById2(paramMap);
-
-					if (dto != null) {
-						// 이메일 전송 로직
-						MimeMessage msg = mailSender.createMimeMessage();
-						MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-						//String email = params.get("bucksEmail1") + "@" + params.get("bucksEmail2");
-						Random random = new Random();
-						String code1 = String.valueOf(random.nextInt(900000) + 100000);
-
-						Cookie cookie = new Cookie("checkCode1", code1);
-						cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-						cookie.setPath("/");
-						resp.addCookie(cookie);
-
-						helper.setFrom("mihyun6656@gmail.com");
-						helper.setTo(email3);
-						helper.setSubject("[JavaBucks STORE ID]");
-						helper.setText(
-								"안녕하세요!! JavaBucks 입니다.\n\n 아이디는  " + dto.getBucksId() + " 입니다." + "\n\n --JavaBucks--");
-						mailSender.send(msg);
-						return "OK";
-					} else {
-						System.out.println("누구?");
-						return "FAIL";
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-					return "FAIL";
-				}
-			}
+	// 아이디 찾기 이메일 발송
+	@ResponseBody
+	@PostMapping("/findStoreIdSendEmail.ajax")
+	public String findStoreIdSendEmail(HttpServletRequest req, HttpServletResponse resp, HttpSession session, String bucksEmail1, String bucksEmail2) throws Exception {
+		try {
+		        String email = bucksEmail1 + "@" + bucksEmail2;
+		        Map<String, String> params = new HashMap<>();
+		        params.put("bucksEmail1", bucksEmail1);
+		        params.put("bucksEmail2", bucksEmail2);
+		        
+		        Random random = new Random();
+		        String code = String.valueOf(random.nextInt(900000) + 100000);
+		        Cookie cookie = new Cookie("checkCode",code);
+		        cookie.setMaxAge(24 * 60 * 60);
+		        cookie.setPath("/");
+		        resp.addCookie(cookie);
+		        
+		        BucksDTO dto = loginMapper.findStoreByEmail(params);
+		        
+		        if(dto!=null) {
+			        // 이메일 전송 로직
+				 	MimeMessage msg = mailSender.createMimeMessage();
+			        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+			        helper.setFrom("admin@javabucks.com");
+			        helper.setTo(email);
+			        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+			        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+			                + " \n\n 아이디찾기를 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+			        mailSender.send(msg);
+			        return "OK";
+		        } else {
+		        	return "NONE";
+		        }
+		 }catch(Exception  e) {
+			  e.printStackTrace(); 
+		        return "FAIL";
+		 }
+	}
+	
+	// 인증번호 체크	
+	@ResponseBody
+	@PostMapping("/codeCheck.ajax")
+	public String codeCheckId(@RequestParam("code") String code, HttpServletRequest req) {
+		 Cookie [] ck = req.getCookies();
+		 if(ck != null) {
+			 for(Cookie cookie : ck) {
+				 if(cookie.getName().contentEquals("checkCode")) {
+					 if(cookie.getValue().equals(code)) {
+						 return "OK";
+					 }
+				 }
+			 }
+		 }
+		 return "FAIL";
+	}
 	 
-		// 비밀번호 찾기 ----------------------------------------------------------
-
-		// 비밀번호 찾기
-		@ResponseBody
-		@PostMapping("/findByPw")
-		public String findByPw(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-//					System.out.println(params.get("pw_id"));
-//					System.out.println(params.get("pw_email1"));
-//				 	System.out.println(params.get("pw_email2"));
-
-				String id = params.get("pw_id");
-				String email1 = params.get("pw_email1");
-				String email2 = params.get("pw_email2");
-				String email3 = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("bucksId", id);
-				paramMap.put("bucksEmail1", email1);
-				paramMap.put("bucksEmail2", email2);
-
-				BucksDTO dto = loginMapper.findStoreById(id);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					String email = params.get("pw_email1") + "@" + params.get("pw_email2");
-					Random random = new Random();
-					String code = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode1", code);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("JavaBucks [비밀번호 찾기] 이메일 인증번호입니다.");
-					helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
-							+ " \n\n 비밀번호 찾기을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-		}
-
-		// 비밀번호 찾기
-		@ResponseBody
-		@PostMapping("/verifyCode")
-		public String verifyCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-//						System.out.println(params.get("pw_id"));
-//						System.out.println(params.get("pw_email1"));
-//					 	System.out.println(params.get("pw_email2"));
-
-				String id = params.get("pw_id");
-				String email1 = params.get("pw_email1");
-				String email2 = params.get("pw_email2");
-				String email3 = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("bucksId", id);
-				paramMap.put("bucksEmail1", email1);
-				paramMap.put("bucksEmail2", email2);
-
-				BucksDTO dto = loginMapper.findStoreById(id);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					String email = params.get("pw_email1") + "@" + params.get("pw_email2");
-					Random random = new Random();
-					String code = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode", code);
-					cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("[JavaBucks STORE PASSWORD]");
-					helper.setText(
-							"안녕하세요!! JavaBucks 입니다.\n\n 비밀번호는  " + dto.getBucksPasswd() + " 입니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-		}
-
 	 
-	
+	// 아이디 찾기 처리
+	@PostMapping("/findStoreIdbyEmail.do")
+	public String findIdbyEmail(HttpServletRequest req, HttpServletResponse resp, String bucksEmail1, String bucksEmail2) throws Exception {
+		try {
+			String email = bucksEmail1 + "@" + bucksEmail2;
+			Map<String, String> params = new HashMap<>();
+			params.put("bucksEmail1", bucksEmail1);
+			params.put("bucksEmail2", bucksEmail2);
+
+			String Id = loginMapper.findStoreIdbyEmail(params);
+
+			if (Id != null) {
+				// 이메일 전송 로직
+				MimeMessage msg = mailSender.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+				helper.setFrom("admin@javabucks.com");
+				helper.setTo(email);
+				helper.setSubject("[JavaBucks BUCKS ID]");
+				helper.setText(
+						"안녕하세요!! JavaBucks 입니다.\n\n 아이디는  " + Id + " 입니다." + "\n\n --JavaBucks--");
+				mailSender.send(msg);
+				
+				req.setAttribute("msg", "해당 메일로 아이디를 발송했습니다. 확인 후 로그인해주세요");
+				req.setAttribute("url", "store_login");
+			} else {
+				req.setAttribute("msg", "아이디 메일 발송에 실패했습니다. 관리자에게 문의 바랍니다.");
+				req.setAttribute("url", "store_login");
+			}
+			return "/message";
+
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			req.setAttribute("msg", "에러 발생. 관리자에게 문의바랍니다.");
+			req.setAttribute("url", "store_login");
+			return "/message";
+		}
+	}
+
+	// 비밀번호 찾기 메일 발송
+	@ResponseBody
+	@PostMapping("/findStorePwSendEmail.ajax")
+	public String findStorePwSendEmail(HttpServletRequest req, HttpServletResponse resp, HttpSession session, String bucksId, String bucksEmail1, String bucksEmail2) throws Exception {
+		 try {
+		        String email = bucksEmail1 + "@" + bucksEmail2;
+		        Map<String, String> params = new HashMap<>();
+		        params.put("bucksEmail1", bucksEmail1);
+		        params.put("bucksEmail2", bucksEmail2);
+		        params.put("bucksId", bucksId);
+		        
+		        Random random = new Random();
+		        String code = String.valueOf(random.nextInt(900000) + 100000);
+		        Cookie cookie = new Cookie("checkCode",code);
+		        cookie.setMaxAge(24 * 60 * 60);
+		        resp.addCookie(cookie);
+		        
+		        BucksDTO dto = loginMapper.findStoreByIDEmail(params);
+		        
+		        if(dto!=null) {
+			        // 이메일 전송 로직
+				 	MimeMessage msg = mailSender.createMimeMessage();
+			        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+			        helper.setFrom("admin@javabucks.com");
+			        helper.setTo(email);
+			        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+			        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+			                + " \n\n 비밀번호 찾기를 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+			        mailSender.send(msg);
+			        return "OK";
+		        } else {
+		        	return "NONE";
+		        }
+		 }catch(Exception  e) {
+			  e.printStackTrace(); 
+		        return "FAIL";
+		 }
+	 } 
+
 }
