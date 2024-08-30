@@ -1,6 +1,7 @@
 	<%@ page language="java" contentType="text/html; charset=UTF-8"
 	    pageEncoding="UTF-8"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 	<jsp:include page="../admin_top.jsp"/>
 		<!-- s: content -->
 	    <section id="admin_cpnmange" class="content accountmanage">
@@ -86,11 +87,39 @@
 	                                <td>${list.cpnListStatus}</td>
 	                            </tr>
 	                        	</c:forEach>
+	                        	<c:if test="${nolist}">
+	                        	<tr>
+	                        		<td colspan="6">해당 조건의 검색결과가 없습니다.</td>
+	                        	</tr>
+	                        	</c:if>
 	                        </tbody>
 	                    </table>
 	                    <!-- 페이징 -->
-	                    <div class="pagination">
-	                    </div>    
+						<div class="pagination">
+						    <c:if test="${startPage > 1}"> 
+						        <a class="page_btn prev_btn" href="admin_cpnmange?pageNum=${startPage - pageBlock}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}">
+						            <img src="../../images/icons/arrow.png">
+						        </a>
+						    </c:if>
+						    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+						        <c:set var="activeClass" value=""/>
+						        <c:choose>
+						            <c:when test="${empty param.pageNum and i == 1}">
+						                <c:set var="activeClass" value="page_active"/>
+						            </c:when>
+						            <c:when test="${param.pageNum == i}">
+						                <c:set var="activeClass" value="page_active"/>
+						            </c:when>
+						        </c:choose>
+						        <a href="admin_cpnmange?pageNum=${i}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}" class="${activeClass} page_num">${i}</a>
+						    </c:forEach>
+						    <c:if test="${pageCount > endPage}">
+						        <a class="page_btn next_btn" href="admin_cpnmange?pageNum=${startPage + pageBlock}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}">
+						            <img src="../../images/icons/arrow.png">
+						        </a>
+						    </c:if>
+						</div>
+
 	                </div>
 	            </div>
 	            <!-- 쿠폰등록 팝업 -->
@@ -136,7 +165,7 @@
 	                    </div>
 	                    <div class="pbtn_box">
 	                        <button class="delBtn" type="button" onclick="delCpn()">쿠폰삭제</button>
-	                        <button type="submit">쿠폰전송</button>
+	                        <button class="sendBtn" type="button" onclick="sendCpn()">쿠폰전송</button>
 	                    </div>
 	                </form>
 	            </div>
@@ -159,7 +188,7 @@
 		    $(this).val(value);
 	    });
 		
-		// 쿠폰 등록/삭제 후 새로고침없이 리스트 다시 가져오기
+		// 어드민 쿠폰 생성/삭제 후 새로고침없이 리스트 다시 가져오기
 		function loadCpnList() {
 			$.ajax({
 		        url: '${pageContext.request.contextPath}/getCouponList.ajax',
@@ -263,6 +292,37 @@
 			        	// 쿠폰 삭제 후 리스트 다시 가져오기
 			        	loadCpnList();
 			        	
+			        },
+			        error: function (xhr, status, err) {
+			            console.error('AJAX 요청 실패:', status, err);
+			        }
+			    });
+	        }
+		}
+		// 특정 유저에게 쿠폰 전송
+		function sendCpn() {
+			let userId = $("#listcpn input[name='userId']").val();
+			let cpnCode = $("#cpnList option:selected").val();
+			
+			let data = {
+				userId: userId,
+				cpnCode: cpnCode,
+		    };
+			
+			if (confirm(userId + '에게 쿠폰을 발급하시겠습니까?')) {
+				$.ajax({
+			        url: '${pageContext.request.contextPath}/sendUserCoupon.ajax',
+			        type: "POST",
+			        data: JSON.stringify(data),
+			        contentType: "application/json",
+			        dataType: "text",
+			        success: function (res) {
+			        	alert(res);
+			        	$(".cpn_popup").removeClass("s_active");
+			        	$(".dimm").removeClass("s_active");
+			        	$("input[type='text']").val("");
+			        	
+			        	window.location.reload();
 			        },
 			        error: function (xhr, status, err) {
 			            console.error('AJAX 요청 실패:', status, err);

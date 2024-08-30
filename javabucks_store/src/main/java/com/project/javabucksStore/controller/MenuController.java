@@ -1,6 +1,7 @@
 package com.project.javabucksStore.controller;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucksStore.dto.BucksDTO;
 import com.project.javabucksStore.dto.MenuDTO;
+import com.project.javabucksStore.dto.MenuOrder;
+import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.StoreMenuDTO;
 import com.project.javabucksStore.mapper.MenuMapper;
 
@@ -105,8 +108,7 @@ public class MenuController {
 	// 조건에 해당하는 음료 리스트 뽑기
 	@PostMapping("/searchDrinks.ajax")
 	@ResponseBody
-	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params,
-	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+	public List<StoreMenuDTO> searchDrinks(HttpServletRequest req, @RequestBody Map<String, Object> params) {
 		// 세션에서 ID꺼내기
 		HttpSession session = req.getSession();
 		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
@@ -123,25 +125,8 @@ public class MenuController {
 		searchParams.put("menuCate", menuCate);
 		searchParams.put("menuBase", menuBase);
 		
-		int searchCount = menuMapper.searchDrinksCount(searchParams); // 검색결과별 리스트 수
-	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
-	    int startRow = (pageNum - 1) * pageSize + 1;
-	    int endRow = startRow + pageSize - 1;
-	    if (endRow > searchCount) endRow = searchCount;
-	    int no = searchCount - startRow + 1;
-	    int pageBlock = 3;
-	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);	
-	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
-	    int endPage = startPage + pageBlock - 1;
-	    if (endPage > pageCount) endPage = pageCount;
-	    
-	    List<StoreMenuDTO> drinkList;
-	    
-	    // 검색 조건에 따라 메뉴 리스트 가져오기
-	    searchParams.put("startRow", startRow);
-	    searchParams.put("endRow", endRow);
-	    
-	    drinkList = menuMapper.searchDrinks(searchParams);
+	    // 검색 조건에 따라 메뉴 리스트 가져오기	    
+	    List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
 	    
 //	    System.out.println("Drink List:");
 //	    for (StoreMenuDTO drink : drinkList) {
@@ -151,17 +136,7 @@ public class MenuController {
 //	        System.out.println("3. id" + drink.getBucksId());
 //	    }
 	    
-	    req.setAttribute("searchCount", searchCount);
 	    req.setAttribute("drinkList", drinkList);
-	    req.setAttribute("pageSize", pageSize);
-	    req.setAttribute("startRow", startRow);
-	    req.setAttribute("endRow", endRow);
-	    req.setAttribute("no", no);
-	    req.setAttribute("pageBlock", pageBlock);
-	    req.setAttribute("pageCount", pageCount);
-	    req.setAttribute("startPage", startPage);
-	    req.setAttribute("endPage", endPage);
-	    
 	    return drinkList;
 	}
 	
@@ -319,24 +294,51 @@ public class MenuController {
 	@PostMapping("/deleteMenu.ajax")
 	@ResponseBody
 	public String delDrinkList(HttpServletRequest req, @RequestBody Map<String, Object> params) {
-		
-		// 세션에서 ID꺼내기
-		HttpSession session = req.getSession();
-		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
-		String bucksId = dto.getBucksId();
-				
+	    
+	    // 세션에서 ID꺼내기
+	    HttpSession session = req.getSession();
+	    BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
+	    String bucksId = dto.getBucksId();
+	            
 	    String menuCode = (String) params.get("menuCode");
-		
-		Map<String, Object> searchParams = new HashMap<>();
-		searchParams.put("bucksId", bucksId);
-		searchParams.put("menuCode", menuCode);
-		
-		int res = menuMapper.deleteMenu(searchParams);
-		
-		if(res>0) {
-			return "해당 메뉴를 지점 메뉴에서 삭제하였습니다.";
-		}else {
-			return "해당 메뉴를 삭제하는데 실패하였습니다.";
-		}
+	    
+	    Map<String, Object> searchParams = new HashMap<>();
+	    searchParams.put("bucksId", bucksId);
+	    searchParams.put("menuCode", menuCode);
+	    
+	    // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> delCheck = menuMapper.delOrderCheck(bucksId);
+	    
+	    if (delCheck != null && !delCheck.isEmpty()) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : delCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
+	    
+	    // 메뉴 삭제 처리
+	    int res = menuMapper.deleteMenu(searchParams);
+	    
+	    if (res > 0) {
+	        return "해당 메뉴를 지점 메뉴에서 삭제하였습니다.";
+	    } else {
+	        return "해당 메뉴를 삭제하는데 실패하였습니다.";
+	    }
 	}
 }

@@ -189,6 +189,7 @@
 	            	$btn.replaceWith(updateBtn);
 	            	alert(btnMenu + "의 주문을 풀었습니다.");
 	            }
+	            window.location.reload();
 	        },
 	        error: function (xhr, status, err) {
 	            console.error('AJAX 요청 실패:', status, err);

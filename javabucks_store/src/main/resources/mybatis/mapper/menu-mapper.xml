@@ -32,32 +32,22 @@
 	
 	<!-- 조건에 해당하는 음료 리스트 뽑기 -->
 	<select id="searchDrinks" parameterType="java.util.Map" resultType="StoreMenuDTO">
-	    SELECT * 
-	    FROM (
-	        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.*, 
-	        		sm.bucksId, sm.storemenuStatus, sm.storeEnable 
-	        FROM javabucks_storemenu sm 
-	        JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
-	        WHERE sm.bucksId = #{bucksId} 
-	          AND sm.storeEnable = 'N' 
-		      and m.menuCode like 'B%' 
-	          AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
-	          AND m.menuEnable = 'Y' 
-	    ) drinks 
-	    WHERE rn BETWEEN #{startRow} AND #{endRow}
-	</select>
-	
-	<!-- 조건에 해당하는 음료 리스트 갯수 -->
-	<select id="searchDrinksCount" parameterType="java.util.Map" resultType="Integer">
-	    SELECT COUNT(*)
-	    FROM javabucks_storemenu sm
-	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode
-	    WHERE sm.bucksId = #{bucksId}
+        SELECT ROW_NUMBER() OVER (ORDER BY m.menuregDate DESC) AS rn, m.*, 
+        		sm.bucksId, sm.storemenuStatus, sm.storeEnable 
+        FROM javabucks_storemenu sm 
+        JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
+        WHERE sm.bucksId = #{bucksId} 
           AND sm.storeEnable = 'N' 
 	      and m.menuCode like 'B%' 
-	      AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate})
-	      AND (#{menuBase} IS NULL OR SUBSTR(m.menuCode, 4, 1) = #{menuBase})
-	      AND m.menuEnable = 'Y'
+          AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
+          AND (
+			    #{menuBase} IS NULL 
+			    OR 
+			    (#{menuBase} = 'F' AND SUBSTR(m.menuCode, 4, 1) IN ('D', 'E', 'F', 'J', 'L', 'P'))
+			    OR 
+			    (SUBSTR(m.menuCode, 4, 1) = #{menuBase} AND #{menuBase} &lt;&gt; 'F')
+			)
+          AND m.menuEnable = 'Y' 
 	</select>
 	
 	<!-- 메뉴 키워드 검색 리스트 뽑기 -->
@@ -122,6 +112,11 @@
 	<update id="menuStatusUpdate" parameterType="StoreMenuDTO">
 		update javabucks_storemenu set storemenuStatus = #{storemenuStatus} where menuCode = #{menuCode} and bucksId = #{bucksId} 
 	</update>
+	
+	<!-- 주문완료/제조중 상태 주문내역 확인 -->
+	<select id="delOrderCheck" parameterType="String" resultType="OrderDTO">
+		select orderList from javabucks_order where bucksId = #{bucksId} and orderStatus in('주문완료','제조중')
+	</select>
 	
 	<!-- 메뉴삭제 - 지점에 추가한 메뉴 삭제 -->
 	<delete id="deleteMenu" parameterType="java.util.Map">

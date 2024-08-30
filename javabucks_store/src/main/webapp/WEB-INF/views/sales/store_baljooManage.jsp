@@ -34,7 +34,7 @@
                 </form>
 
                 <div class="list_box">
-                    <p class="totabl_sales">총 발주 금액:
+                    <p class="totabl_sales">총 발주 승인 금액:
                     	<span>
                             <fmt:formatNumber value="${totalBaljooPrice}" type="number" maxFractionDigits="0" />원
                         </span></p>

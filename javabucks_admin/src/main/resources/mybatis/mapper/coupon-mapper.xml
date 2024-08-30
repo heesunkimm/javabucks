@@ -18,7 +18,7 @@
   		select * from javabucks_coupon where cpnName = #{cpnName} or cpnCode = #{cpnCode}
   	</select>
   		
-  	<!-- 쿠폰삭제 -->
+  	<!-- 쿠폰 삭제 -->
   	<delete id="deleteCoupon" parameterType="String">
   		delete from javabucks_coupon where cpnCode =#{cpnCode}
   	</delete>
@@ -35,7 +35,18 @@
   	
   	<!-- 유저에게 쿠폰 등록 -->
   	<insert id="toUserCoupon" parameterType="CouponListDTO">
-  		insert into javabucks_couponList (cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) values (seq_cpnListNum.nextval, #{cpnCode}, #{userId}, #{cpnListStatus}, sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+  		insert into javabucks_couponList (cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) values (seq_cpnListNum.nextval, #{cpnCode}, #{userId}, default, sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+  	</insert>
+  	<!-- 유저에게 하나의 쿠폰이 같은 날 중복발급 안되게 체크 -->
+  	<select id="todayCpnCheck" parameterType="java.util.Map" resultType="CouponListDTO">
+  		select * from javabucks_couponList cl 
+  		inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
+  		where userId = #{userId} and cl.cpnCode = #{cpnCode} and TRUNC(cl.cpnListStartDate) = trunc(sysdate)
+  	</select>
+  	
+  	<!-- 특정 유저에게 쿠폰 전송 -->
+  	<insert id="sendUserCoupon" parameterType="CouponListDTO">
+  		insert into javabucks_couponList (cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) values (seq_cpnListNum.nextval, #{cpnCode}, #{userId}, default, sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
   	</insert>
   	
   	<!-- 유저에게 등록된 쿠폰 알림 전송 -->
@@ -60,28 +71,43 @@
   	
   	<!-- 검색 조건에 맞게 필터링된 쿠폰리스트 -->
 	<select id="searchFilterCpn" parameterType="java.util.Map" resultType="CouponListDTO">
-       	select row_number() over (order by cl.cpnListStartDate desc) as rn, cl.*, c.cpnCode, c.cpnName
-        from javabucks_couponList cl 
-        inner join javabucks_coupon c ON cl.cpnCode = c.cpnCode 
-        where
-            (#{searchStartDate} is null and #{searchEndDate} is null 
-            or (cl.cpnListStartDate between #{searchStartDate} and #{searchEndDate}))
-            and (#{cpnListStatus} is null or cl.cpnListStatus = #{cpnListStatus})
-            and (#{userId} is null or cl.userId LIKE '%' || #{userId} || '%')
-            and (#{cpnName} is null or c.cpnName = #{cpnName})
+		select row_number() over (order by cl.cpnListStartDate desc) as rn, cl.*, c.cpnCode, c.cpnName
+	    from javabucks_couponList cl
+	    inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
+	    where
+	        (
+	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or
+	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or
+	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or 
+	            (#{searchStartDate} is null and #{searchEndDate} is null)
+	        )
+	        and (#{cpnListStatus} is null or cl.cpnListStatus = #{cpnListStatus})
+	        and (#{userId} is null or cl.userId like '%' || #{userId} || '%')
+	        and (#{cpnName} is null or c.cpnName = #{cpnName})
+        order by cl.cpnListStartDate desc
 	</select>
 
   	<!-- 검색 조건에 맞게 필터링된 쿠폰리스트 갯수 -->
-	<!-- <select id="searchFilterCpnCount" parameterType="java.util.Map" resultType="Integer">
+	<select id="searchFilterCpnCount" parameterType="java.util.Map" resultType="Integer">
 	    select count(*) 
 	    from javabucks_couponList cl 
 	    inner join javabucks_coupon c ON cl.cpnCode = c.cpnCode 
 	    where
-	        (#{searchStartDate} is null and #{searchEndDate} is null 
-	        or (cl.cpnListStartDate between #{searchStartDate} and #{searchEndDate}))
+	        (
+	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or
+	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or
+	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            or 
+	            (#{searchStartDate} is null and #{searchEndDate} is null)
+	        )
 	        and (#{cpnListStatus} is null or cl.cpnListStatus = #{cpnListStatus})
-	        and (#{userId} is null or cl.userId LIKE '%' || #{userId} || '%')
+	        and (#{userId} is null or cl.userId like '%' || #{userId} || '%')
 	        and (#{cpnName} is null or c.cpnName = #{cpnName})
-	</select> -->
-
+        order by cl.cpnListStartDate desc
+	</select>
   </mapper>

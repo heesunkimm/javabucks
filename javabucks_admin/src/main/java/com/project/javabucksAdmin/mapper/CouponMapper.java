@@ -43,9 +43,17 @@ public class CouponMapper {
 	public List<CouponListDTO> getUserCpnList() {
 		return sqlSession.selectList("getUserCpnList");
 	}
-	// 유저에게 등록된 쿠폰 등록
+	// 유저에게 쿠폰 등록
 	public int toUserCoupon(CouponListDTO dto) {
 		return sqlSession.insert("toUserCoupon", dto);
+	}
+	// 유저에게 하나의 쿠폰이 같은 날 중복발급 안되게 체크
+	public CouponListDTO todayCpnCheck(Map<String, Object> params) {
+		return sqlSession.selectOne("todayCpnCheck", params);
+	}
+	// 특정 유저에게 쿠폰 등록
+	public int sendUserCoupon(Map<String, Object> params) {
+		return sqlSession.insert("toUserCoupon", params);
 	}
 	// 유저에게 등록된 쿠폰 알림 전송
 	public int toUserAlarm(AlarmDTO dto) {
@@ -59,10 +67,9 @@ public class CouponMapper {
 	public List<CouponListDTO> searchFilterCpn(Map<String, Object> params) {
 		return sqlSession.selectList("searchFilterCpn", params); 
 	}
-//	 검색 조건에 맞게 필터링된 쿠폰리스트 갯수
-//	public int searchFilterCpnCount(Map<String, Object> params) {
-//		System.out.println(params.size());
-//		return sqlSession.selectOne("searchFilterCpnCount", params);
-//	}
+	// 검색 조건에 맞게 필터링된 쿠폰리스트 갯수
+	public int searchFilterCpnCount(Map<String, Object> params) {
+		return sqlSession.selectOne("searchFilterCpnCount", params);
+	}
 }
 
