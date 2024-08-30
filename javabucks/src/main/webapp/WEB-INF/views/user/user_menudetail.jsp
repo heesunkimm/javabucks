@@ -534,4 +534,105 @@
 	            document.getElementById('whipNum').value = whipNum || document.getElementById('whipNum').value;
 	        });
 	    });
+	    
+		// 유효성 검사
+	    function orderCheck() {
+	    	console.log("유효성검사 들어옴");
+	    var qty = $("input[name='quantity']").val();
+
+	    if (qty < 1) {
+	        alert("수량은 한개 이상 선택해주세요");
+	        return false;
+	    }
+
+	    var drink = "${drink}";
+
+    	if (drink === "drink") { 
+	        var isIce = "${isIce}";
+	        var isMilk = "${isMilk}";
+
+	        
+	        var cupNum = $('#cupNum').val();
+	        var whipNum = $('#whipNum').val();
+	        var iceNum = $('#iceNum').val();
+	        var milkNum = $('#milkNum').val();
+        
+        // 사이즈 체크
+        if (!cupNum) {
+            console.log("컵뭘까:" + cupNum);
+            alert("사이즈를 선택해주세요.");
+            return false;
+        }
+        // 얼음량 체크
+        if (isIce !== 'not' || isIce === 'ok') {
+            if (!iceNum) {
+                alert("얼음량을 선택해주세요.");
+                return false;
+            }
+        }
+        // 우유 종류 체크
+        if (isMilk !== 'not' || isMilk === 'ok') {
+            if (!milkNum) {
+                alert("우유 종류를 선택해주세요.");
+                return false;
+            }
+        }       
+    }
+		// 주문하기 눌렀을때!
+	   //updateSyrupNum();
+	    orderOptInsert(cupNum, whipNum, iceNum, milkNum);
+	    console.log("유효성검사 통과");
+	    return true;
+	}
+		
+		// orderOptInsert 요청 처리
+	    function orderOptInsert(cupNum, whipNum, iceNum, milkNum) {
+			var shotNum = $("input[name='shotNum']").val();
+			var optShotCount = $("input[name='optShotCount']").val();
+			var syrupNum = $("input[name='syrupNum']").val();
+			var optSyrupCount = $("input[name='optSyrupCount']").val();
+			
+			console.log({
+			    cupNum: cupNum,
+			    whipNum: whipNum,
+			    iceNum: iceNum,
+			    milkNum: milkNum,
+			    shotNum: shotNum,
+			    syrupNum: syrupNum,
+			    optShotCount: optShotCount,
+			    optSyrupCount: optSyrupCount
+			});
+			
+	        $.ajax({
+	            url: '/orderOptInsert.ajax', // 요청할 URL
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                cupNum: cupNum,
+	                whipNum: whipNum,
+	                iceNum: iceNum,
+	                milkNum: milkNum,
+	                shotNum: shotNum,
+	                syrupNum: syrupNum,
+	                optShotCount: optShotCount,
+	                optSyrupCount: optSyrupCount
+	            }),
+	            success: function(res) {
+	            	if (res > 0){
+	                	alert('결제 페이지로 이동합니다.');
+	                	$('#optId').val(res);
+	                	$('#cart').val("imme");
+	                	document.forms['optplus'].submit();
+	            	} else {
+	            		console.log('처리 중 오류가 발생했습니다.');
+	            		return;
+	            	}
+	            },
+	            error: function(error) {
+	                alert('ajax 처리 중 오류가 발생했습니다.');
+	                console.log(error);
+	                return;
+	            }
+	        });
+	    }
 </script>

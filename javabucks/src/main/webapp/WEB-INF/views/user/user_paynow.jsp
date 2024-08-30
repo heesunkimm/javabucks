@@ -236,19 +236,21 @@
                 <form name="payOrder" action="orderPayOk" method="post">
                     <dl>
                         <dt>주문 금액</dt>
-                        <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
+                        <dd id="orderedAmount"><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
                     </dl>
                     <dl class="font_gray">
                         <dt>할인 금액</dt>
-                        <dd><fmt:formatNumber value="" pattern="#,###"/>원</dd>
+                        <dd id="discountAmount"><fmt:formatNumber value="0" pattern="#,###"/>원</dd>
                     </dl>
                     <dl>
                         <dt>최종 결제 금액</dt>
-                        <dd><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
+                        <dd id="totcountAmount"><fmt:formatNumber value="" pattern="#,###"/>원</dd>
                     </dl>
                     <input type="hidden" name="cardRegNum">
                     <input type="hidden" name="payhistoryPayWay" id="payhistoryPayWay">
                     <input type="hidden" name="payhistoryPayType" value=${pickup}>
+                    <input type="hidden" name="selectedCouponPrice" value="0">
+					<input type="hidden" name="selectedCouponListNum" value="">
                     <button class="pay_btn" type="button" onclick="requestPay()">결제하기</button>
                 </form>
             </div>
@@ -258,12 +260,17 @@
             <div class="tit_box">
                 <p class="txt_tit">쿠폰목록</p>
             </div>
-            <form name="f" action="" method="post">
+            <form name="cpn" action="" method="post">
                 <!-- s: 내용 작성 -->
                  <ul class="cpn_list">
+                 	<a href="javascript:;" class="coupon-item" data-cpnPrice="0">
+						<div class="txt_box">
+							<p class="txt_tit">쿠폰사용안함</p>
+						</div>
+                 	</a>
                  	<c:forEach var="dto" items="${couponlist}">
 	                    <li>
-	                        <a href="javascript:;">
+	                        <a href="javascript:;" class="coupon-item" data-cpnPrice="${dto.cpnPrice}" data-cpnListNum="${dto.cpnListNum}">
 	                            <div class="img_box">
 	                                <img src="../images/icons/javabucks_cupon.png" alt="">
 	                            </div>
@@ -278,7 +285,7 @@
                 
                 <!-- e: 내용 작성 -->
                 <div class="pbtn_box">
-                    <button type="submit">사용하기</button>
+                    <button type="button" id="applyCouponBtn">사용하기</button>
                     <button class="close_btn" type="button" data-popup="cpnpay">취소</button>
                 </div>
             </form>
@@ -290,6 +297,66 @@
 <%@ include file="user_bottom.jsp" %>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script type="text/javascript">
+		let selectedCouponPrice = 0;
+		let totalAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
+		document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+		
+		//쿠폰 항목 클릭 시 가격을 저장
+		document.querySelectorAll('.coupon-item').forEach(coupon => {
+			 coupon.addEventListener('click', function() {
+				 let selectedCpnPrice = $(this).data('cpnprice');
+			     let selectedCpnListNum = parseInt($(this).data('cpnlistnum'), 10);
+			        
+			     // 쿠폰 할인 금액과 쿠폰 리스트 넘버를 숨겨진 인풋에 저장
+			     $("input[name='selectedCouponPrice']").val(selectedCpnPrice);
+			     $("input[name='selectedCouponListNum']").val(selectedCpnListNum);
+			     
+			     // 선택한 쿠폰의 가격을 가져옴
+			     selectedCouponPrice = parseInt(this.getAttribute('data-cpnPrice'), 10);
+			
+			     // 모든 쿠폰에서 'selected' 클래스를 제거
+			     document.querySelectorAll('.coupon-item').forEach(c => c.classList.remove('selected'));
+			
+			     // 현재 클릭한 쿠폰에 'selected' 클래스 추가
+			     this.classList.add('selected');
+			 });
+		});
+		
+		//'사용하기' 버튼 클릭 시 쿠폰 적용 및 팝업 닫기
+		document.getElementById('applyCouponBtn').addEventListener('click', function() {
+		 if (selectedCouponPrice > 0) {
+		     // 할인 금액을 업데이트 (이 부분은 실제 금액 업데이트에 맞게 수정 필요)
+		     document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
+		     updateTotalAmount();
+		     // 팝업 닫기
+		     $('#cpnpay').removeClass('s_active');
+	         $('.dimm').removeClass('s_active');
+		 } else if (selectedCouponPrice == 0) {
+			 let selectedCouponPrice = 0;
+			 document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
+			 updateTotalAmount();
+			 // 팝업 닫기
+		     $('#cpnpay').removeClass('s_active');
+	         $('.dimm').removeClass('s_active');
+		 } else {
+		     alert("쿠폰을 선택해 주세요.");
+		 }
+		});
+		
+		// 쿠폰 적용 시 호출되는 함수
+		function updateTotalAmount() {
+		    // 주문 금액 가져오기
+		    let orderedAmount = parseInt(document.getElementById('orderedAmount').innerText.replace(/[^0-9]/g, ''), 10);
+		    // 할인 금액 가져오기
+		    let discountAmount = parseInt(document.getElementById('discountAmount').innerText.replace(/[^0-9]/g, ''), 10);
+		    // 최종 결제 금액 계산
+		    let totalAmount = orderedAmount - discountAmount;
+		    // 할인 금액 업데이트
+		    document.getElementById('discountAmount').innerText = discountAmount.toLocaleString() + "원";
+		    // 최종 결제 금액 업데이트
+		    document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+		}
+
 		document.addEventListener('DOMContentLoaded', function() {
 		    // 라디오 버튼 그룹과 숨겨진 입력 필드를 선택합니다.
 		    const radioButtons = document.querySelectorAll('#howtopay input[name="PayWay"]');
@@ -331,7 +398,15 @@
 			let payway = $("input[name='payhistoryPayWay']").val();
 			console.log(payway);
 			IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
-	        let chargeAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
+			
+			let orderedAmount = parseInt(document.getElementById('orderedAmount').innerText.replace(/[^0-9]/g, ''), 10);
+		    let discountAmount = parseInt(document.getElementById('discountAmount').innerText.replace(/[^0-9]/g, ''), 10);
+		    let chargeAmount = orderedAmount - discountAmount;
+		    
+			// 선택된 쿠폰의 cpnListNum 가져오기
+		    let cpnListNum = parseInt($("input[name='selectedCouponListNum']").val(), 10);
+			console.log(cpnListNum);
+		    
 	        let payhistoryPayType = $("input[name='payhistoryPayType']").val();
 	        let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
 	        let payUser = '${inUser.userId}';
@@ -340,6 +415,7 @@
 	        let bucksId = "${bdto.bucksId}";
 	        let menuPrice = "${(mdto.menuPrice) * quantity}";
 	        let optPrice = "${optPrice*quantity}";
+	        let quantity = "${quantity}";
 	            
 	            
 	        // 주문 데이터
@@ -380,19 +456,20 @@
 	                        orderType: payhistoryPayType,
 	                        orderList: orderList, 
 	                        menuPrice: menuPrice,
-	                        optPrice: optPrice
+	                        optPrice: optPrice,
+	                        quantity: quantity,
+	                        cpnListNum: cpnListNum
 	                    }),
 	                    success: function(response) {
 	                        if (response.status === 'success') {
 	                            alert('결제가 성공적으로 완료되었습니다.');
+	                            window.location.replace("/user_index");
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
-	                            console.log(data);
 	                        }
 	                    },
 	                    error: function(xhr, status, error) {
 	                        console.error('처리 중 오류가 발생했습니다:', error);
-	                        console.log(data);
 	                    }
 	                });
 	                } else {
@@ -418,6 +495,8 @@
 	                    	cardRegNum: cardRegNum,
 	                        userId: payUser,
 	                        bucksId: bucksId,
+	                        orderedAmount: orderedAmount,
+	            		    discountAmount: discountAmount,
 	                        orderPrice: chargeAmount,
 	                        payhistoryPrice: chargeAmount,
 	                        payhistoryPayType: payhistoryPayType,
@@ -425,7 +504,9 @@
 	                        orderType: payhistoryPayType,
 	                        orderList: orderList, 
 	                        menuPrice: menuPrice,
-	                        optPrice: optPrice
+	                        optPrice: optPrice,
+	                        quantity: quantity,
+	                        cpnListNum: cpnListNum
 	                    }),
 	                    success: function(res) {
 							console.log(res)
@@ -433,7 +514,7 @@
 	                        	alert("잔액이 부족합니다. 충전 후 다시 이용해 주세요");
 	                        } else if (res === 'OK') {
 		                        alert("결제가 완료 되었습니다.");
-		                        window.location.href="user_index";
+		                        window.location.replace("/user_index");
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
 	                        }

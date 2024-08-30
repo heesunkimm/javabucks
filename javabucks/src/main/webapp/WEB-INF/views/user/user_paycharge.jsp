@@ -117,7 +117,7 @@
                     success: function(response) {
                         if (response.status === 'success') {
                             alert('충전이 성공적으로 완료되었습니다.');
-                            window.location = "user_pay";
+                            window.location.replace("/user_pay");
                         } else {
                             console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
                         }

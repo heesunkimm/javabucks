@@ -246,6 +246,29 @@
  		VALUES (seq_alarmnum.nextval, #{userId}, #{alarmCate}, #{alarmCont})
  	</insert>
  	
+ 	<!-- Frequency 기록을 삽입하는 쿼리 -->
+    <insert id="insertFrequency" parameterType="map">
+        INSERT INTO JAVABUCKS_FREQUENCY 
+        (FREQUENCYNUM, USERID, FREQUENCYREGDATE, FREQUENCYCOUNT)
+        VALUES 
+        (seq_frequencynum.nextval, #{userId}, SYSDATE, #{quantity})
+    </insert>
+
+    <!-- User의 frequency count를 업데이트하는 쿼리 -->
+    <update id="updateUserFrequencyCount" parameterType="map">
+        UPDATE JAVABUCKS_USER 
+        SET USERFREQUENCYCOUNT = NVL(USERFREQUENCYCOUNT, 0) + #{quantity}
+        WHERE USERID = #{userId}
+    </update>
+    
+    <!-- cpnListStatus 사용완료로 바꾸기 -->
+    <update id="cpnListStatusChange" parameterType="int">
+	    UPDATE JAVABUCKS_COUPONLIST
+	    SET CPNLISTSTATUS = '사용완료',
+	        CPNLISTUSEDATE = SYSDATE
+	    WHERE CPNLISTNUM = #{cpnListNum}
+	</update>
+
  	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
  	<select id="getInfoById" parameterType="String" resultType="UserDTO">
@@ -300,7 +323,7 @@
  	</update>
  	
  	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
- 		SELECT cl.*, cc.cpnName, cc.cpnDesc 
+ 		SELECT cl.*, cc.cpnName, cc.cpnDesc, cc.cpnPrice
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
  		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료' 
  	</select>

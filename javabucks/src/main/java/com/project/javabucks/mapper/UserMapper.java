@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
@@ -154,6 +155,21 @@ public class UserMapper {
 
 	public MenuOptMilkDTO getMilkInfo(int optId) {
 		return sqlSession.selectOne("getMilkInfo", optId);
+	}
+	
+	@Transactional
+	public void processFrequencyAndUserUpdate(String userId, int quantity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("quantity", quantity);
+        
+        sqlSession.insert("insertFrequency", params);
+
+        // User의 frequency count 업데이트
+        sqlSession.update("updateUserFrequencyCount", params);
+    }
+	public int cpnListStatusChange(int cpnListNum) {
+		return sqlSession.update("cpnListStatusChange", cpnListNum);
 	}
 
 	// 채성진 작업------------------------------------------------------
