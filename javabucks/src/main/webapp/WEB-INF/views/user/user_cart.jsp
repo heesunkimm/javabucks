@@ -22,11 +22,12 @@
 				<p class="font_bold">장바구니</p>
 			</div>
 			<form name="" action="user_paynow" method="post">
+				<input type="hidden" id="modeInput" name="modeInput" value="${mode}">
 				<c:if test="${not empty cart}">
 				<div class="toolbar_box">
 					<label> <input type="checkbox" onclick="toggleCheckboxes(this); updateCheckedCount(); OrderButton()">전체 선택</label>			
 					<div class="btn_box">
-						<button class="font_green" type="button" onclick="deleteCheck('each');">선택삭제</button>
+						<button class="font_green" type="button" onclick="deleteCheck('each')">선택삭제</button>
 						<button class="font_gray" type="button" onclick="deleteCheck('all')">전체삭제</button>
 					</div>
 				</div>
@@ -216,11 +217,11 @@
        document.getElementById('checkedCount').textContent = checkedCount;
    }
    
-   function deleteCheck(mode, element) {
+   function deleteCheck(AllorEach, element) {
 	   // 장바구니번호 담을 배열 생성
 	   var selectedCartNums = [];
 	   // 선택메뉴 삭제
-	   if (mode == 'each'){
+	   if (AllorEach == 'each'){
 		// 선택된 체크박스들에서 cartNum 값들을 수집   
        var checkboxes = document.querySelectorAll('.item-checkbox:checked');
        
@@ -228,39 +229,42 @@
            selectedCartNums.push(checkbox.name); // 체크박스 name 속성에 cartNum이 있음
        });
 
-       if (selectedCartNums.length === 0) {
-           alert("삭제할 메뉴를 선택해 주세요.");
-           return;
-       } 
+	       if (selectedCartNums.length === 0) {
+	           alert("삭제할 메뉴를 선택해 주세요.");
+	           return;
+	       } 
        
 			var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");    	   
        }
 	   // 전체메뉴 삭제
-       if (mode == 'all'){
+       if (AllorEach == 'all'){
    			var userConfirmed = confirm("장바구니에 담긴 모든 메뉴를 삭제하시겠습니까?");    	   
        }
 	   // x이미지 클릭시 삭제
-	   if (mode == 'xbox'){
+	   if (AllorEach == 'xbox'){
 		  	var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");
 			// 이미지의 name 속성 값에서 cartNum 부분 추출
 	        var cartNum = element.getAttribute('name').split('-')[1];
 	        selectedCartNums.push(cartNum);	       	      
 	   }
-       
+	   console.log("들어옴");
+	   var mode = document.getElementById("modeInput").value;
 	   if (userConfirmed) {
-	        
+		   
+	   console.log(mode);
 		$.ajax({
 	        url: 'deleteCart',
 	        type: 'POST',
 	        contentType: "application/json",
 	        data: JSON.stringify({
 	        	cartNum: selectedCartNums,  // 배열로 전달
-              eachOrAll: mode // 필요에 따라 이 값을 설정
+              eachOrAll: AllorEach // 필요에 따라 이 값을 설정
+            
           }),         
 	        success: function(response) {
 	            if (response.success) {
 	                alert("선택하신 메뉴가 삭제되었습니다.");
-	                window.location = "user_cart";
+	                window.location = "user_cart?mode=" + encodeURIComponent(mode);
 	            } else {			
 	                alert("선택한 메뉴는 삭제가 불가합니다.");
 	            }	
@@ -284,7 +288,7 @@
 	    
 	    // 체크된 체크박스가 있으면 'visible' 클래스를 추가하고, 그렇지 않으면 'hidden' 클래스를 유지
 	    if (isAnyChecked) {
-	    	c
+	    	
 // 	        orderButton.classList.remove('hidden');
 // 	        orderButton.classList.add('visible');
 	    } else {

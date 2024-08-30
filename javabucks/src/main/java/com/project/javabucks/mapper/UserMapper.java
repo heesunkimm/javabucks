@@ -272,16 +272,28 @@ public class UserMapper {
 	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("CardInfoByHistoryNum", payhistoryNum);
 	}
+	
+	public int insertCart(Map<String, Object> params) {
+		return sqlSession.update("insertCart", params);
+	}
 
-	public List<CartDTO> CartByUserid(String userId) {
-		return sqlSession.selectList("CartByUserid", userId);
+	public List<CartDTO> OrderCartByUserid(String userId) {
+		return sqlSession.selectList("OrderCartByUserid", userId);
+	}
+	
+	public List<CartDTO> DeliversCartByUserid(String userId) {
+		return sqlSession.selectList("DeliversCartByUserid", userId);
 	}
 	
 	public int deleteCart(Map<String, Object> params) {
 		return sqlSession.delete("deleteCart", params);
 	}
 	
-	public int deleteAllCart(String userId) {
-		return sqlSession.delete("deleteAllCart", userId);
+	public int deleteAllCartOrder(String userId) {
+		return sqlSession.delete("deleteAllCartOrder", userId);
+	}
+	
+	public int deleteAllCartDelivers(String userId) {
+		return sqlSession.delete("deleteAllCartDelivers", userId);
 	}
 }

@@ -141,13 +141,13 @@
             <div class="cart_box">
                 <!-- 클릭시 매장 선택 페이지로 재이동 -->
                 <c:if test="${pickup=='매장이용'}">
-                <a class="select_store" href="user_store">${store} <span class="font_gray">(매장이용)</span></a>
+                <a class="select_store" href="user_store">${storeName} <span class="font_gray">(매장이용)</span></a>
                 </c:if>
                 <c:if test="${pickup=='To-go'}">
-                <a class="select_store" href="user_store">${store} <span class="font_gray">(To-go)</span></a>
+                <a class="select_store" href="user_store">${storeName} <span class="font_gray">(To-go)</span></a>
                 </c:if>
                 <c:if test="${pickup=='Delivers'}">
-                <a class="select_store" href="user_delivers">${store} <span class="font_gray">(Delivers)</span></a>
+                <a class="select_store" href="user_delivers">${storeName} <span class="font_gray">(Delivers)</span></a>
                 </c:if>
                 <button class="cart_btn" type="button">
                     <div class="img_box">

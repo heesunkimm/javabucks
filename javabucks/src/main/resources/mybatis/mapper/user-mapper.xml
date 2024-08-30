@@ -485,11 +485,19 @@
  	</select>
  	
  	<!-- 장바구니 id로 조회 -->
- 	<select id="CartByUserid" parameterType="String" resultType="CartDTO"> 
+ 	<select id="OrderCartByUserid" parameterType="String" resultType="CartDTO"> 
  		 SELECT *
  		 FROM javabucks_cart		 
- 		 WHERE userId = #{userId}	 				 	  		 
- 	</select>	
+ 		 WHERE userId = #{userId}
+ 		 AND (cartType = 'order' OR cartType = 'togo')	 				 	  		 
+ 	</select>
+ 	
+ 	<select id="DeliversCartByUserid" parameterType="String" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}
+ 		 AND cartType = 'delivers'	 				 	  		 
+ 	</select>		
  			
 	<delete id="deleteCart" parameterType="java.util.Map"> 
  		 DELETE
@@ -498,10 +506,18 @@
  		 AND userId = #{userId}	  		 
  	</delete>
  	
- 	<delete id="deleteAllCart" parameterType="String"> 
+ 	<delete id="deleteAllCartOrder" parameterType="String"> 
  		 DELETE
  		 FROM javabucks_cart		 
- 		 WHERE userId = #{userId}	 	  		 
+ 		 WHERE userId = #{userId}
+ 		 AND (cartType = 'order' OR cartType = 'togo')	 	  		 
+ 	</delete>
+ 	
+ 	<delete id="deleteAllCartDelivers" parameterType="String"> 
+ 		 DELETE
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}
+ 		 AND cartType = 'delivers'	 	  		 
  	</delete>
  	
  	<!-- 장바구니에서 메뉴찾기 -->
@@ -509,7 +525,13 @@
  		 SELECT *
  		 FROM javabucks_menu		 
  		 WHERE menuCode = #{menuCode}	 				 	  		 
- 	</select>	
+ 	</select>
+ 	
+ 	<!-- 장바구니에서 인서트하기 -->
+ 	<update id="insertCart" parameterType="java.util.Map"> 
+ 		 INSERT INTO javabucks_cart
+ 		 VALUES(seq_cartNum.nextval, #{userId}, #{bucksId}, #{menuCode}, #{cartCount}, #{optId}, sysdate, #{cartType})	 				 	  		 
+ 	</update>	
  	
  	<!-- 메뉴 옵션찾기 -->
  	<select id="OptionByHistoryNum" parameterType="String" resultType="OrderOptDTO"> 

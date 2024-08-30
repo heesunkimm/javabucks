@@ -65,13 +65,13 @@ public class UserController {
 		String userId = udto.getUserId();
 		// 음료 주문해서 적립 됐을때 등급 업그레이드!, 쿠폰까지 발행하기!
 		// 등급 업그레이드
-//		if(udto.getGradeCode().equals("welcome")) {
-//			int res = userMapper.updateGreen(userId);
-//		}else if(udto.getGradeCode().equals("green")) {			
-//			int res = userMapper.updateGold(userId);
-//		}else {
-//			int res = userMapper.updateGoldAfter(userId);
-//		}
+		if(udto.getGradeCode().equals("welcome")) {
+			int res = userMapper.updateGreen(userId);
+		}else if(udto.getGradeCode().equals("green")) {			
+			int res = userMapper.updateGold(userId);
+		}else {
+			int res = userMapper.updateGoldAfter(userId);
+		}
 
 		// 별 갯수 구하기
 		int frequencyById = 0;
@@ -536,11 +536,26 @@ public class UserController {
 
 	@RequestMapping("/user_cart")
 	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
-
+		
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-		// ID로 장바구니 조회
-		List<CartDTO> list = userMapper.CartByUserid(userId);
+		
+		// 주문인지 배달인지 구분위해
+		req.setAttribute("mode", params.get("mode"));
+		if(params.get("pickup").equals("매장이용") || params.get("pickup").equals("To-go")){
+			params.put("mode", "ordercart");
+		}else if(params.get("pickup").equals("Delivers")) {
+			params.put("mode", "deliverscart");
+		}
+		
+		List<CartDTO> list = new ArrayList<>();
+		if(params.get("mode").equals("ordercart")) {
+			list = userMapper.OrderCartByUserid(userId);
+			 
+		}else if(params.get("mode").equals("deliverscart")) {
+			list = userMapper.DeliversCartByUserid(userId);
+		}											
+		
 		// 장바구니 담긴 메뉴코드로 메뉴 정보 조회
 		for (CartDTO CartDTO : list) {
 			String menuCode = CartDTO.getMenuCode();
@@ -551,32 +566,70 @@ public class UserController {
 			CartDTO.setMenuimages(mdto.getMenuImages());
 			CartDTO.setMenuprice(mdto.getMenuPrice());
 			int optId = CartDTO.getOptId();
-			// 받은 optId 로 optDTO 만들기
+			
+			// DTO 초기화
 			OrderOptDTO optdto = userMapper.findOrderOpt(optId);
-			CartDTO.setShotCount(optdto.getOptShotCount());
-			CartDTO.setSyrupCount(optdto.getOptSyrupCount());
-			MenuOptCupDTO cupdto = userMapper.getCupInfo(optId);
+			MenuOptCupDTO cupdto = null;
+			MenuOptIceDTO icedto = null;
+			MenuOptShotDTO shotdto = null;
+			MenuOptWhipDTO whipdto = null;
+			MenuOptSyrupDTO syrupdto = null;
+			MenuOptMilkDTO milkdto = null;
+			
+			// 받은 optId 로 optDTO 만들기			
+			if(optdto.getCupNum() != 0) {
+			cupdto = userMapper.getCupInfo(optId);
 			CartDTO.setCupType(cupdto.getCupType());
 			CartDTO.setCupPrice(cupdto.getCupPrice());
-			MenuOptIceDTO icedto = userMapper.getIceInfo(optId);
+			}
+			if(optdto.getIceNum() != 0) {
+			icedto = userMapper.getIceInfo(optId);
 			CartDTO.setIceType(icedto.getIceType());
 			CartDTO.setIcePrice(icedto.getIcePrice());
-			MenuOptShotDTO shotdto = userMapper.getShotInfo(optId);
+			}
+			if(optdto.getShotNum() != 0) {
+			shotdto = userMapper.getShotInfo(optId);
 			CartDTO.setShotPrice(shotdto.getShotPrice());
 			CartDTO.setShotType(shotdto.getShotType());
-			MenuOptWhipDTO whipdto = userMapper.getWhipInfo(optId);
+			CartDTO.setShotCount(optdto.getOptShotCount());
+			}
+			if(optdto.getWhipNum() != 0) {
+			whipdto = userMapper.getWhipInfo(optId);			
 			CartDTO.setWhipPrice(whipdto.getWhipPrice());
 			CartDTO.setWhipType(whipdto.getWhipType());
-			MenuOptSyrupDTO syrupdto = userMapper.getSyrupInfo(optId);
+			}
+			if(optdto.getSyrupNum() != 0) {
+			syrupdto = userMapper.getSyrupInfo(optId);
 			CartDTO.setSyrupType(syrupdto.getSyrupType());
 			CartDTO.setSyrupPrice(syrupdto.getSyrupPrice());
-			MenuOptMilkDTO milkdto = userMapper.getMilkInfo(optId);
+			CartDTO.setSyrupCount(optdto.getOptSyrupCount());
+			}
+			if(optdto.getMilkNum() != 0) {
+			milkdto = userMapper.getMilkInfo(optId);
 			CartDTO.setMilkType(milkdto.getMilkType());
 			CartDTO.setMilkPrice(milkdto.getMilkPrice());
-
-			int oneprice = mdto.getMenuPrice() + cupdto.getCupPrice() + icedto.getIcePrice()
-					+ shotdto.getShotPrice() * optdto.getOptShotCount() + whipdto.getWhipPrice()
-					+ syrupdto.getSyrupPrice() * optdto.getOptSyrupCount() + milkdto.getMilkPrice();
+			}
+						
+			int oneprice = mdto.getMenuPrice(); 
+			if (cupdto != null) {
+			    oneprice += cupdto.getCupPrice();
+			}
+			if (icedto != null) {
+			    oneprice += icedto.getIcePrice();
+			}
+			if (shotdto != null) {
+			    oneprice += shotdto.getShotPrice() * optdto.getOptShotCount();
+			}
+			if (whipdto != null) {
+			    oneprice += whipdto.getWhipPrice();
+			}
+			if (syrupdto != null) {
+			    oneprice += syrupdto.getSyrupPrice() * optdto.getOptSyrupCount();
+			}
+			if (milkdto != null) {
+			    oneprice += milkdto.getMilkPrice();
+			}
+					
 			int totprice = oneprice * CartDTO.getcartCnt();
 			CartDTO.setEachPrice(oneprice);
 			CartDTO.setTotPrice(totprice);
@@ -584,6 +637,31 @@ public class UserController {
 		req.setAttribute("cart", list);
 
 		return "/user/user_cart";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/user_cart2")
+	public int userCart2(HttpSession session, HttpServletRequest req, @RequestParam Map<String, Object> params) {
+		
+		// params에 데이터 담기
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		params.put("userId", userId);
+		int optId = Integer.parseInt((String) params.get("optId"));
+		params.put("optId", optId);
+		int quantity = Integer.parseInt((String) params.get("quantity"));
+		params.put("cartCount", quantity);
+		
+		if(params.get("pickup")== "매장이용") {
+			params.put("cartType", "order");
+		}else if(params.get("pickup")== "To-go") {
+			params.put("cartType", "togo");
+		}else {
+			params.put("cartType", "delivers");
+		}
+		int res = userMapper.insertCart(params);
+					
+		return res;
 	}
 
 	@ResponseBody
@@ -616,7 +694,7 @@ public class UserController {
 					Map<String, Object> params = new HashMap<>();
 					params.put("userId", userId);
 					params.put("cartNum", cartNum);
-
+					
 					int res = userMapper.deleteCart(params);
 					if (res > 0) {
 						// 장바구니 삭제
@@ -633,14 +711,14 @@ public class UserController {
 				}
 			}
 			return resultMap;
-		// 전체 삭제일 경우	
+		// x박스 체크해서 삭제 시
 		}else if("xbox".equals(mode)){
 			for (Integer cartNum : list) {
 			try {
 				Map<String, Object> params = new HashMap<>();
 				params.put("userId", userId);
 				params.put("cartNum", cartNum);
-
+				
 				int res = userMapper.deleteCart(params);
 				if (res > 0) {
 					// 장바구니 삭제
@@ -657,11 +735,17 @@ public class UserController {
 			}			
 		}
 		return resultMap;
-			
+		
+		//전체 삭제시
 		}else {
-
+			
 			try {
-				int res = userMapper.deleteAllCart(userId);
+				int res = 0;
+				if(cartlist.get("mode") == "") {
+					res = userMapper.deleteAllCartOrder(userId);
+				}else if(cartlist.get("mode") == "") {
+					res = userMapper.deleteAllCartDelivers(userId);	
+				}
 				if (res > 0) {
 					// 장바구니 삭제
 					resultMap.put("success", true);
