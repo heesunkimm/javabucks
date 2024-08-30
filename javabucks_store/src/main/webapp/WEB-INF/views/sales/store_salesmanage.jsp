@@ -69,7 +69,7 @@
                         <!-- 페이징 -->
                         <div class="pagination">
                         <c:if test="${totalPageCount > 1}">
-					        <c:if test="${startPage > 1}">
+					      <!--  -->  <c:if test="${startPage > 1}">
 					            <a href="store_sales.do?pageNum=1">처음</a>
 					        </c:if>
 					        
@@ -94,7 +94,7 @@
                 <div id="cate_drink" class="tab-content">
                     <div class="select_list">
                             <label>
-                            <input type="checkbox" name="menu_cate" value="" checked>전체
+                            <input type="checkbox" name="menu_cate" value="B" checked>전체
                         </label>
                         <label>
                             <input type="checkbox" name="menu_cate" value="ES">에스프레소
@@ -144,13 +144,14 @@
                             </tbody>
                             </table>
                         </div>
+                        
                 </div>
                 
                 
                 <div id="cate_disert" class="tab-content">
                         <div class="select_list">
                             <label>
-                            <input type="checkbox" name="disert_cate" value="" checked>전체
+                            <input type="checkbox" name="disert_cate" value="C" checked>전체
                         </label>
                         <label>
                             <input type="checkbox" name="disert_cate" value="CK">케이크
@@ -181,7 +182,7 @@
                 <div id="cate_Md" class="tab-content">
                     <div class="select_list">
                             <label>
-                            <input type="checkbox" name="Md_cate" value="" checked>전체
+                            <input type="checkbox" name="Md_cate" value="M" checked>전체
                         </label>
                         <label>
                             <input type="checkbox" name="Md_cate" value="TB">텀블러
@@ -271,25 +272,18 @@
 	    });
 	}
 
-	function updatePagination(totalPageCount, currentPage) {
+  function updatePagination(totalPageCount, currentPage) {
 	    let pagination = $(".pagination");
 	    pagination.empty();
 
 	    if (totalPageCount > 1) {
-	        if (currentPage > 1) {
-	            pagination.append(`<a href="javascript:searchSalesData(1)">처음</a>`);
-	        }
-
+	        // 현재 페이지를 기준으로 앞뒤로 최대 2개의 페이지 번호를 표시
 	        for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPageCount, currentPage + 2); i++) {
 	            if (i === currentPage) {
-	                pagination.append(`<strong>${i}</strong>`);
+	                pagination.append(`<strong>`+i+`</strong>`);
 	            } else {
-	                pagination.append(`<a href="javascript:searchSalesData(${i})">`+i+`</a>`);
+	                pagination.append(`<a href="javascript:searchSalesData(`+i+`)">`+i+`</a>`);
 	            }
-	        }
-
-	        if (currentPage < totalPageCount) {
-	            pagination.append(`<a href="javascript:searchSalesData(${totalPageCount})">끝</a>`);
 	        }
 	    }
 	}
@@ -357,6 +351,15 @@
 	        // 모든 체크박스 초기화
 	        $('input[type="checkbox"]').prop('checked', false);
 	        
+	     // 탭에 따라 해당하는 "전체" 체크박스 선택
+	        if ($btn === 'cate_drink') {
+	            $('input[name="menu_cate"][value="B"]').prop('checked', true);
+	        } else if ($btn === 'cate_disert') {
+	            $('input[name="disert_cate"][value="C"]').prop('checked', true);
+	        } else if ($btn === 'cate_Md') {
+	            $('input[name="Md_cate"][value="M"]').prop('checked', true);
+	        }
+	        
 	        // 선택된 탭의 컨텐츠 활성화
 	        $('.tab-content').removeClass('s_active');
 	        $('#'+$btn).addClass('s_active');
@@ -410,26 +413,5 @@ $(".tab_btn").each(function() {
     });
 });
 
-function updatePagination(totalPageCount, currentPage) {
-    let pagination = $(".pagination");
-    pagination.empty();
 
-    if (totalPageCount > 1) {
-        if (currentPage > 1) {
-            pagination.append(`<a href="javascript:searchSalesData(1)">처음</a>`);
-        }
-
-        for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPageCount, currentPage + 2); i++) {
-            if (i === currentPage) {
-                pagination.append(`<strong>${i}</strong>`);
-            } else {
-                pagination.append(`<a href="javascript:searchSalesData(${i})">`+i+`</a>`);
-            }
-        }
-
-        if (currentPage < totalPageCount) {
-            pagination.append(`<a href="javascript:searchSalesData(${totalPageCount})">끝</a>`);
-        }
-    }
-}
   </script>

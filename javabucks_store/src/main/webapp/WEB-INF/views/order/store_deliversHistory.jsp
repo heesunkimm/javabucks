@@ -36,9 +36,9 @@
 		                <li class="search_item">
 		                    <div class="search_toolbar">
 		                        <p style="width: 14%;">주문번호</p>
-		                        <p style="width: 50%;">주문내역</p>
-		                        <p style="width: 18%;">주문금액</p>
-		                        <p style="width: 18%;">주문일시</p>
+		                        <p style="width: 46%;">주문내역</p>
+		                        <p style="width: 15%;">주문금액</p>
+		                        <p style="width: 25%;">주문일시</p>
 		                    </div>
 		                    <p class="order_num" style="width: 14%; text-align: center;">${delivers.orderCode}</p>
 		                    <ul class="menu_list" style="width: 46%;">

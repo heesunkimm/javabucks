@@ -12,7 +12,7 @@
         <form name="cart_f" action="addStoreOrder.do" method="post" onsubmit="return validate()">
             <ul class="cart_list">
             	<c:if test="${empty stockCartList}">
-            		장바구니에 담긴 재고 품목이 없습니다.
+            		<li class="noCart">장바구니에 담긴 재고 품목이 없습니다.</li>
             	</c:if>
             	<c:if test="${not empty stockCartList}">
             		<c:set var="sumPrice" value="0" />
@@ -47,8 +47,10 @@
 		                                    <img src="../images/icons/plus.png" alt="" onclick="plusCount(this)">
 		                                </div>
 		                            </div>
+		                            <div class="btn_box">
 		                            <button type="button" onclick="quantityUpdate(this)">수량 변경</button>
 		                            <button type="button" onclick="deleteCart(this)">품목 삭제</button>
+		                            </div>
 		                        </div>
 		                        <dl>
 		                            <dt>금액</dt>

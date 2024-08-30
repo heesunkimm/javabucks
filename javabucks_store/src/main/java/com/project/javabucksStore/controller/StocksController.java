@@ -277,7 +277,6 @@ public class StocksController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String tommorow = formatter.format(calendar.getTime());
         
-        
         // 주소꺼내기
         String address = dto.getBucksLocation();
         
@@ -363,7 +362,7 @@ public class StocksController {
 			int updateCartStatus = mapper.updateCartStatus(bucksId, stockCartNum.get(i));
 		}		
 		
-		return "/sales/store_baljooManage";
+		return "redirect:/store_baljooManage.do";
 	}
 	
 }

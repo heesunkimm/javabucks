@@ -65,11 +65,10 @@ public class SalesMapper {
 		return sqlSession.selectList("getFilteredSalesList", countParams);
 	}
 	
-//	//
-//	public int getselectCateCount(String bucksId){
-//		return sqlSession.selectOne("getselectCateCount", bucksId);
-//	}
-//	
+	//
+	public int getselectCateCount(String bucksId){
+		return sqlSession.selectOne("getselectCateCount", bucksId);
+	}
 	
 	//
 	public List<PayhistoryDTO> getselectCateList(Map<String, Object> searchParams){

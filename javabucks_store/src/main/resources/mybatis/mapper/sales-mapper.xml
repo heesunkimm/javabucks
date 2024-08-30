@@ -104,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		
 		<select id="getselectCateList" parameterType="map" resultType="PayhistoryDTO">
-		    SELECT * 
+		    SELECT *
 		    FROM (
 		        SELECT 
 		            p.*, 
@@ -114,7 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
 		        WHERE p.bucksId = #{bucksId}
 		    )
-		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		    
 		</select>
 		
 		

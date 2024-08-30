@@ -67,7 +67,7 @@
                                                     ${item.STOCKLISTNAME} : ${item.quantity}<br/>
                                                 </c:forEach>
                                             </td>
-                                            <td>${bal.baljooPrice}</td>
+                                            <td><fmt:formatNumber value="${bal.baljooPrice}" type="number" groupingUsed="true" /></td>
                                             <td>${bal.baljooStatus}</td>
                                            <!--  <td><a href="javascript:;">취소</a></td> -->
                                         </tr>
