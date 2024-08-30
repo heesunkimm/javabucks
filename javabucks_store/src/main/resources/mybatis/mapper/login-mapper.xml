@@ -10,6 +10,8 @@
 	
 	<select id="emailForId" parameterType="java.util.Map" resultType="BucksDTO">
 		select * from javabucks_bucks where bucksEmail1 = #{bucksEmail1} and bucksEmail2 = #{bucksEmail2}
+	</select>
+	
 	<select id="findStoreByEmail" parameterType="java.util.Map" resultType="BucksDTO">
 		select bucksEmail1, bucksEmail2, bucksPasswd from javabucks_bucks
 		where bucksEmail1 = #{bucksEmail1} 
