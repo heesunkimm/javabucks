@@ -30,14 +30,16 @@
                 <ul class="stocks_list">
                 	<c:forEach var="bevStocks" items="${bevStocksList}">
 	                    <li class="stocks_item">
-	                        <div class="img_box">
 	                        	<c:if test="${bevStocks.stockListStatus eq 'Y'}">
+		                        <div class="img_box">
 	                        		<img src="/images/stocks_image/${bevStocks.stockListImage}">
+	                        	</div>
 	                        	</c:if>
 	                        	<c:if test="${bevStocks.stockListStatus eq 'N'}">
-	                        		주문막힘
-	                        	</c:if>	                            
-	                        </div>
+                        		<div class="img_box order_dimm">
+	                        		<img src="/images/stocks_image/${bevStocks.stockListImage}">
+	                        	</div>
+	                        	</c:if>
 	                        <div class="txt_box">
 	                            <dl>
 	                                <dt>품목명</dt>
@@ -81,7 +83,7 @@
 				<div class="pagination pagination_y">
 				    <c:if test="${bev_startPage > bev_pageBlock}"> 
 				        <a class="page_btn prev_btn" href="stocks.do?pageNum=${bev_startPage-3}">
-				        이전
+			        	<img src="../../images/icons/arrow.png" alt="">
 				        </a>
 				    </c:if>
 				    
@@ -100,7 +102,7 @@
 				    
 				    <c:if test="${bev_pageCount > bev_endPage}">
 				        <a class="page_btn next_btn" href="stocks.do?pageNum=${bev_startPage+3}">
-				        다음
+			        	<img src="../../images/icons/arrow.png" alt="">
 				        </a>
 				    </c:if>
 				</div>    
@@ -163,7 +165,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${foo_startPage > foo_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?foo_pageNum=${foo_startPage-3}">
-					        이전
+				        	<img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -182,7 +184,7 @@
 					    
 					    <c:if test="${foo_pageCount > foo_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?foo_pageNum=${foo_startPage+3}">
-					        다음
+				        	<img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -246,7 +248,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${cup_startPage > cup_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?cup_pageNum=${cup_startPage-3}">
-					        이전
+				        	<img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -265,7 +267,7 @@
 					    
 					    <c:if test="${cup_pageCount > cup_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?cup_pageNum=${cup_startPage+3}">
-					        다음
+				        	<img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -329,7 +331,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${syr_startPage > syr_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?syr_pageNum=${syr_startPage-3}">
-					        이전
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -348,7 +350,7 @@
 					    
 					    <c:if test="${syr_pageCount > syr_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?syr_pageNum=${syr_startPage+3}">
-					        다음
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -412,7 +414,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${whi_startPage > whi_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?whi_pageNum=${whi_startPage-3}">
-					        이전
+				        	<img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -431,7 +433,7 @@
 					    
 					    <c:if test="${whi_pageCount > whi_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?whi_pageNum=${whi_startPage+3}">
-					        다음
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -495,7 +497,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${mil_startPage > mil_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?mil_pageNum=${mil_startPage-3}">
-					        이전
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -514,7 +516,7 @@
 					    
 					    <c:if test="${mil_pageCount > mil_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?mil_pageNum=${mil_startPage+3}">
-					        다음
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -578,7 +580,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${tum_startPage > tum_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?tum_pageNum=${tum_startPage-3}">
-					        이전
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -597,7 +599,7 @@
 					    
 					    <c:if test="${tum_pageCount > tum_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?tum_pageNum=${tum_startPage+3}">
-					        다음
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
@@ -661,7 +663,7 @@
 					<div class="pagination pagination_y">
 					    <c:if test="${won_startPage > won_pageBlock}"> 
 					        <a class="page_btn prev_btn" href="stocks.do?won_pageNum=${won_startPage-3}">
-					        이전
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					    
@@ -680,7 +682,7 @@
 					    
 					    <c:if test="${won_pageCount > won_endPage}">
 					        <a class="page_btn next_btn" href="stocks.do?won_pageNum=${won_startPage+3}">
-					        다음
+					        <img src="../../images/icons/arrow.png" alt="">
 					        </a>
 					    </c:if>
 					</div>    
