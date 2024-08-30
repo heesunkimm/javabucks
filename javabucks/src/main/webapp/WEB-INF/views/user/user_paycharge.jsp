@@ -124,6 +124,7 @@
                     },
                     error: function(xhr, status, error) {
                         console.error('처리 중 오류가 발생했습니다:', error);
+                        alert('처리 중 오류가 발생했습니다. :', error);
                     }
                 });
                 } else {

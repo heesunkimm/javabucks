@@ -15,8 +15,8 @@ public class LoginMapper {
 	private SqlSession sqlSession;
 	
 	// 회원가입 insert 
-	public int insertUser(UserDTO dto){
-		return sqlSession.insert("insertUser",dto);
+	public int insertUser(Map<String,String> params){
+		return sqlSession.insert("insertUser", params);
 	}
 	 
 	// 아이디 중복체크 
@@ -24,33 +24,45 @@ public class LoginMapper {
 		return sqlSession.selectOne("checkId", id);
 	}
 	
+	// 이메일 중복체크 
+	public int checkEmail(Map<String,String> params) {
+		return sqlSession.selectOne("checkEmail", params);
+	}
+	
 	// 회원가입 이메일인증 - 이메일이 이미 존재한지 확인
 	public UserDTO findUserByEmail(Map<String,String> params) {
-		return sqlSession.selectOne("findUserByEmail",params);
+		return sqlSession.selectOne("findUserByEmail", params);
+	}
+	
+	// 비밀번호 찾기 이메일 인증 시 회원있는지 확인
+	public UserDTO findUserByIDEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findUserByIDEmail", params);
 	}
 	
 	// 로그인하기 위해 아이디가 있는지 확인  
 	public UserDTO findUserById(String userId) {
-		// System.out.println("???"); 찍힌다 
 		return sqlSession.selectOne("findUserById",userId);
 	}
 	
-	// 아이디찾기 이메일인증 
-//	public UserDTO emailForId(Map<String, String> params) {
-//		return sqlSession.selectOne("emailForId",params);
-//	} 
-	
-	// 아이디 찾기 
-	public UserDTO findUserById2(Map<String, String> paramMap) {
-		return sqlSession.selectOne("findUserById2",paramMap);
+	// 아이디 찾기
+	public String findIdbyEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findIdbyEmail", params);
 	}
- 
-	// 개인정보 수정 
-	public int updateInfo(UserDTO dto) {
-		return sqlSession.update("updateInfo", dto);
+	
+	// 비밀번호 찾기
+	public String findPwbyEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findPwbyEmail", params);
+	}
+	
+	// 유저 정보 불러오기
+	public UserDTO getUserInfo(String userId) {
+		return sqlSession.selectOne("getUserInfo", userId);
 	}
 		
-	// 탈퇴 
+	// 정보수정
+	public int updateUserInfo(Map<String, Object> params) {
+		return sqlSession.selectOne("updateUserInfo", params);
+	}
 	
 	
 }

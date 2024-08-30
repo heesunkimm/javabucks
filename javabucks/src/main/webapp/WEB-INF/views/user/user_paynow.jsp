@@ -328,73 +328,124 @@
 
 		
 		function requestPay() {
-            IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
-            let chargeAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
-            let payhistoryPayType = $("input[name='payhistoryPayType']").val();
-            let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
-            let payUser = '${inUser.userId}';
-            let orderName = "${mdto.menuName} ${quantity}개";
-            
-            let bucksId = "${bdto.bucksId}";
-            let menuPrice = "${(mdto.menuPrice) * quantity}";
-            let optPrice = "${optPrice*quantity}";
-            
-            
-            // 주문 데이터
-            let orders = [
-            	{ menuCode: '${mdto.menuCode}', optId: ${optId}, quantity: ${quantity} }
-            ];
-         	// JSON 배열 생성 및 문자열 변환
-            let orderJson = orders.map(order => `${mdto.menuCode}:${optId}:${quantity}`);
-            let orderList = JSON.stringify(orderJson);
-        	
-            // 결제 요청
-            IMP.request_pay({
-                pg: 'kakaopay.TC0ONETIME',
-                pay_method: 'card',
-                merchant_uid: 'JAVABUCKS_' + new Date().getTime(), // 주문번호
-                name: orderList, // 결제할 orderList
-                amount: chargeAmount, // 결제할 금액
-                buyer_name: payUser // 구매자 이름
-            }, function (rsp) {
-                if (rsp.success) {
-                    // 결제 성공 시 서버에 데이터 전송
-                     $.ajax({
-                    url: 'orderPayCheck.ajax',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    data: JSON.stringify({
-                        imp_uid: rsp.imp_uid,
-                        merchant_uid: rsp.merchant_uid,
-                        paid_amount: rsp.paid_amount,
-                        userId: payUser,
-                        bucksId: bucksId,
-                        orderPrice: chargeAmount,
-                        payhistoryPrice: chargeAmount,
-                        payhistoryPayType: payhistoryPayType,
-                        payhistoryPayWay: payhistoryPayWay,
-                        orderType: payhistoryPayType,
-                        orderList: orderList, 
-                        menuPrice: menuPrice,
-                        optPrice: optPrice
-                    }),
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert('결제가 성공적으로 완료되었습니다.');
-                        } else {
-                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('처리 중 오류가 발생했습니다:', error);
-                    }
-                });
-                } else {
-                    // 결제 실패 시 처리
-                    alert(rsp.error_msg);
-                }
-            });
+			let payway = $("input[name='payhistoryPayWay']").val();
+			console.log(payway);
+			IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
+	        let chargeAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
+	        let payhistoryPayType = $("input[name='payhistoryPayType']").val();
+	        let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
+	        let payUser = '${inUser.userId}';
+	        let orderName = "${mdto.menuName} ${quantity}개";
+	            
+	        let bucksId = "${bdto.bucksId}";
+	        let menuPrice = "${(mdto.menuPrice) * quantity}";
+	        let optPrice = "${optPrice*quantity}";
+	            
+	            
+	        // 주문 데이터
+	        let orders = [
+	        	{ menuCode: '${mdto.menuCode}', optId: ${optId}, quantity: ${quantity} }
+	        ];
+	        // JSON 배열 생성 및 문자열 변환
+	        let orderJson = orders.map(order => `${mdto.menuCode}:${optId}:${quantity}`);
+	        let orderList = JSON.stringify(orderJson);
+	        	
+	        // 결제 요청
+			if (payway === '카카오페이'){
+	            IMP.request_pay({
+	                pg: 'kakaopay.TC0ONETIME',
+	                pay_method: 'card',
+	                merchant_uid: 'JAVABUCKS_' + new Date().getTime(), // 주문번호
+	                name: orderName, // 결제할 orderList
+	                amount: chargeAmount, // 결제할 금액
+	                buyer_name: payUser // 구매자 이름
+	            }, function (rsp) {
+	                if (rsp.success) {
+	                    // 결제 성공 시 서버에 데이터 전송
+	                     $.ajax({
+	                    url: 'orderPayCheck.ajax',
+	                    method: 'POST',
+	                    contentType: 'application/json',
+	                    dataType: 'json',
+	                    data: JSON.stringify({
+	                        imp_uid: rsp.imp_uid,
+	                        merchant_uid: rsp.merchant_uid,
+	                        paid_amount: rsp.paid_amount,
+	                        userId: payUser,
+	                        bucksId: bucksId,
+	                        orderPrice: chargeAmount,
+	                        payhistoryPrice: chargeAmount,
+	                        payhistoryPayType: payhistoryPayType,
+	                        payhistoryPayWay: payhistoryPayWay,
+	                        orderType: payhistoryPayType,
+	                        orderList: orderList, 
+	                        menuPrice: menuPrice,
+	                        optPrice: optPrice
+	                    }),
+	                    success: function(response) {
+	                        if (response.status === 'success') {
+	                            alert('결제가 성공적으로 완료되었습니다.');
+	                        } else {
+	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                            console.log(data);
+	                        }
+	                    },
+	                    error: function(xhr, status, error) {
+	                        console.error('처리 중 오류가 발생했습니다:', error);
+	                        console.log(data);
+	                    }
+	                });
+	                } else {
+	                    // 결제 실패 시 처리
+	                    alert(rsp.error_msg);
+	                }
+	            });
+			} else if (payway === '자바벅스카드'){
+				let cardRegNum = $("input[name='cardRegNum']").val();
+				
+				if (!cardRegNum){
+					alert("카드를 선택해주세요");
+					return;
+				}
+				
+				
+				// 자바벅스카드로 결제
+				 $.ajax({
+	                    url: 'orderPayBucksCard.ajax',
+	                    method: 'POST',
+	                    contentType: 'application/json',
+	                    data: JSON.stringify({
+	                    	cardRegNum: cardRegNum,
+	                        userId: payUser,
+	                        bucksId: bucksId,
+	                        orderPrice: chargeAmount,
+	                        payhistoryPrice: chargeAmount,
+	                        payhistoryPayType: payhistoryPayType,
+	                        payhistoryPayWay: payhistoryPayWay,
+	                        orderType: payhistoryPayType,
+	                        orderList: orderList, 
+	                        menuPrice: menuPrice,
+	                        optPrice: optPrice
+	                    }),
+	                    success: function(res) {
+							console.log(res)
+	                    	if (res === 'PASS') {
+	                        	alert("잔액이 부족합니다. 충전 후 다시 이용해 주세요");
+	                        } else if (res === 'OK') {
+		                        alert("결제가 완료 되었습니다.");
+		                        window.location.href="user_index";
+	                        } else {
+	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                        }
+	                    },
+	                    error: function(error) {
+	                        console.error('처리 중 오류가 발생했습니다:', error.message || error);
+	                    }
+	                });
+				
+			} else {
+				alert("결제방식을 선택해주세요");
+			}
         }
 </script>	
 	

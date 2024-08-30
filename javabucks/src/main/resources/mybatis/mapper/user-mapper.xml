@@ -52,6 +52,12 @@
 		Update javabucks_card SET cardPrice = cardPrice + #{payhistoryPrice}
 		WHERE cardRegNum = #{cardRegNum}
 	</update>
+	
+	<!-- 카드사용 금액차감 -->
+	<update id="minusCardPrice"  parameterType="java.util.Map">
+		Update javabucks_card SET cardPrice = cardPrice - #{payhistoryPrice}
+		WHERE cardRegNum = #{cardRegNum}
+	</update>
  	
  	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
  	<select id="listGetAlarmById" resultType="AlarmDTO" parameterType="String">
@@ -206,24 +212,38 @@
 	    WHERE orderCode LIKE #{pickData} || '%'
  	</select>
  	
- 	<!-- 페이히스토리 주문결제 -->
+ 	<!-- 페이히스토리 주문결제 입력 -->
  	<insert id="payhistoryOrder" parameterType="PayhistoryDTO">
 		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
 		VALUES (seq_payhistoryNum.nextval, #{userId}, 
 		<if test="cardRegNum != null and cardRegNum != ''">
-            #{cardRegNum}
+            #{cardRegNum},
         </if>
         <if test="cardRegNum == null or cardRegNum == ''">
-            NULL
-        </if>,
-        , #{bucksId}, #{orderCode},
+            NULL,
+        </if>
+        	#{bucksId}, #{orderCode},
         <if test="cpnListNum != null and cpnListNum != ''">
-            #{cpnListNum}
+            #{cpnListNum},
         </if>
         <if test="cpnListNum == null or cpnListNum == ''">
-            NULL
-        </if>,
+            NULL,
+        </if>
         sysdate, #{payhistoryPrice}, #{payhistoryPayType}, #{payhistoryPayWay})
+ 	</insert>
+ 	
+ 	<!-- Order 주문내역 입력 -->
+ 	<insert id="orderInsert" parameterType="OrderDTO">
+ 		INSERT INTO javabucks_order 
+ 			(orderCode, userId, bucksId, orderList, menuPrice, optPrice, orderPrice, orderDate, orderType) 
+ 		VALUES 
+ 			(#{orderCode}, #{userId}, #{bucksId}, #{orderList}, #{menuPrice}, #{optPrice}, #{orderPrice}, SYSDATE, #{orderType})
+ 	</insert>
+ 	
+ 	<!-- 주문 알람 인서트 -->
+ 	<insert id="insertOrderAlarm" parameterType="AlarmDTO">
+ 		INSERT INTO javabucks_alarm (alarmNum, userId, alarmCate, alarmCont) 
+ 		VALUES (seq_alarmnum.nextval, #{userId}, #{alarmCate}, #{alarmCont})
  	</insert>
  	
  	<!-- ================================================================================ -->

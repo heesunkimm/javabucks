@@ -99,65 +99,71 @@
             </div>
             </form>
         </div>
+        
+        
         <div id="findbyid" class="popup_box" style="display: none;">
             <p class="popup_title">아이디 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbyid"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="emailForId" method="POST">
+            <form name="f" action="findIdbyEmail.do" method="POST" onsubmit="return check()">
                 <div class="input_box">
                     <div class="email_box">
                         <label>
-                            <input type="text" name="userEmail1" value="" placeholder="이메일입력" required>
+                            <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-                            <select name="userEmail2">
+                            <select name="userEmail2" class="userEmail2">
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
                                 <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
+                        <button type="button" class="confirm_btn" onclick="sendEmail()">인증번호 발송</button>
                     </div>
                 </div>
-                <div class="confirm_box">
+                <div class="confirm_box" style="display: none">
                     <label>
-                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
+                        <input type="text" class="code" name="code" value="" placeholder="인증번호 입력">
                         <span id="timerMin">3</span>:<span id="timerSec">00</span>
                     </label>
-                    <button class="confirm_btn" type="button" onclick="emailForId()">인증번호 발송</button>
+                    <button type="button" onclick="codeCheck()">인증확인</button>
                 </div>
                 <div class="pbtn_box">
-                    <button class="submit_btn" type="submit" onclick="LoginPage(event)">확인</button>
+                    <button class="submit_btn" type="submit">확인</button>
                 </div>
             </form>
         </div>
+        
+        
         <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 찾기</p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
-            <form name="f" action="emailForPw" method="POST">
+            <form name="f" action="findPwbyEmail.do" method="POST" onsubmit="return checkPw()">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="findbypw_id" value="" placeholder="아이디 입력" required>
+                        <input type="text" class="userInputId" name="findbypw_id" value="" placeholder="아이디 입력" required>
                     </label>
                     <div class="email_box">
                         <label>
-                            <input type="text" name="findbypw_email1" value="" placeholder="이메일입력" required>
+                            <input type="text" class="userInputEmail1" name="findbypw_email1" value="" placeholder="이메일입력" required>
                         </label>
                         @
                         <label>
-                            <select name="findbypw_email2">
+                            <select name="findbypw_email2" class="userInputEmail2">
                                 <option value="naver.com">naver.com</option>
                                 <option value="nate.com">nate.com</option>
-                                <option value="gamil.com">gmail.com</option>
+                                <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
+                        <button class="confirm_btn" type="button" onclick="sendEmailPw()">인증번호 발송</button>
                     </div>
                 </div>
                 <div class="confirm_box">
                     <label>
-                        <input type="text" name="" value="" placeholder="인증번호 입력" required>
-                        <span id="timerMin">3</span>:<span id="timerSec">00</span>
+                        <input type="text" class="codePw" name="code" value="" placeholder="인증번호 입력">
+                        <span id="timerMinPw">3</span>:<span id="timerSecPw">00</span>
                     </label>
-                    <button class="confirm_btn" type="button" onclick="emailForPw()">인증번호 발송</button>
+                    <button type="button" onclick="codeCheckPw()">인증확인</button>
                 </div>
                 <div class="pbtn_box">
                     <button class="submit_btn" type="submit">확인</button>
@@ -170,47 +176,57 @@
 </body>
 
 <script type="text/javascript">
+	let sck = false; // 이메일 인증번호 발송
+	let cck = false; // 이메일 인증번호 확인
+	let timeout = false;
+	let timer; // 타이머 변수
+	let timeRemaining = 180; // 3분 (180초)
 	
-	// 3분 타이머 
-	function startTimer(){
-	let timerMinId = document.getElementById('timerMin');
-	let timerSecId = document.getElementById('timerSec');
+	// 아이디 찾기 타이머 시작
+	function startTimer() {
+	    const timerMinId = document.getElementById('timerMin');
+	    const timerSecId = document.getElementById('timerSec');
 	
-	timer = setInterval(()=>{
-		if(timeRemaining<=0){
-			clearInterval(timer);
-			alert("인증 시간이 초과되었습니다.");
-			return;
-		}
-		timeRemaining--;
-		
-		let minutes = Math.floor(timeRemaining / 60);
-		let seconds = timeRemaining % 60;
-		
-		timerMinId.textContent = minutes;
-		timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
-	},1000);
-}
-	// 아이디 찾기 
-	function emailForId() {
-	    let email1 = $('input[name="userEmail1"]').val();
-	    let email2 = $('select[name="userEmail2"]').val();
- 
-	    timeRemaining = 180;
-	    startTimer();
-
-	    // 이메일 입력이 안 되어 있으면 focus
+	    timer = setInterval(() => {
+	        if (timeRemaining <= 0) {
+	            clearInterval(timer);
+	            alert("인증 시간이 초과되었습니다.");
+	            timeout = true;
+	            return;
+	        }
+	        timeRemaining--;
+	        const minutes = Math.floor(timeRemaining / 60);
+	        const seconds = timeRemaining % 60;
+	
+	        timerMinId.textContent = minutes;
+	        timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+	    }, 1000);
+	}
+	
+	// 아이디 찾기 타이머 멈춤
+	function stopTimer() {
+	    if (timer) {
+	        clearInterval(timer);
+	        timer = null;
+	    }
+	}
+	
+	// 아이디찾기 이메일 보내기
+	function sendEmail() {
+	    const email1 = $('.userEmail1').val();
+	    const email2 = $('.userEmail2').val();
+	
 	    if (email1 === "") {
 	        alert("이메일 주소를 입력해주세요");
-	        return $('input[name="userEmail1"]').focus();
+	        return $('.userEmail1').focus();
 	    }
-	    if (email2 === "") {
-	        
-	    }
-
+	    document.querySelector('.confirm_box').style.display = 'block';
+	    timeRemaining = 180;
+	    startTimer();
+	
 	    $.ajax({
-	        url: 'emailForId',
-	        type: 'POST',
+	        url: "findIdSendEmail.ajax",
+	        type: "POST",
 	        data: {
 	            "userEmail1": email1,
 	            "userEmail2": email2
@@ -218,10 +234,14 @@
 	        success: function(res) {
 	            if (res === 'OK') {
 	                alert("인증메일을 발송하였습니다.");
-	                console.log("인증메일 발송완료");
+	                const button = document.querySelector("button[onclick='sendEmail()']");
+	                if (button) {
+	                    button.textContent = "인증번호 재발송";
+	                }
+	                sck = true;
 	            } else {
 	                alert("이메일 전송에 실패하였습니다.");
-	                console.log("email1: " + email1 + ", email2: " + email2);
+	                document.querySelector('.confirm_box').style.display = 'none';
 	            }
 	        },
 	        error: function(err) {
@@ -231,45 +251,119 @@
 	    });
 	}
 	
-	// 비밀번호 찾기
-	function emailForPw(){
-		 
-		let id = $('input[name="findbypw_id"]').val().trim();
-		let email1 = $('input[name="findbypw_email1"]').val().trim();
-	    let email2 = $('select[name="findbypw_email2"]').val().trim();
+	// 아이디 찾기 인증번호 확인
+	function codeCheck() {
+	    const code = $('.code').val();
+	    if(!timeout){
+	    	$.ajax({
+	            url: 'codeCheck.ajax',
+	            type: 'POST',
+	            data: { "code": code },
+	            success: function (res) {
+	                if (res === 'OK') {
+	                    alert("인증 성공");
+	                    stopTimer();
+	                    const button = document.querySelector("button[onclick='codeCheck()']");
+	                    if (button) {
+	                        button.textContent = "인증완료";
+	                        button.style.backgroundColor = "grey";
+	                        button.disabled = true;
+	                    }
+	                    cck = true;
+	                } else {
+	                    alert("인증 실패! 다시 입력해주세요.");
+	                    $(".code").val("");
+	                    $(".code").focus();
+	                }
+	            },
+	            error: function (err) {
+	                console.error(err);
+	                mck = false;
+	            }
+	        });
+	    } else{
+	    	alert("인증시간이 초과되어 재인증이 필요합니다.")
+	    }
 	    
-	    alert(id)
-	    alert(email1)
-	    alert(email2)
+	}
+	
+	// 아이디 찾기 최종 체크
+	function check(){
+		console.log(sck);
+		console.log(cck);
+		
+		 if (!sck) {
+		     alert("이메일 인증번호를 발송하여 확인해주세요.");
+		     return false;
+		 }
+		 const confirmBoxVisible = $(".confirm_box").is(':visible');
+		 if (confirmBoxVisible && !cck) {
+		     alert("발송된 인증번호를 입력하고 인증확인 해주세요.");
+		     return false;
+		 }
+	 return true;
+	}
+	
+	// 비밀번호 찾기 타이머
+	function startTimerPw() {
+	    const timerMinId = document.getElementById('timerMinPw');
+	    const timerSecId = document.getElementById('timerSecPw');
+	
+	    timer = setInterval(() => {
+	        if (timeRemaining <= 0) {
+	            clearInterval(timer);
+	            alert("인증 시간이 초과되었습니다.");
+	            timeout = true;
+	            return;
+	        }
+	        timeRemaining--;
+	        const minutes = Math.floor(timeRemaining / 60);
+	        const seconds = timeRemaining % 60;
+	
+	        timerMinId.textContent = minutes;
+	        timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+	    }, 1000);
+	}
+	
+	// 비밀번호 찾기 메일 발송
+	function sendEmailPw() {
+		const inputId = $('.userInputId').val();
+	    const email1 = $('.userInputEmail1').val();
+	    const email2 = $('.userInputEmail2').val();
+		
+	    if(inputId === ""){
+	    	alert("아이디를 입력해주세요");
+	    	return $('.inputId').focus();
+	    }
 	    
-	    timeRemaining = 180;
-	    startTimer();
-	    
-	 // 이메일 입력이 안 되어 있으면 focus
 	    if (email1 === "") {
 	        alert("이메일 주소를 입력해주세요");
-	        return $('input[name="findbypw_email1"]').focus();
+	        return $('.userEmail1').focus();
 	    }
-	    if (email2 === "") {
-	        
-	    }
-	    console.log("아이디:"+id);
-	    
+		
+	    document.querySelector('.confirm_box').style.display = 'block';
+	    timeRemaining = 180;
+	    startTimerPw();
+	
 	    $.ajax({
-	        url: 'emailForPw',
-	        type: 'POST',
+	        url: "findPwSendEmail.ajax",
+	        type: "POST",
 	        data: {
-	        	"findbypw_id" : id,
-	            "findbypw_email1": email1,
-	            "findbypw_email2": email2
+	        	"userId": inputId,
+	            "userEmail1": email1,
+	            "userEmail2": email2
 	        },
 	        success: function(res) {
 	            if (res === 'OK') {
 	                alert("인증메일을 발송하였습니다.");
-	                console.log("인증메일 발송완료");
+	                const button = document.querySelector("button[onclick='sendEmailPw()']");
+	                if (button) {
+	                    button.textContent = "인증번호 재발송";
+	                }
+	                sck = true;
 	            } else {
-	                alert("이메일 전송에 실패하였습니다.");
-	                 
+	                alert("해당 이메일로 등록된 계정정보가 없습니다.");
+	                document.querySelector('.confirm_box').style.display = 'none';
 	            }
 	        },
 	        error: function(err) {
@@ -277,33 +371,58 @@
 	            alert("서버 요청 실패! 네트워크 상태를 확인해주세요.");
 	        }
 	    });
-	     
 	}
 	
-	
-	
-	// 확인 버튼을 누를때 발생하는 이벤트 처리 
-	function LoginPage(event){
-		
-		// 기본 폼 제출 동작을 막음
-		if(event){
-			event.preventDefault(); // 기본동작취소 // preventDefault : 주로 이벤트 핸들러 내에서 사용되어 특정 이벤트가 발생할 때 브라우저의 기본 동작을 막고, 개발자가 원하는 커스텀 동작을 수행
-		}
-		
-		let email1 = $('input[name="userEmail1"]').val();
-		
-	    // 입력 필드 검증
-	    if (email1.trim() === "") {
-	        alert("아이디를 입력해 주세요.");
-	        $('input[name="userEmail1"]').focus(); // 입력 필드에 포커스 이동
-	        return; // 함수 종료
+	// 비밀번호 찾기 인증번호 확인
+	function codeCheckPw() {
+	    const code = $('.codePw').val();
+	    if(!timeout){
+	    	$.ajax({
+	            url: 'codeCheck.ajax',
+	            type: 'POST',
+	            data: { "code": code },
+	            success: function (res) {
+	                if (res === 'OK') {
+	                    alert("인증 성공");
+	                    stopTimer();
+	                    const button = document.querySelector("button[onclick='codeCheckPw()']");
+	                    if (button) {
+	                        button.textContent = "인증완료";
+	                        button.style.backgroundColor = "grey";
+	                        button.disabled = true;
+	                    }
+	                    cck = true;
+	                } else {
+	                    alert("인증 실패! 다시 입력해주세요.");
+	                    $(".codePw").val("");
+	                    $(".codePw").focus();
+	                }
+	            },
+	            error: function (err) {
+	                console.error(err);
+	                mck = false;
+	            }
+	        });
+	    } else{
+	    	alert("인증시간이 초과되어 재인증이 필요합니다.")
 	    }
-	    
-	    // 유효성 검사 완료되면 login 페이지로 이동
-		window.location.href = 'user_login';
-	    
-	    // 인증번호 일치해야 아이디 알려주기 
-		alert("찾으시는 아이디는 "+ email1 + "입니다.");
+	}
+	
+	// 비밀번호 찾기 최종 체크
+	function checkPw(){
+		console.log(sck);
+		console.log(cck);
+		
+		 if (!sck) {
+		     alert("이메일 인증번호를 발송하여 확인해주세요.");
+		     return false;
+		 }
+		 const confirmBoxVisible = $(".confirm_box").is(':visible');
+		 if (confirmBoxVisible && !cck) {
+		     alert("발송된 인증번호를 입력하고 인증확인 해주세요.");
+		     return false;
+		 }
+		 return true;
 	}
  
 </script>
