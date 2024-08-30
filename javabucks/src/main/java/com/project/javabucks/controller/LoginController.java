@@ -5,21 +5,17 @@ import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.project.javabucks.dto.UserDTO;
-import com.project.javabucks.mapper.LoginMapper; 
+import com.project.javabucks.mapper.LoginMapper;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
@@ -30,14 +26,12 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class LoginController {
 	
-	
 	@Autowired
 	LoginMapper loginMapper;
 	
 	@Autowired
 	JavaMailSender mailSender;
 	
-  
 	// 로그인 창
 	@RequestMapping(value= {"/", "/user_login"})
 	public String index() {
@@ -51,24 +45,44 @@ public class LoginController {
 		return req.getSession() != null && req.getSession().getAttribute("inUser") != null;
 	}
 	
-	// 회원가입 ---------------------------------
-	// 회원가입창으로 이동
+	// 회원가입 페이지 이동
 	@GetMapping("/user_join")
 	public String join() {
 		return "userLogin/user_join";
 	}
 	
-	
-	// 회원가입하고나면 메인으로 이동
-	@PostMapping("/user_join")
-	public String join_form(HttpServletRequest req, @ModelAttribute UserDTO dto) {
-		// System.out.println("req:"+req); 
-//		System.out.println("dto.id:"+dto.getUserId());
-//		System.out.println("dto.gradecode :"+dto.getGradeCode()); 
+	// 회원가입 처리
+	@PostMapping("/userRegister.do")
+	public String join_form(HttpServletRequest req, UserDTO dto) {
+		String userId = String.valueOf(dto.getUserId());
+		String passWd = String.valueOf(dto.getUserPasswd());
+		String userName = String.valueOf(dto.getUserName());
+		String userNickName = String.valueOf(dto.getUserId());
+		String gender = String.valueOf(dto.getUserGender());
+		String birth = String.valueOf(dto.getUserBirth());
+		String email1 = String.valueOf(dto.getUserEmail1());
+		String email2 = String.valueOf(dto.getUserEmail2());
+		String tel1 = String.valueOf(dto.getUserTel1());
+		String tel2 = String.valueOf(dto.getUserTel2());
+		String tel3 = String.valueOf(dto.getUserTel3());
+		String grade = String.valueOf(dto.getGradeCode());
 		
-		int res =  loginMapper.insertUser(dto);
-//		System.out.println("res:"+res); // 1 
+		Map<String, String> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("passWd", passWd);
+		params.put("userName", userName);
+		params.put("userNickName", userNickName);
+		params.put("gender", gender);
+		params.put("birth", birth);
+		params.put("email1", email1);
+		params.put("email2", email2);
+		params.put("tel1", tel1);
+		params.put("tel2", tel2);
+		params.put("tel3", tel3);
+		params.put("grade", grade);
+
 		
+		int res =  loginMapper.insertUser(params);
 		 
 		if(res>0) {
 			req.setAttribute("msg","회원가입성공! 로그인 페이지로 이동합니다.");
@@ -83,8 +97,8 @@ public class LoginController {
 	
 	// 아이디 중복 확인
 	 @ResponseBody
-	 @RequestMapping(value = "/idCheck")
-	 public String checkId(@RequestParam("id") String id) {
+	 @PostMapping("/idCheck.ajax")
+	 public String checkId(String id) {
 		 int res = loginMapper.checkId(id);
 		 if(res == 0) {
 			 return "OK";
@@ -92,30 +106,43 @@ public class LoginController {
 			 return "FAIL";
 		 }
 	 }
-	  
-//	 이메일 인증 
+	 
+	// 이메일 중복 확인
 	 @ResponseBody
-	 @PostMapping("/sendEmail")
-	 public String sendEmail(@RequestParam Map<String,String> params, HttpServletRequest req, HttpServletResponse resp, HttpSession session) throws Exception {
+	 @PostMapping("/mailCheck.ajax")
+	 public String checkId(String email1, String email2) {
+		 
+		 Map<String, String> params = new HashMap<>();
+		 params.put("email1", email1);
+		 params.put("email2", email2);
+		 
+		 int res = loginMapper.checkEmail(params);
+		 if(res == 0) {
+			 return "OK";
+		 }else {
+			 return "FAIL";
+		 }
+	 }
+	  
+	 // 회원가입 이메일 인증 
+	 @ResponseBody
+	 @PostMapping("/sendEmail.ajax")
+	 public String sendEmail(HttpServletRequest req, HttpServletResponse resp, HttpSession session, String userEmail1, String userEmail2) throws Exception {
 		 try {
-		        // System.out.println(params); // userEmail1 , userEmail2
-		        String email1 = params.get("userEmail1");
-		        String email2 = params.get("userEmail2");
-		        String email = email1 + "@" + email2;
+		        String email = userEmail1 + "@" + userEmail2;
  
-		        Map<String, String> paramMap = new HashMap<>();
-		        paramMap.put("userEmail1", email1);
-		        paramMap.put("userEmail2", email2);
+		        Map<String, String> params = new HashMap<>();
+		        params.put("userEmail1", userEmail1);
+		        params.put("userEmail2", userEmail2);
 		        
 		        Random random = new Random();
 		        String code = String.valueOf(random.nextInt(900000) + 100000);
 		        Cookie cookie = new Cookie("checkCode",code);
-		        // cookie.setMaxAge(60*3);
 		        cookie.setMaxAge(24 * 60 * 60);
 		        cookie.setPath("/");
 		        resp.addCookie(cookie);
 		        
-		        UserDTO dto = loginMapper.findUserByEmail(paramMap);
+		        UserDTO dto = loginMapper.findUserByEmail(params);
 		        
 		        if(dto!=null) {
 		        	return "FAIL"; // 이메일이 이미 존재하는 경우
@@ -124,13 +151,13 @@ public class LoginController {
 		        // 이메일 전송 로직
 			 	MimeMessage msg = mailSender.createMimeMessage();
 		        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-		        
-		        helper.setFrom("mihyun6656@gmail.com");
+		        helper.setFrom("admin@javabucks.com");
 		        helper.setTo(email);
 		        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
 		        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
 		                + " \n\n 회원가입을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
 		        mailSender.send(msg);
+		        
 		        req.setAttribute("msg", "해당 이메일로 정보를 전송하였습니다.");
 		        return "OK";
 		        
@@ -141,8 +168,9 @@ public class LoginController {
 		 }
 	 }
 	 
+	 // 인증번호 체크
 	 @ResponseBody
-	 @RequestMapping(value = {"/codeCheck"})
+	 @PostMapping("/codeCheck.ajax")
 	 public String codeCheck(@RequestParam("code") String code, HttpServletRequest req) {
 		 Cookie [] ck = req.getCookies();
 		 if(ck != null) {
@@ -157,9 +185,163 @@ public class LoginController {
 		 return "FAIL";
 	 }
 	 
+	 // 아이디 찾기 이메일 발송 
+	 @ResponseBody
+	 @PostMapping("/findIdSendEmail.ajax")
+	 public String findIdSendEmail(HttpServletRequest req, HttpServletResponse resp, HttpSession session, String userEmail1, String userEmail2) throws Exception {
+		 try {
+		        String email = userEmail1 + "@" + userEmail2;
+		        Map<String, String> params = new HashMap<>();
+		        params.put("userEmail1", userEmail1);
+		        params.put("userEmail2", userEmail2);
+		        
+		        Random random = new Random();
+		        String code = String.valueOf(random.nextInt(900000) + 100000);
+		        Cookie cookie = new Cookie("checkCode",code);
+		        cookie.setMaxAge(24 * 60 * 60);
+		        cookie.setPath("/");
+		        resp.addCookie(cookie);
+		        
+		        UserDTO dto = loginMapper.findUserByEmail(params);
+		        
+		        if(dto!=null) {
+			        // 이메일 전송 로직
+				 	MimeMessage msg = mailSender.createMimeMessage();
+			        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+			        helper.setFrom("admin@javabucks.com");
+			        helper.setTo(email);
+			        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+			        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+			                + " \n\n 아이디찾기를 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+			        mailSender.send(msg);
+			        return "OK";
+		        } else {
+		        	return "NONE";
+		        }
+		 }catch(Exception  e) {
+			  e.printStackTrace(); 
+		        return "FAIL";
+		 }
+	 }
 	 
-	// 로그인 --------------------------------
+	 
+	 // 아이디 찾기 처리
+	 @PostMapping("/findIdbyEmail.do")
+	 public String findIdbyEmail(HttpServletRequest req, HttpServletResponse resp, String userEmail1, String userEmail2) throws Exception {
+		try {
+			String email = userEmail1 + "@" + userEmail2;
+			Map<String, String> params = new HashMap<>();
+			params.put("userEmail1", userEmail1);
+			params.put("userEmail2", userEmail2);
 
+			String Id = loginMapper.findIdbyEmail(params);
+
+			if (Id != null) {
+				// 이메일 전송 로직
+				MimeMessage msg = mailSender.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+				helper.setFrom("admin@javabucks.com");
+				helper.setTo(email);
+				helper.setSubject("[JavaBucks USER ID]");
+				helper.setText(
+						"안녕하세요!! JavaBucks 입니다.\n\n 아이디는  " + Id + " 입니다." + "\n\n --JavaBucks--");
+				mailSender.send(msg);
+				
+				req.setAttribute("msg", "해당 메일로 아이디를 발송했습니다. 확인 후 로그인해주세요");
+				req.setAttribute("url", "user_login");
+			} else {
+				req.setAttribute("msg", "아이디 메일 발송에 실패했습니다. 관리자에게 문의 바랍니다.");
+				req.setAttribute("url", "user_login");
+			}
+			return "/message";
+
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			req.setAttribute("msg", "에러 발생. 관리자에게 문의바랍니다.");
+			req.setAttribute("url", "user_login");
+			return "/message";
+		}
+	}
+	 
+	// 비밀번호 찾기
+	@ResponseBody
+	@PostMapping("/findPwSendEmail.ajax")
+	public String findPwSendEmail(HttpServletRequest req, HttpServletResponse resp, HttpSession session, String userId, String userEmail1, String userEmail2) throws Exception {
+		 try {
+		        String email = userEmail1 + "@" + userEmail2;
+		        Map<String, String> params = new HashMap<>();
+		        params.put("userEmail1", userEmail1);
+		        params.put("userEmail2", userEmail2);
+		        params.put("userId", userId);
+		        
+		        Random random = new Random();
+		        String code = String.valueOf(random.nextInt(900000) + 100000);
+		        Cookie cookie = new Cookie("checkCode",code);
+		        cookie.setMaxAge(24 * 60 * 60);
+		        resp.addCookie(cookie);
+		        
+		        UserDTO dto = loginMapper.findUserByIDEmail(params);
+		        if(dto!=null) {
+			        // 이메일 전송 로직
+				 	MimeMessage msg = mailSender.createMimeMessage();
+			        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+			        helper.setFrom("admin@javabucks.com");
+			        helper.setTo(email);
+			        helper.setSubject("JavaBucks 이메일 인증번호입니다.");
+			        helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
+			                + " \n\n 비밀번호 찾기를 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
+			        mailSender.send(msg);
+			        return "OK";
+		        } else {
+		        	return "NONE";
+		        }
+		 }catch(Exception  e) {
+			  e.printStackTrace(); 
+		        return "FAIL";
+		 }
+	 }
+	 
+	// 비밀번호 찾기 처리
+	@PostMapping("/findPwbyEmail.do")
+	public String findPwbyEmail(HttpServletRequest req, HttpServletResponse resp, String findbypw_id, String findbypw_email1, String findbypw_email2) throws Exception {
+		try {
+			String email = findbypw_email1 + "@" + findbypw_email2;
+			Map<String, String> params = new HashMap<>();
+			params.put("userEmail1", findbypw_email1);
+			params.put("userEmail2", findbypw_email2);
+			params.put("userId", findbypw_id);
+
+			String Pw = loginMapper.findPwbyEmail(params);
+
+			if (Pw != null) {
+				// 이메일 전송 로직
+				MimeMessage msg = mailSender.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+				helper.setFrom("admin@javabucks.com");
+				helper.setTo(email);
+				helper.setSubject("[JavaBucks USER ID]");
+				helper.setText(
+						"안녕하세요!! JavaBucks 입니다.\n\n 비밀번호는 " + Pw + " 입니다." + "\n\n --JavaBucks--");
+				mailSender.send(msg);
+				
+				req.setAttribute("msg", "해당 메일로 비밀번호를 발송했습니다. 확인 후 로그인해주세요");
+				req.setAttribute("url", "user_login");
+			} else {
+				req.setAttribute("msg", "비밀번호 메일 발송에 실패했습니다. 관리자에게 문의 바랍니다.");
+				req.setAttribute("url", "user_login");
+			}
+			return "/message";
+
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			req.setAttribute("msg", "에러 발생. 관리자에게 문의바랍니다.");
+			req.setAttribute("url", "user_login");
+			return "/message";
+		}
+	}
+	 
 	@PostMapping("/logincheck")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
@@ -167,12 +349,7 @@ public class LoginController {
 		String userId = params.get("userId");
 		String userPasswd = params.get("userPasswd");
 		String saveId = params.containsKey("saveId") ? "on" : "off";
-		
-//		System.out.println("userId: "+ userId); 
-//		System.out.println("userPasswd: "+ userPasswd); 
-//		System.out.println("saveId: "+ saveId); 
-//		System.out.println("params : " + params);
-		
+
 		// 아이디로 사용자 정보 가져오기 
 		UserDTO user = loginMapper.findUserById(userId); 
 		
@@ -221,8 +398,8 @@ public class LoginController {
 	
 	// 로그아웃 
 	@GetMapping("/user_logout")
-	public String logout(HttpServletRequest req,HttpServletResponse resp) {
-		 // 세션 무효화
+	public String logout(HttpServletRequest req, HttpServletResponse resp) {
+		// 세션 무효화
 	    HttpSession session = req.getSession(false);
 	    if (session != null) {
 	        session.invalidate();
@@ -233,278 +410,44 @@ public class LoginController {
 		req.setAttribute("url", "user_login"); // 로그인 페이지로 이동 
 		return "message";
 	}
+
+		
+	// 개인정보 수정 화면
+	@GetMapping("/userInfo.do")
+	public String userInfo(HttpServletRequest req) {
+		return "/user/user_info";
+	}
 	
-	 // 아이디 찾기 -------------------------------------------------------------------------------------------------------
-
-		@ResponseBody
-		@PostMapping("/findById")
-		public String findById(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-				String email1 = params.get("userEmail1");
-				String email2 = params.get("userEmail2");
-				String email = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("userEmail1", email1);
-				paramMap.put("userEmail2", email2);
-
-				UserDTO dto = loginMapper.findUserById2(paramMap);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					email = params.get("userEmail1") + "@" + params.get("userEmail2");
-					Random random = new Random();
-					String code1 = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode1", code1);
-					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setMaxAge(24 * 60 * 60);
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("JavaBucks [아이디 찾기] 이메일 인증번호입니다.");
-					helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code1
-							+ " \n\n 아이디 찾기을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					//System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-
-		}
-		
-			// 아이디 찾기
-			@ResponseBody
-			@PostMapping("/verifyCode_id")
-			public String verifyCode_id(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-					throws Exception {
-				try {
-//							System.out.println(params.get("pw_id"));
-//							System.out.println(params.get("pw_email1"));
-//						 	System.out.println(params.get("pw_email2"));
-
-					String email1 = params.get("userEmail1");
-					String email2 = params.get("userEmail2");
-					String email3 = email1 + "@" + email2;
-					// System.out.println(params);
-
-					Map<String, String> paramMap = new HashMap<>();
-					paramMap.put("userEmail1", email1);
-					paramMap.put("userEmail2", email2);
-
-					UserDTO dto = loginMapper.findUserById2(paramMap);
-					// System.out.println("dto:"+dto);
-
-					if (dto != null) {
-						// 이메일 전송 로직
-						MimeMessage msg = mailSender.createMimeMessage();
-						MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-						//String email = params.get("bucksEmail1") + "@" + params.get("bucksEmail2");
-						Random random = new Random();
-						String code1 = String.valueOf(random.nextInt(900000) + 100000);
-
-						Cookie cookie = new Cookie("checkCode1", code1);
-						// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-						cookie.setMaxAge(24 * 60 * 60);
-						cookie.setPath("/");
-						resp.addCookie(cookie);
-
-						helper.setFrom("mihyun6656@gmail.com");
-						helper.setTo(email3);
-						helper.setSubject("[JavaBucks USER ID]");
-						helper.setText(
-								"안녕하세요!! JavaBucks 입니다.\n\n 아이디는  " + dto.getUserId() + " 입니다." + "\n\n --JavaBucks--");
-						mailSender.send(msg);
-						return "OK";
-					} else {
-						// System.out.println("누구?");
-						return "FAIL";
-					}
-
-				} catch (Exception e) {
-					e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-					return "FAIL";
-				}
-			}
-	 
-		// 비밀번호 찾기 ----------------------------------------------------------
-
-		// 비밀번호 찾기
-		@ResponseBody
-		@PostMapping("/findByPw")
-		public String findByPw(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-//					System.out.println(params.get("pw_id"));
-//					System.out.println(params.get("pw_email1"));
-//				 	System.out.println(params.get("pw_email2"));
-
-				String id = params.get("pw_id");
-				String email1 = params.get("pw_email1");
-				String email2 = params.get("pw_email2");
-				String email3 = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("pw_id", id);
-				paramMap.put("pw_email1", email1);
-				paramMap.put("pw_email2", email2);
-
-				UserDTO dto = loginMapper.findUserById(id);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					String email = params.get("pw_email1") + "@" + params.get("pw_email2");
-					Random random = new Random();
-					String code = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode1", code);
-					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setMaxAge(24 * 60 * 60);
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("JavaBucks [비밀번호 찾기] 이메일 인증번호입니다.");
-					helper.setText("안녕하세요!! JavaBucks 입니다.\n\n 이메일 인증 번호 : " + code
-							+ " \n\n 비밀번호 찾기을 진행 하시려면 인증번호를 해당 칸에 입력해주세요.\n 이용해주셔서 감사합니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					// System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-		}
-
-		// 비밀번호 찾기
-		@ResponseBody
-		@PostMapping("/verifyCode")
-		public String verifyCode(@RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp)
-				throws Exception {
-			try {
-//						System.out.println(params.get("pw_id"));
-//						System.out.println(params.get("pw_email1"));
-//					 	System.out.println(params.get("pw_email2"));
-
-				String id = params.get("pw_id");
-				String email1 = params.get("pw_email1");
-				String email2 = params.get("pw_email2");
-				String email3 = email1 + "@" + email2;
-
-				Map<String, String> paramMap = new HashMap<>();
-				paramMap.put("pw_id", id);
-				paramMap.put("pw_email1", email1);
-				paramMap.put("pw_email2", email2);
-
-				UserDTO dto = loginMapper.findUserById(id);
-
-				if (dto != null) {
-					// 이메일 전송 로직
-					MimeMessage msg = mailSender.createMimeMessage();
-					MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-					String email = params.get("pw_email1") + "@" + params.get("pw_email2");
-					Random random = new Random();
-					String code = String.valueOf(random.nextInt(900000) + 100000);
-
-					Cookie cookie = new Cookie("checkCode", code);
-					// cookie.setMaxAge(60 * 3); // 쿠키의 수명을 3분으로 설정합니다.
-					cookie.setMaxAge(24 * 60 * 60);
-					cookie.setPath("/");
-					resp.addCookie(cookie);
-
-					helper.setFrom("mihyun6656@gmail.com");
-					helper.setTo(email);
-					helper.setSubject("[JavaBucks USER PASSWORD]");
-					helper.setText(
-							"안녕하세요!! JavaBucks 입니다.\n\n 비밀번호는  " + dto.getUserPasswd() + " 입니다." + "\n\n --JavaBucks--");
-					mailSender.send(msg);
-					return "OK";
-				} else {
-					// System.out.println("누구?");
-					return "FAIL";
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace(); // 로그를 통해 상세 예외 메시지 확인
-				return "FAIL";
-			}
-		}
-		
-		
-//		@PostMapping("/userInfo")
-//		public String userInfo(@RequestParam Map<String, String> params) {
-//			System.out.println("userId:" + params.get("userId"));
-//			System.out.println("userName:" + params.get("userName"));
-//			System.out.println("userBirth:" + params.get("userBirth"));
-//			System.out.println("userNickname:" + params.get("userNickname"));
-//			System.out.println("userPasswd:" + params.get("userPasswd"));
-//			System.out.println("userTel1:" + params.get("userTel1"));
-//			System.out.println("userTel2:" + params.get("userTel2"));
-//			System.out.println("userTel3: " +params.get("userTel3"));
-//			System.out.println("userEmail1:" +params.get("userEmail1"));
-//			System.out.println("userEmail2:" +params.get("userEmail2"));
-//			
-//		//	UserDTO dto = loginMapper.findUserById(id);
-//			
-//			return "";
+	// 개인정보 수정 처리
+//	@PostMapping("/updateUserInfo.do")
+//	public String updateUserInfo(HttpServletRequest req, String userNickname, String userPassword, String userTel1, String userTel2, String userTel3, String userEmail1, String userEmail2) {
+//		HttpSession session = req.getSession();
+//		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+//		String userId = dto.getUserId();
+//		
+//		Map<String, Object> params = new HashMap<>();
+//		params.put("userNickname", String.valueOf(userNickname));
+//		if(userPassword != null && userPassword.isEmpty()) {
+//			params.put("userPassWd", String.valueOf(userPassword));
 //		}
-		
-		// 개인정보 수정 
-		@PostMapping("/userInfo")
-		public String userInfo(HttpServletRequest req,
-				@RequestParam(value = "userId", required = false) String userId,
-				@RequestParam(value = "userNickname", required = false) String userNickname,
-			    @RequestParam(value = "userPasswd", required = false) String userPasswd,
-			    @RequestParam(value = "userTel1", required = false) String userTel1,
-			    @RequestParam(value = "userTel2", required = false) String userTel2,
-			    @RequestParam(value = "userTel3", required = false) String userTel3,
-			    @RequestParam(value = "userEmail1", required = false) String userEmail1,
-			    @RequestParam(value = "userEmail2", required = false) String userEmail2) {
-			
-		    UserDTO dto = new UserDTO();
-		    dto.setUserId(userId);  // userId를 DTO에 설정
-		    dto.setUserNickname(userNickname);
-		    dto.setUserPasswd(userPasswd);
-		    dto.setUserTel1(userTel1);
-		    dto.setUserTel2(userTel2);
-		    dto.setUserTel3(userTel3);
-		    dto.setUserEmail1(userEmail1);
-		    dto.setUserEmail2(userEmail2); 
-		    // System.out.println("....."); // 찍힌다 
-			
-			int res = loginMapper.updateInfo(dto);
-			
-			if(res > 0) {
-				req.getSession().setAttribute("inUser", dto);
-				req.setAttribute("msg", "정보가 수정되었습니다.");
-				req.setAttribute("url", "user_other");
-			}else {
-				req.setAttribute("msg", "정보수정에 실패했습니다. 정보를 다시 입력해 주세요");
-				req.setAttribute("url", "user_info");
-			}
-			
-			return "message";
-			
-		}
-		
+//		params.put("userTel1", String.valueOf(userTel1));
+//		params.put("userTel2", String.valueOf(userTel2));
+//		params.put("userTel3", String.valueOf(userTel3));
+//		params.put("userEmail1", String.valueOf(userEmail1));
+//		params.put("userEmail2", String.valueOf(userEmail2));
+//		params.put("userId", userId);
+//		
+//		System.out.println(params);
+//		int updateResult = loginMapper.updateUserInfo(params);
+//		
+//		if(updateResult > 0) {
+//			System.out.println("업데이트 성공");
+//		}else {
+//			System.out.println("업데이트 실패");
+//		}
+//		
+//		return "/user/user_info";
+//	}
 		
 } 
  

@@ -59,7 +59,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="user_info">
+                        <a href="userInfo.do">
                             <div class="img_box">
                                 <img src="../images/icons/other_mypageManage.png" alt="">
                             </div>

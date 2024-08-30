@@ -63,26 +63,27 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="user_join" method="post" onsubmit="return check()">
+            <form name="f" action="userRegister.do" method="post" onsubmit="return userRegister()">
                 <div class="input_box">
-                <input type="hidden" name="gradeCode" id="gradeCode" value="green">
+                <input type="hidden" name="gradeCode" id="gradeCode" value="welcome">
                     <label>
                         <input type="text" class="userName" name="userName" value="" placeholder="이름 입력" required>
                     </label>
                     <label>
-                        <input type="text" class="userBirth" name="userBirth" value="" placeholder="생년월일" required>
+                        <input type="text" class="userBirth" name="userBirth" value="" placeholder="생년월일 입력 : 예) 19900101" maxlength="8" oninput="validateBirth(this)" required>
                     </label>
                     <div class="gender_box">
                         <label>
-                            <input type="checkbox" name="userGender" value="F">여자
+                            <input type="radio" name="userGender" value="F">여자
                         </label>
                         <label>
-                            <input type="checkbox" name="userGender" value="M">남자
+                            <input type="radio" name="userGender" value="M">남자
                         </label>
                     </div>
                     <div class="id_box">
                         <label>
-                            <input type="text" class="id" name="userId" value="" placeholder="아이디 입력" required>
+                            <input type="text" class="id" name="userId" value="" placeholder="아이디 입력" maxlength="10" oninput="validateId(this)" required onfocus="showTooltip(this)" onblur="hideTooltip(this)" required>
+                        	<div class="tooltip">아이디는 영문자와 숫자로 10자 이내로만 가능합니다.</div>
                         </label>
                         <button type="button" onclick="idCheck()">중복확인</button>
                     </div>
@@ -98,22 +99,18 @@
                         <label>
                             <select name="userTel1" class="userTel1">
                                 <option value="010">010</option>
-                                <option value="016">016</option>
-                                <option value="017">017</option>
-                                <option value="018">018</option>
-                                <option value="019">019</option>
                             </select>
                         </label>
                         <label>
-                            <input type="text" class="userTel2" name="userTel2" value="" required>
+                            <input type="text" class="userTel2" name="userTel2" value="" oninput="validateTel(this)" required>
                         </label>
                         <label>
-                            <input type="text" class="userTel3" name="userTel3" value="" required>
+                            <input type="text" class="userTel3" name="userTel3" value="" oninput="validateTel(this)" required>
                         </label>
                     </div>
                     <div class="email_box">
                         <label>
-                            <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일 입력" required>
+                            <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일 입력" oninput="validateEmail(this)" required>
                         </label>
                         @
                         <label>
@@ -123,12 +120,12 @@
                                 <option value="gmail.com">gmail.com</option>
                             </select>
                         </label>
-                        <button type="button" class="dupcate_btn" onclick="duplicateCheck()">중복체크</button>
+                        <button type="button" class="dupcate_btn" onclick="emailCheck()">중복확인</button>
                         <button type="button" class="confirm_btn" style="display:none;" onclick="sendEmail()">인증번호 발송</button>
                     </div>
                     <div class="confirm_box" style="display: none;"> 
                         <label>
-                       		<input type="text" class="code" name="code" value="" placeholder="인증번호 입력" required>
+                       		<input type="text" class="code" name="code" value="" placeholder="인증번호 입력" >
                             <span id="timerMin">3</span>:<span id="timerSec">00</span> 
                         </label>
                         <button type="button" onclick="codeCheck()">인증확인</button>
@@ -140,242 +137,305 @@
     </section>
     <!-- e: content -->
 </body>
+
 <script type="text/javascript">
-	//아이디 중복 확인 
-	let ck = false; 
-	// 이메일 인증 상태를 추적하는 변수
-	let mck = false;
-	
-	// 이메일인증 타이머 
-	let timer; 
-	let timeRemaining = 180; // 3분 
-	
-	// 이메일 인증 타이머 
-	function startTimer(){
-		let timerMinId = document.getElementById('timerMin');
-		let timerSecId = document.getElementById('timerSec');
-		
-		timer = setInterval(()=>{
-			if(timeRemaining<=0){
-				clearInterval(timer);
-				timer = null; // 타이머 변수 초기화
-				alert("인증 시간이 초과되었습니다.");
-				return;
-			}
-			timeRemaining--;
-			
-			let minutes = Math.floor(timeRemaining / 60);
-			let seconds = timeRemaining % 60;
-			
-			timerMinId.textContent = minutes;
-			timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
-		},1000);
-	}
-	
-// 중복확인 버튼 유효성검사 	
+function validateBirth(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (input.value.length > 8) {
+        input.value = input.value.slice(0, 8);
+    }
+}
+
+function validateId(input) {
+	input.value = input.value.replace(/[^0-9a-zA-Z]/g, '');
+
+    if (input.value.length > 8) {
+        input.value = input.value.slice(0, 8);
+    }
+}
+
+function validateEmail(input) {
+	input.value = input.value.replace(/[^0-9a-zA-Z]/g, '');
+}
+
+function validateTel(input) {
+	input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (input.value.length > 4) {
+        input.value = input.value.slice(0, 4);
+    }
+}
+
+function showTooltip(input) {
+    const tooltip = input.nextElementSibling;
+    tooltip.style.visibility = 'visible';
+    tooltip.style.opacity = '1';
+}
+
+function hideTooltip(input) {
+    const tooltip = input.nextElementSibling;
+    tooltip.style.visibility = 'hidden';
+    tooltip.style.opacity = '0';
+}
+
+let ck = false; // 아이디 중복 확인 상태
+let mck = false; // 이메일 중복 확인 상태
+let sck = false; // 이메일 인증번호 발송
+let cck = false; // 이메일 인증번호 확인
+let timeout = false;
+let timer; // 타이머 변수
+let timeRemaining = 180; // 3분 (180초)
+
+function startTimer() {
+    const timerMinId = document.getElementById('timerMin');
+    const timerSecId = document.getElementById('timerSec');
+
+    timer = setInterval(() => {
+        if (timeRemaining <= 0) {
+            clearInterval(timer);
+            alert("인증 시간이 초과되었습니다.");
+            timeout = true;
+            return;
+        }
+        timeRemaining--;
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+
+        timerMinId.textContent = minutes;
+        timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+    }, 1000);
+}
+
 function idCheck() {
-    // 입력된 아이디 값을 가져옵니다
-    let name = $(".userName").val();
-    let birth = $(".userBirth").val();
-    let id = $(".id").val();
-    
-    if(name === ""){
-    	alert("이름을 입력해 주세요");
-    	$(".userName").focus();
-    	return;
-    }
-    if (birth === "") {
-        alert("생년월일을 입력해 주세요");  
-        $(".userBirth").focus();  
-        return; // 함수 종료
-    }
+    const id = $(".id").val();
     if (id === "") {
-        alert("아이디를 입력해 주세요");  
-        $(".id").focus();  
-        return;  
+        alert("아이디를 입력해 주세요");
+        $(".id").focus();
+        return;
     }
-    // AJAX 요청을 통해 아이디 중복 확인을 서버에 요청
+
     $.ajax({
-        url: "idCheck", // 요청을 보낼 서버 URL
-        type: "POST", // POST 방식으로 데이터 전송
-        data: { "id": id }, // 서버에 전송할 데이터
-        success: function(res) {
-            // 서버 응답에 따라 처리
+        url: "idCheck.ajax",
+        type: "POST",
+        data: { "id": id },
+        success: function (res) {
             if (res === 'OK') {
-                alert("사용 가능한 아이디입니다."); // 아이디 사용 가능
-                ck = true; // 중복 확인 성공
-                console.log("사용 가능");
+                alert("사용 가능한 아이디입니다.");
+                ck = true;
+
+                const button = document.querySelector("button[onclick='idCheck()']");
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = "확인완료";
+                    button.style.backgroundColor = "grey";
+                }
             } else {
-                alert("이미 사용중인 아이디입니다."); // 아이디가 이미 사용 중
-                $(".id").val(""); // 입력 필드 비우기
-                $(".id").focus(); // 아이디 입력 필드에 포커스
-                ck = false; // 중복 확인 실패
-                console.log("사용 불가");
+                alert("이미 사용 중인 아이디입니다.");
+                $(".id").val("");
+                $(".id").focus();
+                ck = false;
             }
         },
-        error: function(err) {
-            console.error(err); // 오류 발생 시 콘솔에 로그
-            ck = false; // 오류 발생 시 중복 확인 실패
+        error: function (err) {
+            console.error(err);
+            ck = false;
         }
     });
 }
-function duplicateCheck() {
-    // 인증번호 발송 버튼의 display 속성을 변경하여 보이도록 설정합니다.
-    let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
-    let email2 = $('.userEmail2').val();
+
+function emailCheck() {
+    const email1 = $(".userEmail1").val();    
+    const email2 = $('.userEmail2').val();
     
-    if(email1 ==""){
-		alert("이메일 주소를 입력해주세요")
-		return $('.userEmail1').focus();
-	}else if(email2 == ""){
-		// $('.confirm_box').show();
-		// $('.confirm_box').style.display="block";
-	}
+    if (email1 === "") {
+        alert("이메일 주소를 입력해주세요");
+        return $('.userEmail1').focus();
+    }
+    
+    $.ajax({
+        url: "mailCheck.ajax",
+        type: "POST",
+        data: { 
+            email1: email1,
+            email2: email2
+        },
+        success: function (res) {
+            if (res === 'OK') {
+                alert("사용 가능한 이메일 주소입니다.");
+                const button = document.querySelector("button[onclick='emailCheck()']");
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = "확인완료";
+                    button.style.backgroundColor = "grey";
+                }
+                mck = true;
+            } else {
+                alert("이미 사용 중인 이메일입니다.");
+                $(".userEmail1").val("");
+                $(".userEmail1").focus();
+            }
+        },
+        error: function (err) {
+            console.error(err);
+        }
+    });
     document.querySelector('.confirm_btn').style.display = 'block';
     document.querySelector('.dupcate_btn').style.display = 'none';
-     
-}
- 
-
-// 이메일인증 버튼 클릭시 유효성검사
-function sendEmail(){
-	let email1 = $('.userEmail1').val().trim(); // 문자열 양 끝의 공백을 제거하면서 원본 문자열을 수정하지 않고 새로운 문자열을 반환
-	let email2 = $('.userEmail2').val(); //  jQuery의 .val : value 데이터 넘어갈때 사용 
-	
-	// 인증번호 입력box 활성화 
-	document.querySelector('.confirm_box').style.display = 'block';
-	
-	timeRemaining = 180;
-	startTimer();
-	
-	// 이메일 입력이 안되어있으면 focus
-	if(email1 ==""){
-		alert("이메일 주소를 입력해주세요")
-		return $('.userEmail1').focus();
-		
-	}else if(email2 == ""){
-		// $('.confirm_box').show();
-		// $('.confirm_box').style.display="block";
-	}
-	$.ajax({
-		url : 'sendEmail',
-		type : 'POST',
-		data : { "userEmail1" : email1,
-				"userEmail2" : email2
-		},
-		success : function(res){
-			if(res == 'OK'){
-				alert("인증메일을 발송하였습니다.");
-			}else{
-				alert("이미 등록된 이메일입니다.");
-				document.querySelector('.confirm_box').style.display = 'none';
-			}
-		},
-		error : function(err){
-			console.log(err);
-			alert("서버 요청 실패! 네트워크 상태를 확인해주세요.")
-		}
-	})
 }
 
-// 타이머 멈추는 함수
-function stopTimer(){
-		if(timer){
-			clearInterval(timer);
-			timer = null; // 타이머 변수 초기화 
-		}
-	}
- 
-// 이메일 인증번호  
-function codeCheck(){
-		
-	let code = $('.code').val();
-	$.ajax({
-		url : 'codeCheck',
-		type : 'POST',
-		data:{"code":code},
-		success : function(res){
-			if(res=='OK'){
-				alert("인증 성공");
-				mck = true ;
-				stopTimer(); // 인증 성공시 타이머 멈추기
-				
-			}else{
-				alert("인증 실패! 다시 입력해주세요.");
-				$(".code").val("");
-				$(".code").focus();
-				mck = false;
-			}
-		},
-		error : function(err){
-			console.error(err);
-			mck = false;
-		}
-	});
+function sendEmail() {
+    const email1 = $('.userEmail1').val().trim();
+    const email2 = $('.userEmail2').val();
+
+    if (email1 === "") {
+        alert("이메일 주소를 입력해주세요");
+        return $('.userEmail1').focus();
+    }
+
+    document.querySelector('.confirm_box').style.display = 'block';
+    timeRemaining = 180;
+    startTimer();
+
+    $.ajax({
+        url: "sendEmail.ajax",
+        type: "POST",
+        data: { "userEmail1": email1, "userEmail2": email2 },
+        success: function (res) {
+            if (res === 'OK') {
+                alert("인증메일을 발송하였습니다.");
+                const button = document.querySelector("button[onclick='sendEmail()']");
+                if (button) {
+                    button.textContent = "인증번호 재발송";
+                }
+                sck = true;
+            } else {
+                alert("이미 등록된 이메일입니다.");
+                document.querySelector('.confirm_box').style.display = 'none';
+            }
+        },
+        error: function (err) {
+            console.log(err);
+            alert("서버 요청 실패! 네트워크 상태를 확인해주세요.");
+        }
+    });
 }
 
-// 회원가입 버튼 클릭시 유효성검사
-function check() {
-	let name = $(".userName").val();
-    let birth = $(".userBirth").val();
-    let id = $(".id").val();
-    let passwd = $(".userPasswd").val();
-    let passwdok = $(".userPasswdConfirm").val();
-    let tel1 = $(".userTel1").val();
-    let tel2 = $(".userTel2").val();
-    let tel3 = $(".userTel3").val();
-    let email1 = $(".userEmail1").val();
+function stopTimer() {
+    if (timer) {
+        clearInterval(timer);
+        timer = null;
+    }
+}
+
+function codeCheck() {
+    const code = $('.code').val();
+    if(!timeout){
+    	$.ajax({
+            url: 'codeCheck',
+            type: 'POST',
+            data: { "code": code },
+            success: function (res) {
+                if (res === 'OK') {
+                    alert("인증 성공");
+                    stopTimer();
+                    const button = document.querySelector("button[onclick='codeCheck()']");
+                    if (button) {
+                        button.textContent = "인증완료";
+                        button.style.backgroundColor = "grey";
+                        button.disabled = true;
+                    }
+                    cck = true;
+                } else {
+                    alert("인증 실패! 다시 입력해주세요.");
+                    $(".code").val("");
+                    $(".code").focus();
+                }
+            },
+            error: function (err) {
+                console.error(err);
+                mck = false;
+            }
+        });
+    } else{
+    	alert("인증시간이 초과되어 재인증이 필요합니다.")
+    }
     
-    if(name === ""){
-    	alert("이름을 입력해 주세요");
-    	$(".userName").focus();
-    	return false; 
-    }
-    if (birth === "") {
-        alert("생년월일을 입력해 주세요"); // 사용자에게 알림
-        $(".userBirth").focus(); // 아이디 입력 필드에 포커스
-        return false; // 함수 종료
-    }
-    if (id === "") {
-        alert("아이디를 입력해 주세요"); // 사용자에게 알림
-        $(".id").focus(); // 아이디 입력 필드에 포커스
-        return false; // 함수 종료
-    }
-    if (!ck) {
-        alert("아이디 중복 확인을 먼저 해 주세요");
+}
+
+function userRegister() {
+    const name = $(".userName").val();
+    const birth = $(".userBirth").val();
+    const gender = $("input[name='userGender']:checked").val();
+    const id = $(".id").val();
+    const passwd = $(".userPasswd").val();
+    const passwdok = $(".userPasswdConfirm").val();
+    const tel2 = $(".userTel2").val();
+    const tel3 = $(".userTel3").val();
+    const email = $(".userEmail1").val();
+
+    if (name === "") {
+        alert("이름을 입력해 주세요");
+        $(".userName").focus();
         return false;
     }
-    if(passwd === ""){
-    	alert("비밀번호를 입력해 주세요");
-    	$(".userPasswd").focus();
-    	return false;
+    if (birth === "") {
+        alert("생년월일을 입력해 주세요");
+        $(".userBirth").focus();
+        return false;
     }
-    if(passwdok===""){
-    	alert("비밀번호 확인을 입력해주세요");
-    	$(".userPasswdConfirm").focus();
-    	return false;
+    if (id === "") {
+        alert("아이디를 입력해 주세요");
+        $(".id").focus();
+        return false;
+    }    
+    if (gender === undefined) {
+        alert("성별을 선택해 주세요");
+        return false;
+    }
+    if (!ck) {
+        alert("아이디 중복확인 버튼을 눌러 확인해주세요");
+        return false;
+    }
+    if (passwd === "") {
+        alert("비밀번호를 입력해 주세요");
+        $(".userPasswd").focus();
+        return false;
+    }
+    if (passwdok === "") {
+        alert("비밀번호 확인을 입력해주세요");
+        $(".userPasswdConfirm").focus();
+        return false;
     }
     if (passwd !== passwdok) {
         alert("비밀번호가 일치하지 않습니다.");
         return false;
     }
-    if(tel2==="" || tel3===""){
-    	alert("전화번호를 입력해주세요");
-    	return false;
+    if (tel2 === "" || tel3 === "") {
+        alert("전화번호를 입력해주세요");
+        return false;
     }
-    if(email===""){
-    	alert("이메일을 입력해주세요");
-    	return false;
+    if (email === "") {
+        alert("이메일을 입력해주세요");
+        return false;
     }
     if (!mck) {
-        alert("이메일 인증을 먼저 해 주세요");
+        alert("이메일 중복확인 버튼을 클릭하여 확인해주세요");
+        return false;
+    }
+    if (!sck) {
+        alert("이메일 인증번호를 발송하여 확인해주세요");
+        return false;
+    }
+    const confirmBoxVisible = $(".confirm_box").is(':visible');
+    if (confirmBoxVisible && !cck) {
+        alert("발송된 인증번호를 입력하고 인증확인 해주세요");
         return false;
     }
     return true;
 }
+ </script>
 
-
-</script>
 </html>
 
  
