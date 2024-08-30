@@ -40,8 +40,8 @@ public class LoginMapper {
 	}
 	
 	// 로그인하기 위해 아이디가 있는지 확인  
-	public UserDTO findUserById(String userId) {
-		return sqlSession.selectOne("findUserById",userId);
+	public UserDTO findUserByLogin(String userId) {
+		return sqlSession.selectOne("findUserByLogin",userId);
 	}
 	
 	// 아이디 찾기
@@ -61,8 +61,12 @@ public class LoginMapper {
 		
 	// 정보수정
 	public int updateUserInfo(Map<String, Object> params) {
-		return sqlSession.selectOne("updateUserInfo", params);
+		return sqlSession.update("updateUserInfo", params);
 	}
 	
+	// 회원탈퇴
+	public int updateUserDel(String userId) {
+		return sqlSession.update("updateUserDel", userId);
+	}
 	
 }

@@ -341,8 +341,9 @@ public class LoginController {
 			return "/message";
 		}
 	}
-	 
-	@PostMapping("/logincheck")
+	
+	// 로그인 처리
+	@PostMapping("/logincheck.do")
 	public String login(@RequestParam Map<String, String> params,
 						HttpServletRequest req, HttpServletResponse resp) {
 
@@ -351,7 +352,7 @@ public class LoginController {
 		String saveId = params.containsKey("saveId") ? "on" : "off";
 
 		// 아이디로 사용자 정보 가져오기 
-		UserDTO user = loginMapper.findUserById(userId); 
+		UserDTO user = loginMapper.findUserByLogin(userId); 
 		
 		// user가 존재하면
 		if(user != null) {
@@ -384,13 +385,13 @@ public class LoginController {
 			// 비밀번호 불일치
 			else if(!(user.getUserPasswd().equals(userPasswd))){
 				//System.out.println("비밀번호 불일치");
-				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인후 로그인 해주세요");
+				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인 후 로그인 해주세요");
 				req.setAttribute("url", "user_login");
 			}
 		// user가 존재하지 않으면 
 		}else {
 			//System.out.println("누구세요?");
-			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인후 로그인 해주세요.");
+			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인 후 로그인 해주세요.");
 			req.setAttribute("url", "user_login");
 		}
 		return "message";
@@ -415,40 +416,71 @@ public class LoginController {
 	// 개인정보 수정 화면
 	@GetMapping("/userInfo.do")
 	public String userInfo(HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+		UserDTO udto = loginMapper.getUserInfo(userId);
+		
+		req.setAttribute("userInfo", udto);
+
 		return "/user/user_info";
 	}
 	
 	// 개인정보 수정 처리
-//	@PostMapping("/updateUserInfo.do")
-//	public String updateUserInfo(HttpServletRequest req, String userNickname, String userPassword, String userTel1, String userTel2, String userTel3, String userEmail1, String userEmail2) {
-//		HttpSession session = req.getSession();
-//		UserDTO dto = (UserDTO)session.getAttribute("inUser");
-//		String userId = dto.getUserId();
-//		
-//		Map<String, Object> params = new HashMap<>();
-//		params.put("userNickname", String.valueOf(userNickname));
-//		if(userPassword != null && userPassword.isEmpty()) {
-//			params.put("userPassWd", String.valueOf(userPassword));
-//		}
-//		params.put("userTel1", String.valueOf(userTel1));
-//		params.put("userTel2", String.valueOf(userTel2));
-//		params.put("userTel3", String.valueOf(userTel3));
-//		params.put("userEmail1", String.valueOf(userEmail1));
-//		params.put("userEmail2", String.valueOf(userEmail2));
-//		params.put("userId", userId);
-//		
-//		System.out.println(params);
-//		int updateResult = loginMapper.updateUserInfo(params);
-//		
-//		if(updateResult > 0) {
-//			System.out.println("업데이트 성공");
-//		}else {
-//			System.out.println("업데이트 실패");
-//		}
-//		
-//		return "/user/user_info";
-//	}
+	@PostMapping("/updateUserInfo.do")
+	public String updateUserInfo(HttpServletRequest req, String userNickname, String userPassword, String userTel1, String userTel2, String userTel3, String userEmail1, String userEmail2) {
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+		String userId = dto.getUserId();
 		
+		Map<String, Object> params = new HashMap<>();
+		params.put("userNickname", String.valueOf(userNickname));
+		params.put("userTel1", String.valueOf(userTel1));
+		params.put("userTel2", String.valueOf(userTel2));
+		params.put("userTel3", String.valueOf(userTel3));
+		params.put("userEmail1", String.valueOf(userEmail1));
+		params.put("userEmail2", String.valueOf(userEmail2));
+		params.put("userId", userId);
+		if(userPassword != null && !userPassword.isEmpty()) {
+			params.put("userPassWd", String.valueOf(userPassword));
+		}
+
+		int updateResult = loginMapper.updateUserInfo(params);
+		
+		String msg = null;
+		if(updateResult > 0) {
+			msg = "회원정보가 수정되었습니다.";
+			
+		}else {
+			msg = "회원정보 수정에 실패하였습니다. 관리자에게 문의해주세요.";
+		}
+		
+		req.setAttribute("msg", msg);
+		req.setAttribute("url", "userInfo.do");
+		
+		return "message";
+	}
+	
+	// 회원탈퇴
+	@GetMapping("/userDel.do")
+	public String userDel(HttpServletRequest req, String userId) {
+		System.out.println("userId :" +userId);
+		int userEnableNUpdate = loginMapper.updateUserDel(userId);
+		
+		String msg = null;
+		if(userEnableNUpdate > 0) {
+			msg = "탈퇴처리가 완료되었습니다. 그동안 자바벅스를 이용해주셔서 감사드립니다.";
+			
+		}else {
+			msg = "회원 탈퇴 실패. 관리자에게 문의해주세요.";
+		}
+		
+		req.setAttribute("msg", msg);
+		req.setAttribute("url", "user_login");
+		
+		return "message";
+	}
 } 
  
 	 
