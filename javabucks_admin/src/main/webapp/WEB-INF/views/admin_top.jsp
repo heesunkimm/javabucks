@@ -14,7 +14,7 @@
 <body>
     <header class="bg_beige">
         <div class="logo_box">
-            <a href="javascript:;">
+            <a href="admin_adminmanage">
             	<div class="img_box">
                     <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>
@@ -65,6 +65,31 @@
         </ul>
 
         <div class="store_box">
-            <a href="javascript:;"><em class="font_green">${inAdmin.adminId}</em> 로그인하셨습니다.</a>
+        	<p><em class="font_green">${inAdmin.adminId}</em> 로그인하셨습니다.</p>
+            <a class="setBtn" href="javascript:;"><img src="../images/icons/setting.png" alt=""></a>
+	        <ul class="setting_box">
+	        	<li><a class="popup_btn" href="javascript:;" data-popup="passwdEdit">비밀번호 변경</a></li>
+	        	<li><a href="javascript:;">로그아웃</a></li>
+	        </ul>
         </div>
     </header>
+    <!-- 비밀번호 변경 팝업 -->
+    <div id="passwdEdit" class="popup_box" style="display: none;">
+        <p class="popup_title">비밀번호 변경</p>
+        <form name="f" action="" method="post">
+            <div class="input_box">
+                <label>신규 비밀번호
+                    <input type="password" name="" value="">
+                </label>
+                <label>신규 비밀번호 확인
+                    <input type="password" name="" value="">
+                </label>
+            </div>
+            <div class="pbtn_box">
+                <button class="editBtn" type="button">비밀번호 변경</button>
+                <button class="close_btn" type="button" data-popup="passwdEdit">취소</button>
+            </div>
+        </form>
+    </div>
+    <div class="dimm"></div>
+    

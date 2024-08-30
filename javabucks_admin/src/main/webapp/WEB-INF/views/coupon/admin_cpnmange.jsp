@@ -1,7 +1,8 @@
 	<%@ page language="java" contentType="text/html; charset=UTF-8"
 	    pageEncoding="UTF-8"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 	<jsp:include page="../admin_top.jsp"/>
 		<!-- s: content -->
 	    <section id="admin_cpnmange" class="content accountmanage">
@@ -72,12 +73,12 @@
 	                            <tr>
 	                                <td>[${list.cpnCode}] ${list.cpnName}</td>
 	                                <td>${list.userId}</td>
-	                                <td>${list.cpnListStartDate}</td>
-	                                <td>${list.cpnListEndDate}</td>
+	                                <td><c:out value="${fn:substring(list.cpnListStartDate, 0, 10)}"/></td>
+	                                <td><c:out value="${fn:substring(list.cpnListEndDate, 0, 10)}"/></td>
                                 	<td>
                                 	<c:choose>
 								        <c:when test="${not empty list.cpnListUseDate}">
-								            ${list.cpnListUseDate}
+								        	<c:out value="${fn:substring(list.cpnListUseDate, 0, 10)}"/>
 								        </c:when>
 								        <c:otherwise>
 								            미사용
@@ -95,8 +96,9 @@
 	                        </tbody>
 	                    </table>
 	                    <!-- 페이징 -->
+	                    <c:if test="${not empty searchList}">
 						<div class="pagination">
-						    <c:if test="${startPage > 1}"> 
+						    <c:if test="${startPage > 1}">
 						        <a class="page_btn prev_btn" href="admin_cpnmange?pageNum=${startPage - pageBlock}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}">
 						            <img src="../../images/icons/arrow.png">
 						        </a>
@@ -104,22 +106,19 @@
 						    <c:forEach var="i" begin="${startPage}" end="${endPage}">
 						        <c:set var="activeClass" value=""/>
 						        <c:choose>
-						            <c:when test="${empty param.pageNum and i == 1}">
-						                <c:set var="activeClass" value="page_active"/>
-						            </c:when>
-						            <c:when test="${param.pageNum == i}">
+						            <c:when test="${param.pageNum == i || (param.pageNum eq '' && i == 1)}">
 						                <c:set var="activeClass" value="page_active"/>
 						            </c:when>
 						        </c:choose>
 						        <a href="admin_cpnmange?pageNum=${i}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}" class="${activeClass} page_num">${i}</a>
 						    </c:forEach>
 						    <c:if test="${pageCount > endPage}">
-						        <a class="page_btn next_btn" href="admin_cpnmange?pageNum=${startPage + pageBlock}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}">
+						        <a class="page_btn next_btn" href="admin_cpnmange?pageNum=${endPage + 1}&searchDate=${searchParams.searchDate}&searchStartDate=${searchParams.searchStartDate}&searchEndDate=${searchParams.searchEndDate}&cpnListStatus=${searchParams.cpnListStatus}&userId=${searchParams.userId}&cpnName=${searchParams.cpnName}">
 						            <img src="../../images/icons/arrow.png">
 						        </a>
 						    </c:if>
 						</div>
-
+	                    </c:if>
 	                </div>
 	            </div>
 	            <!-- 쿠폰등록 팝업 -->

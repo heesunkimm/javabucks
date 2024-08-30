@@ -1,4 +1,18 @@
 $(function() {
+	// admin_top 설정 토글
+	$("header .setBtn").on('click', function(e){
+	    e.stopPropagation();
+	    $(".setting_box").toggle();
+	});
+	$(document).on('click', function(e){
+	    if(!$(e.target).closest('.setting_box, .setBtn').length){
+	        $(".setting_box").hide();
+	    }
+	});
+	$("header .setting_box li:first-child").on('click', function() {
+	    $(".setting_box").hide();
+	});
+	
 	// tab foreach 통합
     $(".tab_btn").each(function() {
         $(this).click(function(e) {

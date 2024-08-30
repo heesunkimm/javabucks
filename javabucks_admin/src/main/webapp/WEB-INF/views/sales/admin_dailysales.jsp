@@ -73,12 +73,12 @@
                     <table class="search_list s_table">
                         <thead>
                             <tr>
-                                <th>일자</th>
-                                <th>지점명</th>
-                                <th>지점등록번호</th>
-                                <th>점주명</th>
-                                <th>메뉴카테고리</th>
-                                <th>매출액</th>
+                                <th style="width: 16%;">일자</th>
+                                <th style="width: 16%;">지점명</th>
+                                <th style="width: 16%;">지점등록번호</th>
+                                <th style="width: 16%;">점주명</th>
+                                <th style="width: 16%;">메뉴카테고리</th>
+                                <th style="width: 20%;">매출액</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -98,28 +98,32 @@
 							            
 							            <!-- 지점 정보 출력 -->
 							            <tr>
-							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.payhistoryDate}"/></td>
-							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.branchName}"/></td>
-							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksId}"/></td>
-							                <td rowspan="${fn:length(entry.value) + 1}"><c:out value="${dlist.bucksOwner}"/></td>
+							                <td><c:out value="${dlist.payhistoryDate}"/></td>
+							                <td><c:out value="${dlist.branchName}"/></td>
+							                <td><c:out value="${dlist.bucksId}"/></td>
+							                <td><c:out value="${dlist.bucksOwner}"/></td>
+								            <!-- 각 카테고리 및 매출액 출력 -->
+							                <td>
+							                	<ul>
+							                		<c:forEach items="${entry.value}" var="categoryEntry">
+							                		<li><c:out value="${categoryEntry.key}"/></li>
+							                		</c:forEach>
+							                	</ul>
+							                </td>
+							                <td>
+							                	<ul>
+							                		<c:forEach items="${entry.value}" var="categoryEntry">
+							                		<li><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</li>
+							                		</c:forEach>
+							                	</ul>
+							                </td>
 							            </tr>
-							            <!-- 각 카테고리 및 매출액 출력 -->
-							            <c:forEach items="${entry.value}" var="categoryEntry">
-							                <tr>
-							                    <td><c:out value="${categoryEntry.key}"/></td> <!-- 메뉴 카테고리 -->
-							                    <td><fmt:formatNumber value="${categoryEntry.value}" pattern="#,##0"/>원</td> <!-- 매출액 -->
-							                </tr>
-							            </c:forEach>
-							            
 							            <!-- 지점별 총 매출 합계 출력 -->
-							            
-							            <tr>
-							    <td></td><td></td><td></td><td></td>
-							    <td><strong>총 합</strong></td>
-							    <c:set var="branchId" value="${dlist.bucksId}"/>
-							    <td><strong><fmt:formatNumber value="${branchTotalSalesMap[branchId]}" pattern="#,##0"/>원</strong></td>
-							</tr>
-							                
+							            <tr class="total_col">
+										    <td colspan="5"><strong>총 합</strong></td>
+										    <c:set var="branchId" value="${dlist.bucksId}"/>
+										    <td><strong><fmt:formatNumber value="${branchTotalSalesMap[branchId]}" pattern="#,##0"/>원</strong></td>
+										</tr>
 							        </c:if>
 							    </c:forEach>
 							</c:forEach>

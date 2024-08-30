@@ -68,10 +68,10 @@
 	  	) coupons
 	  	where rn between #{startRow} and #{endRow}
   	</select>
-  	
+  		
   	<!-- 검색 조건에 맞게 필터링된 쿠폰리스트 -->
-	<select id="searchFilterCpn" parameterType="java.util.Map" resultType="CouponListDTO">
-		select row_number() over (order by cl.cpnListStartDate desc) as rn, cl.*, c.cpnCode, c.cpnName
+  	<select id="searchFilterCpn" parameterType="java.util.Map" resultType="CouponListDTO">
+	    select cl.*, c.cpnCode, c.cpnName
 	    from javabucks_couponList cl
 	    inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
 	    where
@@ -87,14 +87,15 @@
 	        and (#{cpnListStatus} is null or cl.cpnListStatus = #{cpnListStatus})
 	        and (#{userId} is null or cl.userId like '%' || #{userId} || '%')
 	        and (#{cpnName} is null or c.cpnName = #{cpnName})
-        order by cl.cpnListStartDate desc
+	    order by cl.cpnListStartDate desc
+	    offset #{offset} rows fetch next #{limit} rows only
 	</select>
 
   	<!-- 검색 조건에 맞게 필터링된 쿠폰리스트 갯수 -->
-	<select id="searchFilterCpnCount" parameterType="java.util.Map" resultType="Integer">
+  	<select id="searchFilterCpnCount" parameterType="java.util.Map" resultType="Integer">
 	    select count(*) 
 	    from javabucks_couponList cl 
-	    inner join javabucks_coupon c ON cl.cpnCode = c.cpnCode 
+	    inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
 	    where
 	        (
 	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
@@ -108,6 +109,5 @@
 	        and (#{cpnListStatus} is null or cl.cpnListStatus = #{cpnListStatus})
 	        and (#{userId} is null or cl.userId like '%' || #{userId} || '%')
 	        and (#{cpnName} is null or c.cpnName = #{cpnName})
-        order by cl.cpnListStartDate desc
 	</select>
   </mapper>
