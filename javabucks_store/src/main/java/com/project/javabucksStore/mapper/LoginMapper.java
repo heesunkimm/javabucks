@@ -10,7 +10,6 @@ import com.project.javabucksStore.dto.BucksDTO;
 @Service
 public class LoginMapper {
 	
-	// store
 	@Autowired
 	private SqlSession sqlSession;
 	
@@ -19,10 +18,19 @@ public class LoginMapper {
 		return sqlSession.selectOne("findStoreById",bucksId);
 	}
 	
-	// 아이디 찾기 
-	public BucksDTO findStoreById2(Map<String, String> paramMap) {
-		return sqlSession.selectOne("findStoreById2",paramMap);
+	// 이메일 인증 전에 해당 계정있는지 확인
+	public BucksDTO findStoreByEmail(Map<String,String> params) {
+		return sqlSession.selectOne("findStoreByEmail", params);
 	}
 	
+	// 아이디 찾기
+	public String findStoreIdbyEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findStoreIdbyEmail", params);
+	}
+	
+	// 비밀번호 찾기 이메일 인증 시 회원있는지 확인
+	public BucksDTO findStoreByIDEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findStoreByIDEmail", params);
+	}
 	
 }
