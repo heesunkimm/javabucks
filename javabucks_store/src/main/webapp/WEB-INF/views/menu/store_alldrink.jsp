@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../store_top.jsp"%>
-	<style>
-		.allMenu .menu_list .menu_item .btn_box .holdBtn.btn_disable {background: #ccc!important;}
-	</style>
 	<!-- s: content -->
     <section id="store_alldrink" class="content allMenu">
         <div class="inner_wrap">

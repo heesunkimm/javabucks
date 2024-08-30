@@ -15,12 +15,14 @@
         </div>
 
         <div class="order_box">
-        	<c:if test="${orderStopCheck eq true}">
-        		<button type="button" style="background : #ff5a4a; color:white;" onclick="restartOrder()">신규주문 재시작</button>
-        	</c:if>
-        	<c:if test="${orderStopCheck eq false}">
-            	<button type="button" style="background : #ff5a4a; color:white;" onclick="stopOrder()">신규주문 정지</button>
-            </c:if>
+        	<div class="btn_box">
+	        	<c:if test="${orderStopCheck eq true}">
+	        		<button class="orderEnableBtn" type="button" onclick="restartOrder()">신규주문 재시작</button>
+	        	</c:if>
+	        	<c:if test="${orderStopCheck eq false}">
+	            	<button class="orderDisableBtn" type="button" onclick="stopOrder()">신규주문 정지</button>
+	            </c:if>
+        	</div>
             <div class="order_wrap">
                 <div>
                     <div class="orders">
@@ -48,7 +50,7 @@
 			                                        <li class="menu_item">${menuOrder.menuName} - ${menuOrder.quantity}개</li>
 			                                        <c:if test="${not empty menuOrder.cupType}">
 			                                        	<li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외 옵션</li>
-	<%-- 						                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
+	 						                        <%--<li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
 							                       		<li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
 							                        	<li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
 							                        	<li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
@@ -57,8 +59,10 @@
 		                                        </c:forEach>
 		                                    </ul>
 		                                </div>
-		                                <button type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${order.orderCode}">주문접수</button>
-		                                <button type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${order.orderCode}">주문취소</button>                           
+		                                <div class="btn_box">
+			                                <button class="orderOk" type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${order.orderCode}">주문접수</button>
+			                                <button class="orderDel" type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${order.orderCode}">주문취소</button>                           
+		                                </div>
 		                            </li>
 		                        </ul>
 	                       	</c:forEach>
@@ -98,7 +102,7 @@
 			                                        <li class="menu_item">${menuOrder.menuName} - ${menuOrder.quantity}개</li>
 							                        <c:if test="${not empty menuOrder.cupType}">
 			                                        	<li class="menu_opt" id="cup_opt">- SIZE : ${menuOrder.cupType} 외 옵션</li>
-	<%-- 						                        <li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
+	 						                        <%--<li class="menu_opt" id="shot_opt">- SHOT : ${menuOrder.shotType} 추가 ${menuOrder.shotCount}회</li>
 							                       		<li class="menu_opt" id="syrup_opt">- SYRUP : ${menuOrder.syrupType} 추가 ${menuOrder.syrupCount}회</li>
 							                        	<li class="menu_opt" id="ice_opt">- ICE : ${menuOrder.iceType}</li>
 							                        	<li class="menu_opt" id="whip_opt">- WHIP : ${menuOrder.whipType}</li>
@@ -107,8 +111,10 @@
 			                                    </c:forEach>
 		                                    </ul>
 		                                </div>
-		                                <button type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${deliver.orderCode}">주문접수</button>
-		                                <button type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${deliver.orderCode}">주문취소</button>                      
+		                                <div class="btn_box">
+			                                <button class="orderOk" type="button" name="orderButton" onclick="orderStart(this)" data-orderCode="${deliver.orderCode}">주문접수</button>
+			                                <button class="orderDel" type="button" name="orderCancelButton" onclick="orderCancel(this)" data-orderCode="${deliver.orderCode}">주문취소</button>                      
+		                                </div>
 		                            </li>
 		                        </ul>
 		                    </c:forEach>
