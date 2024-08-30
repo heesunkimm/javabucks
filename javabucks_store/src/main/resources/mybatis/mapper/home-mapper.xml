@@ -7,13 +7,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="topMenuOrderList" parameterType="String" resultType="PayhistoryDTO">
 		SELECT 
-		    o.orderList        
-		FROM 
-		    javabucks_payhistory ph
-		JOIN 
-		    javabucks_order o ON ph.orderCode = o.orderCode  
-		WHERE 
-		    ph.bucksId = #{bucksId}  
+			    o.orderList        
+			FROM 
+			    javabucks_payhistory ph
+			JOIN 
+			    javabucks_order o ON ph.orderCode = o.orderCode  
+			WHERE 
+			    ph.bucksId = #{bucksId}
+			    AND TO_CHAR(ph.payhistoryDate, 'IW') = TO_CHAR(SYSDATE, 'IW')  
+			    AND TO_CHAR(ph.payhistoryDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')  
 	</select>
 	
 	<select id="getMenuDetails" resultType="MenuDTO">

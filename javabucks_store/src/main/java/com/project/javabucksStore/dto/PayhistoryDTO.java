@@ -1,5 +1,7 @@
 package com.project.javabucksStore.dto;
 
+import java.sql.Date;
+
 public class PayhistoryDTO {
 
 	private int payhistoryNum;
@@ -97,8 +99,50 @@ public class PayhistoryDTO {
 	private String orderList;
 	private int totalSales;
 	private String month;
+	private String menuName;
+	private int menuPrice;
+	private String extractedOrderCode;
+	private int totalItemPrice;
 	
 	
+
+	
+
+	
+
+	
+
+	public int getTotalItemPrice() {
+		return totalItemPrice;
+	}
+
+	public void setTotalItemPrice(int totalItemPrice) {
+		this.totalItemPrice = totalItemPrice;
+	}
+
+	public int getMenuPrice() {
+		return menuPrice;
+	}
+
+	public void setMenuPrice(int menuPrice) {
+		this.menuPrice = menuPrice;
+	}
+
+	public String getExtractedOrderCode() {
+		return extractedOrderCode;
+	}
+
+	public void setExtractedOrderCode(String extractedOrderCode) {
+		this.extractedOrderCode = extractedOrderCode;
+	}
+
+	public String getMenuName() {
+		return menuName;
+	}
+
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
 
 	public String getMonth() {
 		return month;

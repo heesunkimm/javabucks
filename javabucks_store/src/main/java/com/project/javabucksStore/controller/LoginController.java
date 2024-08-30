@@ -45,10 +45,6 @@ public class LoginController {
 		return "login/store_login";
 	}
 	
-	@GetMapping("/store_index")
-	public String store_index() {
-		return "store_index";
-	}
 	
 	// 로그인 및 아이디 저장
 	@PostMapping("/store_index")
@@ -80,7 +76,7 @@ public class LoginController {
 				// 세션에 사용자 정보 저장하여 로그인상태 유지
 				req.getSession().setAttribute("inBucks", bucks); 
 				req.setAttribute("msg", bucks.getBucksId()+"님이 로그인하셨습니다. 메인 페이지로 이동합니다");
-				req.setAttribute("url", "store_index");
+				req.setAttribute("url", "store_index.do");
 	            
 				// 쿠키처리
 				if("on".equals(saveId)) {

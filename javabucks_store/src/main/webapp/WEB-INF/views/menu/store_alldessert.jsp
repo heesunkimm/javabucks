@@ -63,13 +63,10 @@
                 </div>
             </div>
         </div>
-    <input type="hidden" name="bucksId" value="bucks_1111">
     </section>
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
 <script>
-	// 로그인 매장 변수 선언
-	let bucksId =$("input[name='bucksId']").val();
 	
 	// 화면 접속완료 시 메뉴 리스트 로딩 함수 실행하여 디폴트 옵션 표출
 	$(document).ready(function() {
@@ -78,6 +75,7 @@
 	
 	// 체크박스 메뉴 리스트 로딩 함수
     function loadMenuList() {
+    	let bucksId = `${inBucks.bucksId}`;
 	    let menuCate = $('input[name="menu_cate"]:checked').val() || '';
 	    
         $.ajax({
@@ -220,6 +218,8 @@
 	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
+    	let bucksId = `${inBucks.bucksId}`;
+    	
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
@@ -255,6 +255,7 @@
 	function bindEvents() {
 		// 주문막기 버튼 선택 시 이벤트 처리
 		$('.menu_list .holdBtn').off('click').on('click', function() {
+			let bucksId = `${inBucks.bucksId}`;
 			let $btn = $(this);
 			let menuCode = $(this).data('code');
 			let menuStatus = $(this).data('status');
@@ -290,6 +291,7 @@
 		
 		// 메뉴삭제 버튼 클릭 시 이벤트 처리
 		$('.menu_list .delBtn').off('click').on('click', function() {
+			let bucksId = `${inBucks.bucksId}`;
 	        let menuCode = $(this).data('code');
 	        let menuCate = $('input[name="menu_cate"]:checked').val() || '';
 	    

@@ -65,7 +65,6 @@
                 </li>
             </ul>
         </div>
-    <input type="hidden" name="bucksId" value="${inBucks.bucksId}">
     </section>
     <!-- e: content -->
 <%@ include file="../store_bottom.jsp"%>
@@ -113,7 +112,10 @@
 	            } else {
 	                res.forEach(function(item) {
 	                	// 메뉴 추가시 클래스 추가
-	                    let btnClass = item.storeEnable === 'N' ? 'btn_disable' : '';
+	            		let bucksId = `${inBucks.bucksId}`;
+	                	let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
+	                    let btnDisabled = item.storeStatus === 'Y' ? 'disabled' : '';
+	            		console.log(bucksId)
 	                    
 	                    $('.menu_list').append(
 	                        '<li class="menu_item">' + 
@@ -128,7 +130,7 @@
 	                            '</div>' + 
 	                            '<div class="btn_box">' + 
 	                                '<button class="menuAddBtn ' + btnClass + 
-	                                '" data-store="bucks_1111" data-code="' + item.menuCode + 
+	                                '" data-store="' + bucksId + '" data-code="' + item.menuCode + 
 	                                '" data-name="' + item.menuName + '" data-enable="' + (item.storeEnable === 'N' ? 'N' : 'Y') + 
 	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
@@ -148,18 +150,12 @@
 	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
-	    let storeId = $("input[name='bucksId']").val();
-	    
-	    let data = { 
-        	bucksId: storeId
-    	}
-	    
+		let bucksId = `${inBucks.bucksId}`;
+		
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
-	        data: { 
-	            bucksId: storeId
-	        },
+	        data: {bucksId: bucksId},
 	        dataType: 'json',
 	        success: function(res) {
 	            // 메뉴 리스트 새로 업데이트
