@@ -34,7 +34,7 @@
                         <p class="txt_tit">${dto.cpnName} ${dto.cpnDesc}</p>
                         <ul class="txt_desc">
                             <li>${dto.cpnListEndDate}</li>
-                            <li>기간만료</li>
+                            <li>${dto.cpnListStatus}</li>
                         </ul>
                     </div>
                 </li>
