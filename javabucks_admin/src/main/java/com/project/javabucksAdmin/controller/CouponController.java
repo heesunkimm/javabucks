@@ -46,49 +46,68 @@ public class CouponController {
 	    req.setAttribute("cpnInfo", cpnInfo);
 	    
 	    // 검색 조건 처리
+	    String searchDate = (String) params.get("searchDate");
 	    String searchStartDate = (String) params.get("searchStartDate");
 	    String searchEndDate = (String) params.get("searchEndDate");
 	    String cpnListStatus = (String) params.get("cpnListStatus");
 	    String userId = (String) params.get("userId");
 	    String cpnName = (String) params.get("cpnName");
+	    
+	    searchDate = (searchDate == null || searchDate.isEmpty()) ? "" : searchDate;
+	    searchStartDate = (searchStartDate == null || searchStartDate.isEmpty()) ? "" : searchStartDate;
+	    searchEndDate = (searchEndDate == null || searchEndDate.isEmpty()) ? "" : searchEndDate;
+	    cpnListStatus = (cpnListStatus == null || cpnListStatus.isEmpty()) ? "" : cpnListStatus;
+	    userId = (userId == null || userId.isEmpty()) ? "" : userId;
+	    cpnName = (cpnName == null || cpnName.isEmpty()) ? "" : cpnName;
+	    
+	    // 검색 조건을 포함한 매퍼 호출
+	    Map<String, Object> searchParams = new HashMap<>();
+	    searchParams.put("searchDate", searchDate);
+        searchParams.put("searchStartDate", searchStartDate);
+        searchParams.put("searchEndDate", searchEndDate);
+        searchParams.put("cpnListStatus", cpnListStatus);
+        searchParams.put("userId", userId);
+        searchParams.put("cpnName", cpnName);
+        
+	    // 페이징
+        int searchCount = couponMapper.searchFilterCpnCount(searchParams);
+        int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
+	    int startRow = (pageNum - 1) * pageSize + 1;
+	    int endRow = startRow + pageSize - 1;	
+	    if (endRow > searchCount) endRow = searchCount;		
+	    int no = searchCount - startRow + 1;				
+	    int pageBlock = 3;
+	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
+	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
+	    int endPage = startPage + pageBlock - 1;
+	    if (endPage > pageCount) endPage = pageCount;
+	    
+	    // 검색 조건에 맞게 필터링된 쿠폰리스트
+        List<CouponListDTO> searchList;
+        
+        // 검색 조건에 따라 메뉴 리스트 가져오기
+        searchParams.put("startRow", startRow);
+	    searchParams.put("endRow", endRow);
+	    
+	    searchList = couponMapper.searchFilterCpn(searchParams);
 
 	    // 검색 조건이 있을 경우
-	    if (searchStartDate != null || searchEndDate != null || cpnListStatus != null || userId != null || cpnName != null) {
-	        Map<String, Object> searchParams = new HashMap<>();
-	        searchParams.put("searchStartDate", searchStartDate);
-	        searchParams.put("searchEndDate", searchEndDate);
-	        searchParams.put("cpnListStatus", cpnListStatus);
-	        searchParams.put("userId", userId);
-	        searchParams.put("cpnName", cpnName);
+	    if (searchList.isEmpty()) {
+	    	req.setAttribute("nolist", true);
 	        
-	        // 페이징
-//	        int searchCount = couponMapper.searchFilterCpnCount(searchParams);
-//		    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
-//		    int startRow = (pageNum - 1) * pageSize + 1;
-//		    int endRow = startRow + pageSize - 1;	
-//		    if (endRow > searchCount) endRow = searchCount;		
-//		    int no = searchCount - startRow + 1;				
-//		    int pageBlock = 3;
-//		    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
-//		    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
-//		    int endPage = startPage + pageBlock - 1;
-//		    if (endPage > pageCount) endPage = pageCount;
-	        
-	        // 검색 조건에 맞게 필터링된 쿠폰리스트
-	        List<CouponListDTO> searchList;
-	        
-	        // 검색 조건에 따라 메뉴 리스트 가져오기
-//		    searchParams.put("startRow", startRow);
-//		    searchParams.put("endRow", endRow);
-	        
-	        searchList = couponMapper.searchFilterCpn(searchParams);
-	        
+	    } else {
+	        // 값이 있을 때
 	        req.setAttribute("searchList", searchList);
 	        req.setAttribute("searchParams", searchParams);
-	    } else {
-	        // 전체 데이터 조회
-	        List<CouponListDTO> allList = couponMapper.getUserCpnList();
-	        req.setAttribute("searchList", allList);
+	        req.setAttribute("searchCount", searchCount);
+	        req.setAttribute("pageSize", pageSize);
+	        req.setAttribute("startRow", startRow);
+	        req.setAttribute("endRow", endRow);
+	        req.setAttribute("no", no);
+	        req.setAttribute("pageBlock", pageBlock);
+	        req.setAttribute("pageCount", pageCount);
+	        req.setAttribute("startPage", startPage);
+	        req.setAttribute("endPage", endPage);
 	    }
 
 	    return "/coupon/admin_cpnmange";
@@ -193,7 +212,7 @@ public class CouponController {
 	
 	// 어드민 쿠폰등록
 	@PostMapping("/insertCoupon.ajax")
-	@ResponseBody	
+	@ResponseBody
 	public String insertCoupon(@RequestBody CouponDTO dto) {
 	    // 중복 체크
 	    CouponDTO cpnCheck = couponMapper.cpnCheck(dto);
@@ -213,14 +232,13 @@ public class CouponController {
 	    }
 	}
 	
-	// 쿠폰삭제
+	// 쿠폰 삭제
 	@PostMapping("/deleteCoupon.ajax")
 	@ResponseBody
 	public String deleteCoupon(@RequestBody Map<String, String> params) {
 		String cpnCode = params.get("cpnCode");
 		
 		int res = couponMapper.deleteCoupon(cpnCode);
-		System.out.println(res);
 		
 	    if (res > 0) {
 	        return "해당 쿠폰이 삭제되었습니다.";
@@ -235,5 +253,32 @@ public class CouponController {
 	public ResponseEntity<List<CouponDTO>> getCouponList() {
 	    List<CouponDTO> cpnList = couponMapper.listCoupon();
 	    return ResponseEntity.ok(cpnList);
+	}
+	
+	// 특정 유저에게 쿠폰 전송
+	@PostMapping("/sendUserCoupon.ajax")
+	@ResponseBody
+	public String sendUserCoupon(@RequestBody Map<String, String> params) {
+		String userId = params.get("userId");
+		String cpnCode = params.get("cpnCode");
+		
+		Map<String, Object> searchParams = new HashMap<>();
+		searchParams.put("userId", userId);
+		searchParams.put("cpnCode", cpnCode);
+		
+		CouponListDTO CpnCheck = couponMapper.todayCpnCheck(searchParams);
+		
+		// 유저에게 하나의 쿠폰이 같은 날 중복발급 안되게 체크
+		if(CpnCheck != null) {
+			return "해당 유저에게 이미 발급된 쿠폰입니다.";
+		}
+		
+		int res = couponMapper.sendUserCoupon(searchParams);
+		
+		if(res > 0) {
+			return "해당 유저에게 쿠폰이 전송되었습니다.";
+		}else {
+			return "해당 유저에게 쿠폰 실패하였습니다.";
+		}
 	}
 }
