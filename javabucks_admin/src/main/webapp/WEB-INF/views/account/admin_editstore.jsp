@@ -15,9 +15,7 @@
                             <label><span>아이디</span>
                                 <input type="text" name="bucksId" value="${jbucks.bucksId}" readonly>
                             </label>
-                            <!-- <label><span>패스워드</span>
-                                <input type="password" name="" value="" readonly>
-                            </label> -->
+                            <p class="id_noti">* 지점아이디 수정 불가</p>
                         </div>
                     </div>
 
@@ -31,16 +29,16 @@
                         </label>
                         <div class="loca_box">
                             <label><span>지점위치</span>
-                                <input type="text" name="" value="${jbucks.bucksLocation}" readonly>
+                                <input type="text" name="bucksLocation" value="${jbucks.bucksLocation}" readonly>
                             </label>
                         </div>
                         <div class="tel_box">
                             <label><span>지점번호</span>
-                                 <input type="text" name="bucksTel1" size="3" maxlength="3" value="${jbucks.bucksTel1}" required> 
+                                 <input class="tel" type="text" name="bucksTel1" size="3" maxlength="3" value="${jbucks.bucksTel1}" required> 
                                 -
-                                <input type="text" name="bucksTel2" size="4" maxlength="4" value="${jbucks.bucksTel2}" required> 
+                                <input class="tel" type="text" name="bucksTel2" size="4" maxlength="4" value="${jbucks.bucksTel2}" required> 
                                 -
-                                <input type="text" name="bucksTel3" size="4" maxlength="4" value="${jbucks.bucksTel3}" required>
+                                <input class="tel" type="text" name="bucksTel3" size="4" maxlength="4" value="${jbucks.bucksTel3}" required>
                             </label>
                         </div>
                         <div class="email_box">

@@ -54,10 +54,10 @@
                     <ul  class="sales_cont">
                         <li>
                             <ul class="cont_toolbar">
-                                <li>발주번호</li>
-                                <li>발주일</li>
-                                <li>발주품목</li>
-                                <li>발주금액</li>
+                                <li style="width: 15%;">발주번호</li>
+                                <li style="width: 25%;">발주일</li>
+                                <li style="width: 37%;">발주품목</li>
+                                <li style="width: 23%;">발주금액</li>
                             </ul>
                         </li>
                         <li>
@@ -67,7 +67,6 @@
                                 <li></li>
                                 <li></li>
                                 <li></li>
-							        
 							</ul>
 							
                         </li>
@@ -127,11 +126,11 @@
 
              if (response.length === 0) {
                  salesCont.append(
-                     '<li><ul class="cont_toolbar"><li>발주번호</li><li>발주일</li><li>발주품목</li><li>발주금액</li></ul></li>' +
+                     '<li><ul class="cont_toolbar"><li style="width: 15%;">발주번호</li><li style="width: 25%;">발주일</li><li style="width: 37%;">발주품목</li><li style="width: 23%;">발주금액</li></ul></li>' +
                      '<li style="width: 100%; text-align: center; padding: 20px;">발주 내역이 없습니다.</li>'
                  );
              } else {
-                 let listHtml = '<li><ul class="cont_toolbar"><li>발주번호</li><li>발주일</li><li>발주품목</li><li>발주금액</li></ul></li>';
+                 let listHtml = '<li><ul class="cont_toolbar"><li style="width: 15%;">발주번호</li><li style="width: 25%;">발주일</li><li style="width: 37%;">발주품목</li><li style="width: 23%;">발주금액</li></ul></li>';
 
                  response.forEach(function(order) {
                      let stockItemsHtml = '';
@@ -141,10 +140,10 @@
                      });
 
                      listHtml += '<li><ul class="cont_details">';
-                     listHtml += '<li>' + order.baljooNum + '</li>';
-                     listHtml += '<li>' + order.baljooDate + '</li>';
-                     listHtml += '<li>' + stockItemsHtml + '</li>';
-                     listHtml += '<li>' + order.baljooPrice.toLocaleString('ko-KR') + '원</li>';
+                     listHtml += '<li style="width: 15%;">' + order.baljooNum + '</li>';
+                     listHtml += '<li style="width: 25%;">' + order.baljooDate + '</li>';
+                     listHtml += '<li style="width: 37%;">' + stockItemsHtml + '</li>';
+                     listHtml += '<li style="width: 23%;">' + order.baljooPrice.toLocaleString('ko-KR') + '원</li>';
                      listHtml += '</ul></li>';
                  });
 

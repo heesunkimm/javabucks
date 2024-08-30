@@ -71,25 +71,19 @@ public class CouponController {
         
 	    // 페이징
         int searchCount = couponMapper.searchFilterCpnCount(searchParams);
-        int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
-	    int startRow = (pageNum - 1) * pageSize + 1;
-	    int endRow = startRow + pageSize - 1;	
-	    if (endRow > searchCount) endRow = searchCount;		
-	    int no = searchCount - startRow + 1;				
-	    int pageBlock = 3;
-	    int pageCount = searchCount / pageSize + (searchCount % pageSize == 0 ? 0 : 1);		
-	    int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;		
-	    int endPage = startPage + pageBlock - 1;
-	    if (endPage > pageCount) endPage = pageCount;
+        int pageSize = 10; // 한 페이지에 보여줄 리스트 갯수
+        int offset = (pageNum - 1) * pageSize; // OFFSET 값 계산
+        int pageBlock = 3;
+        int pageCount = (int) Math.ceil((double) searchCount / pageSize);
+        int startPage = (pageNum - 1) / pageBlock * pageBlock + 1;        
+        int endPage = startPage + pageBlock - 1;
+        if (endPage > pageCount) endPage = pageCount;
+
+        searchParams.put("offset", offset);
+        searchParams.put("limit", pageSize);
 	    
 	    // 검색 조건에 맞게 필터링된 쿠폰리스트
-        List<CouponListDTO> searchList;
-        
-        // 검색 조건에 따라 메뉴 리스트 가져오기
-        searchParams.put("startRow", startRow);
-	    searchParams.put("endRow", endRow);
-	    
-	    searchList = couponMapper.searchFilterCpn(searchParams);
+        List<CouponListDTO> searchList = couponMapper.searchFilterCpn(searchParams);
 
 	    // 검색 조건이 있을 경우
 	    if (searchList.isEmpty()) {
@@ -97,17 +91,15 @@ public class CouponController {
 	        
 	    } else {
 	        // 값이 있을 때
-	        req.setAttribute("searchList", searchList);
+	    	req.setAttribute("searchList", searchList);
 	        req.setAttribute("searchParams", searchParams);
 	        req.setAttribute("searchCount", searchCount);
 	        req.setAttribute("pageSize", pageSize);
-	        req.setAttribute("startRow", startRow);
-	        req.setAttribute("endRow", endRow);
-	        req.setAttribute("no", no);
 	        req.setAttribute("pageBlock", pageBlock);
 	        req.setAttribute("pageCount", pageCount);
 	        req.setAttribute("startPage", startPage);
 	        req.setAttribute("endPage", endPage);
+	        req.setAttribute("currentPage", pageNum);
 	    }
 
 	    return "/coupon/admin_cpnmange";

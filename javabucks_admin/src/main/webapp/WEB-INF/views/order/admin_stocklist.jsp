@@ -48,17 +48,17 @@
 	            	<c:forEach var="stocks" items="${adminStockList}">            	
 		                <li class="search_item">
 		                    <ul class="search_toolbar">
-		                        <li style="width: 20%;">카테고리</li>
-		                        <li style="width: 20%;">카테고리 코드</li>
-		                        <li style="width: 20%;">품목명</li>
-		                        <li style="width: 20%;">남은재고</li>
+		                        <li style="width: 14%;">카테고리</li>
+		                        <li style="width: 17%;">카테고리 코드</li>
+		                        <li style="width: 40%;">품목명</li>
+		                        <li style="width: 10%;">남은재고</li>
 		                        <li style="width: 20%;"></li>
 		                    </ul>
 		                    <ul class="search_cont">
-		                        <li class="stocks_cate" style="width: 20%; text-align: center;">${stocks.stockCateCode}</li>
-		                        <li class="stocks_listCode" style="width: 20%; text-align: center;">${stocks.stockListCode}</li>
-		                        <li class="stocks_listName" style="width: 20%; text-align: center;">${stocks.stockListName}</li>
-		                        <li class="stocks_count" style="width: 20%; text-align: center;">${stocks.stockListCount}</li>
+		                        <li class="stocks_cate" style="width: 14%; text-align: center;">${stocks.stockCateCode}</li>
+		                        <li class="stocks_listCode" style="width: 17%; text-align: center;">${stocks.stockListCode}</li>
+		                        <li class="stocks_listName" style="width: 40%; text-align: center;">${stocks.stockListName}</li>
+		                        <li class="stocks_count" style="width: 10%; text-align: center;">${stocks.stockListCount}</li>
 		                        <li style="width: 20%; text-align: center;">
 		                            <button class="stocks_btn" type="button" onclick="stocksPlus(this)">재고확충</button>
 		                            <c:if test="${stocks.stockListStatus eq 'Y'}">
@@ -79,7 +79,7 @@
 			<div class="pagination pagination">
 			    <c:if test="${startPage > pageBlock}"> 
 			        <a class="page_btn prev_btn" href="adminStockList.do?pageNum=${startPage-3}">
-			        이전
+			        	<img src="../../images/icons/arrow.png">
 			        </a>
 			    </c:if>
 			    
@@ -98,7 +98,7 @@
 			    
 			    <c:if test="${pageCount > endPage}">
 			        <a class="page_btn next_btn" href="adminStockList.do?pageNum=${startPage+3}">
-			        다음
+			        	<img src="../../images/icons/arrow.png">
 			        </a>
 			    </c:if>
 			</div>
@@ -110,17 +110,17 @@
 	            	<c:forEach var="stocks" items="${findAdminStockList}">            	
 		                <li class="search_item">
 		                    <ul class="search_toolbar">
-		                        <li style="width: 20%;">카테고리</li>
-		                        <li style="width: 20%;">카테고리 코드</li>
-		                        <li style="width: 20%;">품목명</li>
-		                        <li style="width: 20%;">남은재고</li>
+		                        <li style="width: 14%;">카테고리</li>
+		                        <li style="width: 17%;">카테고리 코드</li>
+		                        <li style="width: 40%;">품목명</li>
+		                        <li style="width: 10%;">남은재고</li>
 		                        <li style="width: 20%;"></li>
 		                    </ul>
 		                    <ul class="search_cont">
-		                        <li class="stocks_cate" style="width: 20%; text-align: center;">${stocks.stockCateCode}</li>
-		                        <li class="stocks_listCode" style="width: 20%; text-align: center;">${stocks.stockListCode}</li>
-		                        <li class="stocks_listName" style="width: 20%; text-align: center;">${stocks.stockListName}</li>
-		                        <li class="stocks_count" style="width: 20%; text-align: center;">${stocks.stockListCount}</li>
+		                        <li class="stocks_cate" style="width: 14%; text-align: center;">${stocks.stockCateCode}</li>
+		                        <li class="stocks_listCode" style="width: 17%; text-align: center;">${stocks.stockListCode}</li>
+		                        <li class="stocks_listName" style="width: 40%; text-align: center;">${stocks.stockListName}</li>
+		                        <li class="stocks_count" style="width: 10%; text-align: center;">${stocks.stockListCount}</li>
 		                        <li style="width: 20%; text-align: center;">
 		                        	<button class="stocks_btn" type="button" onclick="stocksPlus(this)">재고확충</button>
 		                            <c:if test="${stocks.stockListStatus eq 'Y'}">
@@ -141,7 +141,7 @@
 			<div class="pagination pagination">
 			    <c:if test="${startPage > pageBlock}"> 
 			        <a class="page_btn prev_btn" href="findAdminStockList.do?pageNum=${startPage-3}&searchCate=${searchCate}&searchStockListName=${searchStockListName}">
-			        이전
+			        	<img src="../../images/icons/arrow.png">
 			        </a>
 			    </c:if>
 			    
@@ -160,7 +160,7 @@
 			    
 			    <c:if test="${pageCount > endPage}">
 			        <a class="page_btn next_btn" href="findAdminStockList.do?pageNum=${startPage+3}&searchCate=${searchCate}&searchStockListName=${searchStockListName}">
-			        다음
+			        	<img src="../../images/icons/arrow.png">
 			        </a>
 			    </c:if>
 			</div>

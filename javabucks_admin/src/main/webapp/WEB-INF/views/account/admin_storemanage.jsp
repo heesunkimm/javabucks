@@ -69,21 +69,21 @@
                 <c:forEach items="${bucksList}" var ="bucks">
                       <li class="search_item">
                         <ul class="search_toolbar">
-                            <li style="width: 15%;">지점명</li>
-                            <li style="width: 17%;">지점등록번호</li>
+                            <li style="width: 12%;">지점명</li>
+                            <li style="width: 13%;">지점등록번호</li>
                             <li style="width: 10%;">점주명</li>
-                            <li style="width: 20%;">위치</li>
-                            <li style="width: 20%;">전화번호</li>
+                            <li style="width: 32%;">위치</li>
+                            <li style="width: 15%;">전화번호</li>
                             <li style="width: 8%;">영업상태</li>
                             <li style="width: 10%;"></li>
                         </ul>
                         
                          <ul class="search_cont">
-                           <li class="store_name" style="width: 15%; text-align: center;">${bucks.bucksName}</li>
-                            <li class="store_code" style="width: 17%; text-align: center;">${bucks.bucksId}</li>
+                           <li class="store_name" style="width: 12%; text-align: center;">${bucks.bucksName}</li>
+                            <li class="store_code" style="width: 13%; text-align: center;">${bucks.bucksId}</li>
                             <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
-                            <li class="store_location" style="width: 20%; text-align: center;">${bucks.bucksLocation}</li>
-                            <li class="store_tel" style="width: 20%; text-align: center;">${bucks.bucksTel1} - ${bucks.bucksTel2} - ${bucks.bucksTel3}</li>
+                            <li class="store_location" style="width: 32%; text-align: center;">${bucks.bucksLocation}</li>
+                            <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
                             <li class="store_tel" style="width: 8%; text-align: center;">${bucks.bucksEnable}</li>
                             <li style="width: 10%; text-align: center;"><button class="store_btn" type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button></li>
                         </ul>

@@ -35,16 +35,15 @@
                             <input type="text" name="bucksOwner" value="" required>
                         </label>
                         <div class="loca_box">
-                            <label><span>지점위치</span>
+                            <label style="display: flex;"><span>지점위치</span>
 	                            	<!-- s: 우편번호 -->
+                            	<div class="loca_details" style="display: flex;">
 		                            <input type="text" name="postcode" class="postcode" placeholder="우편번호" title="우편번호" >
 		            				<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기" >
-                               <input type="text" name="location" class="address" value="" required>
-                               <input type="text" name="detailaddress" class="detailAddress" placeholder="상세주소" title="상세주소" >
+	                                <input type="text" name="location" class="address" value="" required>
+	                                <input type="text" name="detailaddress" class="detailAddress" placeholder="상세주소" title="상세주소" >
+                            	</div>
                             </label>
-                            
-                            
-                            
                         </div>
                         <div class="tel_box">
                             <label><span>지점번호</span>

@@ -32,9 +32,9 @@
                     <table class="search_list s_table">
                         <thead class="bg_green font_white">
                             <tr>
-                            	<th>연월</th>
-                                <th>지점명</th>
-                                <th>매출액</th>
+                            	<th style="width: 33%;">연월</th>
+                                <th style="width: 33%;">지점명</th>
+                                <th style="width: 34%;">매출액</th>
                                
                             </tr>
                         </thead>
@@ -63,9 +63,9 @@
                     <ul class="sales_cont">
                         <li>
                             <ul class="cont_toolbar">
-                                <li>메뉴카테고리</li>
-                                <li>매출액</li>
-                                <li>비중</li>
+                                <li style="width: 33%;">메뉴카테고리</li>
+                                <li style="width: 33%;">매출액</li>
+                                <li style="width: 34%;">비중</li>
                             </ul>
                         </li>
                         <li>
@@ -146,7 +146,7 @@
 	            if (!response.hasSalesData) {
 	                // 매출 내역이 없을 때
 	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>' + 
-	                    '<li><ul class="cont_details">해당 지점의 매출 내역이 없습니다</ul></li>');
+	                    '<li><ul class="cont_details"><li style="width:100%">해당 지점의 매출 내역이 없습니다</li></ul></li>');
 	            } else {
 	                // cont_toolbar 부분을 반복문 밖으로 빼서 한 번만 추가
 	                $('.sales_cont').append('<li><ul class="cont_toolbar"><li>메뉴카테고리</li><li>매출액</li><li>비중</li></ul></li>');

@@ -19,18 +19,21 @@
                             	<option value="${year}" <c:if test="${selectYear eq year}">selected</c:if>>${year}</option>
                             </c:forEach>
                         </select>
-                    </label>년
+                        년
+                    </label>
                     <label>
                         <select name="selectMonth">
                             <c:forEach var="month" items="${monthList}">
                             	<option value="${month}" <c:if test="${selectMonth eq month}">selected</c:if>>${month}</option>
                             </c:forEach>
                         </select>
-                    </label>월
+                        월
+                    </label>
                     <label>
                         <input type="checkbox" name="unproCheck" value="checked" <c:if test="${unproCheck == 'checked'}">checked</c:if>>미처리건 조회
                     </label>
                 </div>
+                <div style="width: 100%; display: flex; align-items: center;">
                 <label>발주지점
                     <select name="selectStore">
                     	<option value="ALL">전체</option>
@@ -43,6 +46,7 @@
 					<input type="text" name="selectNum" value="${selectNum}">
                 </label>
                 <button type="submit">검색</button>
+                </div>
             </form>
         </div>
 
@@ -51,7 +55,7 @@
                 <table class="search_list s_table">
                     <thead class="bg_green font_white">
                         <tr>
-                            <th>발주번호</th>
+                            <th style="width: 10%;">발주번호</th>
                             <th>발주일</th>
                             <th>발주지점</th>
                             <th>발주품목</th>
@@ -62,7 +66,7 @@
                     <tbody>
 	                    <c:if test="${empty searchBaljooList}">
 	                    	<c:if test="${empty baljooList}">
-	                    		<tr>발주내역이 없습니다.</tr>
+	                    		<tr><td colspan="6" style="text-align: center;">발주내역이 없습니다.</td></tr>
 	                    	</c:if>
 	                    	<c:if test="${not empty baljooList}">
 		                    	<c:forEach var="baljoo" items="${baljooList}">
@@ -84,10 +88,10 @@
 			                            <td><fmt:formatNumber value="${baljoo.baljooPrice}" pattern="###,###"/>원</td>
 			                            <td>
 			                            	<c:if test="${baljoo.baljooStatus eq '주문완료'}">
-			                            		<button style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${baljoo.baljooNum}">접수</button>
+			                            		<button class="orderBtn orderBtn01" onclick="storeOrderOk(this)" data-baljooNum="${baljoo.baljooNum}">접수</button>
 			                            	</c:if>
 			                            	<c:if test="${baljoo.baljooStatus eq '접수완료'}">
-			                            		<button style="background:grey; color:white;" onclick="" data-baljooNum="${baljoo.baljooNum}">접수완료</button>
+			                            		<button class="orderBtn orderBtn02" onclick="" data-baljooNum="${baljoo.baljooNum}">접수완료</button>
 			                            	</c:if>
 			                            </td>
 			                        </tr>
@@ -115,10 +119,10 @@
 		                            <td><fmt:formatNumber value="${search.baljooPrice}" pattern="###,###"/>원</td>
 		                            <td>
 		                            	<c:if test="${search.baljooStatus eq '주문완료'}">
-		                            		<button type="button" style="background:green; color:white;" onclick="storeOrderOk(this)" data-baljooNum="${search.baljooNum}">접수</button>
+		                            		<button class="orderBtn orderBtn01" type="button" onclick="storeOrderOk(this)" data-baljooNum="${search.baljooNum}">접수</button>
 		                            	</c:if>
 		                            	<c:if test="${search.baljooStatus eq '접수완료'}">
-		                            		<button type="button" style="background:grey; color:white;" onclick="" data-baljooNum="${search.baljooNum}">접수완료</button>
+		                            		<button class="orderBtn orderBtn02" type="button" onclick="" data-baljooNum="${search.baljooNum}">접수완료</button>
 		                            	</c:if>
 		                            </td>
 		                        </tr>
@@ -132,7 +136,7 @@
 	                <div class="pagination">
 					    <c:if test="${startPage > pageBlock}"> 
 					        <a class="page_btn prev_btn" href="adminStoreOrder.do?pageNum=${startPage-3}">
-					        이전
+					        	<img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
 					    
@@ -151,7 +155,7 @@
 					    
 					    <c:if test="${pageCount > endPage}">
 					        <a class="page_btn next_btn" href="adminStoreOrder.do?pageNum=${startPage+3}">
-					        다음
+					        	<img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
 	                </div> 
@@ -162,10 +166,9 @@
 	                <div class="pagination">
 					    <c:if test="${startPage > pageBlock}"> 
 					        <a class="page_btn prev_btn" href="searchAdminStoreOrder.do?pageNum=${startPage-3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
-					        이전
+					        	<img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
-					    
 					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
 					        <c:set var="activeClass" value=""/>
 					        <c:choose>
@@ -178,10 +181,9 @@
 					        </c:choose>
 					        <a href="searchAdminStoreOrder.do?pageNum=${i}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}" class="${activeClass} page_num">${i}</a>
 					    </c:forEach>
-					    
 					    <c:if test="${pageCount > endPage}">
 					        <a class="page_btn next_btn" href="searchAdminStoreOrder.do?pageNum=${startPage+3}&selectYear=${selectYear}&selectMonth=${selectMonth}&selectStore=${selectStore}&selectNum=${selectNum}&unproCheck=${unproCheck}">
-					        다음
+					        	<img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
 	                </div> 
