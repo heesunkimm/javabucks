@@ -8,6 +8,15 @@ public class AdminDTO {
 	private String adminAuthority;
 	private String adminJoindate;
 	private String adminEnable; 
+	
+
+	public String getAdminEmail() {
+		return adminEmail;
+	}
+
+	public void setAdminEmail(String adminEmail) {
+		this.adminEmail = adminEmail;
+	}
 
 	public String getAdminId() {
 		return adminId;
