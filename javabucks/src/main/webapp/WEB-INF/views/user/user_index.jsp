@@ -70,6 +70,7 @@
                             <img src="../images/icons/alarm.png" alt="">
                         </div>
                     </a>
+					<span class="noReadNum">0</span>
                 </div>
             </div>
     
@@ -141,16 +142,38 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script>
-        let swiper = new Swiper(".news_box", {
-            slidesPerView: 1,
-            spaceBetween: 0,
-            loop: true,
-            autoplay: {
-                delay: 7000,
-            },
-            pagination: {
-            el: ".news_pagination",
-            clickable: true,
-            }
-        });
+		$(document).ready(function() {
+			let userId = `${inUser.userId}`;
+			let swiper = new Swiper(".news_box", {
+	            slidesPerView: 1,
+	            spaceBetween: 0,
+	            loop: true,
+	            autoplay: {
+	                delay: 7000,
+	            },
+	            pagination: {
+	            el: ".news_pagination",
+	            clickable: true,
+	            }
+	        });
+			
+			// 실시간 알림갯수 보여주기
+			function checkAlarm() {
+			    $.ajax({
+			        url: `${pageContext.request.contextPath}/noReadAlarmCheck.ajax`,
+			        method: "GET",
+			        data: { userId: userId },
+			        success: function(res) {
+			            console.log(res);
+						$('.noReadNum').text(res);
+			        },
+			        error: function(error) {
+			            console.error("Error: ", error);
+			        }
+			    });
+			}
+
+			checkAlarm();
+			setInterval(checkAlarm, 10000);
+		});
     </script>
