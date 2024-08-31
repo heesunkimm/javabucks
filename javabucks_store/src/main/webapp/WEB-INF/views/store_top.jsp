@@ -92,14 +92,15 @@
         <form name="f" action="" method="post">
             <div class="input_box">
                 <label>신규 비밀번호
-                    <input type="password" name="storePasswd" value="">
+                    <input type="password" name="storePasswd1" value="">
                 </label>
                 <label>신규 비밀번호 확인
                     <input type="password" name="storePasswd2" value="">
                 </label>
             </div>
             <div class="pbtn_box">
-                <button class="editBtn" type="button" onclick="changePasswd()">비밀번호 변경</button>
+            	<input type="hidden" name="bucksId" value="${inBucks.bucksId}">
+                <button class="editBtn" type="button" onclick="changePw()">비밀번호 변경</button>
                 <button class="close_btn" type="button" data-popup="passwdEdit">취소</button>
             </div>
         </form>

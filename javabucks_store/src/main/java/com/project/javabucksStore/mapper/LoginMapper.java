@@ -33,10 +33,14 @@ public class LoginMapper {
 		return sqlSession.selectOne("findStoreByIDEmail", params);
 	}
 	
-	// 비밀번호 찾기 처리
+	// 비밀번호 찾기
 	public String findStorePWbyEmail(Map<String, String> params) {
 		return sqlSession.selectOne("findStorePWbyEmail", params);
 	}
 	
+	// 비밀번호 변경 처리
+	public int changePasswd(Map<String, String> params) {
+		return sqlSession.update("changePasswd", params);
+	}
 	
 }

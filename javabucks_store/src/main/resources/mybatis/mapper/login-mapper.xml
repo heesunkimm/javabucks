@@ -33,4 +33,10 @@
 			and bucksEmail2 = #{bucksEmail2}
 			and bucksId = #{bucksId}
 	</select>
+	
+	<update id="changePasswd" parameterType="java.util.Map">
+		update javabucks_bucks
+		set bucksPasswd = #{bucksPasswd}
+		where bucksId = #{bucksId}
+	</update>
 </mapper>

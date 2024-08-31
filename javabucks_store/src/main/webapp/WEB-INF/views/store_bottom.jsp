@@ -3,29 +3,39 @@
     <footer></footer>
 </body>
 <script>
-	function changePasswd(){
-		const storePasswd = document.getElementsByName('storePasswd')[0];
-	    const storePasswd2 = document.getElementsByName('storePasswd2')[0];
+function changePw(){
+	const bucksId = document.getElementsByName('bucksId')[0].value;
+	const passwd1 = document.getElementsByName('storePasswd1')[0].value;
+	const passwd2 = document.getElementsByName('storePasswd2')[0].value;
+
+	if(passwd1 === passwd2){
+		$.ajax({
+			type : "POST",
+			url : "changePasswd.ajax",
+			data : {
+				bucksId : bucksId,
+				bucksPasswd : passwd1
+			},
+			success : function(response){
+				if(response == 'success'){
+					alert("비밀번호가 변경되었습니다.");
+					location.reload();
+				} else {
+					alert("비밀번호 변경 실패. 관리자에게 문의해주세요.")
+				}
+			},
+			error : function(error){
+				console.log(error);
+			}
+		});
+	} else {
+		alert("입력하신 비밀번호가 일치하지 않습니다.");
+		document.getElementsByName('storePasswd1')[0].value = '';
+		document.getElementsByName('storePasswd2')[0].value = '';
+		document.getElementsByName('storePasswd1')[0].focus();
 		
-	    $.ajax({
-            url: "changePasswd.ajax",
-            type: "POST",
-            data: { 
-            	"storePasswd": storePasswd,
-            	"storePasswd2": storePasswd2
-            },
-            success: function (res) {
-            	if(res === 'success'){
-            		alert("비밀번호가 변경되었습니다.")
-            	}else{
-            		alert("비밀번호 변경에 실패했습니다. 관리자에게 문의해주세요.")
-            	}
-            },
-            error: function (err) {
-            	alert("에러 발생. 관리자에게 문의해주세요.")
-                console.error(err);
-            }
-        });
 	}
+}
+
 </script>
 </html>

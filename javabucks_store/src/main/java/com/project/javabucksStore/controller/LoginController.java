@@ -290,11 +290,21 @@ public class LoginController {
 	}
 	
 	// 비밀번호 변경
+	@ResponseBody
 	@PostMapping("/changePasswd.ajax")
-	public String changePasswd(HttpServletRequest req, String storePasswd, String storePasswd2) {
-		System.out.println(storePasswd);
-		System.out.println(storePasswd2);
-		return "";
+	public String changePasswd(HttpServletRequest req, String bucksId, String bucksPasswd) {
+		
+		Map<String, String> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("bucksPasswd", bucksPasswd);
+		
+		int changePasswdResult = loginMapper.changePasswd(params);
+		
+		if(changePasswdResult > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
 	}
 
 }
