@@ -562,4 +562,12 @@
  		 FROM javabucks_menu		 
  		 WHERE menuCode = #{menuCode}	 				 	  		 
  	</select>			
+ 	
+ 	<!-- ================================================================================ -->
+ 	<!-- 민영 작업 -->
+ 	<select id="getOrderHistory" parameterType="String" resultType="OrderDTO">
+ 		select * from javabucks_order
+ 		where userId = #{userId}
+ 	</select>
+ 	
  </mapper>

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,12 +18,12 @@
     <section id="user_orderhistory" class="content">
         <div class="inner_wrap">
             <div class="tit_box">
-                <p class="font_bold">히스토리</p>
+                <p class="font_bold">매장 주문 히스토리</p>
             </div>
             <div class="period_box">
                 <label>
                     <select name="">
-                        <option value="">주문상태 (전체)</option>
+                        <option value="">주문상태(전체)</option>
                         <option value="">주문완료</option>
                         <option value="">제조중</option>
                         <option value="">제조완료</option>
@@ -34,22 +36,35 @@
                 <p class="font_gray">2024.07.01  ~ 2024.08.01</p>
                 <a class="popup_btn font_green" href="javascript:;" data-popup="periodpop">기간 설정</a>
             </div>
-
-            <ul class="history_list">
-                <li class="history_item">
-                    <!-- 메뉴준비 상태, 갯수에 따라 딤처리 menu_status 추가 -->
-                    <div class="img_box">
-                        <img src="../images/logo/starbucks_logo_black.png" alt="">
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_tit">아이스 카페 아메리카노 외</p>
-                        <ul class="txt_desc">
-                            <li class="font_gray">2024.03.16 14:21:00</li>
-                            <li>지점명<span>11,000원</span></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
+            <c:if test="${empty orderInfoList}">
+            	<ul class="history_list">
+	                <li class="history_item">
+	                    <div class="txt_box">
+	                        <p class="txt_tit">주문내역이 없습니다.</p>
+	                    </div>
+	                </li>
+	            </ul>
+            </c:if>
+			<c:if test="${not empty orderInfoList}">
+	            <ul class="history_list">
+	            	<c:forEach var="order" items="${orderInfoList}">
+		                <li class="history_item">
+		                    <!-- 메뉴준비 상태, 갯수에 따라 딤처리 menu_status 추가 -->
+		                    <div class="img_box">
+		                        <img src="../images/logo/starbucks_logo_black.png" alt="">
+		                    </div>
+		                    <div class="txt_box">
+		                        <p class="txt_tit">${order.orderList }</p>
+		                        <ul class="txt_desc">
+		                            <li class="font_gray">${order.orderDate}</li>
+		                            <li>${order.bucksId}<span>${order.orderPrice}</span></li>
+		                        </ul>
+		                    </div>
+		                </li>
+		            </c:forEach>
+	            </ul>
+            </c:if>
+            
         </div>
         <!-- 기간설정 팝업 -->
         <div class="popup_box period_date" id="periodpop" style="display: none;">
