@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +59,18 @@ public class UserController {
 	@Autowired
 	UserMapper userMapper;
 
+	// 실시간 알림갯수 보여주기
+	@GetMapping("/noReadAlarmCheck.ajax")
+    @ResponseBody
+    public int noReadAlarmCheck(@RequestParam String userId) {
+        List<AlarmDTO> alarmCheck = userMapper.noReadAlarm(userId);
+        if (alarmCheck != null) {
+            // System.out.println("userId: " + userId + " / 읽지 않은 알람 갯수: " + alarmCheck.size());
+            return alarmCheck.size();
+        }
+        return 0;
+    }
+	
 	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
 	public String userIndex(HttpSession session, HttpServletRequest req) {

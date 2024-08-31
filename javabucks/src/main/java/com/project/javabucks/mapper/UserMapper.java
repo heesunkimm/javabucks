@@ -33,6 +33,14 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
+	
+	public List<AlarmDTO> noReadAlarm(String userId) {
+		return sqlSession.selectList("noReadAlarm", userId);
+	}
+	
+//	public int readAlarmUpdate(String userId) {
+//		return sqlSession.update("readAlarmUpdate", userId);
+//	}
 
 	public BucksDTO getBucksinfoById(String bucksId) {
 		return sqlSession.selectOne("getBucksinfoById", bucksId);

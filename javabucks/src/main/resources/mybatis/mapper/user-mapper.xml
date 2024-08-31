@@ -4,6 +4,14 @@
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
  <mapper namespace="mybatis.mapper.user-mapper">
+ 	<select id="noReadAlarm" parameterType="String" resultType="AlarmDTO">
+ 		select * from javabucks_alarm where userId = #{userId} and alarmIsRead = 'F' 
+ 	</select>
+ 	
+ 	<!--<update id="readAlarmUpdate" parameterType="String">
+ 		update javabucks_alarm set alarmIsRead = 'T' where userId = #{userId}
+ 	</update>-->
+ 
  	<insert id="addNewCard" parameterType="CardDTO">
  		INSERT INTO javabucks_card (
  			cardRegNum, userId, cardName, cardPrice
