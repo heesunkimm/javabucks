@@ -47,29 +47,22 @@ public class LoginController {
 
 		String storeId = params.get("storeId");
 		String storePw = params.get("storePw");
-		// String saveId = params.getOrDefault("saveId", "off"); // 체크박스가 없으면 기본값 'off'
+		// 체크박스가 없으면 기본값 'off'
 		String saveId = params.containsKey("saveId") ? "on" : "off";
-		
-		System.out.println("storeId: "+ storeId); 
-		System.out.println("storePw: "+ storePw); 
-		System.out.println("saveId: "+ saveId); 
-		System.out.println("params : " + params);
 		
 		// 아이디로 사용자 정보 가져오기 
 		BucksDTO bucks = loginMapper.findStoreById(storeId); 
 		
 		// user가 존재하면
 		if(bucks != null) {
-			// DB에 저장된 비밀번호와 입력한 비밀번호가 일치한지 확인
+			// DB에 저장된 비밀번호와 입력한 비밀번호가 일치하는지 확인
 			if(bucks.getBucksPasswd().equals(storePw)) { 
-				System.out.println("로그인");
-				
 				// 세션에 사용자 정보 저장하여 로그인상태 유지
 				req.getSession().setAttribute("inBucks", bucks); 
 				req.setAttribute("msg", bucks.getBucksId()+"님이 로그인하셨습니다. 메인 페이지로 이동합니다");
 				req.setAttribute("url", "store_index.do");
 	            
-				// 쿠키처리
+				// 쿠키 처리
 				if("on".equals(saveId)) {
 					// 아이디 저장 체크박스가 선택된 경우 
 					Cookie cookie = new Cookie("saveId",storeId); // 사용자 ID를 저장하는 쿠키 생성
@@ -88,20 +81,25 @@ public class LoginController {
 			}
 			// 비밀번호 불일치
 			else if(!(bucks.getBucksPasswd().equals(storePw))){
-				System.out.println("비밀번호 불일치");
+				//System.out.println("비밀번호 불일치");
 				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인후 로그인 해주세요");
 				req.setAttribute("url", "store_login");
 			}
 		// user가 존재하지 않으면 
 		}else {
-			System.out.println("누구세요?");
-			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인후 로그인 해주세요.");
+			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인 후 로그인 해주세요.");
 			req.setAttribute("url", "store_login");
 		}
 		return "message";
 	}
 	
-	
+	// 로그인 안하면 사이트 이용못하게 막기
+	@ResponseBody
+	@GetMapping("/sessionStoreCheck.ajax")
+	public boolean sessionStoreCheck(HttpServletRequest req) {
+		return req.getSession() != null && req.getSession().getAttribute("inBucks") != null;
+	}
+
 	// 아이디 찾기 이메일 발송
 	@ResponseBody
 	@PostMapping("/findStoreIdSendEmail.ajax")
@@ -144,7 +142,7 @@ public class LoginController {
 	// 인증번호 체크	
 	@ResponseBody
 	@PostMapping("/codeCheck.ajax")
-	public String codeCheckId(@RequestParam("code") String code, HttpServletRequest req) {
+	public String codeCheck(@RequestParam("code") String code, HttpServletRequest req) {
 		 Cookie [] ck = req.getCookies();
 		 if(ck != null) {
 			 for(Cookie cookie : ck) {
@@ -235,6 +233,68 @@ public class LoginController {
 			  e.printStackTrace(); 
 		        return "FAIL";
 		 }
-	 } 
+	} 
+	
+	// 비밀번호 찾기 처리
+	@PostMapping("/findStorePwbyEmail.do")
+	public String findPwbyEmail(HttpServletRequest req, HttpServletResponse resp, String pw_id, String pw_email1, String pw_email2) throws Exception {
+		try {
+			String email = pw_email1 + "@" + pw_email2;
+			Map<String, String> params = new HashMap<>();
+			params.put("bucksEmail1", pw_email1);
+			params.put("bucksEmail2", pw_email2);
+			params.put("bucksId", pw_id);
+
+			String Pw = loginMapper.findStorePWbyEmail(params);
+
+			if (Pw != null) {
+				// 이메일 전송 로직
+				MimeMessage msg = mailSender.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+
+				helper.setFrom("admin@javabucks.com");
+				helper.setTo(email);
+				helper.setSubject("[JavaBucks BUCKS PW]");
+				helper.setText(
+						"안녕하세요!! JavaBucks 입니다.\n\n 비밀번호는 " + Pw + " 입니다." + "\n\n --JavaBucks--");
+				mailSender.send(msg);
+				
+				req.setAttribute("msg", "해당 메일로 비밀번호를 발송했습니다. 확인 후 로그인해주세요");
+				req.setAttribute("url", "store_login");
+			} else {
+				req.setAttribute("msg", "비밀번호 메일 발송에 실패했습니다. 관리자에게 문의 바랍니다.");
+				req.setAttribute("url", "store_login");
+			}
+			return "/message";
+
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			req.setAttribute("msg", "에러 발생. 관리자에게 문의바랍니다.");
+			req.setAttribute("url", "store_login");
+			return "/message";
+		}
+	}
+
+	// 로그아웃 
+	@GetMapping("/user_logout.do")
+	public String logout(HttpServletRequest req) {
+		// 세션 무효화
+	    HttpSession session = req.getSession(false);
+	    if (session != null) {
+	        session.invalidate();
+	        req.getSession().invalidate();  // invalidate() 세션 삭제
+	    }
+		req.setAttribute("msg", "로그아웃 되었습니다.");
+		req.setAttribute("url", "store_login");
+		return "message";
+	}
+	
+	// 비밀번호 변경
+	@PostMapping("/changePasswd.ajax")
+	public String changePasswd(HttpServletRequest req, String storePasswd, String storePasswd2) {
+		System.out.println(storePasswd);
+		System.out.println(storePasswd2);
+		return "";
+	}
 
 }

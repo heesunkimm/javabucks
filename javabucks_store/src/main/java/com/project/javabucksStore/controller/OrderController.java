@@ -290,7 +290,7 @@ public class OrderController {
     		List<OrderDTO> deliverOrderList = mapper.getDeliverOrderList(deliverOrder_params);
             
     		// 패치 확인
-            System.out.println("배달주문 Fetched: " + date.toString());
+            //System.out.println("배달주문 Fetched: " + date.toString());
 		}
 	}
 	
@@ -319,7 +319,7 @@ public class OrderController {
 		
 		response.put("newOrder", newOrder);
 		
-		System.out.println(response);
+		//System.out.println(response);
 		
 		return ResponseEntity.ok(response);
 	}
@@ -329,7 +329,7 @@ public class OrderController {
 	@PostMapping("/orderStart.ajax")
 	public ResponseEntity<Map<String, String>> startOrder(HttpServletRequest req, String orderCode) {
 		// 파라미터 확인
-		System.out.println("orderCode:" + orderCode);
+		//System.out.println("orderCode:" + orderCode);
 
 		// 세션에서 ID꺼내기
 		this.session = req.getSession();
@@ -497,7 +497,7 @@ public class OrderController {
 						mater.put(code, quantity);
 					}
 				}
-				System.out.println("최종 재료:" + mater);
+				//System.out.println("최종 재료:" + mater);
 				// {WHI01=2, BEV03=2, Grande=1, SYR02=1, BEV01=4, Tall=1, MIL05=1, MIL01=1}
 			}
 		}
@@ -519,7 +519,7 @@ public class OrderController {
 			storeStocksCountMap.put(code, storeStocksCount);
 		}
 
-		System.out.println("지점재고:" + storeStocksCountMap);
+		//System.out.println("지점재고:" + storeStocksCountMap);
 		// 지점재고:{SAN03=10, BEV03=10, SYR03=10, BEV01=10, MIL04=10, Venti=10}
 
 		// 3. 결과 처리
@@ -529,7 +529,7 @@ public class OrderController {
 			String code = resultIterator.next();
 			int needCount = mater.get(code);
 			int remainCount = storeStocksCountMap.get(code);
-			System.out.println("확인:" + code + "(" + needCount + "/" + remainCount + ")");
+			//System.out.println("확인:" + code + "(" + needCount + "/" + remainCount + ")");
 			// 재고 수량 비교
 			if (needCount <= remainCount) {
 				orderResult = true;
@@ -539,7 +539,7 @@ public class OrderController {
 			}
 		}
 
-		System.out.println("재고수량 비교 결과:" + orderResult); // true 또는 false
+		//System.out.println("재고수량 비교 결과:" + orderResult); // true 또는 false
 
 		boolean minusResult = false;
 		boolean updateResult = false;
@@ -586,7 +586,7 @@ public class OrderController {
 
 	@PostMapping("/orderCancel.ajax")
 	public ResponseEntity<Map<String, Object>> orderCancel(HttpServletRequest req, String orderCode) {
-		System.out.println("orderCode :" + orderCode);
+		//System.out.println("orderCode :" + orderCode);
 
 		// 세션에서 ID꺼내기
 		this.session = req.getSession();
@@ -598,7 +598,7 @@ public class OrderController {
 		String today = dateFormat.format(date);
 
 		String realOrderCode = today + "_" + orderCode;
-		System.out.println(realOrderCode); // 240826_A-005
+		//System.out.println(realOrderCode); // 240826_A-005
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("bucksId", bucksId);
