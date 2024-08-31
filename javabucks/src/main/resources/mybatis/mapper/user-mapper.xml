@@ -4,6 +4,14 @@
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
  <mapper namespace="mybatis.mapper.user-mapper">
+ 	<select id="noReadAlarm" parameterType="String" resultType="AlarmDTO">
+ 		select * from javabucks_alarm where userId = #{userId} and alarmIsRead = 'F' 
+ 	</select>
+ 	
+ 	<!--<update id="readAlarmUpdate" parameterType="String">
+ 		update javabucks_alarm set alarmIsRead = 'T' where userId = #{userId}
+ 	</update>-->
+ 
  	<insert id="addNewCard" parameterType="CardDTO">
  		INSERT INTO javabucks_card (
  			cardRegNum, userId, cardName, cardPrice
@@ -543,6 +551,14 @@
  		 AND cartType = 'delivers'	 	  		 
  	</delete>
  	
+ 	<!-- 장바구니 번호로 조회하기 -->
+ 	<select id="CartinfoByCartNum" parameterType="java.util.Map" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE cartNum = #{cartNum}		 	
+ 		 AND userId = #{userId}	  		 				 	  		 
+ 	</select>
+ 	
  	<!-- 장바구니에서 메뉴찾기 -->
  	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
  		 SELECT *
@@ -554,6 +570,13 @@
  	<update id="insertCart" parameterType="java.util.Map"> 
  		 INSERT INTO javabucks_cart
  		 VALUES(seq_cartNum.nextval, #{userId}, #{bucksId}, #{menuCode}, #{cartCount}, #{optId}, sysdate, #{cartType})	 				 	  		 
+ 	</update>
+ 	
+ 	<!-- 장바구니 cnt 업데이트하기 -->
+ 	<update id="updateCartCount" parameterType="java.util.Map"> 
+ 		 UPDATE javabucks_cart
+ 		 SET cartCnt = #{cartCnt}
+ 		 WHERE cartNum = #{cartNum}	 				 	  		 
  	</update>	
  	
  	<!-- 메뉴 옵션찾기 -->
@@ -562,4 +585,12 @@
  		 FROM javabucks_menu		 
  		 WHERE menuCode = #{menuCode}	 				 	  		 
  	</select>			
+ 	
+ 	<!-- ================================================================================ -->
+ 	<!-- 민영 작업 -->
+ 	<select id="getOrderHistory" parameterType="String" resultType="OrderDTO">
+ 		select * from javabucks_order
+ 		where userId = #{userId}
+ 	</select>
+ 	
  </mapper>

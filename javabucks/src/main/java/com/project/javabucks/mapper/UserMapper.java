@@ -33,6 +33,14 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
+	
+	public List<AlarmDTO> noReadAlarm(String userId) {
+		return sqlSession.selectList("noReadAlarm", userId);
+	}
+	
+//	public int readAlarmUpdate(String userId) {
+//		return sqlSession.update("readAlarmUpdate", userId);
+//	}
 
 	public BucksDTO getBucksinfoById(String bucksId) {
 		return sqlSession.selectOne("getBucksinfoById", bucksId);
@@ -292,6 +300,14 @@ public class UserMapper {
 	public int insertCart(Map<String, Object> params) {
 		return sqlSession.update("insertCart", params);
 	}
+	
+	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
+		return sqlSession.selectOne("CartinfoByCartNum", params);
+	}
+	
+	public int updateCartCount(Map<String, Integer> params) {
+		return sqlSession.update("updateCartCount", params);
+	}
 
 	public List<CartDTO> OrderCartByUserid(String userId) {
 		return sqlSession.selectList("OrderCartByUserid", userId);
@@ -312,4 +328,11 @@ public class UserMapper {
 	public int deleteAllCartDelivers(String userId) {
 		return sqlSession.delete("deleteAllCartDelivers", userId);
 	}
+	
+	// 민영 작업-------------------------------------------------------------------------
+	
+	public List<OrderDTO> getOrderHistory(String userID){
+		return sqlSession.selectList("getOrderHistory", userID);
+	}
+	
 }

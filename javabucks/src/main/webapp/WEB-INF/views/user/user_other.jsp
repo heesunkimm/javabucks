@@ -103,7 +103,7 @@
                 <p class="div_tit font_bold">Order</p>
                 <ul class="order_list other_list">
                     <li>
-                        <a href="user_cart?mode=ordercart">
+                        <a href="user_cart?pickup=ordercart">
                             <div class="img_box">
                                 <img src="../images/icons/order_basket.png" alt="">
                             </div>
@@ -133,7 +133,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="user_cart?mode=deliverscart">
+                        <a href="user_cart?pickup=deliverscart">
                             <div class="img_box">
                                 <img src="../images/icons/order_basket.png" alt="">
                             </div>

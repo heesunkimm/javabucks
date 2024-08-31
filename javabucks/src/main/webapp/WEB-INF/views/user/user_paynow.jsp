@@ -155,25 +155,61 @@
                 </li>
             </c:if>
             <c:if test="${cart=='cart'}">
-                <li class="pay_item">
-                    <div class="img_box">
-                        <!-- <img src="" alt=""> -->
-                    </div>
-                    <div class="txt_box">
-                        <dl>
-                            <dt class="txt_tit"><span>메뉴명</span> * <span>수량</span></dt>
-                            <dd class="txt_total">총금액</dd>
-                        </dl>
-                        <dl class="font_gray">
-                            <dt><span>ICE</span>|<span>Tall</span></dt>
-                            <dd>기본금액</dd>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                            <dt>추가옵션명 * 0</dt>
-                            <dd>추가옵션금액</dd>
-                        </dl>
-                    </div>
-                </li>
+            ${ctpList}
+            	<c:forEach var="ctp" items="${ctpList}">
+	                <li class="pay_item">
+	                    <div class="img_box">
+	                        <img src="/upload_menuImages/${ctp.menuDTO.menuImages}" alt="">
+	                    </div>
+	                    <div class="txt_box">
+	                        <dl>
+	                            <dt class="txt_tit"><span>${ctp.menuDTO.menuName}</span> X <span>${ctp.cartCnt}</span></dt>
+	                            <dd class="txt_total"><fmt:formatNumber value="${(ctp.menuDTO.menuPrice) * ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        </dl>
+	                        <dl class="font_gray">
+	                        	<c:set var="iceOrHot" value="${fn:substring(ctp.menuDTO.menuoptCode, 3, 4)}" />
+	                        	<c:if test="${iceOrHot=='I'||iceOrHot=='i'}">
+	                            <dt><span>ICE</span> | <span>${ctp.cupDTO.cupType} X ${ctp.cartCnt}</span></dt>
+	                            </c:if>
+	                            <c:if test="${iceOrHot=='H'||iceOrHot=='h'}">
+	                            <dt><span>HOT</span> | <span>${ctp.cupDTO.cupType} X ${ctp.cartCnt}</span></dt>
+	                            </c:if>
+	                            <dd>+<fmt:formatNumber value="${ctp.cupDTO.cupPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        </dl>
+	                        <dl class="opt_item font_gray">
+	                        	<c:if test="${not empty ctp.iceDTO}">
+	                        	<dt>얼음 ${ctp.iceDTO.iceType}</dt>
+	                        	</c:if>
+	                        </dl>
+	                        <dl class="opt_item font_gray">
+	                        	<c:if test="${ctp.orderOptDTO.optShotCount != 0}">
+	                        	<dt>샷 ${ctp.shotDTO.shotType} (+${ctp.orderOptDTO.optShotCount}) X ${ctp.cartCnt}</dt>
+	                        	<dd>+<fmt:formatNumber value="${ctp.orderOptDTO.optShotCount*600*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        	</c:if>
+	                        </dl>
+	                        <dl class="opt_item font_gray">
+	                        	<c:if test="${ctp.orderOptDTO.optSyrupCount != 0}">
+	                        	<dt>${ctp.syrupDTO.syrupType} (+${ctp.orderOptDTO.optSyrupCount}) X ${ctp.cartCnt1}</dt>
+	                        	<dd>+<fmt:formatNumber value="${ctp.orderOptDTO.optSyrupCount*ctp.syrupDTO.syrupPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        	</c:if>
+	                        </dl>
+	                        <dl class="opt_item font_gray">
+	                        	<c:if test="${not empty ctp.milkDTO}">
+	                        	<dt>우유종류 ${ctp.milkDTO.milkType} X ${ctp.cartCnt}</dt>
+	                        	<dd>+<fmt:formatNumber value="${ctp.milkDTO.milkPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        	</c:if>
+	                        </dl>
+	                        <dl class="opt_item font_gray">
+	                        	<dt>총 추가금액</dt>
+	                        	<dd><fmt:formatNumber value="${cpt.optPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        </dl>
+	                        <dl>
+	                        	<dt class="txt_tit">총 금액</dt>
+	                        	<dd class="txt_total"><fmt:formatNumber value="${(ctp.menuDTO.menuPrice*ctp.cartCnt)+(cpt.optPrice*tp.cartCnt)}" pattern="#,###"/>원</dd>
+	                        </dl>	
+	                    </div>
+	                </li>
+                </c:forEach>
             </c:if>
             </ul>
 
