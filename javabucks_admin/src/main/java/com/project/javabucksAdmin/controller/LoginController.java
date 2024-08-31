@@ -52,7 +52,7 @@ public class LoginController {
 			if (admin.getAdminPasswd().equals(adminPasswd)) {
 				req.getSession().setAttribute("inAdmin", admin);
 				req.setAttribute("msg", admin.getAdminId() + "님이 로그인하셨습니다.");
-				req.setAttribute("url", "adminmanage.do"); // 합치고나서 핑복이꺼로 경로 변경
+				req.setAttribute("url", "admin_adminmanage.do"); // 합치고나서 핑복이꺼로 경로 변경
 				
 				if("on".equals(saveId)) {
 					Cookie cookie = new Cookie("saveId",adminId); // 사용자 ID를 저장하는 쿠키 생성
@@ -81,12 +81,12 @@ public class LoginController {
 		}
 		return "message";
 	}
-	
-	@GetMapping("/adminmanage.do") 
-	public String adminmanage() {
-		return "/account/admin_adminmanage"; // 핑복이 작업한거 보고 경로 수정
-	}
-	
+//	
+//	@GetMapping("/adminmanage.do") 
+//	public String adminmanage() {
+//		return "/account/admin_adminmanage"; // 핑복이 작업한거 보고 경로 수정
+//	}
+//	
 	
 	// 비밀번호 재설정 
 	@ResponseBody
