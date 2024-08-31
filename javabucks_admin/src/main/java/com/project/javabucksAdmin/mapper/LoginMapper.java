@@ -16,13 +16,12 @@ public class LoginMapper {
 	
 	// 로그인 
 	public AdminDTO findAdminById(String adminId) {
-		System.out.println("adminId : " + adminId);
-		return sqlSession.selectOne("findAdminById",adminId);
+		return sqlSession.selectOne("findAdminById", adminId);
 	}
 	
-	// 비밀번호 찾기 
-	public int updatePasswd(AdminDTO dto) {
-		return sqlSession.update("updatePasswd",dto);
+	// 비밀번호 변경
+	public int adminChangePw(Map<String, String> params) {
+		return sqlSession.update("adminChangePw", params);
 	}
 	 
 }

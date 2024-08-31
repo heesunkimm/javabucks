@@ -10,6 +10,23 @@
         <link rel="stylesheet" href="../css/admin.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../js/admin.js"></script>
+        <script>
+	        $(document).ready(function(){
+	    		$.ajax({
+	    			url: "sessionUserCheck",
+	    			type: "get",
+	    			success: function(resp){
+	    				if(!resp){
+	    					alert("올바르지 않은 경로입니다. 로그인 후 이용해주세요.");
+	    					window.location.href = 'login.do';
+	    				}
+	    			},
+	    			error: function(err){
+	    				console.log(err);
+	    			}
+	    		});
+	    	});
+    	</script>
     </head>
 <body>
     <header class="bg_beige">
@@ -18,17 +35,17 @@
             	<div class="img_box">
                     <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>
-                <span>JAVABUCKS</span>
+                <span>JAVABUCKS ADMIN</span>
             </a>
         </div>
 
         <ul class="nav_list">
             <li class="nav_item">
-                <a href="javascript:;">계정관리</a>
+                <a href="admin_adminmanage.do">계정관리</a>
                 <ul class="dropdown_content">
-                    <li><a href="javascript:;">관리자 계정 관리</a></li>
+                    <li><a href="admin_adminmanage.do">관리자 계정 관리</a></li>
                     <li><a href="storemanage.do">지점 계정 관리 </a></li>
-                    <li><a href="javascript:;">유저 계정 관리</a></li>
+                    <li><a href="admin_usermanage.do">유저 계정 관리</a></li>
                 </ul>
             </li>
             <li class="nav_item">
@@ -69,7 +86,7 @@
             <a class="setBtn" href="javascript:;"><img src="../images/icons/setting.png" alt=""></a>
 	        <ul class="setting_box">
 	        	<li><a class="popup_btn" href="javascript:;" data-popup="passwdEdit">비밀번호 변경</a></li>
-	        	<li><a href="javascript:;">로그아웃</a></li>
+	        	<li><a href="adminLogout.do">로그아웃</a></li>
 	        </ul>
         </div>
     </header>
@@ -79,14 +96,15 @@
         <form name="f" action="" method="post">
             <div class="input_box">
                 <label>신규 비밀번호
-                    <input type="password" name="" value="">
+                    <input type="password" name="passwd1" value="">
                 </label>
                 <label>신규 비밀번호 확인
-                    <input type="password" name="" value="">
+                    <input type="password" name="passwd2" value="">
                 </label>
             </div>
             <div class="pbtn_box">
-                <button class="editBtn" type="button">비밀번호 변경</button>
+            	<input type="hidden" name="adminId" value="${inAdmin.adminId}">
+                <button class="editBtn" type="button" onclick="changePw()">비밀번호 변경</button>
                 <button class="close_btn" type="button" data-popup="passwdEdit">취소</button>
             </div>
         </form>
