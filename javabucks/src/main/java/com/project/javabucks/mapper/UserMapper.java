@@ -320,4 +320,11 @@ public class UserMapper {
 	public int deleteAllCartDelivers(String userId) {
 		return sqlSession.delete("deleteAllCartDelivers", userId);
 	}
+	
+	// 민영 작업-------------------------------------------------------------------------
+	
+	public List<OrderDTO> getOrderHistory(String userID){
+		return sqlSession.selectList("getOrderHistory", userID);
+	}
+	
 }

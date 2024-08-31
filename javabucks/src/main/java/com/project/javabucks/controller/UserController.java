@@ -1319,7 +1319,17 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_orderhistory")
-	public String userOrderhistory() {
+	public String userOrderhistory(HttpServletRequest req) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO) session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+		List<OrderDTO> orderHistory = userMapper.getOrderHistory(userId);
+		
+		// 추가 작업 에정
+		
+		req.setAttribute("orderInfoList", orderHistory);
 		return "/user/user_orderhistory";
 	}
 
