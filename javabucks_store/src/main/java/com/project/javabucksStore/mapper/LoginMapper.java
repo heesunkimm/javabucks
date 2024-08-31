@@ -13,7 +13,7 @@ public class LoginMapper {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	// 로그인 - 아이디로 사용자 정보 가져오기, 비밀번호 찾기
+	// 로그인 - 입력된 아이디로 비밀정보 가져오기
 	public BucksDTO findStoreById(String bucksId) {
 		return sqlSession.selectOne("findStoreById",bucksId);
 	}
@@ -23,7 +23,7 @@ public class LoginMapper {
 		return sqlSession.selectOne("findStoreByEmail", params);
 	}
 	
-	// 아이디 찾기
+	// 아이디 찾기 처리
 	public String findStoreIdbyEmail(Map<String, String> params) {
 		return sqlSession.selectOne("findStoreIdbyEmail", params);
 	}
@@ -31,6 +31,16 @@ public class LoginMapper {
 	// 비밀번호 찾기 이메일 인증 시 회원있는지 확인
 	public BucksDTO findStoreByIDEmail(Map<String, String> params) {
 		return sqlSession.selectOne("findStoreByIDEmail", params);
+	}
+	
+	// 비밀번호 찾기
+	public String findStorePWbyEmail(Map<String, String> params) {
+		return sqlSession.selectOne("findStorePWbyEmail", params);
+	}
+	
+	// 비밀번호 변경 처리
+	public int changePasswd(Map<String, String> params) {
+		return sqlSession.update("changePasswd", params);
 	}
 	
 }

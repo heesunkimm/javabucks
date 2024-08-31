@@ -84,7 +84,13 @@
             
             <div class="find_box">
                 <label>
-                	<input type="checkbox" name="saveId" value="on"> 아이디 저장
+                	<c:if test="${empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId"> 아이디 저장 
+                	</c:if>
+                	
+                	<c:if test="${not empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
+                    </c:if>
                 </label>
                 <a class="popup_btn" href="javascript:;" data-popup="findbyid">아이디 찾기</a>
                 <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 찾기</a>
@@ -156,7 +162,7 @@
                     <button class="verify_btn" type="button" onclick="codeCheckPw()">인증확인</button>
                 </div>
                 <div class="pbtn_box">
-                    <button class="submit_btn" type="submit" onclick="submitForm()">확인</button>
+                    <button class="submit_btn" type="submit">확인</button>
                 </div>
             </form>
         </div>
@@ -251,7 +257,7 @@
 	
 	// 아이디 찾기 인증번호 확인
 	function codeCheckId() {
-	    const code = $('.codePw').val();
+	    const code = $('.code').val();
 	    if(!idTimeout){
 	    	$.ajax({
 	            url: "codeCheck.ajax",
@@ -303,13 +309,11 @@
 		 return true;
 	}
 	
-
-	
 	// 비밀번호 찾기 타이머
 	function startTimerPw() {
-	    const timerMinId = document.getElementById('pwtimerMin');
-	    const timerSecId = document.getElementById('pwtimerSec');
-	
+	    const timerMinPw = document.getElementById('pwTimerMin');
+	    const timerSecPw = document.getElementById('pwTimerSec');
+
 	    timer = setInterval(() => {
 	        if (pwtimeRemaining <= 0) {
 	            clearInterval(timer);
@@ -318,11 +322,11 @@
 	            return;
 	        }
 	        pwtimeRemaining--;
-	        const minutes = Math.floor(pwtimeRemaining / 60);
-	        const seconds = pwtimeRemaining % 60;
+	        const pwminutes = Math.floor(pwtimeRemaining / 60);
+	        const pwseconds = pwtimeRemaining % 60;
 	
-	        timerMinId.textContent = minutes;
-	        timerSecId.textContent = seconds < 10 ? '0' + seconds : seconds;
+	        timerMinPw.textContent = pwminutes;
+	        timerSecPw.textContent = pwseconds < 10 ? '0' + pwseconds : pwseconds;
 	    }, 1000);
 	}
 	
@@ -430,6 +434,7 @@
 		     alert("발송된 인증번호를 입력하고 인증확인 해주세요.");
 		     return false;
 		 }
+		 
 		 return true;
 	}
 
