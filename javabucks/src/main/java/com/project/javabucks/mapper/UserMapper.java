@@ -292,6 +292,14 @@ public class UserMapper {
 	public int insertCart(Map<String, Object> params) {
 		return sqlSession.update("insertCart", params);
 	}
+	
+	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
+		return sqlSession.selectOne("CartinfoByCartNum", params);
+	}
+	
+	public int updateCartCount(Map<String, Integer> params) {
+		return sqlSession.update("updateCartCount", params);
+	}
 
 	public List<CartDTO> OrderCartByUserid(String userId) {
 		return sqlSession.selectList("OrderCartByUserid", userId);

@@ -22,7 +22,8 @@
 				<p class="font_bold">장바구니</p>
 			</div>
 			<form name="" action="user_paynow" method="post">
-				<input type="hidden" id="modeInput" name="modeInput" value="${mode}">
+				<input type="hidden" id="modeInput" name="modeInput" value="${pickup}">
+				<input type="hidden" id="cart" name="cart" value="cart">
 				<c:if test="${not empty cart}">
 				<div class="toolbar_box">
 					<label> <input type="checkbox" onclick="toggleCheckboxes(this); updateCheckedCount(); OrderButton()">전체 선택</label>			
@@ -41,8 +42,8 @@
 					<c:forEach var="dto" items="${cart}">
 						<li class="cart_item">
 							<div class="top_box">
-								<label> <input type="checkbox" class="item-checkbox"
-									onclick="updateCheckedCount(); OrderButton()" name="${dto.cartNum}" value="">
+								<label> 
+									<input type="checkbox" class="item-checkbox" onclick="updateCheckedCount(); OrderButton()" name="${dto.cartNum}" value="">
 								</label>
 								<div class="img_box">
 									<img src="../images/icons/close.png" alt="" name="delete-${dto.cartNum}" onclick="deleteCheck('xbox', this)">
@@ -88,16 +89,15 @@
 									<div class="price_box">
 										<div class="count_box">
 											<div class="minus_btn img_box">
-												<img src="../images/icons/minus.png" alt="감소 버튼"
-													onclick="minus(${dto.cartNum}, ${dto.eachPrice})">
+												<img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus(${dto.cartNum}, ${dto.eachPrice})">
 											</div>
-											<label> <input type="text" id="${dto.cartNum}"
-												name="order_number" value="${dto.cartCnt}" readonly>
+											<label> 
+												<input type="text" id="${dto.cartNum}" name="order_number" value="${dto.cartCnt}" readonly>
 												<input type="hidden" name="cartNum" value="${dto.cartNum}">
+												<input type="hidden" name="cartCnt1" value="${dto.cartCnt}">
 											</label>
 											<div class="plus_btn img_box">
-												<img src="../images/icons/plus.png" alt="증가 버튼"
-													onclick="plus(${dto.cartNum}, ${dto.eachPrice})">
+												<img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus(${dto.cartNum}, ${dto.eachPrice})">
 											</div>
 										</div>
 										<div class="total_box">
@@ -121,7 +121,7 @@
 						<p class="txt_total" id="totalPrice"></p>
 					</div>
 					<div class="btn_box">
-						<button type="submit" id="orderButton">주문하기</button>
+						<button type="submit" id="orderButton" onclick="submitCheckedItems()">주문하기</button>
 					</div>
 				</div>
 			</form>
@@ -221,37 +221,36 @@
 	   // 장바구니번호 담을 배열 생성
 	   var selectedCartNums = [];
 	   // 선택메뉴 삭제
-	   if (AllorEach == 'each'){
-		// 선택된 체크박스들에서 cartNum 값들을 수집   
-       var checkboxes = document.querySelectorAll('.item-checkbox:checked');
-       
-       checkboxes.forEach(function(checkbox) {
-           selectedCartNums.push(checkbox.name); // 체크박스 name 속성에 cartNum이 있음
-       });
-
-	       if (selectedCartNums.length === 0) {
-	           alert("삭제할 메뉴를 선택해 주세요.");
-	           return;
-	       } 
-       
-			var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");    	   
-       }
-	   // 전체메뉴 삭제
-       if (AllorEach == 'all'){
-   			var userConfirmed = confirm("장바구니에 담긴 모든 메뉴를 삭제하시겠습니까?");    	   
-       }
-	   // x이미지 클릭시 삭제
-	   if (AllorEach == 'xbox'){
-		  	var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");
-			// 이미지의 name 속성 값에서 cartNum 부분 추출
-	        var cartNum = element.getAttribute('name').split('-')[1];
-	        selectedCartNums.push(cartNum);	       	      
-	   }
-	   console.log("들어옴");
-	   var mode = document.getElementById("modeInput").value;
+		   if (AllorEach == 'each'){
+			// 선택된 체크박스들에서 cartNum 값들을 수집   
+	       var checkboxes = document.querySelectorAll('.item-checkbox:checked');
+	       
+	       checkboxes.forEach(function(checkbox) {
+	           selectedCartNums.push(checkbox.name); // 체크박스 name 속성에 cartNum이 있음
+	       });
+	
+		       if (selectedCartNums.length === 0) {
+		           alert("삭제할 메뉴를 선택해 주세요.");
+		           return;
+		       } 
+	       
+				var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");    	   
+	       }
+		   // 전체메뉴 삭제
+	       if (AllorEach == 'all'){
+	   			var userConfirmed = confirm("장바구니에 담긴 모든 메뉴를 삭제하시겠습니까?");    	   
+	       }
+		   // x이미지 클릭시 삭제
+		   if (AllorEach == 'xbox'){
+			  	var userConfirmed = confirm("선택한 메뉴를 삭제하시겠습니까?");
+				// 이미지의 name 속성 값에서 cartNum 부분 추출
+		        var cartNum = element.getAttribute('name').split('-')[1];
+		        selectedCartNums.push(cartNum);	       	      
+		   }
+	   var pickup = document.getElementById("modeInput").value;
 	   if (userConfirmed) {
 		   
-	   console.log(mode);
+	   console.log(pickup);
 		$.ajax({
 	        url: 'deleteCart',
 	        type: 'POST',
@@ -264,7 +263,7 @@
 	        success: function(response) {
 	            if (response.success) {
 	                alert("선택하신 메뉴가 삭제되었습니다.");
-	                window.location = "user_cart?mode=" + encodeURIComponent(mode);
+	                window.location = "user_cart?pickup=" + encodeURIComponent(pickup);
 	            } else {			
 	                alert("선택한 메뉴는 삭제가 불가합니다.");
 	            }	
@@ -275,6 +274,40 @@
 	   	 });
 		}
 	}
+   
+   // 주문하기 버튼 눌렀을때 체크박스에 체크된 것만 데이터 보내기
+   function submitCheckedItems() {
+    // 기존의 hidden cartNum 요소를 모두 제거합니다.
+    const form = document.querySelector('form[action="user_paynow"]');
+    const existingInputs = form.querySelectorAll('input[name="cartNum"]');
+    existingInputs.forEach(input => input.remove());
+
+ // 체크된 체크박스에서 cartNum과 cartCnt 값을 수집하고 hidden input으로 추가합니다.
+    const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+    checkboxes.forEach(checkbox => {
+        const cartNum = checkbox.name; // 체크박스의 name 속성에 cartNum이 들어 있습니다.
+        const cartCnt = checkbox.closest('.cart_item').querySelector('input[name="order_number"]').value;
+        
+        // hidden input 생성 (cartNum)
+        const hiddenInputNum = document.createElement('input');
+        hiddenInputNum.type = 'hidden';
+        hiddenInputNum.name = 'cartNum';
+        hiddenInputNum.value = cartNum;
+
+        // hidden input 생성 (cartCnt)
+        const hiddenInputCnt = document.createElement('input');
+        hiddenInputCnt.type = 'hidden';
+        hiddenInputCnt.name = 'cartCnt';
+        hiddenInputCnt.value = cartCnt;
+
+        // form에 hidden input 추가
+        form.appendChild(hiddenInputNum);
+        form.appendChild(hiddenInputCnt);
+    });
+
+    // 폼을 제출합니다.
+    form.submit();
+}
    
    
    // [주문하기 버튼] 활성화 클래스 추가하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

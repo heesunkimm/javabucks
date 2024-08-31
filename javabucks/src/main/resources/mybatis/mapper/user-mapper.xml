@@ -543,6 +543,14 @@
  		 AND cartType = 'delivers'	 	  		 
  	</delete>
  	
+ 	<!-- 장바구니 번호로 조회하기 -->
+ 	<select id="CartinfoByCartNum" parameterType="java.util.Map" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE cartNum = #{cartNum}		 	
+ 		 AND userId = #{userId}	  		 				 	  		 
+ 	</select>
+ 	
  	<!-- 장바구니에서 메뉴찾기 -->
  	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
  		 SELECT *
@@ -554,6 +562,13 @@
  	<update id="insertCart" parameterType="java.util.Map"> 
  		 INSERT INTO javabucks_cart
  		 VALUES(seq_cartNum.nextval, #{userId}, #{bucksId}, #{menuCode}, #{cartCount}, #{optId}, sysdate, #{cartType})	 				 	  		 
+ 	</update>
+ 	
+ 	<!-- 장바구니 cnt 업데이트하기 -->
+ 	<update id="updateCartCount" parameterType="java.util.Map"> 
+ 		 UPDATE javabucks_cart
+ 		 SET cartCnt = #{cartCnt}
+ 		 WHERE cartNum = #{cartNum}	 				 	  		 
  	</update>	
  	
  	<!-- 메뉴 옵션찾기 -->
