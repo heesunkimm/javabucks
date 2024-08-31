@@ -88,9 +88,15 @@
 		<update id="editBucks" parameterType="BucksDTO"> 
 		UPDATE javabucks_bucks SET bucksName = #{bucksName}, bucksOwner = #{bucksOwner}, bucksTel1 = #{bucksTel1}, bucksTel2 = #{bucksTel2}, bucksTel3 = #{bucksTel3}, bucksEmail1 = #{bucksEmail1}, bucksEmail2 = #{bucksEmail2} WHERE bucksId = #{bucksId} </update>
 			
-		<!--  지점 삭제  -->
-		<delete id="deleteBucks" parameterType="String"> 
-		DELETE FROM javabucks_bucks WHERE bucksId = #{bucksId} </delete>
+		<!--  지점 탈퇴  -->
+		<update id="deleteBucks" parameterType="String">
+	    UPDATE javabucks_bucks
+	    SET bucksEnable = 'N'
+	    WHERE bucksId = #{bucksId}
+	</update>
+		
+		
+		
 			
 		<!--  페이징처리  -->
 		<select id="bucksListCount" parameterType="int" resultType="int"> 
@@ -150,13 +156,7 @@
 		        jbu.bucksName ASC, jbu.bucksId, baljooMonth
 		</select>
  		
- 		<!-- bucks baljoo
- 		<select id="baljoolist" parameterType="map" resultType="BaljooDTO">
- 			 SELECT jbal.*, jbucks.bucksName FROM javabucks_baljoo jbal
-     			JOIN javabucks_bucks jbucks ON jbal.bucksId = jbucks.bucksId
-    			WHERE TO_CHAR(jbal.baljooDate, 'YYYY-MM') = #{baljooDate}
-      			AND jbal.bucksId = #{bucksId}
- 		</select> -->
+ 		
  		
  		<!-- 발주 상세 - 리스트 합치기 -->
  		<select id="selectDetails" parameterType="map" resultType="BaljooDTO">
@@ -176,44 +176,7 @@
     WHERE stockListCode = #{stockCode}
 </select>
     
-    <!-- 발주 상세 -합계뽑기 -->
-    <!--  
-    <select id="selectPricesByCodes" parameterType="java.util.List" resultType="java.util.Map">
-        SELECT 
-            stockListCode AS code, 
-            stockListPrice AS price
-        FROM 
-            javabucks_stockList
-        WHERE 
-            stockListCode IN
-            <foreach item="code" collection="list" open="(" separator="," close=")">
-                #{code}
-            </foreach>
-    </select>-->
- 		
-    	
-    	<!-- 발주 상세 1 
-		<select id="getOrderDetails" parameterType="int" resultType="String">
-			select baljooList from javabucks_baljoo where baljooNum =#{baljooNum}
-		</select>    -->
-		
-		<!-- 발주 상세 2 
-		<select id="getDetailByCode" parameterType="java.util.List" resultType="java.util.Map">
-    SELECT 
-        stockListCode,
-        stockCateCode,
-        stockListName,
-        stockListImage,
-        stockListPrice,
-        stockListCount
-    FROM 
-        javabucks_stocklist
-    WHERE 
-        stockListCode IN 
-        <foreach item="code" collection="list" open="(" separator="," close=")">
-            #{code}
-        </foreach>
-</select>-->
+    
 
 		<select id="monthlyBucksSales" resultType="PayhistoryDTO">
 			SELECT 
@@ -329,9 +292,9 @@
 		ON p.orderCode = o.orderCode 
 		JOIN javabucks_bucks b 
 		ON p.bucksId = b.bucksId 
-		WHERE p.payhistoryDate BETWEEN #{startDate} AND #{endDate}
+		WHERE TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
 		AND b.bucksName LIKE '%' || #{bucksName} || '%'
-		 ORDER BY P.payhistoryDate DESC, b.bucksName
+		 ORDER BY p.payhistoryDate DESC, b.bucksName
 		</select>
 		
   </mapper>

@@ -95,7 +95,7 @@ public class SalesMapper {
     
     //지점 삭제 
     public int deleteBucks(String bucksId) {
-    	return sqlSession.delete("deleteBucks",bucksId);
+    	return sqlSession.update("deleteBucks",bucksId);
     }
     
     //페이징 

@@ -33,11 +33,7 @@ public class SalesController {
 	@Autowired
 	private SalesMapper salesMapper;
 	
-	//시작
-//	@RequestMapping("/")
-//	public String index() {
-//		return "account/admin_index";
-//	}
+	
 	
 	//지점 계정 관리 페이지로 이동 
 		@RequestMapping("/storemanage.do")
@@ -521,7 +517,7 @@ public class SalesController {
 			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
 			       
 			        branchSalesMap.putIfAbsent(branchDateKey, new HashMap<>());
-			        System.out.println(branchSalesMap);
+			        //System.out.println(branchSalesMap);
 			        Map<String, Integer> totalSalesByCategory = branchSalesMap.get(branchDateKey);
 			        
 			        
@@ -708,11 +704,11 @@ public class SalesController {
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
 			    model.addAttribute("branchSalesMap", branchSalesMap);
 			    model.addAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
-			    //System.out.println(branchSalesMap);
+			    System.out.println(branchSalesMap);
 
 			    // 주문 내역 리스트를 모델에 추가
 			    model.addAttribute("list", orderList);
-			    //System.out.println(orderList);
+			    System.out.println(orderList);
 			    
 			    model.addAttribute("total", totalSalesSum);
 			    

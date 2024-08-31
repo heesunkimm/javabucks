@@ -146,5 +146,30 @@ public class UserDTO {
 	public void setUserFrequencyCount(String userFrequencyCount) {
 		this.userFrequencyCount = userFrequencyCount;
 	}
+	
+	
+	
+	////조인 값
+	private String fullEmail;
+    private String fullPhoneNumber;
+
+	public String getFullEmail() {
+		return fullEmail;
+	}
+
+	public void setFullEmail(String fullEmail) {
+		this.fullEmail = fullEmail;
+	}
+
+	public String getFullPhoneNumber() {
+		return fullPhoneNumber;
+	}
+
+	public void setFullPhoneNumber(String fullPhoneNumber) {
+		this.fullPhoneNumber = fullPhoneNumber;
+	}
+    
+    
+    
 
 }
