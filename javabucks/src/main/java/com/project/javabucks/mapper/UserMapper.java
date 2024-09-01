@@ -331,8 +331,32 @@ public class UserMapper {
 	
 	// 민영 작업-------------------------------------------------------------------------
 	
-	public List<OrderDTO> getOrderHistory(String userID){
-		return sqlSession.selectList("getOrderHistory", userID);
+	public List<OrderDTO> getOrderHistory(Map<String, String> params){
+		return sqlSession.selectList("getOrderHistory", params);
+	}
+	
+	public List<OrderDTO> getSearchStatusOrderHistory(Map<String, String> params){
+		return sqlSession.selectList("getSearchStatusOrderHistory", params);
+	}
+	
+	public List<OrderDTO> getSearchPeriodOrderHistory(Map<String, String> params){
+		return sqlSession.selectList("getSearchPeriodOrderHistory", params);
+	}
+	
+	public String getMenuName(String menuCode) {
+		return sqlSession.selectOne("getMenuName", menuCode);
+	}
+	
+	public List<OrderDTO> getDeliversHistory(Map<String, String> params){
+		return sqlSession.selectList("getDeliversHistory", params);
+	}
+	
+	public List<OrderDTO> getSearchStatusDeliversHistory(Map<String, String> params){
+		return sqlSession.selectList("getSearchStatusDeliversHistory", params);
+	}
+	
+	public List<OrderDTO> getSearchPeriodDeliversHistory(Map<String, String> params){
+		return sqlSession.selectList("getSearchPeriodDeliversHistory", params);
 	}
 	
 }

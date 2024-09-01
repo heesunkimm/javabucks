@@ -588,9 +588,100 @@
  	
  	<!-- ================================================================================ -->
  	<!-- 민영 작업 -->
- 	<select id="getOrderHistory" parameterType="String" resultType="OrderDTO">
- 		select * from javabucks_order
- 		where userId = #{userId}
+ 	<select id="getOrderHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and (A.orderType = 'order' OR A.orderType = 'togo')
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
  	</select>
+ 	
+ 	<select id="getSearchStatusOrderHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and (A.orderType = 'order' OR A.orderType = 'togo')
+ 			<if test="orderStatus != 'ALL' and orderStatus != null">
+ 			and A.orderStatus = #{orderStatus}
+ 			</if>
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
+ 	</select>
+ 	
+ 	<select id="getSearchPeriodOrderHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and (A.orderType = 'order' OR A.orderType = 'togo')
+ 			<if test="orderStatus != 'ALL' and orderStatus != null">
+ 			and A.orderStatus = #{orderStatus}
+ 			</if>
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
+ 	</select>
+ 	
+ 	<select id="getMenuName" parameterType="String" resultType="String">
+		select menuName from javabucks_menu
+		where menuCode = #{menuCode}
+	</select>
+	
+	<select id="getDeliversHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and A.orderType = 'delivers'
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
+ 	</select>
+ 	
+ 	<select id="getSearchStatusDeliversHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and A.orderType = 'delivers'
+ 			<if test="orderStatus != 'ALL' and orderStatus != null">
+ 			and A.orderStatus = #{orderStatus}
+ 			</if>
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
+ 	</select>
+ 	
+ 	<select id="getSearchPeriodDeliversHistory" parameterType="java.util.Map" resultType="OrderDTO">
+ 		select A.*, B.bucksName
+ 		from javabucks_order A
+ 		join javabucks_bucks B
+ 		on A.bucksId = B.bucksId
+ 		where A.userId = #{userId}
+ 			and A.orderType = 'delivers'
+ 			<if test="orderStatus != 'ALL' and orderStatus != null">
+ 			and A.orderStatus = #{orderStatus}
+ 			</if>
+ 			<if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+			and A.orderDate BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+        	</if>
+ 		order by A.orderDate desc
+ 	</select>
+ 	
  	
  </mapper>
