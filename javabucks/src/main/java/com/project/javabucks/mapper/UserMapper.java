@@ -92,6 +92,15 @@ public class UserMapper {
 	public int insertOrderAlarm(AlarmDTO dto) {
 		return sqlSession.insert("insertOrderAlarm", dto);
 	}
+	
+	public int insertAlamUpgrade(Map<String, String> params) {
+		return sqlSession.insert("insertAlamUpgrade", params);
+	}
+	
+	public int insertAlamCoupon(Map<String, String> params) {
+		return sqlSession.insert("insertAlamCoupon", params);
+	}
+	
 
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
@@ -281,8 +290,12 @@ public class UserMapper {
 		return sqlSession.delete("MyMenuDeleteByMenuNum", mymenuNum);
 	}
 
-	public List<PayhistoryDTO> RecepitByUserid(String userId) {
-		return sqlSession.selectList("RecepitByUserid", userId);
+	public List<PayhistoryDTO> RecepitByUserid(Map<String, String> params) {
+		return sqlSession.selectList("RecepitByUserid", params);
+	}
+	
+	public OrderDTO OrderInfoByHistoryNum(int payhistoryNum) {
+		return sqlSession.selectOne("OrderInfoByHistoryNum", payhistoryNum);
 	}
 
 	public BucksDTO StoreInfoByBucksId(String bucksId) {

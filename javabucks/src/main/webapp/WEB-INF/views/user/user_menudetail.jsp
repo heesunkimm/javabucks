@@ -50,7 +50,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="cup" items="${cup}">
 		                        	<label>
-		                                <input type="button" name="cupType" data-cupNum="${cup.cupNum}">
+		                                <input type="button" class ="btn" name="cupType" data-cupNum="${cup.cupNum}">
 		                                <span>${cup.cupType}</span>
 		                            </label>
 		                            </c:forEach>                                                    
@@ -113,7 +113,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="ice" items="${ice}">
 		                            <label>
-		                                <input type="button" name="iceType" data-iceNum="${ice.iceNum}">
+		                                <input type="button" class ="btn" name="iceType" data-iceNum="${ice.iceNum}">
 		                                <span>${ice.iceType}</span>
 		                            </label>
 		                            </c:forEach>                                      
@@ -130,7 +130,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="milk" items="${milk}">
 		                            <label>
-		                                <input type="button" name="milkType" data-milkNum="${milk.milkNum}">
+		                                <input type="button" class ="btn" name="milkType" data-milkNum="${milk.milkNum}">
 		                                <span>${milk.milkType}</span>
 		                            </label>
 		                            </c:forEach>                            
@@ -221,7 +221,18 @@
 <%@ include file="user_bottom.jsp"%>
 
 <script type="text/javascript">
-		
+		//버튼 클릭시 클래스 먹이기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//버튼 클릭 이벤트 설정
+		document.querySelectorAll('.btn').forEach(button => {
+		    button.addEventListener('click', function() {
+		        // 모든 버튼에서 active 클래스 제거
+		        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+		        
+		        // 클릭된 버튼에 active 클래스 추가
+		        this.classList.add('active');
+		    });
+		});
+
 		//팝업 열기
 		function openPopup(popupId) {
 		    $('#' + popupId).show();

@@ -66,6 +66,18 @@
 		Update javabucks_card SET cardPrice = cardPrice - #{payhistoryPrice}
 		WHERE cardRegNum = #{cardRegNum}
 	</update>
+	
+	<!-- 등급 업그레이드 알람 추가 -->
+ 	<select id="insertAlamUpgrade" parameterType="java.util.Map">
+ 		INSERT into javabucks_alarm values
+ 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', '(#{grade}') Level이 되신 것을 축하합니다!', sysdate)
+ 	</select>
+ 	
+ 	<!-- 등급 업그레이드 쿠폰 알람 추가 -->
+ 	<select id="insertAlamCoupon" parameterType="java.util.Map">
+ 		INSERT into javabucks_alarm values
+ 		(seq_alarmNum.nextVal, #{userId}, 'F', 'cpn', '(#{coupon}) 쿠폰이 발급되었습니다.', sysdate)
+ 	</select>
  	
  	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
  	<select id="listGetAlarmById" resultType="AlarmDTO" parameterType="String">
@@ -478,11 +490,19 @@
    		 WHERE mymenuNum = #{mymenuNum} 		 				 	  		 
  	</delete>	
 
- 	<select id="RecepitByUserid" parameterType="String" resultType="PayhistoryDTO"> 
+ 	<select id="RecepitByUserid" parameterType="java.util.Map" resultType="PayhistoryDTO"> 
  		 SELECT jb.bucksName, jp.*
  		 FROM javabucks_payhistory jp join javabucks_bucks jb
  		 ON jp.bucksId = jb.bucksId
- 		 WHERE userId = #{userId}		 				 	  		 
+ 		 WHERE userId = #{userId}
+ 		 AND payhistoryDate between to_date(#{startDate}, 'YYYY-MM-DD') 
+   		 AND to_date(#{endDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND
+   		 <if test="payhistoryPayType != null">
+        	AND payhistoryPayType = #{payhistoryPayType}
+    	</if>
+    	<if test="payhistoryPayWay != null">
+        	AND payhistoryPayWay = #{payhistoryPayWay}
+    	</if>	
  	</select>	
  	
  	 <select id="StoreInfoByBucksId" parameterType="String" resultType="BucksDTO"> 
@@ -494,6 +514,12 @@
  	<select id="PayInfoByHistoryNum" parameterType="Integer" resultType="PayhistoryDTO"> 
  		 SELECT *
  		 FROM javabucks_payhistory		 
+ 		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
+ 	</select>
+
+	<select id="OrderInfoByHistoryNum" parameterType="java.util.Map" resultType="OrderDTO"> 
+ 		 SELECT jo.*
+ 		 FROM javabucks_order jo JOIN javabucks_payhistory jp ON jo.orderCode = jp.orderCode	 
  		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
  	</select>
  	
