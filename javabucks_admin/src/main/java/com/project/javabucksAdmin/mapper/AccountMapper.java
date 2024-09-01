@@ -47,8 +47,8 @@ public class AccountMapper {
 			 }
 		   
 		  //아이디 중복 확인	
-		    public boolean checkAdminId(AdminDTO dto) {
-				 int count = sqlSession.selectOne("checkAdminId", dto);
+		    public boolean checkAdminId(String adminId) {
+				 int count = sqlSession.selectOne("checkAdminId", adminId);
 				 return count > 0;
 			 }
 		    

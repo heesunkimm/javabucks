@@ -16,7 +16,7 @@
                     <div class="info_wrap">
                         <div class="info_box">
                             <label><span>아이디</span>
-							    <input type="text" name="adminId" class="userId" value="" >
+							    <input type="text" name="userId" class="userId" value="" >
 							</label>
 							<label><span>패스워드</span>
 							    <input type="password" name="adminPasswd" class="password" value="" >
@@ -60,7 +60,7 @@ let isEmailChecked = false;
 
 // 아이디 중복확인
 function checkAdminId() {
-    var adminId = document.querySelector('input[name="adminId"]').value;
+    var adminId = document.querySelector('input[name="userId"]').value;
 
     // AJAX 요청 생성
     var xhr = new XMLHttpRequest();
@@ -75,7 +75,7 @@ function checkAdminId() {
             } else if (response === 'nok') {
                 alert("사용 가능한 아이디입니다.");
                 isIdChecked = true;
-                document.querySelector('input[name="adminId"]').readOnly = true;
+                document.querySelector('input[name="userId"]').readOnly = true;
                 enableRegisterButton();
             }
         }

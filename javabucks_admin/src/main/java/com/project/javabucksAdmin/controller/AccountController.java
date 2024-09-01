@@ -58,7 +58,7 @@ public class AccountController {
 				@RequestParam(value = "startDate", required = false) String startDate, 
 				@RequestParam(value = "endDate", required = false) String endDate,   
 				@RequestParam(value = "enable", required = false) String enable,    
-				@RequestParam(value = "adminId", required = false) String adminId,   
+				@RequestParam(value = "userId", required = false) String adminId,   
 				@RequestParam(value = "adminEmail1", required = false) String adminEmail1, 
 				@RequestParam(value = "adminEmail2", required = false) String adminEmail2, 
 				@RequestParam(value = "authority", required = false) String authority, 
@@ -133,10 +133,8 @@ public class AccountController {
 			//관리자 아이디 중복 확인
 			@ResponseBody
 			@GetMapping("/checkAdminId")
-			public String checkAdminId(@RequestParam("adminId") String adminId) {
-				AdminDTO dto = new AdminDTO();
-				dto.setAdminId(adminId);
-				if (accountMapper.checkAdminId(dto)) {
+			public String checkAdminId(@RequestParam("userId") String adminId) {
+				if (accountMapper.checkAdminId(adminId)) {
 					return "ok";
 				} else {
 					return "nok";
@@ -145,7 +143,7 @@ public class AccountController {
 			
 			//관리자 등록
 			@RequestMapping(value = "/addAdmin.do", method = RequestMethod.POST )
-			public String addAdmin( @RequestParam("adminId") String adminId,
+			public String addAdmin( @RequestParam("userId") String adminId,
 		            @RequestParam("adminPasswd") String adminPasswd,
 		            @RequestParam("adminEmail1") String adminEmail1,
 		            @RequestParam("adminEmail2") String adminEmail2) {
@@ -383,3 +381,5 @@ public class AccountController {
 		
 		
 }
+
+
