@@ -15,7 +15,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,34 +72,101 @@ public class UserController {
 	
 	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
-	public String userIndex(HttpSession session, HttpServletRequest req) {
+	public String userIndex(HttpSession session, HttpServletRequest req, String mode) {
 		// 등급(리워드)
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-		// 음료 주문해서 적립 됐을때 등급 업그레이드!, 쿠폰까지 발행하기!
-		// 등급 업그레이드
-		if(udto.getGradeCode().equals("welcome")) {
-			int res = userMapper.updateGreen(userId);
-		}else if(udto.getGradeCode().equals("green")) {			
-			int res = userMapper.updateGold(userId);
-		}else {
-			int res = userMapper.updateGoldAfter(userId);
-		}
-
+		
+		UserDTO userDTO = userMapper.getInfoById(userId);
+		// 등급 업그레이드 전 별 갯수
+		int tot = 0;		
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId",userId);
+			
+			// 현재 등급을 가져오기 
+			if(userDTO.getGradeCode().equals("welcome")) {
+				// 등급 업글된 이후 모아온 별 갯수 
+				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
+				tot = 0;
+				for(FrequencyDTO fdt : frqDTO) {
+					// 업그레이드 이후 적립된 별 갯수 합
+					tot += fdt.getFrequencyCount();
+				}
+				// 업글 이후로 적립된 별이 일정갯수보다 많으면 업그레이드!
+				int res = userMapper.updateGreen(userId);
+				UserDTO tt = userMapper.getInfoById(userId);
+				String grade = tt.getGradeCode();
+				if(grade.equals("green")) {
+					// 등급 업그레이드 후 별 갯수 업데이트
+					if(tot <= 5) {
+						tot = 0;
+					}else {
+						int updateCount = tot - 5;
+						params.put("frequencyCount",updateCount);
+						int res2 = userMapper.updateCount(params);
+					}
+				}
+				
+			}else if(userDTO.getGradeCode().equals("green")) {	
+				// 업글 전 모아온 갯수
+				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
+				tot = 0;
+				for(FrequencyDTO fdt : frqDTO) {
+					// 업그레이드 이후 적립된 별 갯수 합
+					tot += fdt.getFrequencyCount();
+				}
+				int res = userMapper.updateGold(userId);
+				// 업데이트 후 유저 등급 조회
+				UserDTO tt = userMapper.getInfoById(userId);
+				String grade = tt.getGradeCode();
+				if(grade.equals("gold")) { 
+					// 등급 업그레이드 후 별 갯수 업데이트
+					if(tot <= 15) {
+						tot = 0;
+					}else {
+						int updateCount = tot - 15;
+						params.put("frequencyCount",updateCount);
+						int res2 = userMapper.updateCount(params);
+					}
+				}
+				
+			}else {
+				String date = userDTO.getUserGradedate();
+				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
+				tot = 0;
+				for(FrequencyDTO fdt : frqDTO) {
+					// 업그레이드 이후 적립된 별 갯수 합
+					tot += fdt.getFrequencyCount();
+				}
+				int res = userMapper.updateGoldAfter(userId);
+				UserDTO tt = userMapper.getInfoById(userId);
+				String gradedate = tt.getUserGradedate();
+				if(gradedate.equals(date)) {
+					// 등급 업그레이드 후 별 갯수 업데이트
+					if(tot <= 30) {
+						tot = 0;
+					}else {
+						int updateCount = tot - 30;
+						params.put("frequencyCount",updateCount);
+						int res2 = userMapper.updateCount(params);
+					}
+				}
+			}
 		// 별 갯수 구하기
 		int frequencyById = 0;
+		UserDTO userDTO2 = userMapper.getInfoById(userId); 
 		List<FrequencyDTO> list = userMapper.getFrequencyById(userId);
 		// 등급 업데이트되면 별 갯수 초기화
 		if (list == null) {
 			frequencyById = 0;
-			// 등급 업데이트 후 별 갯수
+		// 등급 업데이트 후 별 갯수
 		} else {
 			for (FrequencyDTO dto : list) {
 				frequencyById = frequencyById + dto.getFrequencyCount();
 			}
 		}
 		// 현재 등급별 별 필요 갯수 및 게이지
-		if (udto.getGradeCode().equals("green")) {
+		if (userDTO2.getGradeCode().equals("green")) {
 			// gold 가려면 15
 			int frequency = 15 - frequencyById;
 			int gage = (int) ((frequencyById / 15.0) * 100);
@@ -109,7 +175,7 @@ public class UserController {
 			req.setAttribute("until", "Gold Level");
 			req.setAttribute("progress_bar", gage);
 
-		} else if (udto.getGradeCode().equals("welcome")) {
+		} else if (userDTO2.getGradeCode().equals("welcome")) {
 			// green 가려면 5개
 			int frequency = 5 - frequencyById;
 			int gage = (int) ((frequencyById / 5.0) * 100);
@@ -118,15 +184,9 @@ public class UserController {
 			req.setAttribute("until", "Green Level");
 			req.setAttribute("progress_bar", gage);
 
-			// 골드 등급
-		} else {
-			// gold에서 별 적립 30개 넘으면
-
-			if (frequencyById > 30) {
-				// 30개 넘으면 다시 별 갯수 초기화 위해서
-				int res = userMapper.updateGoldAfter(userId);
-				frequencyById = frequencyById - 30;
-			}
+		// 골드 등급
+		} else {	
+			// goldaward 가려면 30개
 			int frequency = 30 - frequencyById;
 			int gage = (int) ((frequencyById / 30.0) * 100);
 			req.setAttribute("maxStar", "30");
@@ -503,16 +563,16 @@ public class UserController {
 	// 영수증 팝업창 데이터 ajax
 	@ResponseBody
 	@PostMapping("/user_recepit.ajax")
-	public Map<String, Object> userRecepit(@RequestBody Map<String, Object> requestBody) {
+	public Map<String, Object> userRecepit(@RequestBody Map<String, Object> params) {
 		try {
-			String bucksId = (String) requestBody.get("bucksId");
+			String bucksId = (String) params.get("bucksId");
 
 			// 안전한 타입 변환
 			Integer payhistoryNum = null;
-			Object payhistoryObj = requestBody.get("payhistoryNum");
+			Object payhistoryObj = params.get("payhistoryNum");
 			payhistoryNum = Integer.valueOf((String) payhistoryObj);
 
-			// bucksId에 해당하는 데이터를 조회합니다.
+			// bucksId에 해당하는 데이터를 조회합니다.	
 			BucksDTO dto = userMapper.StoreInfoByBucksId(bucksId);
 			PayhistoryDTO dto2 = userMapper.PayInfoByHistoryNum(payhistoryNum);
 			String userNickname = userMapper.NicknameByHistoryNum(payhistoryNum);
@@ -532,9 +592,12 @@ public class UserController {
 			response.put("payhistoryDate", dto2.getPayhistoryDate());
 			// 닉네임, 주문번호
 			response.put("userNickname", userNickname);
-			response.put("orderCode", dto2.getOrderCode());
+			String ordercode = dto2.getOrderCode().substring(7);
+			response.put("orderCode", ordercode);
 			// 주문내역
 
+			
+			
 			// 결제금액
 			response.put("payhistoryPrice", dto2.getPayhistoryPrice());
 			// 결제카드
@@ -673,6 +736,32 @@ public class UserController {
 		}else {
 			params.put("cartType", "delivers");
 		}
+		// 장바구니에 다른 지점 메뉴 담을때 처리
+		// 장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.
+		List<CartDTO> dto = userMapper.CartinfoByUserId(userId);
+		for(CartDTO tt : dto) {
+			if(!params.get("bucksId").equals(tt.getBucksId())) {
+				System.out.println("들어옴");
+				return -1;	
+		    }
+		}		
+		
+		// 장바구니에 insert하기 전에 조회(동일 매장, 같은 메뉴인지)
+		System.out.println(params.get("pickup"));
+		System.out.println(params.get("menuCode"));
+		System.out.println(params.get("optId"));
+		
+		
+//		if(params.get("pickup").equals(dto.getCartType()) &&
+//		   params.get("menuCode").equals(dto.getMenuCode()) &&
+//		   params.get("optId").equals(dto.getOptId())) {
+//			
+//			int totCnt = dto.getcartCnt() + quantity; 
+//			params.put("cartCnt",totCnt);
+//			int res = userMapper.updateCart(params);	
+//		}
+		
+		params.get(userId);
 		int res = userMapper.insertCart(params);
 					
 		return res;
@@ -943,29 +1032,34 @@ public class UserController {
 				List<CartToPay2> cartItemsList = new ArrayList<>();
 				List<CartToPay> ctpList = new ArrayList<>();
 				Map<String, Integer> params3 = new HashMap<>();
+				int totMenuPrice = 0;
+				int totOptPrice = 0;
+				int totalPrice1 = 0;
+				int totalPrice2 = 0;
+				int cnt = 0;
 					for (int i = 0; i < cartNum.size(); i++) {
 						params3.put("cartNum",cartNum.get(i));
 						params3.put("cartCnt",cartCnt.get(i));
+						
+						// 메뉴 하나 주문갯수 업데이트 시켜주기
 						int res = userMapper.updateCartCount(params3);
 				        CartToPay2 cartItem = new CartToPay2();
+				        // 장바구니 번호, 메뉴 주문 갯수들 짝지어서 담아두기
 				        cartItem.setCartNum(cartNum.get(i));
 				        cartItem.setCartCnt(cartCnt.get(i));
 				        cartItemsList.add(cartItem);
 				    }
 				
 				Map<String, Object> params2 = new HashMap<>();
-				
 				params2.put("userId",userId);
 				
 				// 체크한 각 장박니 메뉴들 정보 조회해서 ctp에 저장
 				for(CartToPay2 CartDTO : cartItemsList) {
 					
+					// 장바구니 번호 params2에 저장해서 메뉴 갯수 업데이트
 					int cartNum2 = CartDTO.getCartNum();
 					params2.put("cartNum",cartNum2);
-					// cart cnt 업데이트
-					int cnt = CartDTO.getCartCnt();
-					
-					
+					cnt = CartDTO.getCartCnt();
 					int res = userMapper.updateCartCount(params3);
 					
 					// id랑 cartnum으로 장바구니 메뉴 정보 조회
@@ -973,6 +1067,9 @@ public class UserController {
 					// bucksid로 매장 정보 조회
 					String bucksId = cdto.getBucksId();
 					BucksDTO bdto = userMapper.getBucksinfoById(bucksId);
+					// params에 매장 이름, 위치 임시로 저장하기
+					params.put("bucksName", bdto.getBucksName());
+					params.put("bucksLocation", bdto.getBucksLocation());
 					// optid로 옵션금액 구하기
 					int optId = cdto.getOptId();
 					int optPrice = userMapper.orderOptTotPrice(optId); // 옵션금액
@@ -1006,16 +1103,43 @@ public class UserController {
 					ctp.setCartCnt(cdto.getcartCnt());
 					
 					ctpList.add(ctp);
+					// 옵션 총 가격 초기화
+					totOptPrice = 0;
+					// 옵션 가격들 더해주기
+					if (cupdto != null) {
+						totOptPrice += cupdto.getCupPrice();
+					}
+					if (icedto != null) {
+						totOptPrice += icedto.getIcePrice();
+					}
+					if (shotdto != null) {
+						totOptPrice += shotdto.getShotPrice() * optdto.getOptShotCount();
+					}
+					if (whipdto != null) {
+						totOptPrice += whipdto.getWhipPrice();
+					}
+					if (syrupdto != null) {
+						totOptPrice += syrupdto.getSyrupPrice() * optdto.getOptSyrupCount();
+					}
+					if (milkdto != null) {
+						totOptPrice += milkdto.getMilkPrice();
+					}
+					totMenuPrice = mdto.getMenuPrice();
+					totalPrice1 = (totMenuPrice + totOptPrice) * cnt;
+					totalPrice2 += totalPrice1;
 					// 페이지로 전송시킬 단일 결제 건 정보
 //					model.addAttribute("optdto", optdto);
 //					model.addAttribute("bdto", bdto);
-									
 				}
-				System.out.println(ctpList);
-				model.addAttribute(ctpList);
-				model.addAttribute("pickup", "배달");
+				String bucksName = params.get("bucksName");
+				String bucksLocation = params.get("bucksLocation");
+				String pickup = params.get("modeInput");
+				model.addAttribute("ctpList", ctpList);
 				model.addAttribute("cart", cart);
-				
+				model.addAttribute("bucksName", bucksName);
+				model.addAttribute("bucksLocation", bucksLocation);
+				model.addAttribute("pickup", pickup);
+				model.addAttribute("totalPrice", totalPrice2);
 		}else {					
 
 		String bucksId = params.get("bucksId");

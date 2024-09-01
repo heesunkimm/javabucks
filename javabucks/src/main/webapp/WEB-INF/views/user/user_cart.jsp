@@ -82,9 +82,15 @@
 												</li>
 											</c:when>
 										</c:choose>
-										<li class="opt_item"><span>얼음 ${dto.iceType}</span><span>${dto.icePrice}</span></li>
-										<li class="opt_item"><span>휘핑 ${dto.whipType}</span><span>${dto.whipPrice}</span></li>
-										<li class="opt_item"><span>${dto.milkType}</span><span>${dto.milkPrice}</span></li>
+										<c:if test="${not empty dto.iceType}">
+											<li class="opt_item"><span>얼음 ${dto.iceType}</span><span>${dto.icePrice}</span></li>
+										</c:if>
+										<c:if test="${not empty dto.whipType}">
+											<li class="opt_item"><span>휘핑 ${dto.whipType}</span><span>${dto.whipPrice}</span></li>
+										</c:if>
+										<c:if test="${not empty dto.milkType}">
+											<li class="opt_item"><span>${dto.milkType}</span><span>${dto.milkPrice}</span></li>
+										</c:if>
 									</ul>
 									<div class="price_box">
 										<div class="count_box">
@@ -121,7 +127,7 @@
 						<p class="txt_total" id="totalPrice"></p>
 					</div>
 					<div class="btn_box">
-						<button type="submit" id="orderButton" onclick="submitCheckedItems()">주문하기</button>
+						<button type="submit" id="orderButton">주문하기</button>
 					</div>
 				</div>
 			</form>
@@ -275,39 +281,56 @@
 		}
 	}
    
-   // 주문하기 버튼 눌렀을때 체크박스에 체크된 것만 데이터 보내기
-   function submitCheckedItems() {
-    // 기존의 hidden cartNum 요소를 모두 제거합니다.
-    const form = document.querySelector('form[action="user_paynow"]');
-    const existingInputs = form.querySelectorAll('input[name="cartNum"]');
-    existingInputs.forEach(input => input.remove());
+// 주문하기 버튼 눌렀을때 체크박스에 체크된 것만 데이터 보내기
+   function submitCheckedItems(event) {
+       // 기존의 hidden cartNum 요소를 모두 제거합니다.
+       const form = document.querySelector('form[action="user_paynow"]');
+       const existingInputs = form.querySelectorAll('input[name="cartNum"]');
+       existingInputs.forEach(input => input.remove());
 
- // 체크된 체크박스에서 cartNum과 cartCnt 값을 수집하고 hidden input으로 추가합니다.
-    const checkboxes = document.querySelectorAll('.item-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        const cartNum = checkbox.name; // 체크박스의 name 속성에 cartNum이 들어 있습니다.
-        const cartCnt = checkbox.closest('.cart_item').querySelector('input[name="order_number"]').value;
-        
-        // hidden input 생성 (cartNum)
-        const hiddenInputNum = document.createElement('input');
-        hiddenInputNum.type = 'hidden';
-        hiddenInputNum.name = 'cartNum';
-        hiddenInputNum.value = cartNum;
+       // 체크된 체크박스에서 cartNum과 cartCnt 값을 수집하고 hidden input으로 추가합니다.
+       const checkboxes = document.querySelectorAll('.item-checkbox:checked');
 
-        // hidden input 생성 (cartCnt)
-        const hiddenInputCnt = document.createElement('input');
-        hiddenInputCnt.type = 'hidden';
-        hiddenInputCnt.name = 'cartCnt';
-        hiddenInputCnt.value = cartCnt;
+       // 체크된 항목이 없으면 경고창을 띄우고 폼 제출을 막습니다.
+       if (checkboxes.length === 0) {
+           alert("메뉴를 선택해주세요.");
+           event.preventDefault(); // 폼 제출을 막습니다.
+           return; // 함수 종료
+       }
 
-        // form에 hidden input 추가
-        form.appendChild(hiddenInputNum);
-        form.appendChild(hiddenInputCnt);
-    });
+       checkboxes.forEach(checkbox => {
+           const cartNum = checkbox.name; // 체크박스의 name 속성에 cartNum이 들어 있습니다.
+           const cartCnt = checkbox.closest('.cart_item').querySelector('input[name="order_number"]').value;
+           
+           // hidden input 생성 (cartNum)
+           const hiddenInputNum = document.createElement('input');
+           hiddenInputNum.type = 'hidden';
+           hiddenInputNum.name = 'cartNum';
+           hiddenInputNum.value = cartNum;
 
-    // 폼을 제출합니다.
-    form.submit();
-}
+           // hidden input 생성 (cartCnt)
+           const hiddenInputCnt = document.createElement('input');
+           hiddenInputCnt.type = 'hidden';
+           hiddenInputCnt.name = 'cartCnt';
+           hiddenInputCnt.value = cartCnt;
+
+           // form에 hidden input 추가
+           form.appendChild(hiddenInputNum);
+           form.appendChild(hiddenInputCnt);
+       });
+
+       // 체크박스가 선택된 경우에만 폼을 제출합니다.
+       form.submit();
+   }
+
+   // 주문하기 버튼에 이벤트 리스너 추가
+   const orderButton = document.querySelector('#orderButton'); // 버튼의 ID를 사용
+   orderButton.addEventListener('click', function(event) {
+       submitCheckedItems(event);
+   });
+
+
+
    
    
    // [주문하기 버튼] 활성화 클래스 추가하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

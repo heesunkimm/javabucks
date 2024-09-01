@@ -371,8 +371,9 @@
 	            processData: false,  // FormData를 사용하면 false로 설정해야 함
 	            contentType: false,  // FormData를 사용하면 false로 설정해야 함
 	            success: function(response) {
-	                if (response > 0) {
-	                    // 팝업 띄우기
+	            	if (response === -1) {
+	                    alert('장바구니에는 같은 매장의 메뉴만 담을 수 있습니다.');
+	                } else if (response > 0) {
 	                    let popupId = 'pickupselect';  // 명시적으로 팝업 ID를 설정
 	                    openPopup(popupId);
 	                } else {

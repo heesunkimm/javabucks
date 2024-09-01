@@ -92,8 +92,8 @@
 
             <ul class="store_confirm">
                 <li>주문하신 매장을 확인해주세요!</li>
-                <li>${bdto.bucksName}<span class="font_gray">${pickup}</span></li>
-                <li>${bdto.bucksLocation}</li>
+                <li>${bucksName}<span class="font_gray">${pickup}</span></li>
+                <li>${bucksLocation}</li>
             </ul>
 
             <div class="btn_box">
@@ -155,7 +155,7 @@
                 </li>
             </c:if>
             <c:if test="${cart=='cart'}">
-            ${ctpList}
+            
             	<c:forEach var="ctp" items="${ctpList}">
 	                <li class="pay_item">
 	                    <div class="img_box">
@@ -189,7 +189,7 @@
 	                        </dl>
 	                        <dl class="opt_item font_gray">
 	                        	<c:if test="${ctp.orderOptDTO.optSyrupCount != 0}">
-	                        	<dt>${ctp.syrupDTO.syrupType} (+${ctp.orderOptDTO.optSyrupCount}) X ${ctp.cartCnt1}</dt>
+	                        	<dt>${ctp.syrupDTO.syrupType} (+${ctp.orderOptDTO.optSyrupCount}) X ${ctp.cartCnt}</dt>
 	                        	<dd>+<fmt:formatNumber value="${ctp.orderOptDTO.optSyrupCount*ctp.syrupDTO.syrupPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
 	                        	</c:if>
 	                        </dl>
@@ -201,11 +201,11 @@
 	                        </dl>
 	                        <dl class="opt_item font_gray">
 	                        	<dt>총 추가금액</dt>
-	                        	<dd><fmt:formatNumber value="${cpt.optPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
+	                        	<dd><fmt:formatNumber value="${ctp.optPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
 	                        </dl>
 	                        <dl>
 	                        	<dt class="txt_tit">총 금액</dt>
-	                        	<dd class="txt_total"><fmt:formatNumber value="${(ctp.menuDTO.menuPrice*ctp.cartCnt)+(cpt.optPrice*tp.cartCnt)}" pattern="#,###"/>원</dd>
+	                        	<dd class="txt_total"><fmt:formatNumber value="${(ctp.menuDTO.menuPrice*ctp.cartCnt)+(ctp.optPrice*ctp.cartCnt)}" pattern="#,###"/>원</dd>
 	                        </dl>	
 	                    </div>
 	                </li>
@@ -272,15 +272,26 @@
                 <form name="payOrder" action="orderPayOk" method="post">
                     <dl>
                         <dt>주문 금액</dt>
+                        <c:if test="${cart =='cart'}">
+                        <dd id="orderedAmount"><fmt:formatNumber value="${totalPrice}" pattern="#,###"/>원</dd>
+                    	</c:if>
+                    	<c:if test="${cart !='cart'}">
                         <dd id="orderedAmount"><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
+                    	</c:if>
                     </dl>
                     <dl class="font_gray">
                         <dt>할인 금액</dt>
                         <dd id="discountAmount"><fmt:formatNumber value="0" pattern="#,###"/>원</dd>
                     </dl>
                     <dl>
+                    	<c:if test="${cart =='cart'}">
+                        <dt>최종 결제 금액</dt>
+                        <dd id="totcountAmount"><fmt:formatNumber value="${totalPrice}" pattern="#,###"/>원</dd>
+                        </c:if>
+                        <c:if test="${cart !='cart'}">
                         <dt>최종 결제 금액</dt>
                         <dd id="totcountAmount"><fmt:formatNumber value="" pattern="#,###"/>원</dd>
+                        </c:if>
                     </dl>
                     <input type="hidden" name="cardRegNum">
                     <input type="hidden" name="payhistoryPayWay" id="payhistoryPayWay">
@@ -333,9 +344,31 @@
 <%@ include file="user_bottom.jsp" %>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 <script type="text/javascript">
+				
 		let selectedCouponPrice = 0;
-		let totalAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
-		document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+		// 원래 기존 소스
+//      let totalAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
+// 		document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+
+	    document.addEventListener('DOMContentLoaded', function() {
+        // 'orderedAmount' 요소에서 포맷된 숫자와 단위를 가져옵니다.
+        const orderedAmountElement = document.getElementById('orderedAmount');
+        let orderedAmountText = orderedAmountElement.innerText; // 예: "1,234원"
+
+        // '원' 단위를 제거하고 숫자만 추출합니다.
+        let orderedAmountValue = orderedAmountText.replace('원', '').replace(/,/g, '');
+        
+        // 문자열을 숫자로 변환합니다.
+        let totalAmount = parseFloat(orderedAmountValue);
+
+        // totalAmount가 올바른 숫자인지 확인
+        if (!isNaN(totalAmount)) {
+            // 'totcountAmount' 요소에 totalAmount 값을 설정합니다.
+            document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+        } else {
+            console.error('totalAmount가 올바른 숫자가 아닙니다.');
+        }
+    });
 		
 		//쿠폰 항목 클릭 시 가격을 저장
 		document.querySelectorAll('.coupon-item').forEach(coupon => {

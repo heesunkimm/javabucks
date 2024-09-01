@@ -287,8 +287,7 @@
  		SELECT jf.* 
  		FROM javabucks_frequency jf join javabucks_user ju on jf.userId = ju.userId
  		WHERE jf.userId = #{userId}
- 		AND ju.userGradedate &lt; jf.frequencyRegDate
-
+ 		AND ju.userGradedate &lt;= jf.frequencyRegDate
  	</select>
  	
  	<update id="updateGreen" parameterType="String"> 
@@ -300,9 +299,9 @@
 		    FROM javabucks_frequency jf
 		    WHERE jf.userId = ju.userId
 		      AND ju.userGradedate &lt; jf.frequencyRegDate
-		  ) > 5
+		  ) >= 5
 		  AND ju.userId = #{userId}	
- 	</update>
+ 	</update> 		
  	
  	<update id="updateGold" parameterType="String"> 
  		UPDATE javabucks_user ju
@@ -313,7 +312,7 @@
 		    FROM javabucks_frequency jf
 		    WHERE jf.userId = ju.userId
 		      AND ju.userGradedate &lt; jf.frequencyRegDate
-		  ) > 15
+		  ) >= 15
 		  AND ju.userId = #{userId}	
  	</update>
  	
@@ -326,9 +325,13 @@
 		    FROM javabucks_frequency jf
 		    WHERE jf.userId = ju.userId
 		      AND ju.userGradedate &lt; jf.frequencyRegDate
-		  ) > 30
+		  ) >= 30
 		  AND ju.userId = #{userId}	
  	</update>
+ 	
+ 	<insert id="updateCount" parameterType="java.util.Map"> 
+ 		INSERT into javabucks_frequency values(seq_frequencynum.nextval, #{userId}, sysdate, #{frequencyCount})
+ 	</insert>
  	
  	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc, cc.cpnPrice
@@ -559,6 +562,13 @@
  		 AND userId = #{userId}	  		 				 	  		 
  	</select>
  	
+ 	<!-- 장바구니 id로 조회하기 -->
+ 	<select id="CartinfoByUserId" parameterType="String" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}	 				 	  		 
+ 	</select>
+ 	
  	<!-- 장바구니에서 메뉴찾기 -->
  	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
  		 SELECT *
@@ -570,6 +580,15 @@
  	<update id="insertCart" parameterType="java.util.Map"> 
  		 INSERT INTO javabucks_cart
  		 VALUES(seq_cartNum.nextval, #{userId}, #{bucksId}, #{menuCode}, #{cartCount}, #{optId}, sysdate, #{cartType})	 				 	  		 
+ 	</update>
+ 	
+ 	<update id="updateCart" parameterType="java.util.Map"> 
+ 		 UPDATE javabucks_cart
+ 		 SET cartCnt = #{cartCnt}
+ 		 WHERE pickup = #{pickup}
+ 		 AND menuCode = #{menuCode}
+ 		 AND optId = #{optId}
+ 		 AND userId = #{userId} 				 	  		 
  	</update>
  	
  	<!-- 장바구니 cnt 업데이트하기 -->

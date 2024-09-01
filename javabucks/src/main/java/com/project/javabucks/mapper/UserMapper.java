@@ -181,8 +181,8 @@ public class UserMapper {
 	}
 
 	// 채성진 작업------------------------------------------------------
-	public UserDTO getInfoById() {
-		return sqlSession.selectOne("getInfoById");
+	public UserDTO getInfoById(String userId) {
+		return sqlSession.selectOne("getInfoById", userId);
 	}
 
 	public List<FrequencyDTO> getFrequencyById(String userId) {
@@ -199,6 +199,10 @@ public class UserMapper {
 
 	public int updateGoldAfter(String userId) {
 		return sqlSession.update("updateGoldAfter", userId);
+	}
+	
+	public int updateCount(Map<String, Object> params) {
+		return sqlSession.update("updateCount", params);
 	}
 
 	public List<CouponListDTO> getCouponListById(String userId) {
@@ -301,8 +305,16 @@ public class UserMapper {
 		return sqlSession.update("insertCart", params);
 	}
 	
+	public int updateCart(Map<String, Object> params) {
+		return sqlSession.update("updateCart", params);
+	}
+	
 	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
 		return sqlSession.selectOne("CartinfoByCartNum", params);
+	}
+	
+	public List<CartDTO> CartinfoByUserId(String userId) {
+		return sqlSession.selectList("CartinfoByUserId", userId);
 	}
 	
 	public int updateCartCount(Map<String, Integer> params) {
