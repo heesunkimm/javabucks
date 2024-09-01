@@ -59,7 +59,7 @@ public class UserController {
 	@Autowired
 	UserMapper userMapper;
 
-	// 실시간 알림갯수 보여주기
+	// 읽지않은 알림갯수 보여주기
 	@GetMapping("/noReadAlarmCheck.ajax")
     @ResponseBody
     public int noReadAlarmCheck(@RequestParam String userId) {
@@ -70,6 +70,15 @@ public class UserController {
         }
         return 0;
     }
+	
+	// 알람 상태 업데이트
+    @PostMapping("/readAllAlarms.ajax")
+    @ResponseBody
+    public void readAllAlarms(@RequestParam String userId) {
+    	userMapper.readAlarmUpdate(userId);
+    }
+	
+	
 	
 	// 채성진 작업-------------------------------------------------------------------
 	@RequestMapping("/user_index")
