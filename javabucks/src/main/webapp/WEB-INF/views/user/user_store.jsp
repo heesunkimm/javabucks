@@ -60,7 +60,8 @@
 							<c:when test="${dto.orderEnalbe eq 'N'}">
 								<c:set var="activeClass" value="pdt_dimm" />
 	                			<li class="store_item">
-				                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksId="${dto.bucksId}" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
+				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" 
+											data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-orderEnable="${dto.orderEnalbe}">
 				                        <div class="img_box">
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">
 				                        </div>                                              
@@ -133,7 +134,13 @@
 		    // 매장 정보를 클릭했을 때 팝업 표시
 		    $(".popup_btn").on('click', function(e) {
 		        e.preventDefault();
-		
+				// 선택한 매장의 주문 가능 여부 확인
+		        let orderEnable = $(this).data('orderenable');
+		        if (orderEnable === 'N') {
+					console.log(orderEnable);
+		            alert('해당 지점은 주문이 불가합니다.');
+		            return; // 팝업을 열지 않음
+		        }
 		        // 선택한 매장 정보 가져오기
 		        let bucksName = $(this).data('bucksname');
 		        let bucksId = $(this).data('bucksid');
@@ -142,7 +149,6 @@
 		        // 팝업 내의 요소들에 매장 정보 삽입
 				$("#pickupselect input[name='storeName']").val(bucksName);
 		        $("#pickupselect input[name='bucksId']").val(bucksId);
-		        
 		        // 팝업 열기
 		        $('#' + popupId).show();
 		        $('.dimm').show();
@@ -154,9 +160,28 @@
 		        $('#' + popupId).hide();
 		        $('.dimm').hide();
 		    });
-		    
-		});
 			
+			// 주문 불가 지점 알림창
+			$(".popup_btn2").on('click', function(e) {
+					        e.preventDefault();
+							// 선택한 매장의 주문 가능 여부 확인
+					        let orderEnable = $(this).data('orderenable');
+					        if (orderEnable === 'N') {
+								console.log(orderEnable);
+					            alert('해당 지점은 주문이 불가합니다.');
+					            return; // 팝업을 열지 않음
+					        }
+			});
+		});
+		 	// ${where} 값이 존재하는지 확인하여 페이지 이동 처리
+		    const whereValue = "${where}"; // JSP에서 넘겨받은 where 값을 자바스크립트로 가져옴
+			console.log(whereValue)
+		    if(whereValue) {
+		        // form을 자동 제출하여 user_menudetail 페이지로 이동
+		        $("form[name='f']").attr('action', 'user_menudetail').submit();
+		    }
+		
+		
 		function submitForm(pickupType) {
 		    // 선택한 pickupType (매장이용 또는 To-go)을 input에 설정
 		    $("input[name='pickup']").val(pickupType);
