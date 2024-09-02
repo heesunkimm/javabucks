@@ -8,9 +8,9 @@
  		select * from javabucks_alarm where userId = #{userId} and alarmIsRead = 'F' 
  	</select>
  	
- 	<!--<update id="readAlarmUpdate" parameterType="String">
+ 	<update id="readAlarmUpdate" parameterType="String">
  		update javabucks_alarm set alarmIsRead = 'T' where userId = #{userId}
- 	</update>-->
+ 	</update>
  
  	<insert id="addNewCard" parameterType="CardDTO">
  		INSERT INTO javabucks_card (

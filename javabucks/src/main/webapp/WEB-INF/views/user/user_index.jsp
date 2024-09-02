@@ -65,11 +65,9 @@
                 </ul>
     
                 <div class="alarm_box">
-                    <a class="link_btn" href="user_alarm">
-                        <div class="img_box">
-                            <img src="../images/icons/alarm.png" alt="">
-                        </div>
-                    </a>
+                    <div class="img_box">
+                        <img src="../images/icons/alarm.png" alt="">
+                    </div>
 					<span class="noReadNum">0</span>
                 </div>
             </div>
@@ -157,14 +155,35 @@
 	            }
 	        });
 			
-			// 실시간 알림갯수 보여주기
+			$('.alarm_box').on('click', function() {
+			    updateAndFetchAlarms();
+			    window.location.href = "user_alarm"; // 알람페이지 이동
+			});
+			
+			// 알람 아이콘 클릭 시 업데이트 함
+			function updateAndFetchAlarms() {
+			    $.ajax({
+			        url: `${pageContext.request.contextPath}/readAllAlarms.ajax`,
+			        method: "POST",
+			        data: { userId: userId },
+			        success: function() {
+			            // 알람 상태 업데이트 후 갯수를 다시 불러옴
+			            checkAlarm();
+			        },
+			        error: function(error) {
+			            console.error("Error updating alarms: ", error);
+			        }
+			    });
+			};
+			
+			// 읽지않은 알림갯수 보여주기
 			function checkAlarm() {
 			    $.ajax({
 			        url: `${pageContext.request.contextPath}/noReadAlarmCheck.ajax`,
 			        method: "GET",
 			        data: { userId: userId },
 			        success: function(res) {
-			            console.log(res);
+			            //console.log(res);
 						$('.noReadNum').text(res);
 			        },
 			        error: function(error) {
@@ -175,5 +194,11 @@
 
 			checkAlarm();
 			setInterval(checkAlarm, 10000);
+		});
+		$(window).on('pageshow', function(event) {
+				// 캐시에 로드 됐을때 or 뒤로가기 or 앞으로 가기 했을때
+		    if (event.originalEvent.persisted || window.performance && window.performance.navigation.type === 2) {
+		        window.location.reload();
+		    }
 		});
     </script>

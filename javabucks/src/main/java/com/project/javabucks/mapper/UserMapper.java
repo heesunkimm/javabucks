@@ -38,9 +38,9 @@ public class UserMapper {
 		return sqlSession.selectList("noReadAlarm", userId);
 	}
 	
-//	public int readAlarmUpdate(String userId) {
-//		return sqlSession.update("readAlarmUpdate", userId);
-//	}
+	public int readAlarmUpdate(String userId) {
+		return sqlSession.update("readAlarmUpdate", userId);
+	}
 
 	public BucksDTO getBucksinfoById(String bucksId) {
 		return sqlSession.selectOne("getBucksinfoById", bucksId);
