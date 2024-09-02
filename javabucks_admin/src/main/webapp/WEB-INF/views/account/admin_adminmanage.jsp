@@ -109,18 +109,39 @@
                        
                     </table>
                     <!-- 페이징 -->
-                    <div class="pagination">
-                        <c:forEach var="i" begin="1" end="${pageCount}">
+                    <c:set var="startPage" value="${1}"/>
+					<c:set var="endPage" value="${3}"/>
+					
+					<!-- 마지막 페이지일 때, startPage와 endPage 조정 -->
+					<c:if test="${currentPage == pageCount}">
+					    <c:set var="startPage" value="${pageCount - 1}"/>
+					    <c:set var="endPage" value="${pageCount}"/>
+					</c:if>
+					
+					<div class="pagination">
+					    <c:if test="${startPage > 1}">
+					        <a class="page_btn prev_btn" href="?page=${startPage-1}">
+					           <img src="../../images/icons/arrow.png">
+					        </a>
+					    </c:if>
+					
+					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
 					        <c:choose>
 					            <c:when test="${i == currentPage}">
-					                <span>${i}</span>
+					                <a href="?page=${i}" class="page_active">${i}</a>
 					            </c:when>
 					            <c:otherwise>
-					                <a href="?page=${i}">${i}</a>
+					                <a href="?page=${i}" class="page">${i}</a>
 					            </c:otherwise>
 					        </c:choose>
 					    </c:forEach>
-                    </div>    
+					
+					    <c:if test="${endPage < pageCount}">
+					        <a class="page_btn next_btn" href="?page=${endPage+1}">
+					            <img src="../../images/icons/arrow.png">
+					        </a>
+					    </c:if>
+					</div>
                 </div>
             </div>
         </div>

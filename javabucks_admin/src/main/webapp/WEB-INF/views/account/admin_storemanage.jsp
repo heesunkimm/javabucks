@@ -111,50 +111,33 @@
                 
                 </ul>  
                 <!-- s: 페이징  -->
-                <div class="paging">
-            	<c:if test="${pageCount > 1}">
-                	<c:set var="startPage" value="${currentPage - 2}"/>
-                	
-                <c:if test="${startPage lt 1}">
-                    <c:set var="startPage" value="1"/>
-                </c:if>
-                
-                	<c:set var="endPage" value="${currentPage + 2}"/>
-                <c:if test="${endPage gt pageCount}">
-                    <c:set var="endPage" value="${pageCount}"/>
-                </c:if>
-                
-                <c:url value="/storemanage.do" var="firstPageUrl">
-                    <c:param name="page" value="1"/>
-                </c:url>
-                
-                <c:url value="/storemanage.do" var="prevPageUrl">
-                    <c:param name="page" value="${currentPage - 1}"/>
-                </c:url>
-                
-                <a href="${firstPageUrl}">First</a>
-                <c:if test="${currentPage > 1}">
-                    <a href="${prevPageUrl}">Previous</a>
-                </c:if>
-                
-                <c:forEach begin="${startPage}" end="${endPage}" var="pageNumber">
-                    <c:url value="/storemanage.do" var="pageUrl">
-                        <c:param name="page" value="${pageNumber}"/>
-                    </c:url>
-                    <a href="${pageUrl}" class="${pageNumber == currentPage ? 'active' : ''}">${pageNumber}</a>
-                </c:forEach>
-                <c:url value="/storemanage.do" var="nextPageUrl">
-                    <c:param name="page" value="${currentPage + 1}"/>
-                </c:url>
-                <c:if test="${currentPage lt pageCount}">
-                    <a href="${nextPageUrl}">Next</a>
-                </c:if>
-                <c:url value="/storemanage.do" var="lastPageUrl">
-                    <c:param name="page" value="${pageCount}"/>
-                </c:url>
-                <a href="${lastPageUrl}">End</a>
-            </c:if>
-        </div>
+               <c:set var="startPage" value="${currentPage <= 2 ? 1 : currentPage - 1}"/>
+				<c:set var="endPage" value="${startPage + 2 > pageCount ? pageCount : startPage + 2}"/>
+				
+				<div class="pagination">
+				    <c:if test="${currentPage > 1}">
+				        <a class="page_btn prev_btn" href="?page=${currentPage - 1}">
+				          <img src="../../images/icons/arrow.png">
+				        </a>
+				    </c:if>
+				
+				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+				        <c:choose>
+				            <c:when test="${i == currentPage}">
+				                <a href="?page=${i}" class="page_active">${i}</a>
+				            </c:when>
+				            <c:otherwise>
+				                <a href="?page=${i}" class="page">${i}</a>
+				            </c:otherwise>
+				        </c:choose>
+				    </c:forEach>
+				
+				    <c:if test="${currentPage < pageCount}">
+				        <a class="page_btn next_btn" href="?page=${currentPage + 1}">
+				            <img src="../../images/icons/arrow.png">
+				        </a>
+				    </c:if>
+				</div>
         <!-- e:페이징 -->
               
                 
