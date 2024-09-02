@@ -162,7 +162,6 @@ public class OrderController {
 		
 		// 주문 처리 로직
 		orderProcess(req, storeOrder_pageNum, deliverOrder_pageNum, making_pageNum, model);
-		
 
 		return "/order/store_orderManage";
 	}
@@ -573,13 +572,38 @@ public class OrderController {
 				updateResult = false;
 			}
 		}
-
+		
+		// 5. 주문접수 알람 인서트
+		boolean alarmResult = false;
+		Map<String, Object> paramsUserId = new HashMap<>();
+		paramsUserId.put("orderCode", realOrderCode);
+		paramsUserId.put("bucksId", bucksId);
+		String userId = mapper.getUserId(paramsUserId);
+		
+		Map<String, Object> paramsAlarm = new HashMap<>();
+		paramsAlarm.put("userId", userId);
+		String alarmCont = orderCode +"번 주문이 접수되었습니다. 잠시만 기다려주세요!";
+		paramsAlarm.put("alarmCont", alarmCont);
+		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
+		
+		if(alarmInsertResult > 0) {
+			alarmResult = true;
+		}else {
+			alarmResult = false;
+		}
+		
 		Map<String, String> response = new HashMap<>();
 
-		if (orderResult && minusResult && updateResult) {
+		if (orderResult && minusResult && updateResult && alarmResult) {
 			response.put("response", "success");
 		} else if (!orderResult) {
 			response.put("response", "notEnough");
+		} else if (!minusResult) {
+			response.put("response", "stockMinusFail");
+		} else if (!updateResult) {
+			response.put("response", "orderStatusFail");
+		} else if (!alarmResult) {
+			response.put("response", "alarmInsertFail");
 		} else {
 			response.put("response", "fail");
 		}
@@ -607,12 +631,45 @@ public class OrderController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("bucksId", bucksId);
 		params.put("orderCode", realOrderCode);
-
+		
+		// 상태 취소 업데이트
+		boolean cancelUpdate = false;
 		int cancelResult = mapper.orderStatusUpdateCancel(params);
-
+		if(cancelResult > 0) {
+			cancelUpdate = true;
+		} else {
+			cancelUpdate = false;
+		}
+		
+		// 주문 취소 알람 인서트
+		boolean alarmResult = false;
+		Map<String, Object> paramsUserId = new HashMap<>();
+		paramsUserId.put("orderCode", realOrderCode);
+		paramsUserId.put("bucksId", bucksId);
+		String userId = mapper.getUserId(paramsUserId);
+		
+		Map<String, Object> paramsAlarm = new HashMap<>();
+		paramsAlarm.put("userId", userId);
+		String alarmCont = orderCode +"번 주문이 취소되었습니다.";
+		paramsAlarm.put("alarmCont", alarmCont);
+		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
+		
+		if(alarmInsertResult > 0) {
+			alarmResult = true;
+		}else {
+			alarmResult = false;
+		}
+		
 		Map<String, Object> response = new HashMap<>();
-		response.put("response", cancelResult);
-
+		
+		if(cancelUpdate && alarmResult) {
+			response.put("response", "success");
+		} else if(!cancelUpdate) {
+			response.put("response", "cancelUpdateFail");
+		} else {
+			response.put("response", "alarmInsertFail");
+		}
+		
 		return ResponseEntity.ok(response);
 	}
 
@@ -631,15 +688,48 @@ public class OrderController {
 
 		String realOrderCode = today + "_" + orderCode;
 		// System.out.println(realOrderCode); // 240826_A-005
-
+		
+		// 제조완료 상태 업데이트
+		boolean orderFinish = false;
 		Map<String, Object> params = new HashMap<>();
 		params.put("bucksId", bucksId);
 		params.put("orderCode", realOrderCode);
-
 		int finishResult = mapper.orderStatusUpdateFinish(params);
-
+		if(finishResult > 0) {
+			orderFinish = true;
+		} else {
+			orderFinish = false;
+		}
+		
+		// 주문 취소 알람 인서트
+		boolean alarmResult = false;
+		Map<String, Object> paramsUserId = new HashMap<>();
+		paramsUserId.put("orderCode", realOrderCode);
+		paramsUserId.put("bucksId", bucksId);
+		String userId = mapper.getUserId(paramsUserId);
+		
+		Map<String, Object> paramsAlarm = new HashMap<>();
+		paramsAlarm.put("userId", userId);
+		String alarmCont = orderCode +"번 메뉴가 준비되었습니다. 픽업대에서 메뉴를 픽업해주세요!";
+		paramsAlarm.put("alarmCont", alarmCont);
+		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
+		
+		if(alarmInsertResult > 0) {
+			alarmResult = true;
+		}else {
+			alarmResult = false;
+		}
+		
 		Map<String, Object> response = new HashMap<>();
-		response.put("response", finishResult);
+		if(orderFinish && alarmResult) {
+			response.put("response", "success");
+		} else if(!orderFinish) {
+			response.put("response", "finishUpdateFail");
+		} else if(!alarmResult) {
+			response.put("response", "alarmInsertFail");	
+		} else {
+			response.put("response", "Fail");
+		}
 
 		return ResponseEntity.ok(response);
 	}

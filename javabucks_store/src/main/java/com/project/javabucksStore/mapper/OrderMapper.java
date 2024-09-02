@@ -162,6 +162,14 @@ public class OrderMapper {
 		return sqlSession.update("updateOrderStatus", orderCode);
 	}
 	
+	public String getUserId(Map<String, Object> params) {
+		return sqlSession.selectOne("getUserId", params);
+	}
+	
+	public int insertOrderAlarm(Map<String, Object> params) {
+		return sqlSession.insert("insertOrderAlarm", params);
+	}
+
 	public int getMakingListCount(String bucksId, String today) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("bucksId", bucksId);

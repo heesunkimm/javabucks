@@ -129,7 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where bucksId = #{bucksId}
 			and orderStatus = '주문완료'
 			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
-			and orderType = 'order'
+
 	</select>
 	
 	<select id="getStoreOrderList" parameterType="java.util.Map" resultType="OrderDTO">
@@ -138,7 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				from ( select * from javabucks_order
 					   where bucksId = #{bucksId}
 							and orderStatus = '주문완료'
-							and orderType = 'order'
+							and (orderType = 'order' OR orderType = 'togo')
 							and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
 					   order by orderDate asc) A)
 		where rn between #{startRow} and #{endRow}	
@@ -209,6 +209,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		set orderStatus = '제조중'
 		where orderCode = #{orderCode}
 	</update>
+	
+	<select id="getUserId" parameterType="java.util.Map" resultType="String">
+		select userId from javabucks_order
+		where bucksId = #{bucksId}
+		and orderCode = #{orderCode}
+	</select>
+	
+	<insert id="insertOrderAlarm" parameterType="java.util.Map">
+		insert into javabucks_alarm (alarmNum, userId, alarmCate, alarmCont) 
+		values (seq_alarmnum.nextval, #{userId}, 'order', #{alarmCont})
+	</insert>
 	
 	<select id="getMakingListCount" parameterType="String" resultType="int">
 		select count(*) from javabucks_order
