@@ -12,9 +12,29 @@ public class BucksDTO {
 	private String bucksTel1;
 	private String bucksTel2;
 	private String bucksTel3;
+	private String bucksStart;
+    private String bucksEnd;
 	private String bucksJoindate;
 	private String bucksEnable;
 	private String orderEnable;
+	
+	
+
+	public String getBucksStart() {
+		return bucksStart;
+	}
+
+	public void setBucksStart(String bucksStart) {
+		this.bucksStart = bucksStart;
+	}
+
+	public String getBucksEnd() {
+		return bucksEnd;
+	}
+
+	public void setBucksEnd(String bucksEnd) {
+		this.bucksEnd = bucksEnd;
+	}
 
 	public String getBucksId() {
 		return bucksId;

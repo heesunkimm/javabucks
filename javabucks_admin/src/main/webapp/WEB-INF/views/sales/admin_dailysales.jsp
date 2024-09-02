@@ -48,9 +48,9 @@
                 <form name="dailySearchForm" action="/searchDailySales.do" method="post">
                     <div class="search_box">
                         <label>기간
-                            <input type="date" name="startDate" value="${startDate}"  required>
+                            <input type="date" name="startDate" value="${startDate}"  >
                             ~
-                            <input type="date" name="endDate" value="${endDate}" required>
+                            <input type="date" name="endDate" value="${endDate}" >
                         </label>
                         
                         <label>지점명

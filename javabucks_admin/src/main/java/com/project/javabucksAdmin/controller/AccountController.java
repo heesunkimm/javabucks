@@ -20,6 +20,9 @@ import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.UserDTO;
 import com.project.javabucksAdmin.mapper.AccountMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AccountController {
 
@@ -58,27 +61,26 @@ public class AccountController {
 				@RequestParam(value = "startDate", required = false) String startDate, 
 				@RequestParam(value = "endDate", required = false) String endDate,   
 				@RequestParam(value = "enable", required = false) String enable,    
-				@RequestParam(value = "userId", required = false) String adminId,   
-				@RequestParam(value = "adminEmail1", required = false) String adminEmail1, 
-				@RequestParam(value = "adminEmail2", required = false) String adminEmail2, 
+				@RequestParam(value = "adminId", required = false) String adminId,   
 				@RequestParam(value = "authority", required = false) String authority, 
 	            @RequestParam(value = "page", defaultValue = "1") int page,       
 	            @RequestParam(value = "itemsPerPage", defaultValue = "5") int itemsPerPage ) {
 			
+			System.out.println(startDate);
+			System.out.println(endDate);
+			System.out.println(adminId);
+			System.out.println(authority);
+			
 		    int startIndex = (page - 1) * itemsPerPage + 1;
 		    int endIndex = page * itemsPerPage;
 		    
-		    String adminEmail = "";
-		    if (adminEmail1 != null && !adminEmail1.isEmpty() && adminEmail2 != null && !adminEmail2.isEmpty()) {
-		        adminEmail = adminEmail1 + adminEmail2; 
-		    }
+		    
 
 		    Map<String, Object> params = new HashMap<>();
 		    params.put("startDate", startDate != null ? startDate : ""); 
 		    params.put("endDate", endDate != null ? endDate : "");       
 		    params.put("enable", enable != null ? enable : "");          
 		    params.put("adminId", adminId != null ? adminId : "");       
-		    params.put("adminEmail", adminEmail);                        
 		    params.put("authority", authority != null ? authority : ""); 
 		    params.put("startIndex", startIndex); 
 		    params.put("endIndex", endIndex);     
@@ -98,16 +100,24 @@ public class AccountController {
 		}
 
 		 @GetMapping("/deleteAdmin.do")
-		    public String deleteAdmin(@RequestParam("adminId") String adminId, RedirectAttributes redirectAttributes) {
-		        try {
-		            // 관리자 계정 삭제 로직 호출
-		        	accountMapper.deleteAdminById(adminId);
-		            redirectAttributes.addFlashAttribute("message", "계정이 성공적으로 삭제되었습니다.");
-		        } catch (Exception e) {
-		            redirectAttributes.addFlashAttribute("errorMessage", "계정 삭제 중 오류가 발생했습니다.");
-		        }
-		        // 관리 계정 리스트 페이지로 리다이렉트
-		        return "redirect:/admin_adminmanage.do";
+		    public String deleteAdmin(@RequestParam("adminId") String adminId, RedirectAttributes redirectAttributes, HttpServletRequest req) {
+			 
+			    HttpSession session = req.getSession();
+			    AdminDTO adto = (AdminDTO) session.getAttribute("inAdmin");
+			    
+			    if (adto != null && adto.getAdminId().equals(adminId)) {
+			        redirectAttributes.addFlashAttribute("errorMessage", "본인의 계정은 삭제할 수 없습니다.");
+			        return "redirect:/admin_adminmanage.do";
+			    }
+
+			    try {
+			        accountMapper.deleteAdminById(adminId);
+			        redirectAttributes.addFlashAttribute("message", "계정이 성공적으로 삭제되었습니다.");
+			    } catch (Exception e) {
+			        redirectAttributes.addFlashAttribute("errorMessage", "계정 삭제 중 오류가 발생했습니다.");
+			    }
+			    
+			    return "redirect:/admin_adminmanage.do";
 		    }
 		
 		//관리자 등록페이지로 이동
@@ -210,7 +220,7 @@ public class AccountController {
 		        AdminDTO dto = new AdminDTO();
 		        dto.setAdminId(adminId);
 		       // dto.setAdminPasswd(adminPasswd);
-		        dto.setAdminEmail(adminEmail1 + "@" + adminEmail2);
+		        dto.setAdminEmail(adminEmail1 + adminEmail2);
 
 		        
 		        accountMapper.editUpdateAdmin(dto);
@@ -263,7 +273,7 @@ public class AccountController {
 					@RequestParam(value = "startDate", required = false) String startDate, 
 					@RequestParam(value = "endDate", required = false) String endDate,   
 					@RequestParam(value = "enable", required = false) String enable,    
-					@RequestParam(value = "UserId", required = false) String UserId,   
+					@RequestParam(value = "userId", required = false) String userId,   
 					@RequestParam(value = "userNickname", required = false) String userNickname, 
 					@RequestParam(value = "gradeCode", required = false) String gradeCode, 
 		            @RequestParam(value = "page", defaultValue = "1") int page,       
@@ -271,20 +281,21 @@ public class AccountController {
 				
 			    int startIndex = (page - 1) * itemsPerPage + 1;
 			    int endIndex = page * itemsPerPage;
-			    
+			    System.out.println(userId);
 			    
 
 			    Map<String, Object> params = new HashMap<>();
 			    params.put("startDate", startDate != null ? startDate : ""); 
 			    params.put("endDate", endDate != null ? endDate : "");       
 			    params.put("enable", enable != null ? enable : "");          
-			    params.put("UserId", UserId != null ? UserId : "");       
+			    params.put("userId", userId != null ? userId : "");       
 			    params.put("userNickname", userNickname);                        
 			    params.put("gradeCode", gradeCode); 
 			    params.put("startIndex", startIndex); 
 			    params.put("endIndex", endIndex);     
 			    
 			    List<UserDTO> list = accountMapper.searchUserList(params); 
+			    System.out.println("list : "+list);
 			    int totalCount = accountMapper.searchUserCount(params); 
 			    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); 
 
@@ -293,7 +304,7 @@ public class AccountController {
 			    response.put("userList", list);
 			    response.put("currentPage", page);
 			    response.put("pageCount", pageCount);
-			   // System.out.println("response : "+response);
+			   
 
 			    return response;
 			}
