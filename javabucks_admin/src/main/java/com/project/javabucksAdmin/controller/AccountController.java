@@ -70,7 +70,7 @@ public class AccountController {
 		    
 		    String adminEmail = "";
 		    if (adminEmail1 != null && !adminEmail1.isEmpty() && adminEmail2 != null && !adminEmail2.isEmpty()) {
-		        adminEmail = adminEmail1 + "@" + adminEmail2; 
+		        adminEmail = adminEmail1 + adminEmail2; 
 		    }
 
 		    Map<String, Object> params = new HashMap<>();
@@ -133,7 +133,7 @@ public class AccountController {
 			//관리자 아이디 중복 확인
 			@ResponseBody
 			@GetMapping("/checkAdminId")
-			public String checkAdminId(@RequestParam("userId") String adminId) {
+			public String checkAdminId(@RequestParam("adminId") String adminId) {
 				if (accountMapper.checkAdminId(adminId)) {
 					return "ok";
 				} else {
@@ -151,7 +151,7 @@ public class AccountController {
 		        AdminDTO dto = new AdminDTO();
 		        dto.setAdminId(adminId);
 		        dto.setAdminPasswd(adminPasswd);
-		        dto.setAdminEmail(adminEmail1 + "@" + adminEmail2);
+		        dto.setAdminEmail(adminEmail1 +  adminEmail2);
 
 		        
 		        accountMapper.addAdmin(dto);

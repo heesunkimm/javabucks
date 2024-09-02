@@ -34,11 +34,7 @@
                             <label><span>이메일</span>
                                 <input type="text" name="adminEmail1" value="" required>
                             </label>
-                            <select name="adminEmail2">
-                                <option value="naver.com">@naver.com</option>
-                                <option value="nate.com">@nate.com</option>
-                                <option value="gmail.com">@gmail.com</option>
-                            </select>
+                             	<input type="text" name="adminEmail2" value="@javabucks.com" required>
                             <button type="button" style="margin-top: 0;" onclick="checkEmail()"> 이메일 중복확인</button>
                         </div>
                     </div>
@@ -86,8 +82,8 @@ function checkAdminId() {
 // 이메일 중복 확인 
 function checkEmail() {
     var email1 = document.querySelector('input[name="adminEmail1"]').value;
-    var email2 = document.querySelector('select[name="adminEmail2"]').value;
-    var email = email1 + "@" + email2;
+    var email2 = document.querySelector('input[name="adminEmail2"]').value;
+    var email = email1 + email2;
 
     // AJAX 요청 생성
     var xhr = new XMLHttpRequest();
@@ -103,7 +99,7 @@ function checkEmail() {
                 alert("사용 가능한 이메일입니다.");
                 isEmailChecked = true;
                 document.querySelector('input[name="adminEmail1"]').readOnly = true;
-                document.querySelector('select[name="adminEmail2"]').readOnly = true; // disabled는 여기서 사용해도 괜찮음
+                document.querySelector('input[name="adminEmail2"]').readOnly = true; // disabled는 여기서 사용해도 괜찮음
                 enableRegisterButton();
             }
         }
