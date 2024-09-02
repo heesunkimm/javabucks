@@ -167,14 +167,16 @@
 		        </div>
 		            <div class="order_box">
 		                <button type="button" onclick="orderCheck('cart')">담기</button>
-		                <div class="minus_btn click_icon img_box">
-		                <img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('quantity')">
-		                </div>
+		                <div class="count_box">
+			                <div class="minus_btn click_icon img_box">
+			                	<img src="../images/icons/minus.png" alt="감소 버튼" onclick="minus('quantity')">
+			                </div>
 		                	<label>
-		                		수량<input type="text" id="quantity" name="quantity" value="1" readonly>
+		                		<input type="text" id="quantity" name="quantity" value="1" readonly>
 		                	</label>
-		                <div class="plus_btn click_icon img_box">
-		                	<img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('quantity')">
+			                <div class="plus_btn click_icon img_box">
+			                	<img src="../images/icons/plus.png" alt="증가 버튼" onclick="plus('quantity')">
+			                </div>
 		                </div>
 			                
 		                <button type="button" onclick="orderCheck('order')">주문하기</button>
