@@ -49,13 +49,13 @@ public class MenuMapper {
 	public int editMenu(MenuDTO dto) {
 		return sqlSession.update("editMenu", dto);
 	}
-	// 메뉴 삭제
-	public int delMenu(String menuCode) {
-		return sqlSession.delete("delMenu", menuCode);
-	}
 	// 주문들어온 메뉴가 있는지 여부 확인
-	public OrderDTO OrderCheck(String menuCode) {
-		return sqlSession.selectOne("OrderCheck");
+	public List<OrderDTO> OrderCheck(Map<String, Object> params) {
+		return sqlSession.selectList("OrderCheck", params);
+	}
+	// 메뉴 삭제 (상태업데이트)
+	public int delMenu(String menuCode) {
+		return sqlSession.update("delMenu", menuCode);
 	}
 	// 메뉴 상세 페이지
 	public MenuDTO getEditMenu(String menuCode) {

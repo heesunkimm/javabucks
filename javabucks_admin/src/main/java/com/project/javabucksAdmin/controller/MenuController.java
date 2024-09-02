@@ -340,13 +340,6 @@ public class MenuController {
 		return "redirect:/" + redirectUrl;
 	}
 	
-	// 메뉴삭제 공동 메소드
-    private String deleteMenu(String menuCode, String redirectUrl) {
-        int res = menuMapper.delMenu(menuCode);
-        
-        return "redirect:/" + redirectUrl;
-    }
-	
 	// 음료 수정/삭제 페이지
     @RequestMapping("/admin_editdrink")
     public String editDrinkCont(HttpServletRequest req, @RequestParam String menuCode) {
@@ -358,10 +351,47 @@ public class MenuController {
                             @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_drinklist");
     }
+    
     // 음료 삭제
-    @PostMapping("/admin_delDrink")
-    public String delDrink(String menuCode) {
-        return deleteMenu(menuCode, "admin_drinklist");
+    @PostMapping("/delDrink.ajax")
+    @ResponseBody
+    public String delDrink(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
+        
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
     }
 
     // 디저트 수정/삭제 페이지
@@ -375,12 +405,49 @@ public class MenuController {
                               @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_dessertlist");
     }
+    
     // 디저트 삭제
-    @PostMapping("/admin_delDessert")
-    public String delDessert(String menuCode) {
-        return deleteMenu(menuCode, "admin_dessertlist");
-    }
+    @PostMapping("/delDessert.ajax")
+    @ResponseBody
+    public String delDessert(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
 
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
+    }
+    
     // MD 수정/삭제 페이지
     @RequestMapping("/admin_editmd")
     public String editMdCont(HttpServletRequest req, @RequestParam String menuCode) {
@@ -392,9 +459,45 @@ public class MenuController {
                          @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_mdlist");
     }
-    // MD 삭제
-    @PostMapping("/admin_delMd")
-    public String delMd(String menuCode) {
-        return deleteMenu(menuCode, "admin_mdlist");
+//    // MD 삭제
+    @PostMapping("/delMd.ajax")
+    @ResponseBody
+    public String delMd(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
+
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
     }
 }
