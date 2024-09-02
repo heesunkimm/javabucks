@@ -80,32 +80,45 @@ public class LoginController {
 		params.put("tel2", tel2);
 		params.put("tel3", tel3);
 		params.put("grade", grade);
-
 		
+		// 회원가입 INSERT
 		int res =  loginMapper.insertUser(params);
 		 
 		if(res>0) {
-			req.setAttribute("msg","회원가입성공! 로그인 페이지로 이동합니다.");
-			req.setAttribute("url","user_login");
-			return "message";
+			// 쿠폰 발급 INSERT
+			int cpnres = loginMapper.insertRegisterCoupon(userId);
+			if(cpnres > 0) {
+				// 알람 INSERT
+				int alarmres = loginMapper.insertRegisterAlarm(userId);
+				if(alarmres > 0) {
+					req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
+					req.setAttribute("url","user_login");
+				} else {
+					req.setAttribute("msg","알람 INSERT 실패! 관리자에게 문의해주세요.");
+					req.setAttribute("url","user_login");
+				}
+			} else {
+				req.setAttribute("msg","WELCOME 쿠폰 발급 실패! 관리자에게 문의해주세요.");
+				req.setAttribute("url","user_login");
+			}			
 		}else {
-			req.setAttribute("msg", "회원가입 실패. 다시 시도 해주세요");
+			req.setAttribute("msg", "회원가입 실패! 다시 시도 해주세요");
 			req.setAttribute("url","user_join");
-			return "message";
 		}
+		return "message";
 	}
 	
 	// 아이디 중복 확인
-	 @ResponseBody
-	 @PostMapping("/idCheck.ajax")
-	 public String checkId(String id) {
+	@ResponseBody
+	@PostMapping("/idCheck.ajax")
+	public String checkId(String id) {
 		 int res = loginMapper.checkId(id);
 		 if(res == 0) {
 			 return "OK";
 		 }else {
 			 return "FAIL";
 		 }
-	 }
+	}
 	 
 	// 이메일 중복 확인
 	 @ResponseBody

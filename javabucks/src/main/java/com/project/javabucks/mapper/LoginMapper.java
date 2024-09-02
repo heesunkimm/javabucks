@@ -69,4 +69,14 @@ public class LoginMapper {
 		return sqlSession.update("updateUserDel", userId);
 	}
 	
+	// 회원가입 쿠폰 INSERT
+	public int insertRegisterCoupon(String userId) {
+		return sqlSession.insert("insertRegisterCoupon", userId);
+	}
+	
+	// 회원가입 쿠폰 발급 알람 INSERT
+	public int insertRegisterAlarm(String userId) {
+		return sqlSession.insert("insertRegisterAlarm", userId);
+	}
+	
 }

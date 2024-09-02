@@ -83,5 +83,15 @@
 			userEnable = 'N'
 		where userId = #{userId}
 	</update>
+	
+	<insert id="insertRegisterCoupon" parameterType="String">
+		insert into javabucks_couponList(cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) 
+		values (seq_cpnListNum.nextval,'G-1',#{userId},'발급완료',SYSDATE,to_char(add_months(sysdate,+12),'yyyy-mm-dd'),'')
+	</insert>
+	
+	<insert id="insertRegisterAlarm" parameterType="String">
+		insert into javabucks_alarm (alarmNum, userId, alarmCate, alarmCont) 
+		VALUES(seq_alarmnum.nextval, #{userId}, 'cpn', '(WELCOME 쿠폰)이 발급되었습니다.')
+	</insert>
 
 </mapper>
