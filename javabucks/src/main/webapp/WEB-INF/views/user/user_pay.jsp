@@ -36,6 +36,7 @@
 	                    </c:forEach>
                     </c:if>
                 </ul>
+                <c:if test="${cardCount <= 5}">
                 <!-- 카드등록 페이지 이동 -->
                 <div class="addcard_box div_box">
                     <a class="" href="user_addcard">
@@ -45,11 +46,12 @@
                         </div>
                     </a>
                 </div>
+                </c:if>
             </div>
 
         </div>
         <!-- 카드충전 팝업 -->
-        <div class="popup_box pay_card" id="cardpay" style="display: none;">
+        <div class="popup_box pay_card"  id="cardpay" style="display: none;">
             <div class="tit_box">
                 <p class="txt_tit">카드이름</p>
                 <a class="popup_btn edit_btn" href="javascript:;" data-popup="cardedit" >
@@ -100,13 +102,13 @@
                 $(".pay_card").removeClass("s_active");
             }
             
-            let cardRegNum = $(".card_num").text().trim();
+            let cardRegNum = $(".card_num").text().trim().replace(/-/g, '');
             
             $("#cardedit input[name='modicardRegNum']").val(cardRegNum);
         })
+        
         $(".edit_card .close_btn").on("click",function () {
             $(".pay_card").addClass("s_active");
         })
-   
      </script>
 <%@ include file="user_bottom.jsp" %>

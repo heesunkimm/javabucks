@@ -101,8 +101,31 @@
 		                } else {
 		                    // 새로운 리스트 항목 추가
 		                    $.each(data, function(index, alarm) {
+		                    	 var imageUrl = '';
+		                         switch (alarm.alarmCate) {
+		                             case 'cpn':
+		                                 imageUrl = '../images/icons/pay_coupon.png';
+		                                 break;
+		                             case 'order':
+		                                 imageUrl = '../images/icons/receipt.png';
+		                                 break;
+		                             case 'pickUp':
+		                                 imageUrl = '../images/icons/menu_order.png';
+		                                 break;
+		                             case 'grade':
+		                                 imageUrl = '../images/logo/starbucks_logo.png';
+		                                 break;
+		                             case 'charge':
+		                                 imageUrl = '../images/icons/menu_pay.png';
+		                                 break;
+		                             default:
+		                                 break;
+		                         }
+		                    	
 		                        var listItem = '<li class="history_item">' +
-		                                       '<div class="img_box"></div>' +
+		                                       '<div class="img_box">'+
+		                                       '<img src="' + imageUrl + '" alt="">' +
+		                                       '</div>' +
 		                                       '<div class="txt_box">' +
 		                                       '<p class="txt_tit">' + alarm.alarmCont + '</p>' +
 		                                       '<p class="txt_date font_gray">' + alarm.alarmRegDate + '</p>' +

@@ -49,6 +49,13 @@
  		UPDATE javabucks_card SET cardName=#{cardName} WHERE cardRegNum=#{cardRegNum}
  	</update> 
  	
+ 	<!-- 카드갯수확인하기 -->
+ 	<select id="getCardCountByUserId" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM JAVABUCKS_CARD 
+	    WHERE USERID = #{userId}
+	</select>
+ 	
 	<!-- 페이히스토리 카드충전 -->
  	<insert id="paychargeCard" parameterType="PayhistoryDTO">
 		INSERT INTO javabucks_payhistory (payhistoryNum, userId, cardRegNum, bucksId, orderCode, cpnListNum, payhistoryDate, payhistoryPrice, payhistoryPayType, payhistoryPayWay)
@@ -288,6 +295,30 @@
 	        CPNLISTUSEDATE = SYSDATE
 	    WHERE CPNLISTNUM = #{cpnListNum}
 	</update>
+	
+	 <!-- CARTTYPE이 "delivers"인 경우 가장 큰 CARTNUM을 조회 -->
+    <select id="findCartByMaxCartNumForDelivers" parameterType="String" resultType="CartDTO">
+        SELECT *
+        FROM javabucks_cart
+        WHERE CARTNUM = (
+            SELECT MAX(CARTNUM)
+            FROM javabucks_cart
+            WHERE USERID = #{userId}
+            AND CARTTYPE = 'delivers'
+        )
+    </select>
+
+    <!-- CARTTYPE이 "delivers"가 아닌 경우 가장 큰 CARTNUM을 조회 -->
+    <select id="findCartByMaxCartNumForNonDelivers" parameterType="String" resultType="CartDTO">
+        SELECT *
+        FROM javabucks_cart
+        WHERE CARTNUM = (
+            SELECT MAX(CARTNUM)
+            FROM javabucks_cart
+            WHERE USERID = #{userId}
+            AND CARTTYPE != 'delivers'
+        )
+    </select>
 
  	<!-- ================================================================================ -->
  	<!-- 채성진 작업 추가 -->
