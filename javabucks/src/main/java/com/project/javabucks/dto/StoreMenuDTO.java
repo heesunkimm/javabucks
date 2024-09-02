@@ -7,6 +7,7 @@ public class StoreMenuDTO {
 	private String bucksId; // 지점아이디
 	private String storemenuStatus; // 지점메뉴상태
 	private String storeEnable;
+	private String menuStatus;
 
 	public String getStoreEnable() {
 		return storeEnable;
@@ -48,4 +49,11 @@ public class StoreMenuDTO {
 		this.storemenuStatus = storemenuStatus;
 	}
 
+	public String getMenuStatus() {
+		return menuStatus;
+	}
+
+	public void setMenuStatus(String menuStatus) {
+		this.menuStatus = menuStatus;
+	}	
 }

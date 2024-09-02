@@ -26,6 +26,7 @@ import com.project.javabucks.dto.MenuOptWhipDTO;
 import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
+import com.project.javabucks.dto.StoreMenuDTO;
 import com.project.javabucks.dto.UserDTO;
 
 @Service
@@ -233,8 +234,8 @@ public class UserMapper {
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
-
-	public String getMenuStatus(Map<String, String> params) {
+ 
+	public StoreMenuDTO getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
 	}
 

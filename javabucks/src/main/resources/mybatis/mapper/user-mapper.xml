@@ -394,10 +394,18 @@
  	</select>
  	
  	<select id="getMenuStatus"  parameterType="java.util.Map" resultType="String"> 
- 		 SELECT storemenuStatus
+ 		 SELECT storeEnable
    		 FROM javabucks_storemenu	   		    
    		 WHERE menuCode = #{menuCode}
-   		 AND bucksId = #{bucksId}   		 
+   		 AND bucksId = #{bucksId} 
+ 	</select>
+ 	
+ 	<select id="getMenuStatus2"  parameterType="java.util.Map" resultType="String"> 
+ 		 SELECT jm.menuStatus
+   		 FROM javabucks_menu jm join javabucks_storemenu js	   		    
+   		 ON jm.menuCode = js.menuCode
+   		 WHERE js.menuCode = #{menuCode}
+   		 AND js.bucksId = #{bucksId} 
  	</select>
  	
  	

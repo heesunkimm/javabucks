@@ -68,7 +68,7 @@
                 <ul class="menu_list">
                 	<c:forEach var ="dto" items="${foodList}">
 	                   	<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y'}">
+							<c:when test="${dto.storemenuStatus eq 'Y'}"> 
 		                   		<li class="menu_item">
 			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
 			                            <div class="img_box">
@@ -81,7 +81,7 @@
 			                        </a>
 		                        </li>
 	                      	</c:when>
-	                      	<c:when test="${dto.storemenuStatus eq 'N'}">
+	                      	<c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}}">
 	                      		<c:set var="activeClass" value="pdt_dimm" />
 	                      		<li class="menu_item">
 			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
@@ -118,7 +118,7 @@
 			                        </a>
 			                    </li>
 		                    </c:when>
-		                    <c:when test="${dto.storemenuStatus eq 'N'}">
+		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}}">
 		                   		<c:set var="activeClass" value="pdt_dimm" />
 			                    <li class="menu_item">
 			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
