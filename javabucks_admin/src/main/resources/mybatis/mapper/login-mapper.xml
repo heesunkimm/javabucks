@@ -6,11 +6,15 @@
   <mapper namespace="mybatis.mapper.login-mapper">
   
 	<select id="findAdminById" parameterType="String" resultType="AdminDTO">
-		select * from javabucks_admin where adminId = #{adminId}
+		select * from javabucks_admin 
+		where adminId = #{adminId}
+			and adminEnable = 'Y'
 	</select>
 	
-	<update id="updatePasswd" parameterType="AdminDTO">
-		UPDATE javabucks_admin SET adminPasswd = #{adminPasswd} WHERE adminId = #{adminId}
+	<update id="adminChangePw" parameterType="java.util.Map">
+		update javabucks_admin 
+		set adminPasswd = #{adminPasswd} 
+		where adminId = #{adminId}
 	</update>
 	 
 </mapper>

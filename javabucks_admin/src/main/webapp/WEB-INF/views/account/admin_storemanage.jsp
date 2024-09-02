@@ -84,8 +84,26 @@
                             <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
                             <li class="store_location" style="width: 32%; text-align: center;">${bucks.bucksLocation}</li>
                             <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
-                            <li class="store_tel" style="width: 8%; text-align: center;">${bucks.bucksEnable}</li>
-                            <li style="width: 10%; text-align: center;"><button class="store_btn" type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button></li>
+                            <li class="store_tel" style="width: 8%; text-align: center;">
+                            	<c:choose>
+								       <c:when test="${bucks.bucksEnable == 'Y'}">
+								           영업중
+								       </c:when>
+								       <c:otherwise>
+								           영업정지
+								       </c:otherwise>
+								   </c:choose>
+                            </li>
+                            <li style="width: 10%; text-align: center;">
+                            <c:choose>
+                                        <c:when test="${bucks.bucksEnable == 'Y'}">
+                                            <button type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" disabled>상세보기</button>
+                                        </c:otherwise>
+                                    </c:choose>
+                            </li>
                         </ul>
                        
                     </li>

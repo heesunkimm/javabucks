@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>JAVABUCKS ADMIN</title>
         <link rel="stylesheet" href="../css/reset.css">
         <link rel="stylesheet" href="../css/admin.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -24,10 +24,15 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="admin_adminmanage" method="post">
+            <form name="f" action="adminLogin.do" method="post">
                 <div class="input_box">
                     <label>
-                        <input type="text" name="adminId" value="<c:out value='${cookie.saveId != null ? cookie.saveId.value : ""}'/>" placeholder="아이디 입력" required>
+                        <c:if test="${empty cookie['saveId']}">
+                        	<input type="text" name="adminId" value="" placeholder="아이디 입력" required>
+                    	</c:if>
+                    	<c:if test="${not empty cookie['saveId']}">
+                        	<input type="text" name="adminId" value="${cookie['saveId'].value}" placeholder="아이디 입력" required>
+                    	</c:if>
                     </label>
                     <label>
                         <input type="password" name="adminPasswd" value="" placeholder="비밀번호 입력" required>
@@ -36,13 +41,18 @@
                 <button class="login_btn" type="submit">로그인</button>
             <div class="find_box">
                 <label>
-                	<input type="checkbox" name="saveId" value="on"> 아이디 저장
+                	<c:if test="${empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on"> 아이디 저장
+                	</c:if>
+                	<c:if test="${not empty cookie['saveId']}">
+                		<input type="checkbox" name="saveId" value="on" checked> 아이디 저장 
+                    </c:if>
                 </label>
-                <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 재설정</a>
+                <!-- <a class="popup_btn" href="javascript:;" data-popup="findbypw">비밀번호 재설정</a> -->
             </div> 
             </form>
         </div>
-        <div id="findbypw" class="popup_box" style="display: none;">
+        <%-- <div id="findbypw" class="popup_box" style="display: none;">
             <p class="popup_title">비밀번호 재설정</p>
             <a class="close_btn" href="javascript:;" data-popup="findbypw"><img src="../images/icons/close.png" alt=""></a>
             <form name="f" action="admin_ChangePw" method="post">
@@ -61,7 +71,7 @@
                     <button class="submit_btn" type="submit">확인</button>
                 </div>
             </form>
-        </div>
+        </div> --%>
         <div class="dimm"></div>
     </section>
     <!-- e: content -->

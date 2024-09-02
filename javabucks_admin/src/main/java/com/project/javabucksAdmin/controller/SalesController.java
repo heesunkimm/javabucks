@@ -33,11 +33,7 @@ public class SalesController {
 	@Autowired
 	private SalesMapper salesMapper;
 	
-	//시작
-//	@RequestMapping("/")
-//	public String index() {
-//		return "account/admin_index";
-//	}
+	
 	
 	//지점 계정 관리 페이지로 이동 
 		@RequestMapping("/storemanage.do")
@@ -147,8 +143,8 @@ public class SalesController {
 		    params.put("endDate", endDate != null ? endDate : ""); // 널값이면 빈 문자열로 처리
 		    params.put("startIndex", startIndex);
 		    params.put("endIndex", endIndex);
-		    System.out.println(startIndex);
-		    System.out.println(endIndex);
+//		    System.out.println(startIndex);
+//		    System.out.println(endIndex);
 
 		    // 검색 결과와 총 카운트 가져오기
 		    List<BucksDTO> list = salesMapper.searchBucks(params);
@@ -160,7 +156,7 @@ public class SalesController {
 		    response.put("bucksList", list);
 		    response.put("currentPage", page);
 		    response.put("pageCount", pageCount);
-		    System.out.println(pageCount);
+		    //System.out.println(pageCount);
 
 		    return response;
 		}
@@ -170,10 +166,10 @@ public class SalesController {
 	
 	@GetMapping("/editbucks.do")
 	public String editStore(@RequestParam(value = "id", required = false) String bucksId, Model model) {
-		System.out.println(bucksId);
+		//System.out.println(bucksId);
 		BucksDTO bucks = salesMapper.editbucks(bucksId);
 		model.addAttribute("jbucks", bucks);
-		System.out.println(bucks);
+		//System.out.println(bucks);
 		return "account/admin_editstore";
 	}
 	
@@ -243,8 +239,8 @@ public class SalesController {
 			//검색한 지점과 날짜로 발주정산
 			@PostMapping("/searchOrderSales.do")
 			public String searchOrderSales(@RequestParam("orderDate") String orderDate, @RequestParam("bucksName") String bucksName, Model model) {
-			    System.out.println(bucksName);
-			    System.out.println(orderDate);
+//			    System.out.println(bucksName);
+//			    System.out.println(orderDate);
 				
 			    Map<String, Object> params = new HashMap<>();
 			    params.put("bucksName", bucksName);
@@ -252,7 +248,7 @@ public class SalesController {
 			    
 			    List<BaljooDTO> list = salesMapper.selectOrderSum(params);
 			    model.addAttribute("bucksBal", list);
-			    System.out.println(list);			    
+			  //  System.out.println(list);			    
 
 			    //model.addAttribute("bucksBal", result);
 			    return "sales/admin_storeordersales";
@@ -339,8 +335,8 @@ public class SalesController {
                     Model model) {
 
 				// 검색 조건을 로그로 출력 (디버깅 용도)
-				System.out.println("검색한 지점명: " + bucksName);
-				System.out.println("검색한 날짜: " + orderDate);
+//				System.out.println("검색한 지점명: " + bucksName);
+//				System.out.println("검색한 날짜: " + orderDate);
 				
 				// 검색 조건을 Map에 추가하여 검색 수행
 				Map<String, Object> params = new HashMap<>();
@@ -393,13 +389,13 @@ public class SalesController {
 			        
 			        // 쿠폰 가져오기
 			        int coupon = detail.getCpnlistnum();
-			        System.out.println("coupon: " + coupon);
+			      //  System.out.println("coupon: " + coupon);
 			        int couponDiscount = 0;
 			        
 			        // 쿠폰이 있을 경우, 쿠폰 할인 금액을 가져옴
 			        if (coupon > 0) {
 			            couponDiscount = salesMapper.getCouponPrice(coupon);
-			            System.out.println("couponDiscount: " + couponDiscount);
+			       //     System.out.println("couponDiscount: " + couponDiscount);
 			        }
 
 			        int beverageTotal = 0; // 음료에 해당하는 금액의 총합
@@ -416,9 +412,9 @@ public class SalesController {
 
 			            // 메뉴와 옵션 가격을 각각 가져오기
 			            int price = salesMapper.getMenuPrice(menuCode);
-			            System.out.println("price: " + price);
+			          //  System.out.println("price: " + price);
 			            int optPrice = salesMapper.getOptPrice(optionId);
-			            System.out.println("optPrice: " + optPrice);
+			          //  System.out.println("optPrice: " + optPrice);
 
 			            // 메뉴 가격과 옵션 가격을 합산한 후 수량을 곱하여 금액 계산
 			            int itemTotalPrice = (price + optPrice) * quantity;
@@ -521,7 +517,7 @@ public class SalesController {
 			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
 			       
 			        branchSalesMap.putIfAbsent(branchDateKey, new HashMap<>());
-			        System.out.println(branchSalesMap);
+			        //System.out.println(branchSalesMap);
 			        Map<String, Integer> totalSalesByCategory = branchSalesMap.get(branchDateKey);
 			        
 			        
@@ -680,7 +676,7 @@ public class SalesController {
 			            }
 			            
 			         // 디버깅용 출력
-			            System.out.println("카테고리 코드: " + cate + ", 선택된 카테고리: " + category);
+			            //System.out.println("카테고리 코드: " + cate + ", 선택된 카테고리: " + category);
 
 			            // 선택된 카테고리와 비교 (코드와 매핑된 이름 비교)
 			            if (!"".equals(category) && !cate.equals(category)) {
@@ -699,7 +695,7 @@ public class SalesController {
 			            branchTotalSalesMap.put(branchId, branchTotalSalesMap.getOrDefault(branchId, 0) + totalPrice);
 			            
 			         // 정상적으로 매핑되었을 때 출력
-			            System.out.println("cate after mapping: " + cate);
+			            //System.out.println("cate after mapping: " + cate);
 			        }
 			    }
 			    
@@ -712,7 +708,7 @@ public class SalesController {
 
 			    // 주문 내역 리스트를 모델에 추가
 			    model.addAttribute("list", orderList);
-			    //System.out.println(orderList);
+			   // System.out.println(orderList);
 			    
 			    model.addAttribute("total", totalSalesSum);
 			    
