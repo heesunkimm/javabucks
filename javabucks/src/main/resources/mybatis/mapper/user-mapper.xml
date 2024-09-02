@@ -68,10 +68,10 @@
 	</update>
 	
 	<!-- 등급 업그레이드 알람 추가 -->
- 	<select id="insertAlamUpgrade" parameterType="java.util.Map">
- 		INSERT into javabucks_alarm values
- 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', CONCAT('(', #{grade}, ')', 'Level이 되신 것을 축하합니다!'), sysdate)
- 	</select>
+    <select id="insertAlamUpgrade" parameterType="java.util.Map">
+       INSERT into javabucks_alarm values
+       (seq_alarmNum.nextVal, #{userId}, 'F', 'grade', '(' || #{coupon} || ') Level이 되신 것을 축하합니다!', sysdate)
+    </select>
  	
  	<!-- 등급 업그레이드 쿠폰 알람 추가 -->
  	<select id="insertAlamCoupon" parameterType="java.util.Map">
