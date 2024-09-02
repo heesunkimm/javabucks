@@ -274,27 +274,27 @@ public class UserController {
 		for (MenuDTO md : list) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			StoreMenuDTO Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status.getStoremenuStatus());
-			md.setMenuStatus(Status.getMenuStatus());
-		}
+			String Status = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(Status);
+			md.setMenuStatus(Status);
+		} 
 		// [음식] 정보, 주문가능한지
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
 		for (MenuDTO md : list2) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			StoreMenuDTO Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status.getStoremenuStatus());
-			md.setMenuStatus(Status.getMenuStatus());
+			String Status = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(Status);
+			md.setMenuStatus(Status);
 		}
 		// [상품] 정보, 주문가능한지
 		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
 		for (MenuDTO md : list3) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			StoreMenuDTO Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status.getStoremenuStatus());
-			md.setMenuStatus(Status.getMenuStatus());
+			String Status = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(Status);
+			md.setMenuStatus(Status);
 		}
 
 		req.setAttribute("drinkList", list);

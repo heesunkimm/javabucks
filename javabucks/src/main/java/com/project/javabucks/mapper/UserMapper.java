@@ -235,7 +235,7 @@ public class UserMapper {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
  
-	public StoreMenuDTO getMenuStatus(Map<String, String> params) {
+	public String getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
 	}
 
