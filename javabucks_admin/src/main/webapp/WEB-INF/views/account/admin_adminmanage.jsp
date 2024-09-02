@@ -24,7 +24,7 @@
                             </label>
                         </div>
                         <label>아이디
-                            <input type="text" name="adminId" value="">
+                            <input type="text" name="userId" value="">
                         </label>
                         <div class="email_box">
                             <label>이메일
@@ -146,7 +146,7 @@ $(document).ready(function() {
                 startDate: $('input[name="startDate"]').val(),
                 endDate: $('input[name="endDate"]').val(),
                 enable: $('input[name="enable"]').is(':checked') ? '' : 'Y',
-                adminId: $('input[name="adminId"]').val(),
+                adminId: $('input[name="userId"]').val(),
                 adminEmail1: $('input[name="adminEmail1"]').val(),
                 adminEmail2: $('select[name="adminEmail2"]').val(),
                 authority: $('select[name="authority"]').val(),

@@ -36,7 +36,7 @@
                                 <option value="gold">Gold</option>
                             </select>
                         </label>
-                        <button type="button">검색</button>
+                        <button type="submit">검색</button>
                     </div>
                 </form>
 
@@ -123,7 +123,7 @@
 <jsp:include page="../admin_bottom.jsp"/>
     
 <script>
-/*
+
 $(document).ready(function() {
     
 
@@ -214,7 +214,7 @@ $(document).ready(function() {
     }
 });
 
-*/
+
 
 
 window.onload = function() {
