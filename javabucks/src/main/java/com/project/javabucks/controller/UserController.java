@@ -94,7 +94,7 @@ public class UserController {
 		Map<String, Object> params = new HashMap<>();
 		Map<String, String> params2 = new HashMap<>();
 		params.put("userId",userId);
-			
+		params2.put("userId",userId);
 			// 현재 등급을 가져오기 
 			if(userDTO.getGradeCode().equals("welcome")) {
 				// 등급 업글된 이후 모아온 별 갯수 
