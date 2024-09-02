@@ -70,13 +70,13 @@
 	<!-- 등급 업그레이드 알람 추가 -->
  	<select id="insertAlamUpgrade" parameterType="java.util.Map">
  		INSERT into javabucks_alarm values
- 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', '(#{grade}') Level이 되신 것을 축하합니다!', sysdate)
+ 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', CONCAT('(', #{grade}, ')', 'Level이 되신 것을 축하합니다!'), sysdate)
  	</select>
  	
  	<!-- 등급 업그레이드 쿠폰 알람 추가 -->
  	<select id="insertAlamCoupon" parameterType="java.util.Map">
  		INSERT into javabucks_alarm values
- 		(seq_alarmNum.nextVal, #{userId}, 'F', 'cpn', '(#{coupon}) 쿠폰이 발급되었습니다.', sysdate)
+ 		(seq_alarmNum.nextVal, #{userId}, 'F', 'cpn', CONCAT(#{coupon}, ' 쿠폰이 발급되었습니다.'), sysdate)
  	</select>
  	
  	<!-- 해당아이디로 등록된 알람 전체 리스트(날짜순) -->
