@@ -129,5 +129,15 @@ public class OrderMapper {
 	public int updateCountMinus(Map<String, Object> params) {
 		return sqlSession.update("updateCountMinus", params);
 	}
+	
+	// 발주지점 가져오기
+	public String getBucksId(int baljooNum) {
+		return sqlSession.selectOne("getBucksId", baljooNum);
+	}
+	
+	// 스토어 재고 업데이트
+	public int storeStocksUpdate(Map<String, Object> params) {
+		return sqlSession.update("storeStocksUpdate", params);
+	}
 
 }

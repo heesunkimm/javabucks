@@ -192,8 +192,21 @@
   	</select>
   	
   	<update id="updateCountMinus" parameterType="java.util.Map">
-  		update javabucks_stocklist set stockListCount = stockListCount - #{value}
+  		update javabucks_stocklist 
+  		set stockListCount = stockListCount - #{value}
   		where stockListCode = #{stockListCode}
+  	</update>
+  	
+  	<select id="getBucksId" parameterType="int" resultType="String">
+  		select bucksId from javabucks_baljoo
+  		where baljooNum = #{baljooNum}
+  	</select>
+  	
+  	<update id="storeStocksUpdate" parameterType="java.util.Map">
+  		update javabucks_storeStocks 
+  		set stocksCount = stocksCount + #{quantity}
+  		where stockListCode = #{stockListCode}
+  			and bucksId = #{bucksId}
   	</update>
   	
   </mapper>
