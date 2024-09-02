@@ -18,22 +18,32 @@
     <section id="user_orderhistory" class="content">
         <div class="inner_wrap">
             <div class="tit_box">
-                <p class="font_bold">매장 주문 히스토리</p>
+                <p class="font_bold">매장 & TO-GO 주문 히스토리</p>
             </div>
             <div class="period_box">
-                <label>
-                    <select name="">
-                        <option value="">주문상태(전체)</option>
-                        <option value="">주문완료</option>
-                        <option value="">제조중</option>
-                        <option value="">제조완료</option>
-                        <option value="">주문취소</option>
-                    </select>
-                </label>
+            	<form id="orderHistoryForm" method="post" action="updateOrderHistory.do" onsubmit="setSearchPeriod()">
+                    <label>
+	    				<select name="orderStatus" onchange="document.getElementById('orderHistoryForm').submit();">
+	                        <option value="ALL" ${orderStatus eq 'ALL' ? 'selected' : ''}>주문상태(전체)</option>
+	                        <option value="주문완료" ${orderStatus eq '주문완료' ? 'selected' : ''}>주문완료</option>
+	                        <option value="제조중" ${orderStatus eq '제조중' ? 'selected' : ''}>제조중</option>
+	                        <option value="제조완료" ${orderStatus eq '제조완료' ? 'selected' : ''}>제조완료</option>
+	                        <option value="주문취소" ${orderStatus eq '주문취소' ? 'selected' : ''}>주문취소</option>
+	                    </select>
+	                </label>
+	                <input type="hidden" name="startDate" value="${startDate}">
+	                <input type="hidden" name="endDate" value="${endDate}">
+	                <input type="hidden" name="period_option" value="${period_option}">
+	        	</form>
             </div>
 
             <div class="view_date">
-                <p class="font_gray">2024.07.01  ~ 2024.08.01</p>
+            	<c:if test="${not empty startDate && not empty endDate}">
+            		<p class="font_gray">${period_setting}</p>
+            	</c:if>
+            	<c:if test="${empty startDate && empty endDate}">
+            		<p class="font_gray">전체</p>
+            	</c:if>
                 <a class="popup_btn font_green" href="javascript:;" data-popup="periodpop">기간 설정</a>
             </div>
             <c:if test="${empty orderInfoList}">
@@ -54,44 +64,52 @@
 		                        <img src="../images/logo/starbucks_logo_black.png" alt="">
 		                    </div>
 		                    <div class="txt_box">
-		                        <p class="txt_tit">${order.orderList }</p>
+		                    	[${order.orderType}]
+		                    	<c:forEach var="menu" items="${order.orderListbyMenuOrder}" varStatus="status">
+		                        	<c:if test="${status.first}">
+        								<p class="txt_tit">${menu.menuName} 외</p>
+    								</c:if>
+		                        </c:forEach>
 		                        <ul class="txt_desc">
 		                            <li class="font_gray">${order.orderDate}</li>
-		                            <li>${order.bucksId}<span>${order.orderPrice}</span></li>
+		                            <li>${order.bucksName}       
+			                            <span>
+				                            <fmt:formatNumber value="${order.orderPrice}" pattern="###,###"/>원
+			                            </span>
+		                            </li>
 		                        </ul>
 		                    </div>
 		                </li>
 		            </c:forEach>
 	            </ul>
             </c:if>
-            
         </div>
         <!-- 기간설정 팝업 -->
         <div class="popup_box period_date" id="periodpop" style="display: none;">
             <div class="tit_box">
                 <p class="txt_tit">기간 설정</p>
             </div>
-            <form name="f" action="" method="post">
+            <form name="f" action="updateOrderHistory.do" method="post" onsubmit="setOrderStatus()">
                 <!-- s: 내용 작성 -->
                  <div class="date_box">
                      <label>시작일
-                         <input type="date" name="" value="">
+                         <input type="date" name="startDate" value="${startDate != null ? startDate : ''}">
                      </label>
                      <label>종료일
-                         <input type="date" name="" value="">
+                         <input type="date" name="endDate" value="${endDate != null ? endDate : ''}">
                      </label>
                  </div>
                 <div class="select_period">
                     <label>
-                        <input type="radio" name="period_startdate" value="">
+                        <input type="radio" name="period_option" onclick="" value="1month" <c:if test="${period_option eq '1month'}">checked</c:if>>
                         1개월
                     </label>
                     <label>
-                        <input type="radio" name="period_startdate" value="">
+                        <input type="radio" name="period_option" onclick="" value="3month" <c:if test="${period_option eq '3month'}">checked</c:if>>
                         3개월
                     </label>
                     <label>
-                        <input type="radio" name="period_startdate" value="" checked>
+                        <input type="radio" name="period_option" onclick="" value="custom" <c:if test="${period_option eq 'custom' || empty period_option}">checked</c:if>>
                         기간설정
                     </label>
                 </div>
@@ -103,9 +121,49 @@
                     <button class="close_btn" type="button" data-popup="periodpop">취소</button>
                     <button type="submit">완료</button>
                 </div>
+                <input type="hidden" name="orderStatus" value="">
             </form>
         </div>
         <div class="dimm"></div>
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
+<script>
+	function setOneMonth() {
+        var startDate = document.querySelector('input[name="startDate"]').value;
+        var endDate = document.querySelector('input[name="endDate"]').value;
+        startDate = '';
+        endDate = '';
+	}
+	
+	function setThreeMonth() {
+		document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('startDate').disabled = true;
+        document.getElementById('endDate').disabled = true;
+	}
+		
+	function setSearchPeriod(){
+		var orderStatus = document.querySelector('select[name="orderStatus"]').value;
+        var startDate = document.querySelector('input[name="startDate"]').value;
+        var endDate = document.querySelector('input[name="endDate"]').value;
+        var period_option = document.querySelector('input[name="period_option"]:checked') ? document.querySelector('input[name="period_option"]:checked').value : '';
+
+		document.querySelector('input[name="orderStatus"]').value = orderStatus;
+        document.querySelector('input[name="startDate"]').value = startDate;
+        document.querySelector('input[name="endDate"]').value = endDate;
+        document.querySelector('input[name="period_option"]').value = period_option;
+	}
+
+	function setOrderStatus(){
+		 var orderStatus = document.querySelector('select[name="orderStatus"]').value;
+         var startDate = document.querySelector('input[name="startDate"]').value;
+         var endDate = document.querySelector('input[name="endDate"]').value;
+         var period_option = document.querySelector('input[name="period_option"]:checked') ? document.querySelector('input[name="period_option"]:checked').value : '';
+         
+         document.querySelector('input[name="orderStatus"]').value = orderStatus;
+         document.querySelector('input[name="startDate"]').value = startDate;
+         document.querySelector('input[name="endDate"]').value = endDate;
+         document.querySelector('input[name="period_option"]').value = period_option;
+	}
+</script>

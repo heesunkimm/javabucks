@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.javabucks.dto.AlarmDTO;
 import com.project.javabucks.dto.BucksDTO;
 import com.project.javabucks.dto.CardDTO;
@@ -43,6 +44,7 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.MenuOrder;
 import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
@@ -1563,25 +1565,331 @@ public class UserController {
 	public String userInfo() {
 		return "/user/user_info";
 	}
+	
+	
 
-	@RequestMapping("/user_delivershistory")
-	public String userDelivershistory() {
-		return "/user/user_delivershistory";
-	}
-
-	@RequestMapping("/user_orderhistory")
-	public String userOrderhistory(HttpServletRequest req) {
+	@GetMapping("/user_delivershistory")
+	public String userDelivershistory(HttpServletRequest req,
+			@RequestParam(value = "searchOption", required = false, defaultValue = "ALL") String orderStatus,
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+		
 		// 세션에서 ID꺼내기
 		HttpSession session = req.getSession();
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
 		String userId = dto.getUserId();
 		
-		List<OrderDTO> orderHistory = userMapper.getOrderHistory(userId);
+	    Map<String, String> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("orderStatus", orderStatus);
+        
+        // 날짜
+        LocalDate today = LocalDate.now();
+		LocalDate threeMonthAgo = today.minusMonths(3);
+		String stringToday = String.valueOf(today);
+		String stringthreeMonthAgo = String.valueOf(threeMonthAgo);
 		
-		// 추가 작업 에정
+		params.put("startDate", stringthreeMonthAgo);
+		params.put("endDate", stringToday);
+        
+		// Order테이블 리스트 조회
+		List<OrderDTO> deliversHistory = userMapper.getDeliversHistory(params);
 		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		for(OrderDTO order : deliversHistory) {
+			try {
+				// JSON을 String으로 변환
+				List<String> orderList = objectMapper.readValue(order.getOrderList(), objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+				
+				// 메뉴명 업데이트된 리스트
+				List<MenuOrder> updateOrderHistory = new ArrayList<>();
+				
+				for (String orderItem : orderList) {
+					String[] s = orderItem.split(":");
+					String menuCode = s[0];
+					String optId = s[1];
+					String quantity = s[2];
+					
+					// Menuorder 객체 만들어서 생성
+					MenuOrder menuOrder = new MenuOrder(menuCode, optId, Integer.parseInt(quantity));
+					
+					// MenuName DB에서 조회
+					String menuName = userMapper.getMenuName(menuCode);
+					menuOrder.setMenuName(menuName);
+					
+					updateOrderHistory.add(menuOrder);
+				}
+				order.setOrderListbyMenuOrder(updateOrderHistory);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		req.setAttribute("deliversInfoList", deliversHistory);
+		return "/user/user_delivershistory";
+	}
+	
+
+	@PostMapping("/updateDeliversHistory.do")
+	public String updateDeliversHistory(HttpServletRequest req, @RequestParam Map<String, String> params){
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO) session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+        params.put("userId", userId);        
+		//System.out.println(params);
+        
+        
+		// Order테이블 리스트 조회
+		List<OrderDTO> updateStatusDeliversHistory = new ArrayList<>();
+		
+		// 기간보여주는 텍스트
+		String period_setting = null;
+		
+		// 주문상태만 바뀐 경우
+		if(params.get("period_option").isEmpty()) {
+			params.put("startDate", params.get("startDate"));
+			params.put("endDate", params.get("endDate"));
+			updateStatusDeliversHistory = userMapper.getSearchStatusDeliversHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 커스텀
+		else if(params.get("period_option").equals("custom")) {
+			params.put("startDate", params.get("startDate"));
+			params.put("endDate", params.get("endDate"));
+			
+			updateStatusDeliversHistory = userMapper.getSearchPeriodDeliversHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 1month
+		else if(params.get("period_option").equals("1month")) {
+			LocalDate today = LocalDate.now();
+			LocalDate oneMonthAgo = today.minusMonths(1);
+			String stringToday = String.valueOf(today);
+			String stringoneMonthAgo = String.valueOf(oneMonthAgo);
+			
+			params.put("startDate", stringoneMonthAgo);
+			params.put("endDate", stringToday);
+			
+			updateStatusDeliversHistory = userMapper.getSearchPeriodDeliversHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 3month
+		else if(params.get("period_option").equals("3month")) {
+			LocalDate today = LocalDate.now();
+			LocalDate threeMonthAgo = today.minusMonths(3);
+			String stringToday = String.valueOf(today);
+			String stringthreeMonthAgo = String.valueOf(threeMonthAgo);
+			
+			params.put("startDate", stringthreeMonthAgo);
+			params.put("endDate", stringToday);
+			
+			updateStatusDeliversHistory = userMapper.getSearchPeriodDeliversHistory(params);
+		}
+		
+		period_setting = params.get("startDate") + " ~ " + params.get("endDate");
+		
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		for(OrderDTO order : updateStatusDeliversHistory) {
+			try {
+				// JSON을 String으로 변환
+				List<String> orderList = objectMapper.readValue(order.getOrderList(), objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+				
+				// 메뉴명 업데이트된 리스트
+				List<MenuOrder> updateOrderHistory = new ArrayList<>();
+				
+				for (String orderItem : orderList) {
+					String[] s = orderItem.split(":");
+					String menuCode = s[0];
+					String optId = s[1];
+					String quantity = s[2];
+					
+					// Menuorder 객체 만들어서 생성
+					MenuOrder menuOrder = new MenuOrder(menuCode, optId, Integer.parseInt(quantity));
+					
+					// MenuName DB에서 조회
+					String menuName = userMapper.getMenuName(menuCode);
+					menuOrder.setMenuName(menuName);
+					
+					updateOrderHistory.add(menuOrder);
+				}
+				order.setOrderListbyMenuOrder(updateOrderHistory);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+	    req.setAttribute("deliversInfoList", updateStatusDeliversHistory);
+	    req.setAttribute("orderStatus", params.get("orderStatus"));
+	    req.setAttribute("startDate", params.get("startDate"));
+	    req.setAttribute("endDate", params.get("endDate"));
+	    req.setAttribute("period_option", params.get("period_option"));
+	    req.setAttribute("period_setting", period_setting);
+	    return "/user/user_delivershistory";
+	}
+	
+
+	@GetMapping("/user_orderhistory")
+	public String userOrderhistory(HttpServletRequest req,
+			@RequestParam(value = "searchOption", required = false, defaultValue = "ALL") String orderStatus,
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+		
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO) session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+	    Map<String, String> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("orderStatus", orderStatus);
+        
+        // 날짜
+        LocalDate today = LocalDate.now();
+		LocalDate threeMonthAgo = today.minusMonths(3);
+		String stringToday = String.valueOf(today);
+		String stringthreeMonthAgo = String.valueOf(threeMonthAgo);
+		
+		params.put("startDate", stringthreeMonthAgo);
+		params.put("endDate", stringToday);
+        
+		// Order테이블 리스트 조회
+		List<OrderDTO> orderHistory = userMapper.getOrderHistory(params);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		for(OrderDTO order : orderHistory) {
+			try {
+				// JSON을 String으로 변환
+				List<String> orderList = objectMapper.readValue(order.getOrderList(), objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+				
+				// 메뉴명 업데이트된 리스트
+				List<MenuOrder> updateOrderHistory = new ArrayList<>();
+				
+				for (String orderItem : orderList) {
+					String[] s = orderItem.split(":");
+					String menuCode = s[0];
+					String optId = s[1];
+					String quantity = s[2];
+					
+					// Menuorder 객체 만들어서 생성
+					MenuOrder menuOrder = new MenuOrder(menuCode, optId, Integer.parseInt(quantity));
+					
+					// MenuName DB에서 조회
+					String menuName = userMapper.getMenuName(menuCode);
+					menuOrder.setMenuName(menuName);
+					
+					updateOrderHistory.add(menuOrder);
+				}
+				order.setOrderListbyMenuOrder(updateOrderHistory);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		req.setAttribute("orderInfoList", orderHistory);
 		return "/user/user_orderhistory";
+	}
+	
+	@PostMapping("/updateOrderHistory.do")
+	public String updateOrderHistory(HttpServletRequest req, @RequestParam Map<String, String> params){
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO) session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+        params.put("userId", userId);        
+		//System.out.println(params);
+        
+        
+		// Order테이블 리스트 조회
+		List<OrderDTO> updateStatusOrderHistory = new ArrayList<>();
+		
+		// 기간보여주는 텍스트
+		String period_setting = null;
+		
+		// 주문상태만 바뀐 경우
+		if(params.get("period_option").isEmpty()) {
+			params.put("startDate", params.get("startDate"));
+			params.put("endDate", params.get("endDate"));
+			updateStatusOrderHistory = userMapper.getSearchStatusOrderHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 커스텀
+		else if(params.get("period_option").equals("custom")) {
+			params.put("startDate", params.get("startDate"));
+			params.put("endDate", params.get("endDate"));
+			
+			updateStatusOrderHistory = userMapper.getSearchPeriodOrderHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 1month
+		else if(params.get("period_option").equals("1month")) {
+			LocalDate today = LocalDate.now();
+			LocalDate oneMonthAgo = today.minusMonths(1);
+			String stringToday = String.valueOf(today);
+			String stringoneMonthAgo = String.valueOf(oneMonthAgo);
+			
+			params.put("startDate", stringoneMonthAgo);
+			params.put("endDate", stringToday);
+			
+			updateStatusOrderHistory = userMapper.getSearchPeriodOrderHistory(params);
+		}
+		
+		// 주문상태 & 기간검색 3month
+		else if(params.get("period_option").equals("3month")) {
+			LocalDate today = LocalDate.now();
+			LocalDate threeMonthAgo = today.minusMonths(3);
+			String stringToday = String.valueOf(today);
+			String stringthreeMonthAgo = String.valueOf(threeMonthAgo);
+			
+			params.put("startDate", stringthreeMonthAgo);
+			params.put("endDate", stringToday);
+			
+			updateStatusOrderHistory = userMapper.getSearchPeriodOrderHistory(params);
+		}
+		
+		period_setting = params.get("startDate") + " ~ " + params.get("endDate");
+		
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		for(OrderDTO order : updateStatusOrderHistory) {
+			try {
+				// JSON을 String으로 변환
+				List<String> orderList = objectMapper.readValue(order.getOrderList(), objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+				
+				// 메뉴명 업데이트된 리스트
+				List<MenuOrder> updateOrderHistory = new ArrayList<>();
+				
+				for (String orderItem : orderList) {
+					String[] s = orderItem.split(":");
+					String menuCode = s[0];
+					String optId = s[1];
+					String quantity = s[2];
+					
+					// Menuorder 객체 만들어서 생성
+					MenuOrder menuOrder = new MenuOrder(menuCode, optId, Integer.parseInt(quantity));
+					
+					// MenuName DB에서 조회
+					String menuName = userMapper.getMenuName(menuCode);
+					menuOrder.setMenuName(menuName);
+					
+					updateOrderHistory.add(menuOrder);
+				}
+				order.setOrderListbyMenuOrder(updateOrderHistory);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+	    req.setAttribute("orderInfoList", updateStatusOrderHistory);
+	    req.setAttribute("orderStatus", params.get("orderStatus"));
+	    req.setAttribute("startDate", params.get("startDate"));
+	    req.setAttribute("endDate", params.get("endDate"));
+	    req.setAttribute("period_option", params.get("period_option"));
+	    req.setAttribute("period_setting", period_setting);
+	    return "/user/user_orderhistory";
 	}
 
 	public String generateOrderCode(String pickUp) {

@@ -1,5 +1,7 @@
 package com.project.javabucks.dto;
 
+import java.util.List;
+
 public class OrderDTO {   
    private String orderCode; // 주문코드
    private String userId; // 주문자
@@ -73,4 +75,27 @@ public class OrderDTO {
    public void setOrderStatus(String orderStatus) {
       this.orderStatus = orderStatus;
    }
+   
+   // 메뉴 화면출력용 변수
+   private List<MenuOrder> orderListbyMenuOrder;
+
+   public List<MenuOrder> getOrderListbyMenuOrder() {
+		return orderListbyMenuOrder;
+   }
+   
+   public void setOrderListbyMenuOrder(List<MenuOrder> orderListbyMenuOrder) {
+		this.orderListbyMenuOrder = orderListbyMenuOrder;
+   }
+   
+    // 조인용 변수
+    private String bucksName;
+
+	public String getBucksName() {
+		return bucksName;
+	}
+	public void setBucksName(String bucksName) {
+		this.bucksName = bucksName;
+	}
+   
+   
 }
