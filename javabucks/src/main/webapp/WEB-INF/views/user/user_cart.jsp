@@ -157,8 +157,30 @@
        var value = parseInt(input.value, 10); // 현재 값 가져오기
        
        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
-       value++; // 증가
-       input.value = value; // 값 적용
+       
+       // 최대값을 설정합니다.
+       var maxQuantity = 20;
+       
+    	// 현재 값이 최대값보다 작을 경우에만 증가
+       // 모든 메뉴의 수량을 합산합니다.
+       var totalQuantity = 0;
+       var allInputs = document.querySelectorAll('input[name="order_number"]');
+       allInputs.forEach(function(input) {
+           totalQuantity += parseInt(input.value, 10) || 0; // 각 입력값을 합산
+       });
+
+       if (totalQuantity < maxQuantity) {
+           if (value < maxQuantity) {
+               value++;
+               input.value = value;
+           } else {
+               // 최대값에 도달한 경우 경고 메시지 표시
+               alert('최대 20개까지 주문이 가능합니다.');
+           }
+       } else {
+           // 총 수량이 최대값에 도달한 경우 경고 메시지 표시
+           alert('최대 20개까지 주문이 가능합니다.');
+       }
        
        // 가격 업데이트
        updatePrice(fieldId, value, unitPrice);
@@ -244,7 +266,17 @@
 	       }
 		   // 전체메뉴 삭제
 	       if (AllorEach == 'all'){
-	   			var userConfirmed = confirm("장바구니에 담긴 모든 메뉴를 삭제하시겠습니까?");    	   
+	    	   // 모든 체크박스를 선택
+	    	    var allCheckboxes = document.querySelectorAll('.item-checkbox');
+	    	    
+	    	    // 체크박스 체크 후 확인 창 표시
+	    	    allCheckboxes.forEach(function(checkbox) {
+	    	        checkbox.checked = true; // 모든 체크박스 체크
+	    	        selectedCartNums.push(checkbox.name); // 체크된 모든 체크박스의 cartNum 수집
+	    	    });
+
+	    	    // 체크박스 체크가 완료된 후 확인 창 표시
+	    	    var userConfirmed = confirm("장바구니에 담긴 모든 메뉴를 삭제하시겠습니까?");  	   
 	       }
 		   // x이미지 클릭시 삭제
 		   if (AllorEach == 'xbox'){
@@ -254,17 +286,18 @@
 		        selectedCartNums.push(cartNum);	       	      
 		   }
 	   var pickup = document.getElementById("modeInput").value;
+	   console.log(pickup)
 	   if (userConfirmed) {
 		   
-	   console.log(pickup);
 		$.ajax({
 	        url: 'deleteCart',
 	        type: 'POST',
 	        contentType: "application/json",
 	        data: JSON.stringify({
 	        	cartNum: selectedCartNums,  // 배열로 전달
-              eachOrAll: AllorEach // 필요에 따라 이 값을 설정
-            
+              eachOrAll: AllorEach, // 필요에 따라 이 값을 설정
+              	pickup: pickup // 배달인지 주문인지
+              	
           }),         
 	        success: function(response) {
 	            if (response.success) {
@@ -278,10 +311,17 @@
 	            alert("서버 오류가 발생했습니다.");
 	        }
 	   	 });
-		}
-	}
+		
+	} else {
+        // 사용자가 취소를 클릭한 경우 체크박스 해제
+        allCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = false; // 모든 체크박스 해제
+        });
+        selectedCartNums = []; // 선택된 장바구니 번호 초기화
+    }
+}
    
-// 주문하기 버튼 눌렀을때 체크박스에 체크된 것만 데이터 보내기
+   // 주문하기 버튼 눌렀을때 체크박스에 체크된 것만 데이터 보내기
    function submitCheckedItems(event) {
        // 기존의 hidden cartNum 요소를 모두 제거합니다.
        const form = document.querySelector('form[action="user_paynow"]');
@@ -329,9 +369,6 @@
        submitCheckedItems(event);
    });
 
-
-
-   
    
    // [주문하기 버튼] 활성화 클래스 추가하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    function OrderButton() {

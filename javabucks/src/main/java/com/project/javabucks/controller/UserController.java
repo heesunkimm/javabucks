@@ -45,10 +45,10 @@ import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
 import com.project.javabucks.dto.MenuOrder;
+import com.project.javabucks.dto.MymenuDTO;
 import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
-import com.project.javabucks.dto.StoreMenuDTO;
 import com.project.javabucks.dto.UserDTO;
 import com.project.javabucks.mapper.UserMapper;
 
@@ -113,6 +113,7 @@ public class UserController {
 					// 업그레이드 시 알람 추가
 					params2.put("grade", "Green");
 					params2.put("coupon", "[GREEN 등급 업그레이드]");
+					int cpup = userMapper.cpnInsertGreen(userId);
 					int upres = userMapper.insertAlamUpgrade(params2);
 					int cpres = userMapper.insertAlamCoupon(params2);
 					// 등급 업그레이드 후 별 갯수 업데이트
@@ -141,6 +142,7 @@ public class UserController {
 					// 업그레이드 시 알람 추가
 					params2.put("grade", "Gold");
 					params2.put("coupon", "[GOLD 등급 업그레이드]");
+					int cpup = userMapper.cpnInsertGold(userId);
 					int upres = userMapper.insertAlamUpgrade(params2);
 					int cpres = userMapper.insertAlamCoupon(params2);
 					// 등급 업그레이드 후 별 갯수 업데이트
@@ -166,6 +168,7 @@ public class UserController {
 				String gradedate = tt.getUserGradedate();
 				if(gradedate.equals(date)) {
 					params2.put("coupon", "[무료 음료 1잔]");
+					int cpdr = userMapper.cpnInsertDrink(userId);
 					int cpres = userMapper.insertAlamCoupon(params2);
 					// 등급 업그레이드 후 별 갯수 업데이트
 					if(tot <= 30) {
@@ -180,22 +183,24 @@ public class UserController {
 		
 		// 별 갯수 구하기
 		int frequencyById = 0;
+		int frequency = 0;
 		UserDTO userDTO2 = userMapper.getInfoById(userId);
 		List<FrequencyDTO> list = userMapper.getFrequencyById(userId);
 		// 등급 업데이트되면 별 갯수 초기화
 		if (list == null) {
-			frequencyById = 0;
+			frequency = 0;
 			// 등급 업데이트 후 별 갯수
 		} else {
 			for (FrequencyDTO dto : list) {
-				frequencyById = frequencyById + dto.getFrequencyCount();
+				frequency = frequency + dto.getFrequencyCount();
 			}
 		}
 		// 현재 등급별 별 필요 갯수 및 게이지
 		if (userDTO2.getGradeCode().equals("green")) {
 			// gold 가려면 15
-			int frequency = 15 - frequencyById;
-			int gage = (int) ((frequencyById / 15.0) * 100);
+			int gage = (int) ((frequency / 15.0) * 100);
+			frequencyById = 15 - frequency;
+			req.setAttribute("untilStar", frequencyById);
 			req.setAttribute("maxStar", "15");
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "Gold Level");
@@ -203,8 +208,9 @@ public class UserController {
 
 		} else if (userDTO2.getGradeCode().equals("welcome")) {
 			// green 가려면 5개
-			int frequency = 5 - frequencyById;
-			int gage = (int) ((frequencyById / 5.0) * 100);
+			frequencyById = 5 - frequency;
+			int gage = (int) ((frequency / 5.0) * 100);
+			req.setAttribute("untilStar", frequencyById);
 			req.setAttribute("maxStar", "5");
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "Green Level");
@@ -213,8 +219,9 @@ public class UserController {
 			// 골드 등급
 		} else {
 			// goldaward 가려면 30개
-			int frequency = 30 - frequencyById;
-			int gage = (int) ((frequencyById / 30.0) * 100);
+			frequencyById = 30 - frequency;
+			int gage = (int) ((frequency / 30.0) * 100);
+			req.setAttribute("untilStar", frequencyById);
 			req.setAttribute("maxStar", "30");
 			req.setAttribute("frequency", frequency);
 			req.setAttribute("until", "next Reward");
@@ -258,6 +265,7 @@ public class UserController {
 					dto.setOrderEnalbe(orderEnalbe);
 				}
 				req.setAttribute("storeList", list2);
+				req.setAttribute("notSearch", "notSearch");
 
 			}
 		}
@@ -347,10 +355,27 @@ public class UserController {
 
 		return "/user/user_menudetail";
 	}
+	
+	@ResponseBody
+	@PostMapping("/AddMyMenu.ajax")
+	public int AddMyMenu(HttpSession session, HttpServletRequest req, @RequestBody Map<String, String> params) {
+		
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		params.put("userId", userId);
+		MymenuDTO tt = userMapper.SearchMyMenu(params);
+		if(tt != null) {
+			int res2 = userMapper.DeleteMyMenu(params);
+			return -1;
+		}
+		int res = userMapper.AddMyMenu(params);		
+		
+		return res;
+	}
 
 	@RequestMapping("/user_starhistory")
 	public String userStarhistory(HttpSession session, HttpServletRequest req,
-			@RequestParam Map<String, String> params) {
+									@RequestParam Map<String, String> params) {
 
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
@@ -741,12 +766,12 @@ public class UserController {
 
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-
+		
 		// 주문인지 배달인지 구분위해
 		if (params.get("pickup") != null) {
 			req.setAttribute("pickup", params.get("pickup"));
 		}
-
+		
 		if ("매장이용".equals(params.get("pickup")) || "To-go".equals(params.get("pickup"))) {
 			params.put("pickup", "ordercart");
 		} else if ("Delivers".equals(params.get("pickup"))) {
@@ -856,20 +881,29 @@ public class UserController {
 		params.put("cartCount", quantity);
 		if ("매장이용".equals(params.get("pickup"))) {
 			params.put("cartType", "order");
-		} else if ("매장이용".equals(params.get("To-go"))) {
+		} else if ("To-go".equals(params.get("pickup"))) {
 			params.put("cartType", "togo");
 		} else {
 			params.put("cartType", "delivers");
 		}
+		
+		int totCnt = 0;
 		// 장바구니에 다른 지점 메뉴 담을때 처리
-		// 장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.
 		List<CartDTO> dto = userMapper.CartinfoByUserId(userId);
 		for (CartDTO tt : dto) {
 			if (!params.get("bucksId").equals(tt.getBucksId())) {
-				System.out.println("들어옴");
 				return -1;
 			}
+			totCnt += tt.getcartCnt();
 		}
+		// 장바구니 수량 20개 넘으면 못담게하기
+		if(quantity + totCnt > 20) {
+			return -2;
+		}
+		// 장바구니에 담긴 갯수 총 합이 20개 넘으면 처리
+
+
+		
 
 		// 장바구니에 insert하기 전에 조회(동일 매장, 같은 메뉴인지)
 		System.out.println(params.get("pickup"));
@@ -939,7 +973,7 @@ public class UserController {
 			}
 			return resultMap;
 
-			// x박스 체크해서 삭제 시
+		// x박스 체크로 삭제 시
 		} else if ("xbox".equals(mode)) {
 			for (Integer cartNum : list) {
 				try {
@@ -964,14 +998,14 @@ public class UserController {
 			}
 			return resultMap;
 
-			// 전체 삭제시
+		// 전체 삭제시
 		} else {
 			try {
 				int res = 0;
-				if (cartlist.get("mode") == "") {
-					res = userMapper.deleteAllCartOrder(userId);
-				} else if (cartlist.get("mode") == "") {
+				if ("deliverscart".equals(cartlist.get("pickup"))) {
 					res = userMapper.deleteAllCartDelivers(userId);
+				} else{
+					res = userMapper.deleteAllCartOrder(userId);
 				}
 				if (res > 0) {
 					// 장바구니 삭제
@@ -1535,7 +1569,13 @@ public class UserController {
 	@RequestMapping("/user_store")
 	public String userStore(HttpServletRequest req, @RequestParam Map<String, String> params, String mode,
 			String storeSearch) {
-
+		
+		// mymenu에서 넘어온 데이터
+		if(params.get("where") != null) {
+			req.setAttribute("go", params.get("go"));
+			req.setAttribute("where", params.get("where"));
+		}
+		
 		// 매장 검색하기
 		if (mode != null) {
 
@@ -1570,8 +1610,8 @@ public class UserController {
 				}
 				req.setAttribute("storeList", list);
 				req.setAttribute("storeSearch", storeSearch);
-
-			} else {
+	
+			}else {
 				List<BucksDTO> list2 = userMapper.getStoreList(storeSearch);
 				for (BucksDTO dto : list2) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());

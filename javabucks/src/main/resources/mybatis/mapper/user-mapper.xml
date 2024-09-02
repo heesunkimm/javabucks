@@ -70,7 +70,7 @@
 	<!-- 등급 업그레이드 알람 추가 -->
  	<select id="insertAlamUpgrade" parameterType="java.util.Map">
  		INSERT into javabucks_alarm values
- 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', '(' || #{coupon} || ') Level이 되신 것을 축하합니다!', sysdate)
+ 		(seq_alarmNum.nextVal, #{userId}, 'F', 'grade', CONCAT(#{coupon}, 'Level이 되신 것을 축하합니다!'), sysdate)
  	</select>
  	
  	<!-- 등급 업그레이드 쿠폰 알람 추가 -->
@@ -341,6 +341,46 @@
 		  AND ju.userId = #{userId}	
  	</update>
  	
+ 	<!-- 등급 업하면 쿠폰넣어주기 -->
+    <insert id="cpnInsertGreen" parameterType="String">
+	    INSERT INTO JAVABUCKS_COUPONLIST
+	    VALUES(seq_cpnListNum, 'G-2', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+	</insert>
+	
+	<insert id="cpnInsertGold" parameterType="String">
+	    INSERT INTO JAVABUCKS_COUPONLIST
+	    VALUES(seq_cpnListNum, 'G-3', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+	</insert>
+	
+	<!-- 골드 이후 30개 채우면 음료쿠폰 -->
+	<insert id="cpnInsertDrink" parameterType="String">
+	    INSERT INTO JAVABUCKS_COUPONLIST
+	    VALUES(seq_cpnListNum.nextval, 'D-1', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+	</insert>
+ 	
+ 	<!-- mymenu 인서트 -->
+	<insert id="AddMyMenu" parameterType="java.util.Map">
+	    INSERT INTO javabucks_mymenu
+	    VALUES(seq_mymenuNum.nextval, #{userId}, #{menuCode}, #{bucksId})
+	</insert>
+	
+	<!-- mymenu 조회 -->
+	<select id="SearchMyMenu" parameterType="java.util.Map" resultType="MymenuDTO">
+	    SELECT *	  
+	    FROM javabucks_mymenu
+	    WHERE userId = #{userId}
+		AND menuCode = #{menuCode}
+	</select>
+	
+	<!-- mymenu 삭제 -->
+	<delete id="DeleteMyMenu" parameterType="java.util.Map">
+	    DELETE 	  
+	    FROM javabucks_mymenu
+	    WHERE userId = #{userId}
+		AND menuCode = #{menuCode}
+	</delete>
+	
+	
  	<insert id="updateCount" parameterType="java.util.Map"> 
  		INSERT into javabucks_frequency values(seq_frequencynum.nextval, #{userId}, sysdate, #{frequencyCount})
  	</insert>

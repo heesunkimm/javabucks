@@ -23,10 +23,10 @@ import com.project.javabucks.dto.MenuOptMilkDTO;
 import com.project.javabucks.dto.MenuOptShotDTO;
 import com.project.javabucks.dto.MenuOptSyrupDTO;
 import com.project.javabucks.dto.MenuOptWhipDTO;
+import com.project.javabucks.dto.MymenuDTO;
 import com.project.javabucks.dto.OrderDTO;
 import com.project.javabucks.dto.OrderOptDTO;
 import com.project.javabucks.dto.PayhistoryDTO;
-import com.project.javabucks.dto.StoreMenuDTO;
 import com.project.javabucks.dto.UserDTO;
 
 @Service
@@ -202,6 +202,18 @@ public class UserMapper {
 	public int updateGreen(String userId) {
 		return sqlSession.update("updateGreen", userId);
 	}
+	
+	public int cpnInsertGreen(String userId) {
+		return sqlSession.insert("cpnInsertGreen", userId);
+	}
+	
+	public int cpnInsertGold(String userId) {
+		return sqlSession.insert("cpnInsertGold", userId);
+	}
+	
+	public int cpnInsertDrink(String userId) {
+		return sqlSession.insert("cpnInsertDrink", userId);
+	}
 
 	public int updateGold(String userId) {
 		return sqlSession.update("updateGold", userId);
@@ -214,7 +226,19 @@ public class UserMapper {
 	public int updateCount(Map<String, Object> params) {
 		return sqlSession.update("updateCount", params);
 	}
+	
+	public int AddMyMenu(Map<String, String> params) {
+		return sqlSession.insert("AddMyMenu", params);
+	}
 
+	public MymenuDTO SearchMyMenu(Map<String, String> params) {
+		return sqlSession.selectOne("SearchMyMenu", params);
+	}
+	
+	public int DeleteMyMenu(Map<String, String> params) {
+		return sqlSession.delete("DeleteMyMenu", params);
+	}
+	
 	public List<CouponListDTO> getCouponListById(String userId) {
 		return sqlSession.selectList("getCouponListById", userId);
 	}

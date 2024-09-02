@@ -23,19 +23,29 @@
 
 				<div class="search_box">
 					<form name="" action="user_delivers?mode=store" method="post">
-						<label> <input type="text" id="deliveryAddress"
-							name="deliveryAddress" value="${param.deliveryAddress}" readonly>
-						</label> <label> <input type="text" name="storeSearch" value="${storeSearch}"
-							placeholder="지점명 검색">
+						<label> 
+							<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="배달주소지" readonly>
+						</label> 
+						<c:if test="${not empty storeSearch}">
+						<label> 
+							<input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="지점명 검색">
 						</label>
+						</c:if>
+						<c:if test="${empty storeSearch}">
+						<label> 
+							<input type="text" id ="storeSearch" name="storeSearch" value="" placeholder="지점명 검색">
+						</label>
+						</c:if>
 						<button type="submit">검색</button>
 					</form>
 					<!-- <a href="javascript:;">자주가는 매장</a> -->
 				</div>
 			</div>
 			<ul class="store_list">
-				<c:if test="${empty storeList}">
-        			검색된 결과가 없습니다.
+				<c:if test="${not empty notSearch}">
+					<c:if test="${empty storeList}">
+	        			검색된 결과가 없습니다.
+	        		</c:if>
         		</c:if>
         		<c:if test="${not empty storeList}">
 				<c:forEach var="dto" items="${storeList}">
@@ -177,4 +187,18 @@
 				// 팝업을 닫음
 				document.getElementById("insertAddress").style.display = "none";
 			});
+	
+	$(document).ready(function() {
+        // storeSearch 입력 필드에 키 입력이 발생할 때마다 실행
+        $('#storeSearch').on('focus', function() {
+            var deliveryAddressValue = $('#deliveryAddress').val().trim();
+
+            // 배달주소지 값이 비어있는 경우 경고창을 띄우고 입력을 막음
+            if (deliveryAddressValue === '') {
+                alert("배달 받으실 주소지를 입력해주세요.");
+                $(this).blur(); // 포커스를 제거하여 입력을 방지
+            }
+        });
+    });
+	
 </script>

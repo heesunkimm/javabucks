@@ -30,7 +30,7 @@
                 </div>
                 <div class="reward_box div_box"> 
                     <p class="remain_count font_green">
-                        <span class="star_count">${frequency}</span>
+                        <span class="star_count">${untilStar}</span>
                         <span class="star_icon star_icon--01"></span>
                         <span class="grade_name">until ${until}</span>
                     </p>

@@ -147,7 +147,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="whip" items="${whip}">
 		                            <label>
-		                                <input type="button" name="whipType" data-whipNum="${whip.whipNum}">
+		                                <input type="button" class ="btn" name="whipType" data-whipNum="${whip.whipNum}">
 		                                <span>${whip.whipType}</span>
 		                            </label>
 		                            </c:forEach>
@@ -181,7 +181,7 @@
 			                
 		                <button type="button" onclick="orderCheck('order')">주문하기</button>
 		                
-		                <button class="addlike" type="button">
+		                <button class="addlike" type="button" onclick="addMyMenu()">
 		                    <img src="../images/icons/like.png" alt="">
 		                </button>
 		            </div>
@@ -221,19 +221,17 @@
     <!-- e: content -->
 
 <%@ include file="user_bottom.jsp"%>
-
 <script type="text/javascript">
-		//버튼 클릭시 클래스 먹이기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//버튼 클릭 이벤트 설정
-		document.querySelectorAll('.btn').forEach(button => {
-		    button.addEventListener('click', function() {
-		        // 모든 버튼에서 active 클래스 제거
-		        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
-		        
-		        // 클릭된 버튼에 active 클래스 추가
-		        this.classList.add('active');
-		    });
-		});
+	document.querySelectorAll('.opt_box .btn').forEach(button => {
+	    button.addEventListener('click', function() {
+	        // 현재 버튼이 속한 .opt_box의 모든 버튼에서 active 클래스 제거
+	        const optBox = this.closest('.opt_box');
+	        optBox.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+	
+	        // 클릭된 버튼에 active 클래스 추가
+	        this.classList.add('active');
+	    });
+	});
 
 		//팝업 열기
 		function openPopup(popupId) {
@@ -386,6 +384,8 @@
 	            success: function(response) {
 	            	if (response === -1) {
 	                    alert('장바구니에는 같은 매장의 메뉴만 담을 수 있습니다.');
+	                }else if (response=== -2) {
+	                	alert('장바구니에는 최대 20개까지 담을 수 있습니다.');
 	                } else if (response > 0) {
 	                    let popupId = 'pickupselect';  // 명시적으로 팝업 ID를 설정
 	                    openPopup(popupId);
@@ -405,54 +405,58 @@
 		
 		// 증가 버튼 클릭 시 호출되는 함수
 		function plus(fieldId) {
+		    // 입력 요소 가져오기
+		    var input = document.getElementById(fieldId);
+		    if (!input) {
+		        console.error('Input element not found for fieldId:', fieldId);
+		        return;
+		    }
+		    
+		    var value = parseInt(input.value, 10); // 현재 값 가져오기
+		    value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+
+		    // 샷의 수량 조정
 		    if (fieldId === 'shot_count') {
-		        // 샷의 수량 조정
-		        var input = document.getElementById(fieldId);
-		        var value = parseInt(input.value, 10); // 현재 값 가져오기
-		        value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
 		        value++;  // 값 증가
 		        input.value = value;
-		
+
 		        var hiddenInput = document.querySelector(`input[name="optShotCount"]`);
 		        if (hiddenInput) {
 		            hiddenInput.value = value;
 		        }
 		        return; // 샷 수량 조정 후 종료
 		    }
-		
+
+		    // 수량 조정
 		    if (fieldId === 'quantity') {
-		        // 수량 조정
-		        var input = document.getElementById(fieldId);
-		        var value = parseInt(input.value, 10); // 현재 값 가져오기
-		        value = isNaN(value) ? 1 : value; // 숫자가 아닌 경우 처리, 기본값 1로 설정
-		        value++;  // 값 증가
-		        input.value = value;
-		
-		        var hiddenInput = document.querySelector(`input[name="quantity"]`);
-		        if (hiddenInput) {
-		            hiddenInput.value = value;
+		        var maxQuantity = 20;
+		        // 수량이 최대값보다 작은 경우만 증가
+		        if (value < maxQuantity) {
+		            value++;  // 값 증가
+		            input.value = value;
+		        } else {
+		            // 최대값에 도달한 경우 경고 메시지 표시
+		            alert('최대 20개까지 주문이 가능합니다.');
 		        }
 		        return; // 수량 조정 후 종료
 		    }
-		
+
 		    // 시럽의 수량 조정
 		    if (selectedSyrup && selectedSyrup !== fieldId) {
 		        // 다른 시럽이 선택된 상태에서 시럽을 증가시키면 알림
 		        alert('하나의 시럽만 선택할 수 있습니다.');
 		        return;
 		    }
-		
-		    var input = document.getElementById(fieldId);
-		    var value = parseInt(input.value, 10); // 현재 값 가져오기
-		    value = isNaN(value) ? 0 : value; // 숫자가 아닌 경우 처리
+
+		    // 시럽의 수량 조정이 아닌 경우
 		    value++;  // 값 증가
 		    input.value = value;
-		
+
 		    var hiddenInput = document.querySelector(`input[name="optSyrupCount"]`);
 		    if (hiddenInput) {
 		        hiddenInput.value = value;
 		    }
-		
+
 		    // 선택된 시럽 설정
 		    selectedSyrup = fieldId;
 		}
@@ -548,6 +552,38 @@
 	            document.getElementById('whipNum').value = whipNum || document.getElementById('whipNum').value;
 	        });
 	    });
-	    
-		
+		    
+	    function addMyMenu() {
+	        // input 요소에서 값을 가져옵니다.
+	        var menuCode = document.querySelector('input[name="menuCode"]').value;
+	        var bucksId = document.querySelector('input[name="bucksId"]').value;
+			
+	        // Ajax 요청을 보내는 부분
+        	$.ajax({
+		        url: '/AddMyMenu.ajax', // 요청할 URL
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	            	menuCode: menuCode,
+	                bucksId: bucksId
+	            }),
+	            success: function(res) {
+	            	if (res > 0){
+	            		alert('나만의 메뉴에 추가되었습니다.');
+	            	}else if(res === -1){
+	            		alert('나만의 메뉴에서 삭제되었습니다.');
+	            	}else {
+	            	
+	            		console.log('처리 중 오류가 발생했습니다.');
+	            		return;
+	            	}
+	            },
+	            error: function(error) {
+	            	
+	                alert('ajax 처리 중 오류가 발생했습니다.');
+	                console.log(error);
+	                return;
+	            }
+	        });
+	    }        		
 </script>

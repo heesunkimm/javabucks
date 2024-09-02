@@ -30,7 +30,7 @@
                         <img src="../images/icons/javabucks_cupon.png" alt="">
                     </div>
                     <div class="txt_box">
-                        <p class="txt_sub">JabaBucks</p>
+                        <p class="txt_sub">JavaBucks</p>
                         <p class="txt_tit">${dto.cpnName} ${dto.cpnDesc}</p>
                         <ul class="txt_desc">
                             <li>${dto.cpnListEndDate}</li>
