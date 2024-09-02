@@ -1,5 +1,11 @@
 package com.project.javabucks.controller;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -67,13 +73,18 @@ public class LoginController {
 		String tel3 = String.valueOf(dto.getUserTel3());
 		String grade = String.valueOf(dto.getGradeCode());
 		
-		Map<String, String> params = new HashMap<>();
+		// "yyyyMMdd" 형식의 DateTimeFormatter 생성
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        // 문자열을 LocalDate로 변환
+        LocalDate birthDate = LocalDate.parse(birth, formatter);
+		
+		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
 		params.put("passWd", passWd);
 		params.put("userName", userName);
 		params.put("userNickName", userNickName);
 		params.put("gender", gender);
-		params.put("birth", birth);
+		params.put("birth", birthDate);
 		params.put("email1", email1);
 		params.put("email2", email2);
 		params.put("tel1", tel1);
@@ -85,18 +96,68 @@ public class LoginController {
 		int res =  loginMapper.insertUser(params);
 		 
 		if(res>0) {
-			// 쿠폰 발급 INSERT
+			// 웰컴 쿠폰 발급 INSERT
 			int cpnres = loginMapper.insertRegisterCoupon(userId);
 			if(cpnres > 0) {
-				// 알람 INSERT
-				int alarmres = loginMapper.insertRegisterAlarm(userId);
-				if(alarmres > 0) {
-					req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
-					req.setAttribute("url","user_login");
-				} else {
-					req.setAttribute("msg","알람 INSERT 실패! 관리자에게 문의해주세요.");
-					req.setAttribute("url","user_login");
-				}
+				// 생일자 쿠폰 발급 INSERT
+				// 오늘 날짜 가져오기
+		        LocalDate today = LocalDate.now();
+		        // 생일 가져오기
+		        String byear = "2024";
+		        String bmonth = birth.substring(4, 6);
+		        String bday = birth.substring(6, 8);
+		        String userBirth = byear+ bmonth +bday;
+		        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyyMMdd");
+		        LocalDate birthday = LocalDate.parse(userBirth, formatter2);
+
+		        // 만약 생일이 이미 지나갔다면, 다음 해 생일로 계산
+		        if (birthday.isBefore(today)) {
+		            birthday = birthday.plusYears(1);
+		        }
+		        
+		        // 생일까지의 차이 계산
+		        long daysUntilBirthday = ChronoUnit.DAYS.between(today, birthday);
+	            
+		        //System.out.println("today: "+today);
+		        //System.out.println("birthday: "+birthday);
+				//System.out.println("daysUntilBirthday: "+daysUntilBirthday);
+		        
+			    if(daysUntilBirthday <= 7) {
+			    	// 생일쿠폰 발급
+			    	int bcpnres = loginMapper.insertBdayCoupon(userId);
+			    	if(bcpnres > 0) {
+			    		// 알람 INSERT
+						int alarmres = loginMapper.insertRegisterAlarm(userId);
+						if(alarmres > 0) {
+							int alarmres2 = loginMapper.insertBdayCouponAlarm(userId);
+							if(alarmres2 > 0) {
+								req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
+								req.setAttribute("url","user_login");
+							} else {
+								req.setAttribute("msg","생일 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
+								req.setAttribute("url","user_login");
+							}
+							
+						} else {
+							req.setAttribute("msg","웰컴 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
+							req.setAttribute("url","user_login");
+						}
+			    		
+			    	} else {
+			    		req.setAttribute("msg","생일 쿠폰 발급 실패! 관리자에게 문의해주세요.");
+						req.setAttribute("url","user_login");
+			    	}
+			    } else {
+			    	// 알람 INSERT
+					int alarmres2 = loginMapper.insertRegisterAlarm(userId);
+					if(alarmres2 > 0) {
+						req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
+						req.setAttribute("url","user_login");
+					} else {
+						req.setAttribute("msg","웰컴 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
+						req.setAttribute("url","user_login");
+					}
+			    }
 			} else {
 				req.setAttribute("msg","WELCOME 쿠폰 발급 실패! 관리자에게 문의해주세요.");
 				req.setAttribute("url","user_login");
@@ -105,6 +166,9 @@ public class LoginController {
 			req.setAttribute("msg", "회원가입 실패! 다시 시도 해주세요");
 			req.setAttribute("url","user_join");
 		}
+		
+		// 생일자 확인
+		
 		return "message";
 	}
 	
