@@ -295,18 +295,25 @@
 			        error: function (xhr, status, err) {
 			            console.error('AJAX 요청 실패:', status, err);
 			        }
-			    });
+				});
 	        }
 		}
+		
 		// 특정 유저에게 쿠폰 전송
 		function sendCpn() {
-			let userId = $("#listcpn input[name='userId']").val();
+			let userId = $("#listcpn input[name='userId']").val().trim();
 			let cpnCode = $("#cpnList option:selected").val();
 			
 			let data = {
 				userId: userId,
 				cpnCode: cpnCode,
 		    };
+			
+			if(userId == "" || userId == null) {
+				alert("쿠폰을 발급받을 유저ID를 입력해주세요.");
+				$('input[type="userId"]').focus();
+				return;
+			}
 			
 			if (confirm(userId + '에게 쿠폰을 발급하시겠습니까?')) {
 				$.ajax({

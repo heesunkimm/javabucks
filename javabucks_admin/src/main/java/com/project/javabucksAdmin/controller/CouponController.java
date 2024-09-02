@@ -168,11 +168,13 @@ public class CouponController {
 				alarm.setAlarmCate("cpn");
 				
 				// 쿠폰코드별 AlarmCont 조건
-				if(cpnListCode.equals("B-1")) {
-					alarm.setAlarmCont(user.getUserId() + "님 생일쿠폰이 발급되었습니다.");
-				}else {
-					alarm.setAlarmCont(user.getUserId() + "님 쿠폰이 발급되었습니다.");
-				}
+//				if(cpnListCode.equals("B-1")) {
+//					alarm.setAlarmCont(user.getUserId() + "님 생일쿠폰이 발급되었습니다.");
+//				}else if (cpnListCode.equals("G-1") || cpnListCode.equals("G-2") || cpnListCode.equals("G-3")) {
+//					alarm.setAlarmCont(user.getUserId() + "님 등급변경쿠폰이 발급되었습니다.");
+//				}else {
+					alarm.setAlarmCont(" 쿠폰이 발급되었습니다.");
+//				}
 				
 	        	// 등록된 쿠폰이 있다면 해당 유저에게 알람 전송
 	        	 toUserAlarm(alarm);
@@ -211,12 +213,16 @@ public class CouponController {
 	    
 	    if (cpnCheck != null) {
 	        // 중복된 쿠폰이 있을 경우
-	    	return "[" + dto.getCpnCode() + "] " + "이미 등록된 쿠폰코드입니다.";
+	    	if(cpnCheck.getCpnCode() == dto.getCpnCode()) {
+	    		return "[" + dto.getCpnCode() + "] " + "이미 등록된 쿠폰코드입니다.";
+	    	}else {
+	    		return "[" + dto.getCpnName() + "] " + "이미 등록된 쿠폰명입니다.";
+	    	}
 	    }
 
 	    // 쿠폰 등록
 	    int res = couponMapper.insertCoupon(dto);
-
+	    
 	    if (res > 0) {
 	        return "쿠폰등록이 완료되었습니다.";
 	    } else {
@@ -229,6 +235,13 @@ public class CouponController {
 	@ResponseBody
 	public String deleteCoupon(@RequestBody Map<String, String> params) {
 		String cpnCode = params.get("cpnCode");
+		
+		CouponListDTO userCpnCheck = couponMapper.userCpnCheck(cpnCode);
+		
+		// 삭제 전 유저에게 발급된 쿠폰이 있는지 확인
+		if(userCpnCheck != null) {
+			return "해당 쿠폰을 발급받은 유저가 존재하여 삭제가 불가합니다.";
+		}
 		
 		int res = couponMapper.deleteCoupon(cpnCode);
 		
@@ -265,12 +278,33 @@ public class CouponController {
 			return "해당 유저에게 이미 발급된 쿠폰입니다.";
 		}
 		
-		int res = couponMapper.sendUserCoupon(searchParams);
+		// 쿠폰리스트 조회
+		List<CouponDTO> cpnInfo = couponMapper.cpnInfoList();
 		
-		if(res > 0) {
-			return "해당 유저에게 쿠폰이 전송되었습니다.";
-		}else {
-			return "해당 유저에게 쿠폰 실패하였습니다.";
-		}
+	    String cpnName = null;
+	    for (CouponDTO list : cpnInfo) {
+	        if (cpnCode.equals(list.getCpnCode())) {
+	            cpnName = list.getCpnName();
+	            break;
+	        }
+	    }
+	    
+	    // 특정 유저에게 쿠폰 전송
+	    int res = couponMapper.sendUserCoupon(searchParams);
+	    
+	    if (res > 0) {
+	    	// 유저에게 등록된 쿠폰 알림 전송
+	        AlarmDTO adto = new AlarmDTO();
+	        adto.setUserId(userId);
+	        adto.setAlarmCate("cpn");
+	        if (cpnName != null) {
+	            adto.setAlarmCont(cpnName + " 쿠폰이 발급되었습니다.");
+	        }
+	        toUserAlarm(adto);
+
+	        return "해당 유저에게 쿠폰이 전송되었습니다.";
+	    } else {
+	        return "해당 유저에게 쿠폰 발송에 실패하였습니다.";
+	    }
 	}
 }

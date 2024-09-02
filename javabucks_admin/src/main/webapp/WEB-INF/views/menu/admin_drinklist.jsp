@@ -37,7 +37,6 @@
 	                            <option value="D" <c:if test="${searchParams.menu_base eq 'D'}">selected</c:if>>D</option>
 	                            <option value="E" <c:if test="${searchParams.menu_base eq 'E'}">selected</c:if>>E</option>
 	                            <option value="F" <c:if test="${searchParams.menu_base eq 'F'}">selected</c:if>>F</option>
-	                            <option value="J" <c:if test="${searchParams.menu_base eq 'J'}">selected</c:if>>J</option>
 	                            <option value="L" <c:if test="${searchParams.menu_base eq 'L'}">selected</c:if>>L</option>
 	                            <option value="M" <c:if test="${searchParams.menu_base eq 'M'}">selected</c:if>>M</option>
 	                            <option value="N" <c:if test="${searchParams.menu_base eq 'N'}">selected</c:if>>N</option>
@@ -48,12 +47,15 @@
 	                    </label>
 	                    <label>주문막기 메뉴 확인
 	                    	<c:choose>
-							    <c:when test="${searchParams.menuEnable eq 'Y'}">
-							        <input type="checkbox" name="menuEnable" value="Y" checked>
+							    <c:when test="${searchParams.menuStatus eq 'Y'}">
+							        <input type="checkbox" name="menuStatus" value="Y" checked>
 							    </c:when>
-							    <c:when test="${searchParams.menuEnable eq 'N'}">
-							        <input type="checkbox" name="menuEnable" value="N">
+							    <c:when test="${searchParams.menuStatus eq 'N'}">
+							        <input type="checkbox" name="menuStatus" value="N">
 							    </c:when>
+							    <c:otherwise>
+							    	<input type="checkbox" name="menuStatus" value="N">
+							    </c:otherwise>
 							</c:choose>
 						</label>
 	                </div>
@@ -106,18 +108,18 @@
 	                            <td><fmt:formatNumber value="${dto.menuPrice}" pattern="###,###"/>원</td>
 	                            <td>
 		                            <c:choose>
-									    <c:when test="${dto.menuEnable eq 'N'}">
+									    <c:when test="${dto.menuStatus eq 'N'}">
 									        <button class="updateBtn disable_order" type="button" 
 									        	data-menu-name="${dto.menuName}" 
 										        data-menu-code="${dto.menuCode}" 
-										        data-menu-enable="${dto.menuEnable}">주문풀기
+										        data-menu-status="${dto.menuStatus}">주문풀기
 									        </button>
 									    </c:when>
-									    <c:when test="${dto.menuEnable eq 'Y'}">
+									    <c:when test="${dto.menuStatus eq 'Y'}">
 									    	<button class="updateBtn enable_btn" type="button" 
 											    	data-menu-name="${dto.menuName}" 
 											    	data-menu-code="${dto.menuCode}" 
-											    	data-menu-enable="${dto.menuEnable}">주문막기
+											    	data-menu-status="${dto.menuStatus}">주문막기
 									        </button>
 									    </c:when>
 							        </c:choose>
@@ -130,7 +132,7 @@
 	            <c:if test="${not empty drinkList}">
 	            <div class="pagination">
 		            <c:if test="${startPage > pageBlock}"> 
-			        	<a class="page_btn prev_btn" href="admin_drinklist?pageNum=${startPage-3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuEnable=${param.menuEnable}&menuName=${param.menuName}&menuEnable=${param.menuEnable}"><img src="../../images/icons/arrow.png"></a>
+			        	<a class="page_btn prev_btn" href="admin_drinklist?pageNum=${startPage-3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuStatus=${param.menuStatus}&menuName=${param.menuName}"><img src="../../images/icons/arrow.png"></a>
 			    	</c:if>
 			    
 				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
@@ -143,11 +145,11 @@
 					            <c:set var="activeClass" value="page_active"/>
 					        </c:when>
 					    </c:choose>
-					    <a href="admin_drinklist?pageNum=${i}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuEnable=${param.menuEnable}&menuName=${param.menuName}&menuEnable=${param.menuEnable}" class="${activeClass} page_num">${i}</a>
+					    <a href="admin_drinklist?pageNum=${i}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuStatus=${param.menuStatus}&menuName=${param.menuName}" class="${activeClass} page_num">${i}</a>
 					</c:forEach>
 				    
 				    <c:if test="${pageCount > endPage}">
-				        <a class="page_btn next_btn" href="admin_drinklist?pageNum=${startPage+3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuEnable=${param.menuEnable}&menuName=${param.menuName}&menuEnable=${param.menuEnable}"><img src="../../images/icons/arrow.png"></a>
+				        <a class="page_btn next_btn" href="admin_drinklist?pageNum=${startPage+3}&menu_cate=${param.menu_cate}&menu_base=${param.menu_base}&menuStatus=${param.menuStatus}&menuName=${param.menuName}"><img src="../../images/icons/arrow.png"></a>
 				    </c:if>
 	            </div>
 	            </c:if>
@@ -162,13 +164,13 @@
 		let $btn = $(this);
 	    let btnCode = $btn.data('menu-code');
 	    let btnMenu = $btn.data('menu-name');
-	    let btnEnable = $btn.data('menu-enable');
+	    let menuStatus = $btn.data('menu-status');
 	    
-	    let newStatus = btnEnable === 'N' ? 'Y' : 'N';
+	    let newStatus = menuStatus === 'N' ? 'Y' : 'N';
 
 	    let data = {
 	        menuCode: btnCode,
-	        menuEnable: newStatus
+	        menuStatus: newStatus
 	    };
 		
 		$.ajax({
@@ -181,11 +183,11 @@
 	            let updateBtn;
 
 	            if (newStatus === 'N') {
-	            	let updateBtn = $btn.text('주문풀기').removeClass('enable_btn').addClass('disable_order').attr('data-menu-enable', 'N');
+	            	let updateBtn = $btn.text('주문풀기').removeClass('enable_btn').addClass('disable_order').attr('data-menu-status', 'N');
 	            	$btn.replaceWith(updateBtn);
 	            	alert(btnMenu + "의 주문을 막았습니다.");
 	            } else {
-	            	updateBtn = $btn.text('주문막기').removeClass('disable_order').addClass('enable_btn').attr('data-menu-enable', 'Y');
+	            	updateBtn = $btn.text('주문막기').removeClass('disable_order').addClass('enable_btn').attr('data-menu-status', 'Y');
 	            	$btn.replaceWith(updateBtn);
 	            	alert(btnMenu + "의 주문을 풀었습니다.");
 	            }

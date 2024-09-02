@@ -5,15 +5,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.javabucksAdmin.dto.MenuDTO;
+import com.project.javabucksAdmin.dto.OrderDTO;
 import com.project.javabucksAdmin.mapper.MenuMapper;
 import com.project.javabucksAdmin.util.FileNameUtils;
 
@@ -121,19 +118,20 @@ public class MenuController {
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
 	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menu_cate", menuCate);
 	    searchParams.put("menu_base", menuBase);
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchDrinkCount(searchParams); // 검색결과별 리스트 수
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -182,15 +180,16 @@ public class MenuController {
 		
 		// 검색 필터가 null or ""일 경우 기본값 설정
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchDessertCount(searchParams);
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -239,15 +238,16 @@ public class MenuController {
 		
 		// 검색 필터가 null or ""일 경우 기본값 설정
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchMdCount(searchParams);
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -339,9 +339,11 @@ public class MenuController {
 		int res = menuMapper.editMenu(dto);
 		return "redirect:/" + redirectUrl;
 	}
+	
 	// 메뉴삭제 공동 메소드
     private String deleteMenu(String menuCode, String redirectUrl) {
         int res = menuMapper.delMenu(menuCode);
+        
         return "redirect:/" + redirectUrl;
     }
 	

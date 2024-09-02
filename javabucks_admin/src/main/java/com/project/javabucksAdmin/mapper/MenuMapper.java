@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.javabucksAdmin.dto.MenuDTO;
+import com.project.javabucksAdmin.dto.OrderDTO;
 
 @Service
 public class MenuMapper {
@@ -52,11 +53,15 @@ public class MenuMapper {
 	public int delMenu(String menuCode) {
 		return sqlSession.delete("delMenu", menuCode);
 	}
+	// 주문들어온 메뉴가 있는지 여부 확인
+	public OrderDTO OrderCheck(String menuCode) {
+		return sqlSession.selectOne("OrderCheck");
+	}
 	// 메뉴 상세 페이지
 	public MenuDTO getEditMenu(String menuCode) {
 		return sqlSession.selectOne("getEditMenu", menuCode);
 	}
-	// 메뉴 상태 업데이트
+	// 메뉴 막기/풀기 상태 업데이트
 	public int menuStatusUpdate(MenuDTO dto) {
 		return sqlSession.update("menuStatusUpdate", dto);
 	}
