@@ -351,7 +351,11 @@ public class OrderController {
 		// System.out.println(month); // 08
 
 		int intDay = LocalDate.now().getDayOfMonth();
-		String day = String.valueOf(intDay);
+		String StringDay = String.valueOf(intDay);
+		String day = null;
+		if (intDay < 10) {
+			day = "0" + StringDay;
+		}
 		// System.out.println(day); // 25
 
 		String orderDate = year + month + day + "_";
