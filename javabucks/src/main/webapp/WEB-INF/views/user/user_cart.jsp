@@ -58,6 +58,7 @@
 								<div class="txt_box">
 									<p class="txt_tit">${dto.menuname}</p>
 									<p class="txt_opt font_gray">
+										<c:if test="${fn:substring(dto.menuCode, 0, 1) == 'B'}">
 										<c:choose>
 											<c:when
 												test="${dto.menuCode != null && fn:length(dto.menuCode) >= 5 && fn:substring(dto.menuCode, 4, 5) == 'I'}">
@@ -65,15 +66,18 @@
 											</c:when>
 											<c:when
 												test="${dto.menuCode != null && fn:length(dto.menuCode) >= 5 && fn:substring(dto.menuCode, 4, 5) == 'H'}">
-												<span>HOT|</span>
+												<span>HOT |</span>
 											</c:when>
 											<c:otherwise>
 												<span></span>
 											</c:otherwise>
 										</c:choose>
-										<span>${dto.cupType}</span> | <span><fmt:formatNumber value="${dto.menuprice}" pattern="###,###" /></span>
+										<span>${dto.cupType} | </span> 
+										</c:if>
+										<span><fmt:formatNumber value="${dto.menuprice}" pattern="###,###" /></span>
 									</p>
 									<ul class="opt_list font_gray">
+										<c:if test="${fn:substring(dto.menuCode, 0, 1) == 'B'}">
 										<li class="opt_item"><span>${dto.cupType}</span><span>${dto.cupPrice}</span></li>
 										<li class="opt_item"><span>${dto.shotType} X
 												${dto.shotCount}</span><span>${dto.shotPrice * dto.shotCount}</span></li>
@@ -92,6 +96,7 @@
 										</c:if>
 										<c:if test="${not empty dto.milkType}">
 											<li class="opt_item"><span>${dto.milkType}</span><span>${dto.milkPrice}</span></li>
+										</c:if>
 										</c:if>
 									</ul>
 									<div class="price_box">
@@ -138,7 +143,24 @@
 	<!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
 <script>
-
+	//총 금액 합계와 초기 체크박스 상태 설정
+	window.onload = function() {
+	    // 페이지 로드 시 총합 계산
+	    calculateTotalPrice();
+	    
+	 // 모든 체크박스를 가져옵니다.
+	    const checkboxes = document.querySelectorAll('input[type="checkbox"].item-checkbox');
+	    
+	    // 모든 체크박스를 체크된 상태로 설정합니다.
+	    checkboxes.forEach(function(checkbox) {
+	        checkbox.checked = true;
+	    });     
+      	
+	    // 선택된 개수 및 주문하기 버튼 상태 업데이트
+	    updateCheckedCount();
+	    OrderButton();
+	};
+	
    function minus(fieldId, unitPrice) {
        var input = document.getElementById(fieldId);
        var value = parseInt(input.value, 10); // 현재 값 가져오기
@@ -219,9 +241,6 @@
        var totalPriceElement = document.getElementById('totalPrice');
        totalPriceElement.innerText = new Intl.NumberFormat().format(totalPrice) + " 원";
    }
-
-   // 페이지 로드 시 또는 수량 변경 시 총합 계산
-   window.onload = calculateTotalPrice;
       
    // 체크박스 전체선택
     function toggleCheckboxes(source) {
