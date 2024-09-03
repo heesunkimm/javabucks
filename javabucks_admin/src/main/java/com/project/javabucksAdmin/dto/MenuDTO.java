@@ -68,4 +68,10 @@ public class MenuDTO {
 	public void setMenuregDate(String menuregDate) {
 		this.menuregDate = menuregDate;
 	}
+	public String getMenuStatus() {
+		return menuStatus;
+	}
+	public void setMenuStatus(String menuStatus) {
+		this.menuStatus = menuStatus;
+	}
 }

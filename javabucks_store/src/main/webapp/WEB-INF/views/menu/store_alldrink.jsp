@@ -165,7 +165,7 @@
                 } else {
                     // 선택된 옵션에 해당하는 메뉴가 있을때
                     res.forEach(function(item) {
-                        let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
+                        let btnClass = item.storemenuStatus === 'N' ? 'btn_disable' : '';
                         let btnText = item.storemenuStatus === 'N' ? '주문풀기' : '주문막기';
                         
                         $('.checkbox_cont .menu_list').append(
@@ -234,11 +234,11 @@
                 bucksId: bucksId
             }),
             success: function(res) {
-                $(".searchbox_cont .menu_list").empty();  // 기존 리스트 비우기
+                $(".searchbox_cont .menu_list").empty(); // 기존 리스트 비우기
 
                 if (res.length > 0) {
                     res.forEach(function(item) {
-                        let btnClass = item.storeStatus === 'N' ? 'btn_disable' : '';
+                        let btnClass = item.storemenuStatus === 'N' ? 'btn_disable' : '';
 
                         $('.searchbox_cont .menu_list').append(
                             '<li class="menu_item">' +

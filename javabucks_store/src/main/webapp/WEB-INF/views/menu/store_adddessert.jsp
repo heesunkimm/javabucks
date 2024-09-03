@@ -30,7 +30,6 @@
                 	<!-- 해당 검색 결과에 맞는 메뉴 리스트 뿌려지는 곳 -->
                 </li>
             </ul>
-            <button class="moreBtn" onclick="moreBtnEvt()" type="button">더보기</button>
         </div>
     </section>
     <!-- e: content -->
@@ -79,7 +78,7 @@
 	                $('.menu_list').append('<li class="menu_item noMenu">검색 결과에 해당하는 메뉴가 없습니다.</li>');
 	            } else {
 	                res.forEach(function(item) {
-	                    let btnClass = item.storeStatus === 'Y' ? 'btn_disable' : '';
+	                    let btnClass = item.storeEnable === 'N' ? 'btn_disable' : '';
 	                    
 	                    $('.menu_list').append(
 	                        '<li class="menu_item">' + 
@@ -95,7 +94,7 @@
 	                            '<div class="btn_box">' + 
 	                                '<button class="menuAddBtn ' + btnClass + 
 	                                '" data-store="' + bucksId + '" data-code="' + item.menuCode + 
-	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeStatus === 'Y' ? 'Y' : 'N') + 
+	                                '" data-name="' + item.menuName + '" data-status="' + (item.storeEnable === 'N' ? 'N' : 'Y') + 
 	                                '" type="button">메뉴 추가</button>' + 
 	                            '</div>' + 
 	                        '</li>'
@@ -114,63 +113,75 @@
 	
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
-		let bucksId = `${inBucks.bucksId}`;
-	    
+	    let bucksId = `${inBucks.bucksId}`;
+	
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
 	        data: { bucksId: bucksId },
 	        dataType: 'json',
 	        success: function(res) {
-	            // 메뉴 리스트 새로 업데이트
 	            $('.menu_list .menu_item').each(function () {
 	                let $btn = $(this).find('.menuAddBtn');
 	                let menuCode = $btn.data('code');
-
+	
 	                let item = res.find(item => item.menuCode === menuCode);
-	                if (item && item.storemenuStatus === 'Y') {
-	                    $btn.addClass('btn_disable').attr('data-status', 'Y');
+	
+	                if (item) {
+	                    // 상태에 따라 버튼 클래스와 data-status 업데이트
+	                    if (item.storeEnable === 'N') {
+	                        $btn.addClass('btn_disable').attr('data-status', 'N');
+	                    } else if (item.storeEnable === 'Y') {
+	                        $btn.removeClass('btn_disable').attr('data-status', 'Y');
+	                    }
 	                }
 	            });
 	        },
 	        error: function(err) {
-	            console.error('AJAX 요청 실패:', err);
+	            console.log('Error: ', err);
 	        }
 	    });
 	}
 	
 	// 메뉴 추가 버튼 클릭 시 이벤트
 	$(document).on('click', '.menuAddBtn', function() {
-		let $btn = $(this);
-		let menuName = $(this).data('name');
-		let bucksId = $(this).data('store');
-		let menuCode = $(this).data('code');
-		
+	    let $btn = $(this);
+	    let menuName = $btn.data('name');
+	    let storeId = $btn.data('store');
+	    let menuCode = $btn.data('code');
+	
 	    let data = {
-	    		bucksId: bucksId,
-	    		menuCode: menuCode,
-	    		storemenuStatus: 'Y', 
-	    }
-	    
-	    // 이미 비활성화 된 버튼 클릭 블가
+	        bucksId: storeId,
+	        menuCode: menuCode
+	    };
+	
+	    // 이미 비활성화된 버튼 클릭 불가
 	    if ($btn.hasClass('btn_disable')) {
 	        return;
 	    }
-	    
+	
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/addMenu.ajax',
 	        type: 'POST',
 	        data: JSON.stringify(data),
 	        contentType: "application/json",
-	        dataType: "text",
+	        dataType: "json",
 	        success: function(res) {
-	        	alert(res);
-	        	$btn.addClass('btn_disable').attr('data-status', 'Y');
-	        	updateStatus();
+	        	// 지점 메뉴추가 알람
+	            alert(res.status === "updated" ? "메뉴 상태가 업데이트되었습니다." : menuName + "지점 메뉴에 추가되었습니다.");
+	            
+	            if (res.status === "updated" || res.status === "added") {
+	                // 버튼 상태 변경
+	                if (res.storeEnable === "Y") {
+	                    $btn.removeClass('btn_disable').attr('data-status', 'Y');
+	                } else {
+	                    $btn.addClass('btn_disable').attr('data-status', 'N');
+	                }
+	            }
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);
 	        }
-   		}); 
+	    });
 	});
 </script>

@@ -9,11 +9,22 @@ public class PayhistoryDTO {
 	private String cardRegNum;
 	private String bucksId;
 	private String orderCode;
-	private int cpnNum;
+	private int cpnListNum;
 	private String payhistoryDate;
 	private int payhistoryPrice;
 	private String payhistoryPayType;
 	private String payhistoryPayWay;
+	
+	
+	
+
+	public int getCpnListNum() {
+		return cpnListNum;
+	}
+
+	public void setCpnListNum(int cpnListNum) {
+		this.cpnListNum = cpnListNum;
+	}
 
 	public int getPayhistoryNum() {
 		return payhistoryNum;
@@ -55,14 +66,7 @@ public class PayhistoryDTO {
 		this.orderCode = orderCode;
 	}
 
-	public int getCpnNum() {
-		return cpnNum;
-	}
-
-	public void setCpnNum(int cpnNum) {
-		this.cpnNum = cpnNum;
-	}
-
+	
 	public String getPayhistoryDate() {
 		return payhistoryDate;
 	}

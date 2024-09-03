@@ -6,7 +6,7 @@
 
 	<!-- 메뉴추가 - 선택된 메뉴 리스트 필터링 -->
 	<select id="getSelectMenu" resultType="MenuDTO">
-	    select * from javabucks_menu where substr(menuCode, 1,1) in ('B', 'C', 'M') and substr(menuCode, 2, 4) = #{menuoptCode}
+	    select * from javabucks_menu where substr(menuCode, 1,1) in ('B', 'C', 'M') and substr(menuCode, 2, 4) = #{menuoptCode} and menuEnable = 'Y'
 	</select>
 	
 	<!-- 어드민에서 등록된 메뉴 지점 메뉴로 추가 -->
@@ -16,18 +16,33 @@
 	</insert>
 	
 	<!-- 지점에 이미 등록된 메뉴가 있는지 확인 -->
-	<select id="getMenuByStore" parameterType="java.util.Map" resultType="StoreMenuDTO">
-	    select * from javabucks_storemenu where menuCode = #{menuCode} and bucksId = #{bucksId}
+	<select id="getMenuByStore" parameterType="StoreMenuDTO" resultType="StoreMenuDTO">
+	    select sm.*, m.menuEnable, m.menuStatus, m.menuName 
+	    from javabucks_storemenu sm 
+	    inner join javabucks_menu m ON sm.menuCode = m.menuCode
+	    where sm.menuCode = #{menuCode} and sm.bucksId = #{bucksId}
 	</select>
 	
+	<!-- 기존에 등록된 메뉴코드와 동일하다면 상태 업데이트 -->
+	<update id="updateMenuStatus" parameterType="StoreMenuDTO">
+	    update javabucks_storemenu set storeEnable = 'N', storemenuStatus = 'Y' where menuCode = #{menuCode} and bucksId = #{bucksId}
+	</update>
+
 	<!-- 지점에 등록된 메뉴 중 이미 주문막기 처리가 됐는지 여부 확인 -->
 	<select id="getMenuByStatus" parameterType="java.util.Map" resultType="StoreMenuDTO">
-	    select * from javabucks_storemenu where storeEnable = 'N' and storemenuStatus = 'N' and menuCode = #{menuCode} and bucksId = #{bucksId}
+	    select sm.*, m.menuEnable, m.menuStatus, m.menuName 
+	    from javabucks_storemenu sm 
+        inner join javabucks_menu m ON sm.menuCode = m.menuCode 
+	    where sm.storeEnable = 'N' and sm.storemenuStatus = 'N' 
+	    and sm.bucksId = #{bucksId} and sm.menuCode = #{menuCode} and m.menuEnable = 'Y'
 	</select>
 	
 	<!-- 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 버튼 유지 -->
 	<select id="getSelectedMenu" parameterType="String" resultType="StoreMenuDTO">
-		select * from javabucks_storemenu where bucksId = #{bucksId}
+		select sm.*, m.menuEnable, m.menuStatus 
+		from javabucks_storemenu sm
+		inner join javabucks_menu m ON sm.menuCode = m.menuCode 
+		where sm.bucksId = #{bucksId}
 	</select>
 	
 	<!-- 조건에 해당하는 음료 리스트 뽑기 -->
@@ -48,6 +63,7 @@
 			    (SUBSTR(m.menuCode, 4, 1) = #{menuBase} AND #{menuBase} &lt;&gt; 'F')
 			)
           AND m.menuEnable = 'Y' 
+          and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- 메뉴 키워드 검색 리스트 뽑기 -->
@@ -57,8 +73,11 @@
         from javabucks_storemenu sm 
         join javabucks_menu m on sm.menuCode = m.menuCode
         where sm.bucksId = #{bucksId} 
+          AND sm.storeEnable = 'N' 
           and m.menuCode like 'B%'
-          and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+          and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%' 
+          AND m.menuEnable = 'Y' 
+          and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- 조건에 해당하는 디저트 리스트 뽑기 -->
@@ -72,6 +91,7 @@
 	        AND m.menuCode LIKE 'C%' 
 	        AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
 	        AND m.menuEnable = 'Y'
+          	and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- 디저트 키워드 검색 리스트 뽑기 -->
@@ -81,8 +101,11 @@
         from javabucks_storemenu sm 
         join javabucks_menu m on sm.menuCode = m.menuCode
         where sm.bucksId = #{bucksId} 
+          AND sm.storeEnable = 'N' 
           and m.menuCode like 'C%'
           and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+          AND m.menuEnable = 'Y'
+      	  and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- 조건에 해당하는 MD 리스트 뽑기 -->
@@ -92,9 +115,11 @@
 	    FROM javabucks_storemenu sm 
 	    JOIN javabucks_menu m ON sm.menuCode = m.menuCode 
 	    WHERE sm.bucksId = #{bucksId} 
+	      AND sm.storeEnable = 'N' 
 	      and m.menuCode like 'M%' 
 	      AND (#{menuCate} IS NULL OR SUBSTR(m.menuCode, 2, 2) = #{menuCate}) 
-	      AND m.menuEnable = 'Y'
+          AND m.menuEnable = 'Y'
+      	  and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- MD 키워드 검색 리스트 뽑기 -->
@@ -104,8 +129,11 @@
         from javabucks_storemenu sm 
         join javabucks_menu m on sm.menuCode = m.menuCode
         where sm.bucksId = #{bucksId} 
+          AND sm.storeEnable = 'N' 
           and m.menuCode like 'M%'
           and replace(m.menuName, ' ', '') like '%' || replace(#{searchCont}, ' ', '') || '%'
+          AND m.menuEnable = 'Y'
+      	  and  m.menuStatus = 'Y'
 	</select>
 	
 	<!-- 주문막기 상태 업데이트 -->
@@ -119,8 +147,8 @@
 	</select>
 	
 	<!-- 메뉴삭제 - 지점에 추가한 메뉴 삭제 -->
-	<delete id="deleteMenu" parameterType="java.util.Map">
-		delete from javabucks_storemenu where bucksId = #{bucksId} and menuCode = #{menuCode}
-	</delete>
+	<update id="deleteMenu" parameterType="java.util.Map">
+		update javabucks_storemenu set storeEnable = 'Y' where bucksId = #{bucksId} and menuCode = #{menuCode}
+	</update>
 
 </mapper>

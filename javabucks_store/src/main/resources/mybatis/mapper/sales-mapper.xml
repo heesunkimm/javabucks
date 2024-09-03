@@ -139,6 +139,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    WHERE
 	        o.optId = #{optioncode}
 		</select>
+		
+		<select id="getCouponPrice" parameterType="int" resultType="int">
+		SELECT c.cpnPrice
+	    FROM javabucks_couponList cl
+	    JOIN javabucks_coupon c ON cl.cpnCode = c.cpnCode
+	    WHERE cl.cpnListNum = #{coupon}
+	</select>
 				
 		
 </mapper>

@@ -142,8 +142,8 @@
 		                    </ul>
                     </c:if>
                     <c:if test="${not empty makingList}">
-                    	<c:forEach var="making" items="${makingList}">
-		                    <ul class="making_list list_box">
+		            	<ul class="making_list list_box">
+		                    <c:forEach var="making" items="${makingList}">
 		                        <li class="making_item list_item bg_beige">
 		                            <div class="txt_box">
 		                                <dl>
@@ -164,8 +164,9 @@
 		                            </div>
 		                            <button type="button" name="orderButton" onclick="orderFinish(this)" data-orderCode="${making.orderCode}">제조완료</button>
 		                        </li>
-		                    </ul>
-		                </c:forEach>
+		                	</c:forEach>
+		                </ul>
+		                
 	                    <div class="pagination">
 	                        <c:if test="${making_startPage > making_pageBlock}"> 
 	                        	<button type="button" onclick="makingBefore()">이전</button>
@@ -260,8 +261,12 @@ function orderStart(element){
 				alert("주문번호 " +orderCode + "번의 주문이 접수되었습니다.");
 			} else if (respVal === "notEnough"){
 				alert("재고가 부족하여 주문번호 " +orderCode + "번의 주문을 접수할 수 없습니다.");
-			} else if(respVal === "fail"){
-				alert("주문 접수 실패. 관리자에게 문의하세요.");
+			} else if(respVal === "stockMinusFail"){
+				alert("재고 차감 실패. 관리자에게 문의하세요.");
+			} else if(respVal === "orderStatusFail"){
+				alert("주문 상태 변경 실패. 관리자에게 문의하세요.");
+			} else if(respVal === "alarmInsertFail"){
+				alert("알람 인서트 실패. 관리자에게 문의하세요.");			
 			} else {
 				alert("주문 접수 실패. 관리자에게 문의하세요.");
 			}
@@ -287,8 +292,18 @@ function orderCancel(element){
 			orderCode : orderCode
 		},
 		success : function(response){
-			alert("주문번호 " +orderCode + "번의 주문이 취소되었습니다.");
-			location.reload();
+			var resp = response;
+			var respVal = resp.response;
+			if(respVal === "success"){
+				alert("주문번호 " +orderCode + "번의 주문이 취소되었습니다.");
+				window.location.href='orderManage.do';
+			} else if (respVal === "cancelUpdateFail"){
+				alert("재고가 부족하여 주문번호 " +orderCode + "번의 주문을 접수할 수 없습니다.");
+				location.reload();
+			} else {
+				alert("알람 인서트 실패. 관리자에게 문의하세요.");
+				location.reload();
+			}
 		},
 		error : function(error){
 			alert("주문 취소에 실패했습니다.");
@@ -309,8 +324,21 @@ function orderFinish(element){
 			orderCode : orderCode
 		},
 		success : function(response){
-			alert("주문번호 " +orderCode + "번 주문의 제조가 완료되었습니다.");
-			location.reload();
+			var resp = response;
+			var respVal = resp.response;
+			if(respVal === "success"){
+				alert("주문번호 " +orderCode + "번의 제조가 완료되었습니다.");
+				location.reload();
+			} else if (respVal === "finishUpdateFail"){
+				alert("제조완료 상태 업데이트 실패. 관리자에게 문의해주세요.");
+				location.reload();
+			} else if (respVal === "alarmInsertFail"){
+				alert("제조완료 알람 인서트 실패. 관리자에게 문의해주세요.");
+				location.reload();
+			} else {
+				alert("에러 발생. 관리자에게 문의하세요.");
+				location.reload();
+			}
 		},
 		error : function(error){
 			alert("주문 제조완료에 실패했습니다.");

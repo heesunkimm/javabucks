@@ -196,32 +196,34 @@ public class SalesController {
 	
 	@RequestMapping("/store_sales.do")
 	public String allStoreSales(Model model, HttpServletRequest req, 
-			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
+			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNum) {
 		HttpSession session = req.getSession();
 		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
 		String bucksId = dto.getBucksId();
 		
 		 // 페이징 처리 변수 설정
-        int pageSize =5; // 한 페이지에 보여줄 매출 항목 수
-        int startRow = (pageNum - 1) * pageSize + 1;
-        int endRow = pageNum * pageSize;
-        
-        // 총 매출 항목 수 계산
-        int totalSalesCount = salesMapper.getSalesCount(bucksId);
-        int totalSalesAmount = salesMapper.getTotalSalesAmount(bucksId);
+		int pageSize = 5; 
+	    int startRow = (pageNum - 1) * pageSize + 1;  // 1부터 시작하는 행 번호
+	    int endRow = pageNum * pageSize;  // 마지막 행 번호
+	    
+	    // 총 매출 항목 수 계산
+	    int totalSalesCount = salesMapper.getSalesCount(bucksId);
+	    int totalSalesAmount = salesMapper.getTotalSalesAmount(bucksId);
+	    int totalPageCount = (totalSalesCount / pageSize) + (totalSalesCount % pageSize == 0 ? 0 : 1);
+	    int startPage = Math.max(1, pageNum - 2);
+	    int endPage = Math.min(totalPageCount, startPage + 2);
 
-        // 페이징에 필요한 추가 정보 계산
-        int totalPageCount = (totalSalesCount / pageSize) + (totalSalesCount % pageSize == 0 ? 0 : 1);
-        int startPage = Math.max(1, pageNum - 2);
-        int endPage = Math.min(totalPageCount, startPage + 4);
-
-        // 현재 페이지에 해당하는 매출 데이터 조회
-        Map<String, Object> searchParams = new HashMap<>();
-        searchParams.put("bucksId", bucksId);
-        searchParams.put("startRow", startRow);
-        searchParams.put("endRow", endRow);
-        List<PayhistoryDTO> salesList = salesMapper.getSalesList(searchParams);
-       
+	    // 현재 페이지에 해당하는 매출 데이터 조회
+	    Map<String, Object> searchParams = new HashMap<>();
+	    searchParams.put("bucksId", bucksId);
+	    searchParams.put("startRow", startRow);
+	    searchParams.put("endRow", endRow);
+	    
+	    List<PayhistoryDTO> salesList = salesMapper.getSalesList(searchParams);
+//        System.out.println("StartRow: " + startRow);
+//        System.out.println("EndRow: " + endRow);
+//        System.out.println("BucksId: " + bucksId);
+//        System.out.println("salesList: " + salesList);
         
         if (salesList == null) {
             salesList = new ArrayList<>();
@@ -286,6 +288,9 @@ public class SalesController {
 			BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
 			String bucksId = dto.getBucksId();
 			
+//			System.out.println(startDate);
+//			System.out.println(endDate);
+			
 			// 페이징 처리 변수 설정
 			int pageSize = 5;
 			int startRow = (pageNum - 1) * pageSize + 1;
@@ -317,6 +322,7 @@ public class SalesController {
 			for (PayhistoryDTO order : salesList) {
 				String orderListJson = order.getOrderList();
 				String orderCode = order.getOrderCode();
+				
 				
 				if (orderCode != null && !orderCode.isEmpty()) {
 					String[] parts = orderCode.split("_");
@@ -361,150 +367,126 @@ public class SalesController {
 	@RequestMapping("/store_selectCate.ajax")
 	@ResponseBody
 	public Map<String, Object> selectCateSales(HttpServletRequest req, 
-			 @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
-		        @RequestParam(value = "pageSize", required = false, defaultValue = "5") int pageSize,
-            @RequestParam(value = "menu_cate", required = false) String menuCate,
-            @RequestParam(value = "disert_cate", required = false) String disertCate,
-            @RequestParam(value = "Md_cate", required = false) String mdCate) {
-		
-//		System.out.println("menuCate: " + menuCate);
-//		System.out.println("disertCate: " + disertCate);
-//		System.out.println("mdCate: " + mdCate);
-		// 세 파라미터 중 하나에만 값이 담겨오는 경우, 그 값을 우선순위에 따라 확인
-		String selectedCate = null;
-		if (menuCate != null && !menuCate.trim().isEmpty()) {
-		    selectedCate = menuCate;
-		} else if (disertCate != null && !disertCate.trim().isEmpty()) {
-		    selectedCate = disertCate;
-		} else if (mdCate != null && !mdCate.trim().isEmpty()) {
-		    selectedCate = mdCate;
-		}
-	    
-//	    System.out.println("selectedCate : " + selectedCate);
+	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+	        @RequestParam(value = "pageSize", required = false, defaultValue = "5") int pageSize,
+	        @RequestParam(value = "menu_cate", required = false) String menuCate,
+	        @RequestParam(value = "disert_cate", required = false) String disertCate,
+	        @RequestParam(value = "Md_cate", required = false) String mdCate) {
+
+	    String selectedCate = null;
+	    if (menuCate != null && !menuCate.trim().isEmpty()) {
+	        selectedCate = menuCate;
+	    } else if (disertCate != null && !disertCate.trim().isEmpty()) {
+	        selectedCate = disertCate;
+	    } else if (mdCate != null && !mdCate.trim().isEmpty()) {
+	        selectedCate = mdCate;
+	    }
 	    
 	    HttpSession session = req.getSession();
 	    BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
 	    String bucksId = dto.getBucksId();
-	    
-	    // Offset 계산
-	    int offset = (pageNum - 1) * pageSize;
 
-	    // 현재 페이지에 해당하는 매출 데이터 조회
+	    // 전체 매출 데이터 가져오기
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("bucksId", bucksId);
-//	    searchParams.put("offset", offset);
-//	    searchParams.put("pageSize", pageSize);
-
 	    List<PayhistoryDTO> salesList = salesMapper.getselectCateList(searchParams);
+
 	    int totalSalesAmount = 0;
-//	    int totalItems = salesMapper.getselectCateCount(bucksId);
-//	    int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-	    
-	    
 	    List<PayhistoryDTO> filteredSalesList = new ArrayList<>();
 	    
 	    for (PayhistoryDTO order : salesList) {
 	        String orderListJson = order.getOrderList();
 	        int payhistoryPrice = order.getPayhistoryPrice(); // 주문의 기본 가격
 	        String orderCode = order.getOrderCode();
+	        int coupon = order.getCpnListNum();
+	        int couponDiscount = 0;
+	        boolean couponApplied = false;  // 쿠폰이 적용되었는지 여부 확인 변수
 	        
+	        // 쿠폰이 있을 경우, 쿠폰 할인 금액을 가져옴
+	        if (coupon > 0) {
+	            couponDiscount = salesMapper.getCouponPrice(coupon);
+	        }
+
 	        if (orderCode != null && !orderCode.isEmpty()) {
 	            String[] parts = orderCode.split("_");
 	            String extractedCode = parts[1];
 	            order.setExtractedOrderCode(extractedCode); // 추출한 값을 DTO에 설정
 	        }
-	        
+
 	        if (orderListJson != null && !orderListJson.isEmpty()) {
 	            orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
 	            String[] items = orderListJson.split(",");
 	            StringBuilder menuNames = new StringBuilder();
+	            int totalItemPrice = 0;
 	            
 	            for (String item : items) {
 	                String[] parts = item.replaceAll("[\\[\\]\"]", "").split(":");
 	                String menucode = parts[0];
 	                String optioncode = parts[1]; 
 	                int quantity = Integer.parseInt(parts[2]);
-	                
+
 	                // menucode에서 카테고리와 서브코드 추출
 	                char category = menucode.charAt(0); // 첫 번째 문자로 카테고리 구분
 	                String subcode = menucode.substring(1, 3); // 2번째와 3번째 코드
-//	                System.out.println("subcode: " + subcode);
-//	                System.out.println("category: " + category);
-	                
-	             // selectedCate의 길이에 따라 다르게 처리
+
+	                // selectedCate의 길이에 따라 다르게 처리
 	                if (selectedCate != null) {
-	                    if (selectedCate.length() == 1) {
-	                        // selectedCate가 1글자일 때, category와 비교
-	                        if (selectedCate.charAt(0) == category) {
-	                            PayhistoryDTO menuDTO = salesMapper.getMenuNameByCode(menucode); // 메뉴 이름 가져오기
-	                            String menuName = menuDTO.getMenuName(); 
-	                            int menuPrice = menuDTO.getMenuPrice();
-	                            int optionPrice = salesMapper.getOptionPriceByCode(optioncode); // 옵션 가격 가져오기
-//	                            System.out.println("menuName :"+menuName);
-//	                            System.out.println("optionPrice :"+optionPrice);
-	                            
-	                            if (menuNames.length() > 0) {
-	                                menuNames.append("<br>"); 
-	                            }
-	                            menuNames.append(menuName).append(" x ").append(quantity);
-	                            order.setMenuName(menuNames.toString().trim());
+	                    if ((selectedCate.length() == 1 && selectedCate.charAt(0) == category) || 
+	                        (selectedCate.length() == 2 && selectedCate.equals(subcode))) {
+	                        PayhistoryDTO menuDTO = salesMapper.getMenuNameByCode(menucode); // 메뉴 이름 가져오기
+	                        String menuName = menuDTO.getMenuName(); 
+	                        int menuPrice = menuDTO.getMenuPrice();
+	                        int optionPrice = salesMapper.getOptionPriceByCode(optioncode); // 옵션 가격 가져오기
 
-	                            // 메뉴 가격과 옵션 가격의 합에 수량을 곱하여 총 금액 계산
-	                            int totalItemPrice = (menuPrice + optionPrice) * quantity; 
-	                            totalSalesAmount += totalItemPrice; 
-	                            
-	                            order.setTotalItemPrice(totalItemPrice);
-	                            filteredSalesList.add(order); 
+	                        // 쿠폰을 아직 적용하지 않았고, 적용 가능 항목이라면
+	                        if (!couponApplied && category == 'B') {  // 'B'는 음료 카테고리라고 가정
+	                            menuPrice -= couponDiscount; // 쿠폰 할인 적용
+	                            couponApplied = true;  // 쿠폰이 한 번만 적용되도록 설정
 	                        }
-	                    } else if (selectedCate.length() == 2) {
-	                        // selectedCate가 2글자일 때, subcode와 비교
-	                        if (selectedCate.equals(subcode)) {
-	                            PayhistoryDTO menuDTO = salesMapper.getMenuNameByCode(menucode); // 메뉴 이름 가져오기
-	                            String menuName = menuDTO.getMenuName(); 
-	                            int menuPrice = menuDTO.getMenuPrice();
-	                            int optionPrice = salesMapper.getOptionPriceByCode(optioncode); // 옵션 가격 가져오기
-//	                            System.out.println("menuName :"+menuName);
-//	                            System.out.println("optionPrice :"+optionPrice);
-	                            
-	                            if (menuNames.length() > 0) {
-	                                menuNames.append("<br>"); 
-	                            }
-	                            menuNames.append(menuName).append(" x ").append(quantity);
-	                            order.setMenuName(menuNames.toString().trim());
 
-	                            // 메뉴 가격과 옵션 가격의 합에 수량을 곱하여 총 금액 계산
-	                            int totalItemPrice = (menuPrice + optionPrice) * quantity; 
-	                            totalSalesAmount += totalItemPrice; 
-	                            
-	                            order.setTotalItemPrice(totalItemPrice);
-	                            filteredSalesList.add(order); 
+	                        if (menuNames.length() > 0) {
+	                            menuNames.append("<br>"); 
 	                        }
+	                        menuNames.append(menuName).append(" x ").append(quantity);
+
+	                        // 메뉴 가격과 옵션 가격의 합에 수량을 곱하여 총 금액 계산
+	                        totalItemPrice += (menuPrice + optionPrice) * quantity;
 	                    }
 	                }
 	            }
+	            
+	            // 최종적으로 한번만 리스트에 추가
+	            if (totalItemPrice > 0) {
+	                order.setMenuName(menuNames.toString().trim());
+	                totalSalesAmount += totalItemPrice;
+	                order.setTotalItemPrice(totalItemPrice);
+	                filteredSalesList.add(order);
+	            }
 	        }
 	    }
-	 // 필터링된 결과의 총 갯수
-	    int totalItems = filteredSalesList.size();
-	    
-	    // 전체 페이지 수 계산
-	    int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-	    
-	    List<PayhistoryDTO> paginatedList = filteredSalesList.stream()
-                .skip(offset)
-                .limit(pageSize)
-                .collect(Collectors.toList());
 
-	 
+	    // 필터링된 전체 항목 수
+	    int totalItems = filteredSalesList.size();
+
+	    // 페이징 처리
+	    int offset = (pageNum - 1) * pageSize;
+	    int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+
+	    // 현재 페이지에 맞는 데이터 추출
+	    List<PayhistoryDTO> paginatedList = filteredSalesList.stream()
+	        .skip(offset)
+	        .limit(pageSize)
+	        .collect(Collectors.toList());
+
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("currentPage", pageNum);
 	    result.put("totalPages", totalPages); // 총 페이지 수
-	    result.put("salesList", filteredSalesList); // 해당 페이지의 데이터만 반환
-	    result.put("totalSalesAmount", totalSalesAmount); // 총 매출 금액 반환
-	   // System.out.println("totalPages :"+ totalPages);
+	    result.put("salesList", paginatedList); // 현재 페이지 데이터
+	    result.put("totalSalesAmount", totalSalesAmount); // 총 매출 금액
 
 	    return result;
 	}
+
 	
 				
 				

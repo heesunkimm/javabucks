@@ -83,4 +83,9 @@ public class SalesMapper {
 	    return sqlSession.selectOne("getOptionPriceByCode", optionCode);
 	}
 	
+	public int getCouponPrice(int coupon) {
+		  //System.out.println(coupon);
+    	return sqlSession.selectOne("getCouponPrice", coupon);
+    }
+	
 }
