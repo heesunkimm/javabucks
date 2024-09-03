@@ -106,32 +106,21 @@
                     </c:if>
                     </span>님을 위한 추천 메뉴</p>
                 </div>
+                <!-- s: 핑복코드 -->
                 <ul class="recommend_list">
+                <c:forEach var="menu" items="${top3MenuNames}">
                     <li>
-                        <a href="javascript:;">
-                            <div class="img_box">
-                                <!-- <img src="" alt=""> -->
-                            </div>
-                            <p>메뉴명</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <div class="img_box">
-                                <!-- <img src="" alt=""> -->
-                            </div>
-                            <p>메뉴명</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <div class="img_box">
-                                <!-- <img src="" alt=""> -->
-                            </div>
-                            <p>메뉴명</p>
-                        </a>
-                    </li>
+				            <a class="" href="javascript:;" data-menucode="${menu.menuCode}">
+				                <div class="img_box">
+				                    <img src="../upload_menuImages/${menu.menuImages}" alt="${menu.menuName}">
+				                </div>
+				                <p>${menu.menuName}</p> <!-- 메뉴명을 동적으로 삽입 -->
+				            </a>
+				        </li>
+                    </c:forEach>
+                    
                 </ul>
+                <!-- e: 핑복코드 -->
             </div>
         </div>
     </section>

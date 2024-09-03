@@ -423,5 +423,22 @@ public class UserMapper {
 	public List<OrderDTO> getSearchPeriodDeliversHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchPeriodDeliversHistory", params);
 	}
+	
+	//s: 핑복코드 
+	public List<OrderDTO> getOrderList(String userId){
+	      return sqlSession.selectList("getOrderList", userId);
+	   }
+	
+	public List<MenuDTO> top3MenuNames(List<String> top3MenuCodes) {
+	//	System.out.println("top3MenuCodes:"+top3MenuCodes);
+		return sqlSession.selectList("top3MenuNames", top3MenuCodes);
+	}
+	
+	
+	public List<MenuDTO> getLatestMenus() {
+		return sqlSession.selectList("getLatestMenus");
+	}
+	
+	//e:핑복코드
 
 }
