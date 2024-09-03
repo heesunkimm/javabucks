@@ -65,19 +65,22 @@ public class MenuController {
 		params.put("menuCode", dto.getMenuCode());
 		params.put("menuName", dto.getMenuName());
 	    params.put("bucksId", dto.getBucksId());
+	    params.put("menuStatus",dto.getStoremenuStatus());
+	    
+	    System.out.println(params);
 		
 		// 지점에 이미 등록된 메뉴가 있는지 확인
 		StoreMenuDTO menuCheck = menuMapper.getMenuByStore(params);
 		
 		// 이미 등록된 메뉴 추가시 처리
 		if(menuCheck != null) {
-			return dto.getMenuName() + "는 이미 추가된 메뉴입니다.";
+			return "이미 추가된 메뉴입니다.";
 		}
 
 		// 지점에 메뉴 추가
 		int res = menuMapper.addMenu(dto);
 		if(res>0) {
-			return dto.getMenuName() + "가 메뉴에 추가되었습니다.";
+			return "지점 메뉴에 추가되었습니다.";
 		}else {
 			return "메뉴추가에 실패하였습니다.";
 		}
@@ -124,6 +127,8 @@ public class MenuController {
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
 		searchParams.put("menuBase", menuBase);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 	    // 검색 조건에 따라 메뉴 리스트 가져오기	    
 	    List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
@@ -157,6 +162,8 @@ public class MenuController {
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("bucksId", bucksId);
 	    searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 	    
 	    List<StoreMenuDTO> filterList = menuMapper.searchDrinksList(searchParams);
 	    
@@ -177,6 +184,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 	    List<StoreMenuDTO> dessertList = menuMapper.searchDessert(searchParams);
 
@@ -201,6 +210,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> filterList = menuMapper.searchDessertList(searchParams);
 		
@@ -222,6 +233,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> mdList = menuMapper.searchMd(searchParams);
 		
@@ -246,6 +259,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> filterList = menuMapper.searchMdList(searchParams);
 		

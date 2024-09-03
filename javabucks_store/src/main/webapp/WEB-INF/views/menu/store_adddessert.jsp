@@ -149,7 +149,6 @@
 	    let data = {
 	    		bucksId: bucksId,
 	    		menuCode: menuCode,
-	    		storemenuStatus: 'Y', 
 	    }
 	    
 	    // 이미 비활성화 된 버튼 클릭 블가

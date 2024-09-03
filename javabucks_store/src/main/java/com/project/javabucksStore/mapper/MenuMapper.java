@@ -71,6 +71,6 @@ public class MenuMapper {
 	}
 	// 메뉴삭제 - 지점에 추가한 메뉴 삭제
 	public int deleteMenu(Map<String, Object> params) {
-		return sqlSession.delete("deleteMenu", params);
+		return sqlSession.update("deleteMenu", params);
 	}
 }
