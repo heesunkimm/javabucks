@@ -41,7 +41,7 @@
                     </div>
                     <div class="btn_box">
                         <button class="add_btn" type="button" onclick="contCheck()">메뉴수정</button>
-                        <button class="del_btn" type="button" onclick="delMenu()">메뉴삭제</button>
+                        <button class="del_btn" type="button">메뉴삭제</button>
                     </div>
                 </form>
             </div>
@@ -116,25 +116,33 @@
 	            return value.replace(/,/g, '');
 	        });
 	    }); */
-	    
-	    function delMenu() {
-	        if (confirm('메뉴를 삭제하시겠습니까?')) {
-	            let menuCode = $("input[name='menuCode']").val();
 
-	            let $form = $('<form>', {
-	                method: 'post',
-	                action: 'admin_delDrink'
-	            });
+		// 메뉴삭제 (상태업데이트)		
+		$(".del_btn").on('click', function() {
+			let menuCode = $("input[name='menuCode']").val();
 
-	            let $input = $('<input>', {
-	                type: 'hidden',
-	                name: 'menuCode',
-	                value: menuCode
-	            });
-
-	            $form.append($input);
-	            $form.appendTo('body').submit();
-	        }
-	    }
+		    let data = {
+		        menuCode: menuCode
+		    };
+			
+			$.ajax({
+		        url: '${pageContext.request.contextPath}/delDrink.ajax',
+		        type: "POST",
+		        data: JSON.stringify(data),
+		        contentType: "application/json",
+		        dataType: "text",
+		        success: function (res) {
+					if(res == "해당 메뉴가 삭제되었습니다.") {
+						alert(res);
+						window.location.href = '/admin_drinklist';
+					}else {
+						alert(res);
+					}
+		        },
+		        error: function (xhr, status, err) {
+		            console.error('AJAX 요청 실패:', status, err);
+		        }
+		    });
+		});
     </script>
 <jsp:include page="../admin_bottom.jsp"/>

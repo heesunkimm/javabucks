@@ -71,22 +71,17 @@ public class LoginController {
 			// 비밀번호 불일치
 			else if (!admin.getAdminPasswd().equals(adminPasswd)) {
 				req.setAttribute("msg", "비밀번호가 일치하지 않습니다. 다시 확인 후 로그인 해주세요");
-				req.setAttribute("url", "admin_login");
+				req.setAttribute("url", "/login.do");
 			}
 		}
 		// admin이 존재하지 않으면
 		else {
 			req.setAttribute("msg", "등록되지 않은 ID입니다. 다시 확인 후 로그인 해주세요.");
-			req.setAttribute("url", "admin_login");
+			req.setAttribute("url", "/login.do");
 		}
 		return "message";
 	}
-//	
-//	@GetMapping("/adminmanage.do") 
-//	public String adminmanage() {
-//		return "/account/admin_adminmanage"; // 핑복이 작업한거 보고 경로 수정
-//	}
-//	
+
 	
 	// 비밀번호 재설정 
 	@ResponseBody

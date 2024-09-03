@@ -20,7 +20,7 @@
      	INSERT INTO javabucks_bucks (
             bucksId, bucksPasswd, bucksOwner, bucksName, bucksLocation, bucksEmail1, 
             bucksEmail2, bucksTel1, bucksTel2, bucksTel3, 
-            bucksJoindate, bucksEnable, orderEnable ) VALUES (
+            bucksJoindate, bucksStart, bucksEnd, bucksEnable, orderEnable ) VALUES (
             #{bucksId},
             #{bucksPasswd},
             #{bucksOwner},
@@ -32,6 +32,8 @@
             #{bucksTel2},
             #{bucksTel3},
             SYSDATE,
+            TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' ' || #{bucksStart, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'),
+    TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD') || ' ' || #{bucksEnd, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS'),
             DEFAULT,
             DEFAULT
         )
@@ -86,7 +88,11 @@
 			
 		<!--  지점 수정   -->
 		<update id="editBucks" parameterType="BucksDTO"> 
-		UPDATE javabucks_bucks SET bucksName = #{bucksName}, bucksOwner = #{bucksOwner}, bucksTel1 = #{bucksTel1}, bucksTel2 = #{bucksTel2}, bucksTel3 = #{bucksTel3}, bucksEmail1 = #{bucksEmail1}, bucksEmail2 = #{bucksEmail2} WHERE bucksId = #{bucksId} </update>
+		UPDATE javabucks_bucks SET bucksName = #{bucksName}, bucksOwner = #{bucksOwner}, bucksTel1 = #{bucksTel1}, 
+		bucksTel2 = #{bucksTel2}, bucksTel3 = #{bucksTel3}, bucksEmail1 = #{bucksEmail1}, bucksEmail2 = #{bucksEmail2},
+		bucksStart = TO_DATE(#{bucksStart}, 'HH24:MI'), 
+        bucksEnd = TO_DATE(#{bucksEnd}, 'HH24:MI')
+		WHERE bucksId = #{bucksId} </update>
 			
 		<!--  지점 탈퇴  -->
 		<update id="deleteBucks" parameterType="String">
@@ -104,29 +110,31 @@
 			    
     
  <!-- Sales -->
- 		<!-- 벅스이름 select -->
+ 		<!-- 벅스이름 select
  		<select id="selectBucksName" resultType="BucksDTO">
  		 	select bucksName,bucksId from javabucks_bucks ORDER BY bucksName ASC
  		
- 		</select>
+ 		</select> -->
  		
  		<select id="selectBaljoo" resultType="BaljooDTO">
 			SELECT
-			    b.bucksId AS bucksId,
-			    b.bucksName AS bucksName,
-			    TO_CHAR(jb.baljooDate, 'YYYY-MM') AS baljooMonth,
-			    COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
-			FROM
-			    javabucks_bucks b
-			LEFT JOIN
-			    javabucks_baljoo jb ON b.bucksId = jb.bucksId
-			    AND TO_CHAR(jb.baljooDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
-			    AND TO_CHAR(jb.baljooDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
-			GROUP BY
-			    b.bucksId,
-			    b.bucksName,
-			    TO_CHAR(jb.baljooDate, 'YYYY-MM')
-			ORDER BY bucksName ASC
+        b.bucksId AS bucksId,
+        b.bucksName AS bucksName,
+        TO_CHAR(jb.baljooDate, 'YYYY-MM') AS baljooMonth,
+        COALESCE(SUM(jb.baljooPrice), 0) AS totalOrderAmount
+    FROM
+        javabucks_bucks b
+    LEFT JOIN
+        javabucks_baljoo jb ON b.bucksId = jb.bucksId
+        AND TO_CHAR(jb.baljooDate, 'MM') = TO_CHAR(SYSDATE, 'MM')
+        AND TO_CHAR(jb.baljooDate, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+        AND jb.baljooStatus = '접수완료'
+    GROUP BY
+        b.bucksId,
+        b.bucksName,
+        TO_CHAR(jb.baljooDate, 'YYYY-MM')
+    ORDER BY 
+        bucksName ASC
  		</select>
  		
 		
@@ -145,6 +153,7 @@
 		    ON 
 		        jbu.bucksId = jb.bucksId 
 		        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{baljooDate}
+		        AND jb.baljooStatus = '접수완료'
 		    WHERE 
 		        (#{bucksName} IS NULL OR #{bucksName} = '' OR jbu.bucksName LIKE '%' || #{bucksName} || '%')
 		    GROUP BY 
@@ -167,6 +176,7 @@
 	    WHERE 
 	        jb.bucksId = #{bucksId}  -- 특정 발주 테이블 ID에 해당하는 레코드를 선택
 	        AND TO_CHAR(jb.baljooDate, 'YYYY-MM') = #{baljooDate}
+	        AND jb.baljooStatus = '접수완료'
 	    </select>
 	    
 	    
@@ -269,7 +279,7 @@
 	<!--  daily Sales  -->
 		<select id="dailyBucksSales" resultType="PayhistoryDTO">
 		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
-		p.payhistoryPrice AS payhistoryPrice, p.bucksId, o.orderCode AS orderCode, o.orderList 
+		p.payhistoryPrice AS payhistoryPrice, p.bucksId, p.cpnListNum, o.orderCode AS orderCode, o.orderList 
 		AS orderList, b.bucksName AS branchName, b.bucksOwner 
 		FROM javabucks_payhistory p 
 		JOIN javabucks_order o 
@@ -283,18 +293,19 @@
 		
 		<select id="searchDailySales" parameterType="map" resultType="PayhistoryDTO">
 		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
-		p.payhistoryPrice AS payhistoryPrice, p.bucksId, o.orderCode 
-		AS orderCode, o.orderList 
-		AS orderList, b.bucksName 
-		AS branchName, b.bucksOwner 
-		FROM javabucks_payhistory p 
-		JOIN javabucks_order o 
-		ON p.orderCode = o.orderCode 
-		JOIN javabucks_bucks b 
-		ON p.bucksId = b.bucksId 
-		WHERE TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
-		AND b.bucksName LIKE '%' || #{bucksName} || '%'
-		 ORDER BY p.payhistoryDate DESC, b.bucksName
+           p.payhistoryPrice AS payhistoryPrice, 
+           p.bucksId, 
+           p.cpnListNum, 
+           o.orderCode AS orderCode, 
+           o.orderList AS orderList, 
+           b.bucksName AS branchName, 
+           b.bucksOwner 
+    FROM javabucks_payhistory p 
+    JOIN javabucks_order o ON p.orderCode = o.orderCode 
+    JOIN javabucks_bucks b ON p.bucksId = b.bucksId 
+    WHERE (TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN COALESCE(#{startDate}, '1900-01-01') AND COALESCE(#{endDate}, TO_CHAR(SYSDATE, 'YYYY-MM-DD')))
+      AND b.bucksName LIKE '%' || #{bucksName} || '%'
+    ORDER BY p.payhistoryDate DESC, b.bucksName
 		</select>
 		
   </mapper>

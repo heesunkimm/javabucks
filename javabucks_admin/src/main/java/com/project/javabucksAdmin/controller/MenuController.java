@@ -5,15 +5,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.javabucksAdmin.dto.MenuDTO;
+import com.project.javabucksAdmin.dto.OrderDTO;
 import com.project.javabucksAdmin.mapper.MenuMapper;
 import com.project.javabucksAdmin.util.FileNameUtils;
 
@@ -121,19 +118,20 @@ public class MenuController {
 	    String menuCate = (String) params.get("menu_cate");
 	    String menuBase = (String) params.get("menu_base");
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuCate = (menuCate == null || menuCate.isEmpty()) ? "" : menuCate;
 	    menuBase = (menuBase == null || menuBase.isEmpty()) ? "" : menuBase;
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menu_cate", menuCate);
 	    searchParams.put("menu_base", menuBase);
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchDrinkCount(searchParams); // 검색결과별 리스트 수
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -182,15 +180,16 @@ public class MenuController {
 		
 		// 검색 필터가 null or ""일 경우 기본값 설정
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchDessertCount(searchParams);
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -239,15 +238,16 @@ public class MenuController {
 		
 		// 검색 필터가 null or ""일 경우 기본값 설정
 	    String menuName = (String) params.get("menuName");
-	    String menuEnable = (String) params.get("menuEnable");
+	    String menuStatus = (String) params.get("menuStatus");
 	    
 	    menuName = (menuName == null || menuName.isEmpty()) ? "" : menuName;
-	    menuEnable = (menuEnable == null || menuEnable.isEmpty()) ? "N" : "Y";
+	    menuStatus = (menuStatus == null || menuStatus.isEmpty()) ? "N" : "Y";
 	    
 	    // 검색 조건을 포함한 매퍼 호출
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("menuName", menuName);
-	    searchParams.put("menuEnable", menuEnable);
+	    searchParams.put("menuEnable", "Y");
+	    searchParams.put("menuStatus", menuStatus);
 	    
 	    int searchCount = menuMapper.searchMdCount(searchParams);
 	    int pageSize = 10; // 한 페이지의 보여줄 리스트 갯수
@@ -339,11 +339,6 @@ public class MenuController {
 		int res = menuMapper.editMenu(dto);
 		return "redirect:/" + redirectUrl;
 	}
-	// 메뉴삭제 공동 메소드
-    private String deleteMenu(String menuCode, String redirectUrl) {
-        int res = menuMapper.delMenu(menuCode);
-        return "redirect:/" + redirectUrl;
-    }
 	
 	// 음료 수정/삭제 페이지
     @RequestMapping("/admin_editdrink")
@@ -356,10 +351,47 @@ public class MenuController {
                             @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_drinklist");
     }
+    
     // 음료 삭제
-    @PostMapping("/admin_delDrink")
-    public String delDrink(String menuCode) {
-        return deleteMenu(menuCode, "admin_drinklist");
+    @PostMapping("/delDrink.ajax")
+    @ResponseBody
+    public String delDrink(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
+        
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
     }
 
     // 디저트 수정/삭제 페이지
@@ -373,12 +405,49 @@ public class MenuController {
                               @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_dessertlist");
     }
+    
     // 디저트 삭제
-    @PostMapping("/admin_delDessert")
-    public String delDessert(String menuCode) {
-        return deleteMenu(menuCode, "admin_dessertlist");
-    }
+    @PostMapping("/delDessert.ajax")
+    @ResponseBody
+    public String delDessert(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
 
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
+    }
+    
     // MD 수정/삭제 페이지
     @RequestMapping("/admin_editmd")
     public String editMdCont(HttpServletRequest req, @RequestParam String menuCode) {
@@ -390,9 +459,45 @@ public class MenuController {
                          @RequestPart(value = "uploadImages", required = false) MultipartFile uploadImages) throws IOException {
         return MenuEdit(req, dto, uploadImages, "admin_mdlist");
     }
-    // MD 삭제
-    @PostMapping("/admin_delMd")
-    public String delMd(String menuCode) {
-        return deleteMenu(menuCode, "admin_mdlist");
+//    // MD 삭제
+    @PostMapping("/delMd.ajax")
+    @ResponseBody
+    public String delMd(@RequestBody Map<String, Object> params) {
+        String menuCode = (String) params.get("menuCode");
+        
+        // 주문완료/제조중 상태 주문내역 확인
+	    List<OrderDTO> orderCheck = menuMapper.OrderCheck(params);
+	    
+	    if (orderCheck != null) {
+	        // 주문 목록에서 메뉴 코드 확인
+	        for (OrderDTO orderDTO : orderCheck) {
+	            try {
+	            	// JSON 문자열을 List<String>으로 변환
+	                List<String> orderList = orderDTO.getOrderListtoStringList();
+	                
+	                for (String orderItem : orderList) {
+	                    String[] str = orderItem.split(":"); // ":"로 문자열을 분리
+	                    String orderMenuCode = str[0];
+	                    
+	                    // 현재 메뉴 코드와 일치하는지 확인
+	                    if (orderMenuCode.equals(menuCode)) {
+	                        return "현재 지점에서 주문중 or 주문완료 상태인 메뉴로 삭제할 수 없습니다.";
+	                    }
+	                }
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return "주문 내역 처리 중 오류가 발생했습니다.";
+	            }
+	        }
+	    }
+
+        // 주문 상태 확인 후 메뉴 삭제
+        int res = menuMapper.delMenu(menuCode);
+        
+        if (res > 0) {
+            return "해당 메뉴가 삭제되었습니다.";
+        } else {
+            return "메뉴 메뉴삭제에 실패하였습니다.";
+        }
     }
 }

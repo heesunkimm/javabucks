@@ -31,6 +31,10 @@ public class CouponMapper {
 	public CouponDTO cpnCheck(CouponDTO dto) {
 		return sqlSession.selectOne("cpnCheck", dto);
 	}
+	// 삭제 전 유저에게 발급된 쿠폰이 있는지 확인
+	public CouponListDTO userCpnCheck(String cpnCode) {
+		return sqlSession.selectOne("userCpnCheck", cpnCode);
+	}
 	// 쿠폰 삭제
 	public int deleteCoupon(String cpnCode) {
 		return sqlSession.delete("deleteCoupon", cpnCode);
@@ -51,7 +55,7 @@ public class CouponMapper {
 	public CouponListDTO todayCpnCheck(Map<String, Object> params) {
 		return sqlSession.selectOne("todayCpnCheck", params);
 	}
-	// 특정 유저에게 쿠폰 등록
+	// 특정 유저에게 쿠폰 전송
 	public int sendUserCoupon(Map<String, Object> params) {
 		return sqlSession.insert("toUserCoupon", params);
 	}

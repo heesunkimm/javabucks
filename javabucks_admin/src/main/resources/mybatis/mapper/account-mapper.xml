@@ -19,74 +19,46 @@
 	<!-- 관리자 검색 쿼리 -->
     <select id="searchAdminList" parameterType="map" resultType="AdminDTO">
         SELECT * FROM (
-            SELECT 
-                ROWNUM AS rnum,
-                a.*
-            FROM (
-                SELECT 
-                    adminId,
-                    adminPasswd,
-                    adminEmail,
-                    adminAuthority,
-                    adminJoindate,
-                    adminEnable
-                FROM 
-                    javabucks_admin
-                WHERE 
-                    1 = 1
-                    <if test="adminId != null and adminId != ''">
-                        AND adminId LIKE '%' || #{adminId} || '%'
-                    </if>
-                    <if test="adminEmail != null and adminEmail != ''">
-                        AND adminEmail LIKE '%' || #{adminEmail} || '%'
-                    </if>
-                    <if test="authority != null and authority != ''">
-                        AND adminAuthority = #{authority}
-                    </if>
-                    <if test="enable != null and enable != ''">
-                        AND adminEnable = #{enable}
-                    </if>
-                    <if test="startDate != null and startDate != ''">
-                        AND adminJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-                    </if>
-                    <if test="endDate != null and endDate != ''">
-                        AND adminJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-                    </if>
-                ORDER BY 
-                    adminJoindate DESC
-            ) a
-            WHERE 
-                ROWNUM &lt;= #{endIndex}
-        ) 
+    SELECT 
+        ROWNUM AS rnum,
+        a.*
+    FROM (
+        SELECT 
+            adminId,
+            adminPasswd,
+            adminEmail,
+            adminAuthority,
+            adminJoindate,
+            adminEnable
+        FROM 
+            javabucks_admin
         WHERE 
-            rnum &gt;= #{startIndex}
+            adminId LIKE '%' || COALESCE(#{adminId}, '') || '%'
+            AND COALESCE(adminAuthority, '') LIKE '%' || #{authority} || '%'
+            AND COALESCE(adminEnable, '') LIKE '%' || #{enable} || '%'
+            AND adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
+                                 AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE)
+        ORDER BY 
+            adminJoindate DESC, adminId ASC
+    ) a
+    WHERE 
+        ROWNUM &lt;= #{endIndex}
+) 
+WHERE 
+    rnum &gt;= #{startIndex}
     </select>
 
     <!-- 관리자 총 카운트 쿼리 -->
     <select id="searchAdminCount" parameterType="map" resultType="int">
         SELECT COUNT(*)
-        FROM javabucks_admin
-        WHERE 
-            1 = 1
-            <if test="adminId != null and adminId != ''">
-                AND adminId LIKE '%' || #{adminId} || '%'
-            </if>
-            <if test="adminEmail != null and adminEmail != ''">
-                AND adminEmail LIKE '%' || #{adminEmail} || '%'
-            </if>
-            <if test="authority != null and authority != ''">
-                AND adminAuthority = #{authority}
-            </if>
-            <if test="enable != null and enable != ''">
-                AND adminEnable = #{enable}
-            </if>
-            <if test="startDate != null and startDate != ''">
-                AND adminJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-            </if>
-            <if test="endDate != null andAND endDate != ''">
-                AND adminJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-            </if>
-            AND adminId = #{adminId}
+FROM javabucks_admin
+WHERE 
+    (#{adminId} IS NULL OR #{adminId} = '' OR adminId LIKE '%' || #{adminId} || '%')
+    AND (#{authority} IS NULL OR #{authority} = '' OR adminAuthority = #{authority})
+    AND (#{enable} IS NULL OR #{enable} = '' OR adminEnable = #{enable})
+    AND (adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
+                         AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE))
+            
     </select>
     
     
@@ -206,83 +178,57 @@
 		<!-- user 검색 쿼리 -->
     <select id="searchUserList" parameterType="map" resultType="UserDTO">
         SELECT * FROM (
+    SELECT 
+        ROWNUM AS rnum,
+        a.*
+    FROM (
         SELECT 
-            ROWNUM AS rnum,
-            a.*
-        FROM (
-            SELECT 
-                userId,
-                userPasswd,
-                userName,
-                userNickname,
-                userGender,
-                userBirth,
-                userEmail1,
-                userEmail2,
-                userTel1,
-                userTel2,
-                userTel3,
-                gradeCode,
-                userGradedate,
-                userJoindate,
-                userEnable,
-                userFrequencyCount
-            FROM 
-                javabucks_user
-            WHERE 
-                1 = 1
-                <if test="userId != null and userId != ''">
-                    AND userId LIKE '%' || #{userId} || '%'
-                </if>
-                <if test="userNickname != null and userNickname != ''">
-                    AND userNickname LIKE '%' || #{userNickname} || '%'
-                </if>
-                <if test="gradeCode != null and gradeCode != ''">
-                    AND gradeCode = #{gradeCode}
-                </if>
-                <if test="enable != null and enable != ''">
-                    AND userEnable = #{enable}
-                </if>
-                <if test="startDate != null and startDate != ''">
-                    AND userJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-                </if>
-                <if test="endDate != null and endDate != ''">
-                    AND userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-                </if>
-            ORDER BY 
-                userJoindate DESC
-        ) a
+            userId,
+            userPasswd,
+            userName,
+            userNickname,
+            userGender,
+            userBirth,
+            userEmail1,
+            userEmail2,
+            userTel1,
+            userTel2,
+            userTel3,
+            gradeCode,
+            userGradedate,
+            userJoindate,
+            userEnable,
+            userFrequencyCount
+        FROM 
+            javabucks_user
         WHERE 
-            ROWNUM &lt;= #{endIndex}
-    ) 
+            userId LIKE '%' || COALESCE(#{userId}, '') || '%'
+            AND userNickname LIKE '%' || COALESCE(#{userNickname}, '') || '%'
+            AND gradeCode = COALESCE(#{gradeCode}, gradeCode)
+            AND userEnable = COALESCE(#{enable}, userEnable)
+            AND (COALESCE(#{startDate}, '') = '' OR userJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
+            AND (COALESCE(#{endDate}, '') = '' OR userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
+        ORDER BY 
+            userJoindate DESC
+    ) a
     WHERE 
-        rnum &gt;= #{startIndex}
+        ROWNUM &lt;= #{endIndex}
+) 
+WHERE 
+    rnum &gt;= #{startIndex}
     </select>
 
     <!-- user 총 카운트 쿼리 -->
     <select id="searchUserCount" parameterType="map" resultType="int">
         SELECT COUNT(*)
-    FROM javabucks_user
-    WHERE 
-        1 = 1
-        <if test="userId != null and userId != ''">
-            AND userId LIKE '%' || #{userId} || '%'
-        </if>
-        <if test="userNickname != null and userNickname != ''">
-            AND userNickname LIKE '%' || #{userNickname} || '%'
-        </if>
-        <if test="gradeCode != null and gradeCode != ''">
-            AND gradeCode = #{gradeCode}
-        </if>
-        <if test="enable != null and enable != ''">
-            AND userEnable = #{enable}
-        </if>
-        <if test="startDate != null and startDate != ''">
-            AND userJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-        </if>
-        <if test="endDate != null and endDate != ''">
-            AND userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-        </if>
+FROM javabucks_user
+WHERE 
+    userId LIKE '%' || COALESCE(#{userId}, '') || '%'
+    AND userNickname LIKE '%' || COALESCE(#{userNickname}, '') || '%'
+    AND gradeCode = COALESCE(#{gradeCode}, gradeCode)
+    AND userEnable = COALESCE(#{enable}, userEnable)
+    AND userJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
+                        AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE)
     </select>
 		
 		

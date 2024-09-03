@@ -17,6 +17,11 @@
   	<select id="cpnCheck" parameterType="CouponDTO" resultType="CouponDTO">
   		select * from javabucks_coupon where cpnName = #{cpnName} or cpnCode = #{cpnCode}
   	</select>
+  	
+  	<!-- 삭제 전 유저에게 발급된 쿠폰이 있는지 확인 -->
+  	<select id="userCpnCheck" parameterType="String" resultType="CouponListDTO">
+  		select * from javabucks_couponList where cpnCode = #{cpnCode}
+  	</select>
   		
   	<!-- 쿠폰 삭제 -->
   	<delete id="deleteCoupon" parameterType="String">
@@ -37,6 +42,7 @@
   	<insert id="toUserCoupon" parameterType="CouponListDTO">
   		insert into javabucks_couponList (cpnListNum, cpnCode, userId, cpnListStatus, cpnListStartDate, cpnListEndDate, cpnListUseDate) values (seq_cpnListNum.nextval, #{cpnCode}, #{userId}, default, sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
   	</insert>
+  	
   	<!-- 유저에게 하나의 쿠폰이 같은 날 중복발급 안되게 체크 -->
   	<select id="todayCpnCheck" parameterType="java.util.Map" resultType="CouponListDTO">
   		select * from javabucks_couponList cl 

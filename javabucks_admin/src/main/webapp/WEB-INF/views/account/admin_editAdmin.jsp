@@ -25,12 +25,7 @@
                             <label><span>지점이메일</span>
                                 <input type="text" name="adminEmail1" value="${adminEmail1}" >
                             </label>
-                            <select name="adminEmail2">
-                                <option value="naver.com">@naver.com</option>
-                                <option value="nate.com">@nate.com</option>
-                                <option value="gmail.com">@gmail.com</option>
-                            </select>
-                            
+                            <input type="text" name="adminEmail2" value="@javabucks.com" required>
                             <button type="button" style="margin-top: 0;" onclick="checkAdminEmail()">중복확인</button>
                         </div>
                     </div>
@@ -49,9 +44,9 @@
  // 이메일 중복 확인 
  function checkAdminEmail() {
      var email1 = document.querySelector('input[name="adminEmail1"]').value;
-     var email2 = document.querySelector('select[name="adminEmail2"]').value;
+     var email2 = document.querySelector('input[name="adminEmail2"]').value;
      var adminId = document.querySelector('input[name="adminId"]').value;
-     var email = email1 + "@" + email2;
+     var email = email1 + email2;
 
      // AJAX 요청 생성
      var xhr = new XMLHttpRequest();

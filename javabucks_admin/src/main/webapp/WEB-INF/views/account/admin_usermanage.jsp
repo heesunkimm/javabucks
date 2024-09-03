@@ -31,6 +31,7 @@
                         </label>
                         <label>등급
                             <select name="gradeCode">
+                            	<option value="">전체</option>
                                 <option value="welcome">Welcome</option>
                                 <option value="green">Green</option>
                                 <option value="gold">Gold</option>
@@ -106,16 +107,19 @@
                     <c:set var="startPage" value="${1}"/>
 					<c:set var="endPage" value="${3}"/>
 					
-					<!-- 마지막 페이지일 때, startPage와 endPage 조정 -->
-					<c:if test="${currentPage == pageCount}">
-					    <c:set var="startPage" value="${pageCount - 1}"/>
+					<c:if test="${currentPage > endPage}">
+					    <c:set var="startPage" value="${currentPage}"/>
+					    <c:set var="endPage" value="${currentPage + 2}"/>
+					</c:if>
+					
+					<c:if test="${endPage > pageCount}">
 					    <c:set var="endPage" value="${pageCount}"/>
 					</c:if>
 					
 					<div class="pagination">
 					    <c:if test="${startPage > 1}">
-					        <a class="page_btn prev_btn" href="?page=${startPage-1}">
-					           <img src="../../images/icons/arrow.png">
+					        <a class="page_btn prev_btn" href="?page=${startPage - 1}">
+					            <img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
 					
@@ -131,7 +135,7 @@
 					    </c:forEach>
 					
 					    <c:if test="${endPage < pageCount}">
-					        <a class="page_btn next_btn" href="?page=${endPage+1}">
+					        <a class="page_btn next_btn" href="?page=${startPage+3}">
 					            <img src="../../images/icons/arrow.png">
 					        </a>
 					    </c:if>
@@ -208,26 +212,37 @@ $(document).ready(function() {
         }
 
         // 페이지네이션을 업데이트
-        updatePagination(response);
+        updatePagination(response.currentPage, response.pageCount);
     }
 
-    // 페이지네이션을 업데이트하는 함수
-    function updatePagination(response) {
-        var $pagination = $('.pagination');
-        $pagination.empty();
+    function updatePagination(currentPage, pageCount) {
+        $('.pagination').empty(); // 기존 페이지네이션을 비움
 
-        if (response && response.pageCount > 1) {
-            for (var i = 1; i <= response.pageCount; i++) {
-                var pageHtml = '<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>';
-                $pagination.append(pageHtml);
-            }
+        let startPage = currentPage <= 2 ? 1 : (currentPage % 3 === 0 ? currentPage - 2 : (currentPage - (currentPage % 3) + 1));
+        let endPage = startPage + 2 > pageCount ? pageCount : startPage + 2;
 
-            // 페이지 클릭 이벤트 추가
-            $('.page-link').on('click', function() {
-                var page = $(this).data('page');
-                fetchPageData(page);
-            });
+        if (startPage > 1) {
+            $('.pagination').append('<a class="page_btn prev_btn" href="#" data-page="' + (startPage - 1) + '"><img src="../../images/icons/arrow.png"></a>');
         }
+
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                $('.pagination').append('<a href="#" class="page_active" data-page="' + i + '">' + i + '</a>');
+            } else {
+                $('.pagination').append('<a href="#" class="page" data-page="' + i + '">' + i + '</a>');
+            }
+        }
+
+        if (endPage < pageCount) {
+            $('.pagination').append('<a class="page_btn next_btn" href="#" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+        }
+
+        // 페이징 버튼 클릭 이벤트 핸들러 설정
+        $('.pagination a').on('click', function(event) {
+            event.preventDefault();
+            let page = $(this).data('page');
+            fetchPageData(page); // 클릭한 페이지로 데이터를 다시 로드
+        });
     }
 });
 

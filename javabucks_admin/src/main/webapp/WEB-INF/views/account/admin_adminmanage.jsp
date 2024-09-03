@@ -26,19 +26,7 @@
                         <label>아이디
                             <input type="text" name="userId" value="">
                         </label>
-                        <div class="email_box">
-                            <label>이메일
-                                <input type="text" name="adminEmail1" value="">
-                            </label>
-                            @
-                            <label>
-                                <select name="adminEmail2">
-                                    <option value="">naver.com</option>
-                                    <option value="">nate.com</option>
-                                    <option value="">gmail.com</option>
-                                </select>
-                            </label>
-                        </div>
+                        
                         <label>권한
                             <select name="authority">
                                 <option value="Normal">기본권한</option>
@@ -109,39 +97,43 @@
                        
                     </table>
                     <!-- 페이징 -->
-                    <c:set var="startPage" value="${1}"/>
-					<c:set var="endPage" value="${3}"/>
-					
-					<!-- 마지막 페이지일 때, startPage와 endPage 조정 -->
-					<c:if test="${currentPage == pageCount}">
-					    <c:set var="startPage" value="${pageCount - 1}"/>
-					    <c:set var="endPage" value="${pageCount}"/>
-					</c:if>
-					
-					<div class="pagination">
-					    <c:if test="${startPage > 1}">
-					        <a class="page_btn prev_btn" href="?page=${startPage-1}">
-					           <img src="../../images/icons/arrow.png">
-					        </a>
-					    </c:if>
-					
-					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-					        <c:choose>
-					            <c:when test="${i == currentPage}">
-					                <a href="?page=${i}" class="page_active">${i}</a>
-					            </c:when>
-					            <c:otherwise>
-					                <a href="?page=${i}" class="page">${i}</a>
-					            </c:otherwise>
-					        </c:choose>
-					    </c:forEach>
-					
-					    <c:if test="${endPage < pageCount}">
-					        <a class="page_btn next_btn" href="?page=${endPage+1}">
-					            <img src="../../images/icons/arrow.png">
-					        </a>
-					    </c:if>
-					</div>
+                  <c:set var="startPage" value="${1}"/>  
+				<c:set var="endPage" value="${3}"/>
+				
+				<c:if test="${currentPage > endPage}">
+				    <c:set var="startPage" value="${currentPage}"/>
+				    <c:set var="endPage" value="${currentPage + 2}"/>
+				</c:if>
+				
+				<c:if test="${endPage > pageCount}">
+				    <c:set var="endPage" value="${pageCount}"/>
+				</c:if>
+				
+				<div class="pagination">
+				    <c:if test="${startPage > 1}">
+				        <a class="page_btn prev_btn" href="?page=${startPage - 1}">
+				            <img src="../../images/icons/arrow.png">
+				        </a>
+				    </c:if>
+				
+				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+				        <c:choose>
+				            <c:when test="${i == currentPage}">
+				                <a href="?page=${i}" class="page_active">${i}</a>
+				            </c:when>
+				            <c:otherwise>
+				                <a href="?page=${i}" class="page">${i}</a>
+				            </c:otherwise>
+				        </c:choose>
+				    </c:forEach>
+				
+				    <c:if test="${endPage < pageCount}">
+				        <a class="page_btn next_btn" href="?page=${startPage+3}">
+				            <img src="../../images/icons/arrow.png">
+				        </a>
+				    </c:if>
+				</div>
+					<!-- e:페이징 -->
                 </div>
             </div>
         </div>
@@ -221,22 +213,46 @@ $(document).ready(function() {
 
     // 페이지네이션을 업데이트하는 함수
     function updatePagination(response) {
-        var $pagination = $('.pagination');
-        $pagination.empty();
+    var $pagination = $('.pagination');
+    $pagination.empty();
 
-        if (response && response.pageCount > 1) {
-            for (var i = 1; i <= response.pageCount; i++) {
-                var pageHtml = '<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>';
-                $pagination.append(pageHtml);
-            }
+    if (response && response.pageCount > 1) {
+        var currentPage = response.currentPage || 1;
+        var totalPages = response.pageCount;
+        var startPage = Math.floor((currentPage - 1) / 3) * 3 + 1;
+        var endPage = Math.min(startPage + 2, totalPages);
 
-            // 페이지 클릭 이벤트 추가
-            $('.page-link').on('click', function() {
-                var page = $(this).data('page');
-                fetchPageData(page);
-            });
+        // 이전 페이지 버튼
+        if (startPage > 1) {
+            $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
         }
+
+        // 페이지 번호 링크 생성
+        for (var i = startPage; i <= endPage; i++) {
+            if (i == currentPage) {
+                $pagination.append('<a href="javascript:;" class="page_active" data-page="' + i + '">' + i + '</a>');
+            } else {
+                $pagination.append('<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>');
+            }
+        }
+
+        // 다음 페이지 버튼
+        if (endPage < totalPages) {
+            $pagination.append('<a class="page_btn next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+        }
+
+        // 페이지 클릭 이벤트 추가
+        $('.page-link').on('click', function() {
+            var page = $(this).data('page');
+            fetchPageData(page);
+        });
+
+        $('.prev_btn, .next_btn').on('click', function() {
+            var page = $(this).data('page');
+            fetchPageData(page);
+        });
     }
+}
 });
 
 

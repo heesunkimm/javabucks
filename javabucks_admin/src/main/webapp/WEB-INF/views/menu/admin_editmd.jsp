@@ -41,7 +41,7 @@
                     </div>
                     <div class="btn_box">
                         <button class="add_btn" type="button" onclick="contCheck()">메뉴수정</button>
-                        <button class="del_btn" type="button" onclick="delMenu()">메뉴삭제</button>
+                        <button class="del_btn" type="button">메뉴삭제</button>
                     </div>
                 </form>
             </div>
@@ -99,42 +99,32 @@
 	        }
 	    });
 	    
-	    // 메뉴가격 입력 이벤트
-	    /* $('input[name="menuPrice"]').on('input', function() {
-	        // 입력값에서 숫자만 남기고 제거
-	        let value = $(this).val().replace(/[^\d]/g, '');
+		// 메뉴삭제 (상태업데이트)		
+		$(".del_btn").on('click', function() {
+			let menuCode = $("input[name='menuCode']").val();
 
-	        // 3자리마다 , 표시
-	        if (value) {
-	            value = parseInt(value, 10).toLocaleString('en-US');
-	        }
-	        $(this).val(value);
-	    }); */
-	    // 데이터 전송시 , 제거
-	    /* $('#admin_editdessert form').on('submit', function(event) {
-	        $('input[name="menuPrice"]').val(function(i, value) {
-	            return value.replace(/,/g, '');
-	        });
-	    }); */
-	    
-	    function delMenu() {
-	        if (confirm('메뉴를 삭제하시겠습니까?')) {
-	            let menuCode = $("input[name='menuCode']").val();
-
-	            let $form = $('<form>', {
-	                method: 'post',
-	                action: 'admin_delMd'
-	            });
-
-	            let $input = $('<input>', {
-	                type: 'hidden',
-	                name: 'menuCode',
-	                value: menuCode
-	            });
-
-	            $form.append($input);
-	            $form.appendTo('body').submit();
-	        }
-	    }
+		    let data = {
+		        menuCode: menuCode
+		    };
+			
+			$.ajax({
+		        url: '${pageContext.request.contextPath}/delMd.ajax',
+		        type: "POST",
+		        data: JSON.stringify(data),
+		        contentType: "application/json",
+		        dataType: "text",
+		        success: function (res) {
+					if(res == "해당 메뉴가 삭제되었습니다.") {
+						alert(res);
+						window.location.href = '/admin_mdlist';
+					}else {
+						alert(res);
+					}
+		        },
+		        error: function (xhr, status, err) {
+		            console.error('AJAX 요청 실패:', status, err);
+		        }
+		    });
+		});
     </script>
 <jsp:include page="../admin_bottom.jsp"/>
