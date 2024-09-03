@@ -18,7 +18,7 @@
     <section id="user_orderhistory" class="content">
         <div class="inner_wrap">
             <div class="tit_box">
-                <p class="font_bold">매장 & TO-GO 주문 히스토리</p>
+                <p class="font_bold">매장 주문 히스토리</p>
             </div>
             <div class="period_box">
             	<form id="orderHistoryForm" method="post" action="updateOrderHistory.do" onsubmit="setSearchPeriod()">
@@ -64,7 +64,7 @@
 		                        <img src="../images/logo/starbucks_logo_black.png" alt="">
 		                    </div>
 		                    <div class="txt_box">
-		                    	[${order.orderType}]
+		                    	[${order.orderType}] - ${order.orderStatus}
 		                    	<c:forEach var="menu" items="${order.orderListbyMenuOrder}" varStatus="status">
 		                        	<c:if test="${status.first}">
         								<p class="txt_tit">${menu.menuName} 외</p>
