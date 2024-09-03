@@ -255,18 +255,22 @@
 	
 	<select id="getOptPrice" parameterType="String" resultType="int">
 	    SELECT
-	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
-	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
-	    FROM
-	        javabucks_order_opt o
-	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
-	    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
-	    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
-	    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
-	    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
-	    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
-	    WHERE
-	        o.optId = #{optionId}
+        NVL(i.icePrice, 0) + 
+        NVL(w.whipPrice, 0) + 
+        NVL(m.milkPrice, 0) + 
+        NVL(c.cupPrice, 0) + 
+        NVL(s.shotPrice * o.optShotCount, 0) +  -- shotNum의 가격과 optShotCount를 곱한 값
+        NVL(sr.syrupPrice, 0) AS optionPrice
+    FROM
+        javabucks_order_opt o
+    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
+    LEFT JOIN javabucks_menuopt_whip w ON o.whipNum = w.whipNum
+    LEFT JOIN javabucks_menuopt_milk m ON o.milkNum = m.milkNum
+    LEFT JOIN javabucks_menuopt_cup c ON o.cupNum = c.cupNum
+    LEFT JOIN javabucks_menuopt_shot s ON o.shotNum = s.shotNum
+    LEFT JOIN javabucks_menuopt_syrup sr ON o.syrupNum = sr.syrupNum
+    WHERE
+        o.optId = #{optionId}
 	</select>
 	
 	<select id="getCouponPrice" parameterType="int" resultType="int">
