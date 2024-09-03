@@ -422,6 +422,7 @@
  		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료'
  		ORDER by cpnListStartDate desc
  	</select>
+ 	
  	<select id="getBucksinfoById" resultType="BucksDTO">
  		SELECT *
  		FROM javabucks_bucks
@@ -448,6 +449,20 @@
 	     )
  	</select>
  	
+<!-- 	<select id="getStoreListByMenuCode"  parameterType="map" resultType="BucksDTO"> -->
+<!-- 		 SELECT jb.*-->
+<!--	     FROM javabucks_bucks jb join javabucks_storemenu js-->
+<!--	     ON jb.bucksId = js.bucksId-->
+<!--	     WHERE bucksEnable = 'Y'-->
+<!--	     AND (-->
+<!--	       <foreach item="term" collection="list" open="(" separator=" AND " close=")">-->
+<!--	           (jb.bucksName LIKE '%' || #{term} || '%' -->
+<!--	           OR jb.bucksLocation LIKE '%' || #{term} || '%')-->
+<!--	       </foreach>-->
+<!--	     )-->
+<!--	     AND js.menuCode = #{menuCode}-->
+<!-- 	</select>-->
+ 	
  	<!-- bucksid로 주문가능 여부 조회 -->
  	<select id="getOrderEnableBybucksId" parameterType="String" resultType="String">
  		SELECT orderEnable
@@ -455,7 +470,7 @@
  		WHERE bucksID = #{bucksId}
  	</select>
  	 		
- 	<select id="getStoreDrinkList"  parameterType="String" resultType="MenuDTO"> 
+ 	<select id="getStoreDrinkList" parameterType="String" resultType="MenuDTO"> 
  		 SELECT jm.*  
    		 FROM javabucks_storemenu js 
    		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
@@ -463,6 +478,12 @@
    		 WHERE jb.bucksName = #{storeName} 
    		 AND jm.menuCode LIKE 'B%'
    		 AND jm.menuEnable = 'Y' 
+ 	</select>
+ 	
+ 	<select id="getMenuOptCode" parameterType="String" resultType="String"> 
+ 		 SELECT menuoptCode 
+   		 FROM javabucks_menu
+   		 WHERE menuCode = #{menuCode}
  	</select>
  	
  	<select id="getMenuStatus"  parameterType="java.util.Map" resultType="String"> 
@@ -819,6 +840,5 @@
         	</if>
  		order by A.orderDate desc
  	</select>
- 	
  	
  </mapper>

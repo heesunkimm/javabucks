@@ -193,14 +193,12 @@ public class UserController {
 				}	
 				
 			}else {
-//				String date = userDTO.getUserGradedate();
 				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
 				
 				// 업그레이드 이후 적립된 별 갯수 합
 				for(FrequencyDTO fdt : frqDTO) {
 					
 					tot += fdt.getFrequencyCount();
-					System.out.println("1 :   "+ fdt.getFrequencyCount());
 				}
 				// 남은 별 + 업그레이드 이후 적립한 별
 				// nowStar 진짜 현재 갯수(초과된 별 갯수 + 쌓은 별 갯수) 
@@ -208,7 +206,6 @@ public class UserController {
 				// 다음 등급 위해 필요한 갯수
 				nextGrade = 30 - nowStar;
 				
-				System.out.println("2 :   "+ nowStar);
 				if(nowStar >= 30) {
 					// updateCount 초과된 별 저장
 					updateCount = nowStar - 30;
@@ -239,14 +236,6 @@ public class UserController {
 					req.setAttribute("until", "next Reward");
 					req.setAttribute("progress_bar", gage);
 				}
-				
-				
-				
-//				UserDTO tt = userMapper.getInfoById(userId);
-				// 별이 일정갯수보다 많으면 알아서 업그레이드!
-//				String gradedate = tt.getUserGradedate();
-				// 날짜가 동일하다? 등급 안올랐다는 소리
-				
 			}
 
 		req.getSession().setAttribute("inUser", udto);
@@ -345,11 +334,32 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_menudetail")
-	public String menudetail(HttpServletRequest req, @RequestParam Map<String, String> params) {
-
-		// 메뉴코드로 메뉴정보 꺼내오기
+	public String menudetail(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
+		
+		// 메뉴코드로 메뉴정보 꺼내오기 
 		String menuCode = params.get("menuCode");
-		String menuoptCode = params.get("menuoptCode");
+		String menuoptCode;
+		// order페이지에서 넘어왔는지
+		if("origin".equals(params.get("mode"))) {
+			menuoptCode = params.get("menuoptCode");
+		// mymenu에서 넘어왔는지	
+		}else {
+			menuoptCode = userMapper.getMenuOptCode(menuCode);
+			if(menuCode.startsWith("B")) {
+				params.put("menuCode", menuCode);
+				params.put("drink", "drink");
+			}
+		}
+		
+		// mymenu에 담겨있으면 하트 표시
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		params.put("userId", userId);
+		MymenuDTO mm = userMapper.SearchMyMenu(params);
+		if(mm != null) {
+			req.setAttribute("mymenuCheck", "mymenuCheck");
+		}
+		
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);
 		req.setAttribute("drink", params.get("drink"));
@@ -358,7 +368,7 @@ public class UserController {
 		req.setAttribute("pickup", params.get("pickup"));
 
 		// 음료메뉴 퍼스널옵션값 가져오기
-		if (params.get("drink").equals("drink")) {
+		if ("drink".equals(params.get("drink"))) {
 			MenuOptShotDTO dto2 = userMapper.ShotByCode(menuoptCode);
 			req.setAttribute("shot", dto2);
 		}
@@ -529,7 +539,7 @@ public class UserController {
 				return "message";
 			}
 		}
-
+		
 		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
 		req.setAttribute("mymenu", list);
 
@@ -1717,22 +1727,24 @@ public class UserController {
 	public String userStore(HttpServletRequest req, @RequestParam Map<String, String> params, String mode,
 			String storeSearch) {
 		
-		// mymenu에서 넘어온 데이터
-		if(params.get("where") != null) {
-			req.setAttribute("go", params.get("go"));
-			req.setAttribute("where", params.get("where"));
-		}
+		String menuCode = params.get("menuCode");
+		req.setAttribute("menuCode", params.get("menuCode"));
+//		List<BucksDTO> list = new ArrayList<>();
 		
 		// 매장 검색하기
 		if (mode != null) {
-
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
 				// 파라미터를 Map에 담아 전달
 				Map<String, Object> paramMap = new HashMap<>();
 				paramMap.put("searchTerms", searchTerms);
-				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+				
+//				if(menuCode != null) {
+//					List<BucksDTO> list = userMapper.getStoreListByMenuCode(menuCode);
+//				}else {
+					List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+//				}
 				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
@@ -1752,7 +1764,6 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
-						
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}

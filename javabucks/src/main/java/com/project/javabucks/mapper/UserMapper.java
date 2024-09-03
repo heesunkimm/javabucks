@@ -264,6 +264,10 @@ public class UserMapper {
 	public List<BucksDTO> getStoreList2(List<String> searchTerms) {
 		return sqlSession.selectList("getStoreList2", searchTerms);
 	}
+	
+	public List<BucksDTO> getStoreListByMenuCode(Map<String, Object> params) {
+		return sqlSession.selectList("getStoreListByMenuCode", params);
+	}
 
 	public String getOrderEnableBybucksId(String bucksId) {
 		return sqlSession.selectOne("getOrderEnableBybucksId", bucksId);
@@ -271,6 +275,10 @@ public class UserMapper {
 
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
+	}
+	
+	public String getMenuOptCode(String menuCode) {
+		return sqlSession.selectOne("getMenuOptCode", menuCode);
 	}
 
 	public String getMenuStatus(Map<String, String> params) {

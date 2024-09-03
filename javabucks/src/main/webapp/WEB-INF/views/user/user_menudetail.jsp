@@ -180,10 +180,17 @@
 		                </div>
 			                
 		                <button type="button" onclick="orderCheck('order')">주문하기</button>
-		                
-		                <button class="addlike" type="button" onclick="addMyMenu(this)">
-		                    <img src="../images/icons/like.png" alt="">
-		                </button>
+		               
+						<c:if test= "${not empty mymenuCheck}" >
+			                <button class="addlike" type="button" onclick="addMyMenu(this)">
+			                    <img src="../images/icons/like2.png" alt="">
+			                </button>
+						</c:if>
+						<c:if test= "${empty mymenuCheck}" >
+			                <button class="addlike" type="button" onclick="addMyMenu(this)">
+			                    <img src="../images/icons/like.png" alt="">
+			                </button>
+						</c:if>
 		            </div>
 			</form>
     </section>

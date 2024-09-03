@@ -33,7 +33,8 @@
                 		<c:choose>
 							<c:when test="${dto.storemenuStatus eq 'Y'}">
 			                    <li class="menu_item">
-			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+			                        <a href="user_menudetail?mode=origin&storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}
+																					&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
 			                            </div>
