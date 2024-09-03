@@ -138,6 +138,7 @@
 
 	// 키워드 검색 시 일치하는 메뉴 리스트 불러오기 함수
 	function searchKeyword() {
+		let bucksId = `${inBucks.bucksId}`;
         let searchCont = $("input[name='menu_name']").val();
 
         $.ajax({

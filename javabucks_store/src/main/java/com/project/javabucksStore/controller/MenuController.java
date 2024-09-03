@@ -59,34 +59,47 @@ public class MenuController {
 	// 어드민에서 등록된 메뉴 지점 메뉴로 추가
 	@PostMapping("/addMenu.ajax")
 	@ResponseBody
-	public String addMenu(@RequestBody StoreMenuDTO dto) {
-		
-		Map<String, Object> params = new HashMap<>();
-		params.put("menuCode", dto.getMenuCode());
-		params.put("menuName", dto.getMenuName());
-	    params.put("bucksId", dto.getBucksId());
-		
-		// 지점에 이미 등록된 메뉴가 있는지 확인
-		StoreMenuDTO menuCheck = menuMapper.getMenuByStore(params);
-		
-		// 이미 등록된 메뉴 추가시 처리
-		if(menuCheck != null) {
-			return dto.getMenuName() + "는 이미 추가된 메뉴입니다.";
-		}
+	public Map<String, String> addMenu(HttpServletRequest req, @RequestBody StoreMenuDTO dto) {
+	    String bucksId = dto.getBucksId();
+	    String menuCode = dto.getMenuCode();
+	    Map<String, String> response = new HashMap<>();
 
-		// 지점에 메뉴 추가
-		int res = menuMapper.addMenu(dto);
-		if(res>0) {
-			return dto.getMenuName() + "가 메뉴에 추가되었습니다.";
-		}else {
-			return "메뉴추가에 실패하였습니다.";
-		}
+	    // 지점에 이미 등록된 메뉴가 있는지 확인
+	    List<StoreMenuDTO> menuCheck = menuMapper.getMenuByStore(dto);
+	    
+	    if (menuCheck != null && !menuCheck.isEmpty()) {
+	        for (StoreMenuDTO list : menuCheck) {
+	            if (list.getMenuCode().equals(menuCode)) {
+	                // 이미 등록된 메뉴의 상태 업데이트
+	                int updateRes = menuMapper.updateMenuStatus(dto);
+	                if (updateRes > 0) {
+	                    response.put("status", "updated");
+	                    response.put("storeEnable", dto.getStoreEnable());
+	                    return response;
+	                } else {
+	                    response.put("status", "update_failed");
+	                    return response;
+	                }
+	            }
+	        }
+	    }
+	    
+	    // 지점에 메뉴 추가
+	    int res = menuMapper.addMenu(dto);
+	    if (res > 0) {
+	        response.put("status", "added");
+	        response.put("storeEnable", "Y");
+	        return response;
+	    } else {
+	        response.put("status", "add_failed");
+	        return response;
+	    }
 	}
-	
+
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	@GetMapping("/getSelectedMenu.ajax")
 	@ResponseBody
-	public List<StoreMenuDTO> getSelectedMenu(@RequestParam("bucksId") String bucksId) {
+	public List<StoreMenuDTO> getSelectedMenu(@RequestParam String bucksId) {
 	    return menuMapper.getSelectedMenu(bucksId);
 	}
 
@@ -124,6 +137,8 @@ public class MenuController {
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
 		searchParams.put("menuBase", menuBase);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 	    // 검색 조건에 따라 메뉴 리스트 가져오기	    
 	    List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
@@ -157,6 +172,8 @@ public class MenuController {
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("bucksId", bucksId);
 	    searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 	    
 	    List<StoreMenuDTO> filterList = menuMapper.searchDrinksList(searchParams);
 	    
@@ -177,10 +194,11 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 	    List<StoreMenuDTO> dessertList = menuMapper.searchDessert(searchParams);
 
-	    req.setAttribute("dessertList", dessertList);
 	    return dessertList;
 	}
 	
@@ -201,6 +219,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> filterList = menuMapper.searchDessertList(searchParams);
 		
@@ -222,6 +242,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("menuCate", menuCate);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> mdList = menuMapper.searchMd(searchParams);
 		
@@ -246,6 +268,8 @@ public class MenuController {
 		Map<String, Object> searchParams = new HashMap<>();
 		searchParams.put("bucksId", bucksId);
 		searchParams.put("searchCont", searchCont);
+	    params.put("menuEnable","Y");
+	    params.put("menuStatus", "Y");
 		
 		List<StoreMenuDTO> filterList = menuMapper.searchMdList(searchParams);
 		
@@ -301,10 +325,12 @@ public class MenuController {
 	    String bucksId = dto.getBucksId();
 	            
 	    String menuCode = (String) params.get("menuCode");
+	    String storeEnable = (String) params.get("storeEnable");
 	    
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("bucksId", bucksId);
 	    searchParams.put("menuCode", menuCode);
+	    searchParams.put("storeEnable", storeEnable);
 	    
 	    // 주문완료/제조중 상태 주문내역 확인
 	    List<OrderDTO> delCheck = menuMapper.delOrderCheck(bucksId);
