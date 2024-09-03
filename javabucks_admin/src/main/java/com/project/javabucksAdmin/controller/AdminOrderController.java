@@ -503,7 +503,6 @@ public class AdminOrderController {
 		}
 		//System.out.println("발주 품목 :"+baljooItem);
 		
-		
 		// 2. 어드민 재고 수량 확인
 		Map<String, Integer> adminStocksCountMap = new HashMap<>();
 		
@@ -514,7 +513,6 @@ public class AdminOrderController {
 			adminStocksCountMap.put(code, adminStocksCount);
 		}
 		//System.out.println("어드민 재고"+adminStocksCountMap);
-		
 		
 		// 3. 수량 비교
 		boolean baljooResult = false;
@@ -533,8 +531,6 @@ public class AdminOrderController {
 			}
 		}
 		//System.out.println("재고수량 비교 결과:" + baljooResult);
-		
-		
 		
 		boolean minusResult = false;
 		boolean updateResult = false;
@@ -566,21 +562,45 @@ public class AdminOrderController {
 				updateResult = false;
 			}
 		}
-
+		
+		// 5. 스토어 재고 추가해주기
+		// 발주번호 가지고 지점아이디 가져오기
+		String bucksId = mapper.getBucksId(baljooNum);
+		boolean stockResult = false;
+		Iterator<String> stocksIterator = baljooItem.keySet().iterator();
+		while (stocksIterator.hasNext()) {
+			String stockListCode = stocksIterator.next(); // 발주품목
+			int quantity = baljooItem.get(stockListCode); // 발주수량
+			
+			Map<String, Object> paramsStocks = new HashMap<>();
+			paramsStocks.put("bucksId", bucksId);
+			paramsStocks.put("stockListCode", stockListCode);
+			paramsStocks.put("quantity", quantity);
+			
+			// 스토어 재고 업데이트
+			int storeStocksUpdateResult = mapper.storeStocksUpdate(paramsStocks);
+			if (storeStocksUpdateResult > 0) {
+				stockResult = true;
+			} else {
+				stockResult = false;
+			}
+		}
+		
 		Map<String, String> response = new HashMap<>();
-
-		if (baljooResult && minusResult && updateResult) {
+		if (baljooResult && minusResult && updateResult && stockResult) {
 			response.put("response", "success");
 		} else if (!baljooResult) {
 			response.put("response", "notEnough");
+		} else if(!minusResult) {
+			response.put("response", "adminStockMinusFail");
+		} else if (!updateResult) {
+			response.put("response", "baljooTableUpdateFail");
+		} else if (!stockResult) {
+			response.put("response", "storeStocksUpdateFail");
 		} else {
 			response.put("response", "fail");
 		}
-
 		return response;
 	}
-	
-
-	
 	
 }

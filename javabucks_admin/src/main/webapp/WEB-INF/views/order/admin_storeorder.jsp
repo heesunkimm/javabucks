@@ -81,7 +81,7 @@
 			                            <td>
 			                            	<ul>
 			                            	<c:forEach var="item" items="${baljoo.baljooListbyBaljooOrder}">
-			                            		<li>- ${item.stockListName} ${item.quantity}개</li>
+			                            		<li>${item.stockListName} ${item.quantity}개</li>
 			                            	</c:forEach>
 			                            	</ul>
 			                            </td>
@@ -112,7 +112,7 @@
 		                            <td>
 		                            	<ul>
 		                            	<c:forEach var="item" items="${search.baljooListbyBaljooOrder}">
-		                            		<li>- ${item.stockListName} ${item.quantity}개</li>
+		                            		<li>${item.stockListName} ${item.quantity}개</li>
 		                            	</c:forEach>
 		                            	</ul>
 		                            </td>
@@ -213,10 +213,14 @@
 					alert("주문번호 " +baljooNum + "번의 주문이 접수되었습니다.");
 				} else if (respVal === "notEnough"){
 					alert("재고가 부족하여 주문번호 " +baljooNum + "번의 주문을 접수할 수 없습니다.");
-				} else if(respVal === "fail"){
-					alert("주문 접수 실패. 관리자에게 문의하세요.");
+				} else if(respVal === "adminStockMinusFail"){
+					alert("관리자 재고 차감 실패. 관리자에게 문의하세요.");
+				} else if(respVal === "baljooTableUpdateFail"){
+					alert("발주테이블 업데이트 실패. 관리자에게 문의하세요.");
+				} else if(respVal === "storeStocksUpdateFail"){
+					alert("지점 재고 업데이트 실패. 관리자에게 문의하세요.");
 				} else {
-					alert("주문 접수 실패. 관리자에게 문의하세요.");
+					alert("기타 실패. 관리자에게 문의하세요.")
 				}
 				location.reload();
 			},
