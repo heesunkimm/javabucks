@@ -287,9 +287,6 @@
 		        var cartNum = element.getAttribute('name').split('-')[1];
 		        selectedCartNums.push(cartNum);	       	      
 		   }
-	   var pickup = document.getElementById("modeInput").value;
-	   console.log(pickup)
-	   if (userConfirmed) {
 		   
 	   var modeInput = document.getElementById("modeInput").value;
 	   if (userConfirmed) {
@@ -302,8 +299,7 @@
 	        data: JSON.stringify({
 	        	cartNum: selectedCartNums,  // 배열로 전달
               eachOrAll: AllorEach, // 필요에 따라 이 값을 설정
-              	pickup: pickup // 배달인지 주문인지
-              	
+              	pickup: pickup, // 배달인지 주문인지
             modeInput: modeInput
           }),         
 	        success: function(response) {
