@@ -220,7 +220,7 @@ public class OrderController {
 
 		// 제조중
 		int makingListCount = mapper.getMakingListCount(bucksId, today);
-		Map<String, Object> making_pagingMap = paging(makingListCount, making_pageNum);
+		Map<String, Object> making_pagingMap = paging_making(makingListCount, making_pageNum);
 
 		Map<String, Object> making_params = new HashMap<>();
 		making_params.put("bucksId", bucksId);
@@ -249,7 +249,7 @@ public class OrderController {
 		model.addAttribute("orderStopCheck", orderStopCheck);
 	}
 	
-	// 패치 메서드
+	// 주문내역 패치 메서드
 	private void fetchOrder() {
 		if(this.session != null) {
 			BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
@@ -289,7 +289,7 @@ public class OrderController {
     		List<OrderDTO> deliverOrderList = mapper.getDeliverOrderList(deliverOrder_params);
             
     		// 패치 확인
-            //System.out.println("배달주문 Fetched: " + date.toString());
+    		//System.out.println("배달주문 Fetched: " + date.toString());
 		}
 	}
 	
@@ -310,8 +310,8 @@ public class OrderController {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String today = dateFormat.format(date);
             
-            int storeOrderListCount = mapper.getStoreOrderListCount(bucksId, today);
-            if (storeOrderListCount > 0) {
+            int newOrderListCount = mapper.getNewOrderListCount(bucksId, today);
+            if (newOrderListCount > 0) {
             	newOrder = true;
             }
 		}
@@ -543,53 +543,56 @@ public class OrderController {
 		}
 
 		//System.out.println("재고수량 비교 결과:" + orderResult); // true 또는 false
-
+		
 		boolean minusResult = false;
 		boolean updateResult = false;
+		boolean alarmResult = false;
 		// 4. 재고 차감 및 상태업데이트
-		Iterator<String> countMinusIterator = mater.keySet().iterator();
-		if (orderResult) {
-			while (countMinusIterator.hasNext()) {
-				String code = countMinusIterator.next();
-				int value = mater.get(code);
-				Map<String, Object> paramsCountMinus = new HashMap<>();
-				paramsCountMinus.put("bucksId", bucksId);
-				paramsCountMinus.put("stockListCode", code);
-				paramsCountMinus.put("value", value);
-				// 재고 차감
-				int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
-				if (countMinusResult > 0) {
-					minusResult = true;
+		// 재고 수량 비교한 결과가 true인 경우
+		if(orderResult) {
+			Iterator<String> countMinusIterator = mater.keySet().iterator();
+			if (orderResult) {
+				while (countMinusIterator.hasNext()) {
+					String code = countMinusIterator.next();
+					int value = mater.get(code);
+					Map<String, Object> paramsCountMinus = new HashMap<>();
+					paramsCountMinus.put("bucksId", bucksId);
+					paramsCountMinus.put("stockListCode", code);
+					paramsCountMinus.put("value", value);
+					// 재고 차감
+					int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
+					if (countMinusResult > 0) {
+						minusResult = true;
+					} else {
+						minusResult = false;
+					}
+				}
+				// 상태 업데이트
+				int OrderStatusUpdateResult = mapper.updateOrderStatus(realOrderCode);
+				if (OrderStatusUpdateResult > 0) {
+					updateResult = true;
 				} else {
-					minusResult = false;
+					updateResult = false;
 				}
 			}
-			// 상태 업데이트
-			int OrderStatusUpdateResult = mapper.updateOrderStatus(realOrderCode);
-			if (OrderStatusUpdateResult > 0) {
-				updateResult = true;
-			} else {
-				updateResult = false;
+			
+			// 5. 주문접수 알람 인서트
+			Map<String, Object> paramsUserId = new HashMap<>();
+			paramsUserId.put("orderCode", realOrderCode);
+			paramsUserId.put("bucksId", bucksId);
+			String userId = mapper.getUserId(paramsUserId);
+			
+			Map<String, Object> paramsAlarm = new HashMap<>();
+			paramsAlarm.put("userId", userId);
+			String alarmCont = orderCode +"번 주문이 접수되었습니다. 잠시만 기다려주세요!";
+			paramsAlarm.put("alarmCont", alarmCont);
+			int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
+			
+			if(alarmInsertResult > 0) {
+				alarmResult = true;
+			}else {
+				alarmResult = false;
 			}
-		}
-		
-		// 5. 주문접수 알람 인서트
-		boolean alarmResult = false;
-		Map<String, Object> paramsUserId = new HashMap<>();
-		paramsUserId.put("orderCode", realOrderCode);
-		paramsUserId.put("bucksId", bucksId);
-		String userId = mapper.getUserId(paramsUserId);
-		
-		Map<String, Object> paramsAlarm = new HashMap<>();
-		paramsAlarm.put("userId", userId);
-		String alarmCont = orderCode +"번 주문이 접수되었습니다. 잠시만 기다려주세요!";
-		paramsAlarm.put("alarmCont", alarmCont);
-		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
-		
-		if(alarmInsertResult > 0) {
-			alarmResult = true;
-		}else {
-			alarmResult = false;
 		}
 		
 		Map<String, String> response = new HashMap<>();
@@ -691,17 +694,33 @@ public class OrderController {
 		
 		// 제조완료 상태 업데이트
 		boolean orderFinish = false;
-		Map<String, Object> params = new HashMap<>();
-		params.put("bucksId", bucksId);
-		params.put("orderCode", realOrderCode);
-		int finishResult = mapper.orderStatusUpdateFinish(params);
-		if(finishResult > 0) {
-			orderFinish = true;
-		} else {
-			orderFinish = false;
+		//System.out.println("orderCode : "+orderCode);
+		
+		// 매장주문, togo 주문인 경우
+		if(orderCode.substring(0, 1).equals("A") || orderCode.substring(0, 1).equals("B")) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("bucksId", bucksId);
+			params.put("orderCode", realOrderCode);
+			int finishResult = mapper.orderStatusUpdateFinish(params);
+			if(finishResult > 0) {
+				orderFinish = true;
+			} else {
+				orderFinish = false;
+			}
+		// 배달주문인 경우
+		}else {
+			Map<String, Object> params = new HashMap<>();
+			params.put("bucksId", bucksId);
+			params.put("orderCode", realOrderCode);
+			int finishResult = mapper.deliverStatusUpdateFinish(params);
+			if(finishResult > 0) {
+				orderFinish = true;
+			} else {
+				orderFinish = false;
+			}
 		}
 		
-		// 주문 취소 알람 인서트
+		// 제조 완료 알람 인서트
 		boolean alarmResult = false;
 		Map<String, Object> paramsUserId = new HashMap<>();
 		paramsUserId.put("orderCode", realOrderCode);
@@ -710,16 +729,27 @@ public class OrderController {
 		
 		Map<String, Object> paramsAlarm = new HashMap<>();
 		paramsAlarm.put("userId", userId);
-		String alarmCont = orderCode +"번 메뉴가 준비되었습니다. 픽업대에서 메뉴를 픽업해주세요!";
-		paramsAlarm.put("alarmCont", alarmCont);
-		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
 		
+		// 매장주문, togo 주문인 경우
+		String alarmCont = null;
+		if(orderCode.substring(0, 1).equals("A") || orderCode.substring(0, 1).equals("B")) {
+			alarmCont = orderCode +"번 메뉴가 준비되었습니다. 픽업대에서 메뉴를 픽업해주세요!";
+			paramsAlarm.put("alarmCont", alarmCont);
+		}
+		// 배달주문인 경우
+		else {
+			alarmCont = orderCode +"번 주문의 제조가 완료되어 배달 대기중입니다.";
+			paramsAlarm.put("alarmCont", alarmCont);
+		}
+		
+		int alarmInsertResult = mapper.insertOrderAlarm(paramsAlarm);
 		if(alarmInsertResult > 0) {
 			alarmResult = true;
 		}else {
 			alarmResult = false;
 		}
 		
+		// 결과 처리
 		Map<String, Object> response = new HashMap<>();
 		if(orderFinish && alarmResult) {
 			response.put("response", "success");
@@ -733,7 +763,8 @@ public class OrderController {
 
 		return ResponseEntity.ok(response);
 	}
-
+	
+	// 신규주문 막기
 	@PostMapping("/orderStop.ajax")
 	public ResponseEntity<Map<String, Object>> orderStop(HttpServletRequest req) {
 		// 세션에서 ID꺼내기
@@ -753,7 +784,8 @@ public class OrderController {
 
 		return ResponseEntity.ok(response);
 	}
-
+	
+	// 신규주문 재시작
 	@PostMapping("/orderRestart.ajax")
 	public ResponseEntity<Map<String, Object>> orderRestart(HttpServletRequest req) {
 		// 세션에서 ID꺼내기
@@ -772,6 +804,39 @@ public class OrderController {
 		}
 
 		return ResponseEntity.ok(response);
+	}
+	
+	// 배달준비 상태인 주문건 배달완료로 상태 업데이트 메서드
+	private void fetchDeliversFinish() {
+		if(this.session != null) {
+			BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
+			String bucksId = dto.getBucksId();
+			
+			// 오늘 날짜 가져오기
+            Date date = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String today = dateFormat.format(date);
+            
+			// 알람 인서트
+			Map<String, Object> paramsAlarm = new HashMap<>();
+			// 배달준비 orderCode 가져오기
+			List<OrderDTO> deliversReady = mapper.getDeliversReady();
+			if(!deliversReady.isEmpty()) {
+				for(int i=0; i<deliversReady.size(); i++) {
+					String alarmCont = deliversReady.get(i).getOrderCode() +"번 배달이 완료되었습니다.";
+					paramsAlarm.put("alarmCont", alarmCont);
+					paramsAlarm.put("userId", deliversReady.get(i).getUserId());
+					int insertDeliversFinishAlarm = mapper.insertDeliversFinishAlarm(paramsAlarm);
+					//System.out.println("배달완료 알람 인서트 완료");
+				}
+			}
+			
+			// 배달완료 업데이트
+			int updateStatusDeliversFinish = mapper.deliverStatusUpdateDeliversFinish();
+			
+			// 패치 확인
+            //System.out.println("배달완료 Fetched: " + date.toString());
+		}
 	}
 
 	// order테이블 orderlist 컬럼 String 변환 및 메뉴명 매핑, 코드 날짜 제외 통합 메서드
@@ -902,9 +967,42 @@ public class OrderController {
 
 		return pagingMap;
 	}
+	
+	// 주문현황 제조중 페이징 처리 메서드
+	public Map<String, Object> paging_making(int count, int pageNum) {
+		int pageSize = 2; // 한 페이지에 보여질 게시글 수
+		int startRow = (pageNum - 1) * pageSize + 1; // 페이지별 시작 넘버
+		int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
+		if (endRow > count)
+			endRow = count;
+		int no = count - startRow + 1; // 넘버링
+		int pageBlock = 1; // 페이지별 보여줄 페이징번호 개수
+		int pageCount = count / pageSize + (count % pageSize == 0 ? 0 : 1); // 총 페이징번호 개수
+		int startPage = (pageNum - 1) / pageBlock * pageBlock + 1; // 페이지별 시작 페이징번호
+		int endPage = startPage + pageBlock - 1; // 페이지별 끝 페이징번호
+		if (endPage > pageCount)
+			endPage = pageCount;
+
+		Map<String, Object> pagingMap = new HashMap<>();
+		pagingMap.put("pageSize", pageSize);
+		pagingMap.put("no", no);
+		pagingMap.put("startRow", startRow);
+		pagingMap.put("endRow", endRow);
+		pagingMap.put("pageBlock", pageBlock);
+		pagingMap.put("pageCount", pageCount);
+		pagingMap.put("startPage", startPage);
+		pagingMap.put("endPage", endPage);
+
+		return pagingMap;
+	}
 
 	@Scheduled(cron = "3 * * * * *") 
 	public void ScheduledFetchOrder(){
-	  fetchOrder();
+		fetchOrder();
+	}
+	
+	@Scheduled(cron = "3 * * * * *") 
+	public void ScheduledFetchDeliverFinishOrder(){
+		fetchDeliversFinish();
 	}
 }

@@ -114,6 +114,13 @@ public class OrderMapper {
 		return sqlSession.selectOne("getStoreOrderListCount", params);
 	}
 	
+	public int getNewOrderListCount(String bucksId, String today) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("bucksId", bucksId);
+		params.put("today", today);
+		return sqlSession.selectOne("getStoreOrderListCount", params);
+	}
+	
 	public List<OrderDTO> getStoreOrderList(Map<String, Object> params){
 		return sqlSession.selectList("getStoreOrderList", params);
 	}
@@ -142,7 +149,6 @@ public class OrderMapper {
 	}
 	
 	public int getStoreStocksCount(Map<String, Object> params) {
-		System.out.println(params);
 		return sqlSession.selectOne("getStoreStocksCount", params);
 	}
 	
@@ -169,6 +175,10 @@ public class OrderMapper {
 	public int insertOrderAlarm(Map<String, Object> params) {
 		return sqlSession.insert("insertOrderAlarm", params);
 	}
+	
+	public int insertDeliversFinishAlarm(Map<String, Object> params) {
+		return sqlSession.insert("insertDeliversFinishAlarm", params);
+	}
 
 	public int getMakingListCount(String bucksId, String today) {
 		Map<String, Object> params = new HashMap<>();
@@ -189,6 +199,14 @@ public class OrderMapper {
 		return sqlSession.update("orderStatusUpdateFinish", params);
 	}
 	
+	public int deliverStatusUpdateFinish(Map<String, Object> params) {
+		return sqlSession.update("deliverStatusUpdateFinish", params);
+	}
+	
+	public int deliverStatusUpdateDeliversFinish() {
+		return sqlSession.update("deliverStatusUpdateDeliversFinish");
+	}
+	
 	public int storemenuStatusStop(String bucksId) {
 		return sqlSession.update("storemenuStatusStop", bucksId);
 	}
@@ -199,5 +217,9 @@ public class OrderMapper {
 	
 	public String getStoreOrderStatus(String bucksId) {
 		return sqlSession.selectOne("getStoreOrderStatus", bucksId);
+	}
+	
+	public List<OrderDTO> getDeliversReady(){
+		return sqlSession.selectList("getDeliversReady");
 	}
 }

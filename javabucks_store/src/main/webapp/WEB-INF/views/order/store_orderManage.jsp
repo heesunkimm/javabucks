@@ -142,8 +142,8 @@
 		                    </ul>
                     </c:if>
                     <c:if test="${not empty makingList}">
-                    	<c:forEach var="making" items="${makingList}">
-		                    <ul class="making_list list_box">
+		            	<ul class="making_list list_box">
+		                    <c:forEach var="making" items="${makingList}">
 		                        <li class="making_item list_item bg_beige">
 		                            <div class="txt_box">
 		                                <dl>
@@ -164,8 +164,9 @@
 		                            </div>
 		                            <button type="button" name="orderButton" onclick="orderFinish(this)" data-orderCode="${making.orderCode}">제조완료</button>
 		                        </li>
-		                    </ul>
-		                </c:forEach>
+		                	</c:forEach>
+		                </ul>
+		                
 	                    <div class="pagination">
 	                        <c:if test="${making_startPage > making_pageBlock}"> 
 	                        	<button type="button" onclick="makingBefore()">이전</button>
@@ -295,7 +296,7 @@ function orderCancel(element){
 			var respVal = resp.response;
 			if(respVal === "success"){
 				alert("주문번호 " +orderCode + "번의 주문이 취소되었습니다.");
-				location.reload();
+				window.location.href='orderManage.do';
 			} else if (respVal === "cancelUpdateFail"){
 				alert("재고가 부족하여 주문번호 " +orderCode + "번의 주문을 접수할 수 없습니다.");
 				location.reload();

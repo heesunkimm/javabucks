@@ -124,12 +124,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where whipNum = #{whipNum}
 	</select>
 	
+	<select id="getNewOrderListCount" parameterType="String" resultType="int">
+		select count(*) from javabucks_order
+		where bucksId = #{bucksId}
+			and orderStatus = '주문완료'
+			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
+	</select>
+	
 	<select id="getStoreOrderListCount" parameterType="String" resultType="int">
 		select count(*) from javabucks_order
 		where bucksId = #{bucksId}
 			and orderStatus = '주문완료'
 			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
-
+			and (orderType = 'order' OR orderType = 'togo')
 	</select>
 	
 	<select id="getStoreOrderList" parameterType="java.util.Map" resultType="OrderDTO">
@@ -216,6 +223,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		and orderCode = #{orderCode}
 	</select>
 	
+	<insert id="insertDeliversFinishAlarm" parameterType="java.util.Map">
+		insert into javabucks_alarm (alarmNum, userId, alarmCate, alarmCont) 
+		values (seq_alarmnum.nextval, #{userId}, 'order', #{alarmCont})
+	</insert>
+	
 	<insert id="insertOrderAlarm" parameterType="java.util.Map">
 		insert into javabucks_alarm (alarmNum, userId, alarmCate, alarmCont) 
 		values (seq_alarmnum.nextval, #{userId}, 'order', #{alarmCont})
@@ -242,12 +254,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update javabucks_order
 		set orderStatus = '주문취소'
 		where orderCode = #{orderCode}	
+			and bucksId = #{bucksId}
 	</update>
 	
 	<update id="orderStatusUpdateFinish" parameterType="java.util.Map">
 		update javabucks_order
 		set orderStatus = '제조완료'
-		where orderCode = #{orderCode}	
+		where orderCode = #{orderCode}
+			and bucksId = #{bucksId}
+	</update>
+	
+	<update id="deliverStatusUpdateFinish" parameterType="java.util.Map">
+		update javabucks_order
+		set orderStatus = '배달준비'
+		where orderCode = #{orderCode}
+			and bucksId = #{bucksId}	
+	</update>
+	
+	<update id="deliverStatusUpdateDeliversFinish">
+		update javabucks_order
+		set orderStatus = '배달완료'
+		where orderStatus = '배달준비'
 	</update>
 	
 	<update id="storemenuStatusStop" parameterType="String">
@@ -266,6 +293,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getStoreOrderStatus" parameterType="String" resultType="String">
 		select orderEnable from javabucks_bucks
 		where bucksId = #{bucksId}
+	</select>
+	
+	<select id="getDeliversReady" resultType="OrderDTO">
+		select userId, orderCode from javabucks_order
+		where orderStatus = '배달준비'
 	</select>
 	
 	
