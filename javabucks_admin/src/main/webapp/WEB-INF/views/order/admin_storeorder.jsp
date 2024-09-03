@@ -81,7 +81,7 @@
 			                            <td>
 			                            	<ul>
 			                            	<c:forEach var="item" items="${baljoo.baljooListbyBaljooOrder}">
-			                            		<li>- ${item.stockListName} ${item.quantity}개</li>
+			                            		<li>${item.stockListName} ${item.quantity}개</li>
 			                            	</c:forEach>
 			                            	</ul>
 			                            </td>
@@ -112,7 +112,7 @@
 		                            <td>
 		                            	<ul>
 		                            	<c:forEach var="item" items="${search.baljooListbyBaljooOrder}">
-		                            		<li>- ${item.stockListName} ${item.quantity}개</li>
+		                            		<li>${item.stockListName} ${item.quantity}개</li>
 		                            	</c:forEach>
 		                            	</ul>
 		                            </td>
