@@ -63,7 +63,7 @@
                 </div>
             <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
             </div>
-            <form name="f" action="userRegister.do" method="post" onsubmit="return userRegister()">
+            <form name="f" action="userRegister.do" method="POST" onsubmit="return userRegister()">
                 <div class="input_box">
                 <input type="hidden" name="gradeCode" id="gradeCode" value="welcome">
                     <label>

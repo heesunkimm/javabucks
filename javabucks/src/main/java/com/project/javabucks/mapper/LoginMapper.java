@@ -15,7 +15,7 @@ public class LoginMapper {
 	private SqlSession sqlSession;
 	
 	// 회원가입 insert 
-	public int insertUser(Map<String,String> params){
+	public int insertUser(Map<String,Object> params){
 		return sqlSession.insert("insertUser", params);
 	}
 	 
@@ -69,4 +69,23 @@ public class LoginMapper {
 		return sqlSession.update("updateUserDel", userId);
 	}
 	
+	// 회원가입 쿠폰 INSERT
+	public int insertRegisterCoupon(String userId) {
+		return sqlSession.insert("insertRegisterCoupon", userId);
+	}
+	
+	// 생일 쿠폰 INSERT
+	public int insertBdayCoupon(String userId) {
+		return sqlSession.insert("insertBdayCoupon", userId);
+	}
+	
+	// 웰컴 쿠폰 발급 알람 INSERT
+	public int insertRegisterAlarm(String userId) {
+		return sqlSession.insert("insertRegisterAlarm", userId);
+	}
+	
+	// 생일 쿠폰 발급 알람 INSERT
+	public int insertBdayCouponAlarm(String userId) {
+		return sqlSession.insert("insertBdayCouponAlarm", userId);
+	}
 }

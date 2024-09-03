@@ -115,7 +115,7 @@
                             <div class="img_box">
                                 <img src="../images/icons/order_history.png" alt="">
                             </div>
-                            <p>매장 & TO-GO 주문 히스토리</p>
+                            <p>주문 히스토리</p>
                         </a>
                     </li>
                 </ul>
@@ -145,7 +145,7 @@
                             <div class="img_box">
                                 <img src="../images/icons/order_history.png" alt="">
                             </div>
-                            <p>배달 주문 히스토리</p>
+                            <p>주문 히스토리</p>
                         </a>
                     </li>
                 </ul>
