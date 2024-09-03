@@ -89,74 +89,26 @@
             <div class="tit_box">
                 <p class="font_bold">결제하기</p>
             </div>
-
+			<c:if test="${cart=='imme'}">
+            <ul class="store_confirm">
+                <li>주문하신 매장을 확인해주세요!</li>
+                <li>${bdto.bucksName}<span class="font_gray">${pickup}</span></li>
+                <li>${bdto.bucksLocation}</li>
+            </ul>
+            </c:if>
+            <c:if test="${cart=='cart'}">
             <ul class="store_confirm">
                 <li>주문하신 매장을 확인해주세요!</li>
                 <li>${bucksName}<span class="font_gray">${pickup}</span></li>
                 <li>${bucksLocation}</li>
             </ul>
+            </c:if>
 
             <div class="btn_box">
                 <button class="toggle_btn t_active" type="button" data-toggle="orderlist">주문 내역</button>
             </div>
             <ul id="orderlist" class="pay_list toggle-content">
-            <c:if test="${cart=='imme'}">
-            	<li class="pay_item">
-                    <div class="img_box">
-                        <img src="/upload_menuImages/${mdto.menuImages}" alt="">
-                    </div>
-                    <div class="txt_box">
-                        <dl>
-                            <dt class="txt_tit"><span>${mdto.menuName}</span> X <span>${quantity}</span></dt>
-                            <dd class="txt_total"><fmt:formatNumber value="${(mdto.menuPrice) * quantity}" pattern="#,###"/>원</dd>
-                        </dl>
-                        <dl class="font_gray">
-                        	<c:set var="iceOrHot" value="${fn:substring(mdto.menuoptCode, 3, 4)}" />
-                        	<c:if test="${iceOrHot=='I'||iceOrHot=='i'}">
-                            <dt><span>ICE</span> | <span>${cupdto.cupType} X ${quantity}</span></dt>
-                            </c:if>
-                            <c:if test="${iceOrHot=='H'||iceOrHot=='h'}">
-                            <dt><span>HOT</span> | <span>${cupdto.cupType} X ${quantity}</span></dt>
-                            </c:if>
-                            <dd>+<fmt:formatNumber value="${cupdto.cupPrice*quantity}" pattern="#,###"/>원</dd>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                        	<c:if test="${not empty icedto}">
-                        	<dt>얼음 ${icedto.iceType}</dt>
-                        	</c:if>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                        	<c:if test="${optdto.optShotCount != 0}">
-                        	<dt>샷 ${shotdto.shotType} (+${optdto.optShotCount}) X ${quantity}</dt>
-                        	<dd>+<fmt:formatNumber value="${optdto.optShotCount*600*quantity}" pattern="#,###"/>원</dd>
-                        	</c:if>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                        	<c:if test="${optdto.optSyrupCount != 0}">
-                        	<dt>${syrupdto.syrupType} (+${optdto.optSyrupCount}) X ${quantity}</dt>
-                        	<dd>+<fmt:formatNumber value="${optdto.optSyrupCount*syrupdto.syrupPrice*quantity}" pattern="#,###"/>원</dd>
-                        	</c:if>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                        	<c:if test="${not empty milkdto}">
-                        	<dt>우유종류 ${milkdto.milkType} X ${quantity}</dt>
-                        	<dd>+<fmt:formatNumber value="${milkdto.milkPrice*quantity}" pattern="#,###"/>원</dd>
-                        	</c:if>
-                        </dl>
-                        <dl class="opt_item font_gray">
-                        	<dt>총 추가금액</dt>
-                        	<dd><fmt:formatNumber value="${optPrice*quantity}" pattern="#,###"/>원</dd>
-                        </dl>
-                        <dl>
-                        	<dt class="txt_tit">총 금액</dt>
-                        	<dd class="txt_total"><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
-                        </dl>	
-                    </div>
-                </li>
-            </c:if>
-            <c:if test="${cart=='cart'}">
-            
-            	<c:forEach var="ctp" items="${ctpList}">
+                <c:forEach var="ctp" items="${ctpList}">
 	                <li class="pay_item">
 	                    <div class="img_box">
 	                        <img src="/upload_menuImages/${ctp.menuDTO.menuImages}" alt="">
@@ -200,6 +152,12 @@
 	                        	</c:if>
 	                        </dl>
 	                        <dl class="opt_item font_gray">
+	                        	<c:if test="${not empty ctp.whipDTO}">
+	                        	<dt>휘핑추가 ${ctp.whipDTO.whipType} X ${ctp.cartCnt}</dt>
+	                        	<dd>+<fmt:formatNumber value="${ctp.whipDTO.whipPrice*quantity}" pattern="#,###"/>원</dd>
+                        	</c:if>
+                        </dl>
+	                        <dl class="opt_item font_gray">
 	                        	<dt>총 추가금액</dt>
 	                        	<dd><fmt:formatNumber value="${ctp.optPrice*ctp.cartCnt}" pattern="#,###"/>원</dd>
 	                        </dl>
@@ -210,7 +168,6 @@
 	                    </div>
 	                </li>
                 </c:forEach>
-            </c:if>
             </ul>
 
             <div class="cpn_box">
@@ -248,6 +205,7 @@
                                         </div>
                                 </li>
                                 </c:forEach>        
+                                <c:if test="${listCardSize < 5}">
                                 <li class="add_slide card_slide swiper-slide">
                                     <a href="javascript:;">
                                         <p>JavaBucks 카드를 등록하고 <br/>다양한 혜택을 누려보세요!</p>
@@ -256,6 +214,7 @@
                                         </div>
                                     </a>
                                 </li>
+                                </c:if>
                             </ul>
                             <div class="card_pagination swiper-pagination"></div>
                         </div>
@@ -272,26 +231,15 @@
                 <form name="payOrder" action="orderPayOk" method="post">
                     <dl>
                         <dt>주문 금액</dt>
-                        <c:if test="${cart =='cart'}">
                         <dd id="orderedAmount"><fmt:formatNumber value="${totalPrice}" pattern="#,###"/>원</dd>
-                    	</c:if>
-                    	<c:if test="${cart !='cart'}">
-                        <dd id="orderedAmount"><fmt:formatNumber value="${(mdto.menuPrice*quantity)+(optPrice*quantity)}" pattern="#,###"/>원</dd>
-                    	</c:if>
                     </dl>
                     <dl class="font_gray">
                         <dt>할인 금액</dt>
                         <dd id="discountAmount"><fmt:formatNumber value="0" pattern="#,###"/>원</dd>
                     </dl>
                     <dl>
-                    	<c:if test="${cart =='cart'}">
                         <dt>최종 결제 금액</dt>
                         <dd id="totcountAmount"><fmt:formatNumber value="${totalPrice}" pattern="#,###"/>원</dd>
-                        </c:if>
-                        <c:if test="${cart !='cart'}">
-                        <dt>최종 결제 금액</dt>
-                        <dd id="totcountAmount"><fmt:formatNumber value="" pattern="#,###"/>원</dd>
-                        </c:if>
                     </dl>
                     <input type="hidden" name="cardRegNum">
                     <input type="hidden" name="payhistoryPayWay" id="payhistoryPayWay">
@@ -368,7 +316,7 @@
         } else {
             console.error('totalAmount가 올바른 숫자가 아닙니다.');
         }
-    });
+    	});
 		
 		//쿠폰 항목 클릭 시 가격을 저장
 		document.querySelectorAll('.coupon-item').forEach(coupon => {
@@ -464,10 +412,13 @@
 
 		
 		function requestPay() {
-			let payway = $("input[name='payhistoryPayWay']").val();
-			console.log(payway);
-			IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
 			
+	        let cart = '${cart}';
+	        let payhistoryPayType = $("input[name='payhistoryPayType']").val();
+	        let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
+	        
+			IMP.init('imp85860730'); // 아임포트 가맹점 식별코드
+
 			let orderedAmount = parseInt(document.getElementById('orderedAmount').innerText.replace(/[^0-9]/g, ''), 10);
 		    let discountAmount = parseInt(document.getElementById('discountAmount').innerText.replace(/[^0-9]/g, ''), 10);
 		    let chargeAmount = orderedAmount - discountAmount;
@@ -476,27 +427,18 @@
 		    let cpnListNum = parseInt($("input[name='selectedCouponListNum']").val(), 10);
 			console.log(cpnListNum);
 		    
-	        let payhistoryPayType = $("input[name='payhistoryPayType']").val();
-	        let payhistoryPayWay = $("input[name='payhistoryPayWay']").val();
 	        let payUser = '${inUser.userId}';
-	        let orderName = "${mdto.menuName} ${quantity}개";
-	            
-	        let bucksId = "${bdto.bucksId}";
-	        let menuPrice = "${(mdto.menuPrice) * quantity}";
-	        let optPrice = "${optPrice*quantity}";
-	        let quantity = "${quantity}";
-	            
-	            
-	        // 주문 데이터
-	        let orders = [
-	        	{ menuCode: '${mdto.menuCode}', optId: ${optId}, quantity: ${quantity} }
-	        ];
-	        // JSON 배열 생성 및 문자열 변환
-	        let orderJson = orders.map(order => `${mdto.menuCode}:${optId}:${quantity}`);
-	        let orderList = JSON.stringify(orderJson);
+	        let bucksId = '${bucksId}';
+	        let orderList = '${orderList}';
+	        
+	        let menuPrice = '${totMenuPrice}';
+	        let optPrice = '${totOptPrice}';
+	        let quantity = '${quantity}';
+	        let orderName = "${firstOrder} 등";
+	        
 	        	
 	        // 결제 요청
-			if (payway === '카카오페이'){
+			if (payhistoryPayWay === '카카오페이'){
 	            IMP.request_pay({
 	                pg: 'kakaopay.TC0ONETIME',
 	                pay_method: 'card',
@@ -546,7 +488,7 @@
 	                    alert(rsp.error_msg);
 	                }
 	            });
-			} else if (payway === '자바벅스카드'){
+			} else if (payhistoryPayWay === '자바벅스카드'){
 				let cardRegNum = $("input[name='cardRegNum']").val();
 				
 				if (!cardRegNum){

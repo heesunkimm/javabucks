@@ -34,11 +34,11 @@ public class UserMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	public List<AlarmDTO> noReadAlarm(String userId) {
 		return sqlSession.selectList("noReadAlarm", userId);
 	}
-	
+
 	public int readAlarmUpdate(String userId) {
 		return sqlSession.update("readAlarmUpdate", userId);
 	}
@@ -93,15 +93,18 @@ public class UserMapper {
 	public int insertOrderAlarm(AlarmDTO dto) {
 		return sqlSession.insert("insertOrderAlarm", dto);
 	}
-	
+
 	public int insertAlamUpgrade(Map<String, String> params) {
 		return sqlSession.insert("insertAlamUpgrade", params);
 	}
-	
+
 	public int insertAlamCoupon(Map<String, String> params) {
 		return sqlSession.insert("insertAlamCoupon", params);
 	}
-	
+
+	public int getCardCountByUserId(String userId) {
+		return sqlSession.selectOne("getCardCountByUserId", userId);
+	}
 
 	// 카드 충전 금액 증가
 	public int plusCardPrice(Map<String, Object> params) {
@@ -174,20 +177,31 @@ public class UserMapper {
 	public MenuOptMilkDTO getMilkInfo(int optId) {
 		return sqlSession.selectOne("getMilkInfo", optId);
 	}
-	
+
 	@Transactional
 	public void processFrequencyAndUserUpdate(String userId, int quantity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("quantity", quantity);
-        
-        sqlSession.insert("insertFrequency", params);
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("quantity", quantity);
 
-        // User의 frequency count 업데이트
-        sqlSession.update("updateUserFrequencyCount", params);
-    }
+		sqlSession.insert("insertFrequency", params);
+
+		// User의 frequency count 업데이트
+		sqlSession.update("updateUserFrequencyCount", params);
+	}
+
 	public int cpnListStatusChange(int cpnListNum) {
 		return sqlSession.update("cpnListStatusChange", cpnListNum);
+	}
+
+	// cartType이 delivers 인 경우 가장큰 cartNum cartDTO
+	public CartDTO findCartByMaxCartNumForDelivers(String userId) {
+		return sqlSession.selectOne("findCartByMaxCartNumForDelivers", userId);
+	}
+
+	// cartType이 delivers 이 아닌 경우 가장큰 cartNum cartDTO
+	public CartDTO findCartByMaxCartNumForNonDelivers(String userId) {
+		return sqlSession.selectOne("findCartByMaxCartNumForNonDelivers", userId);
 	}
 
 	// 채성진 작업------------------------------------------------------
@@ -222,7 +236,7 @@ public class UserMapper {
 	public int updateGoldAfter(String userId) {
 		return sqlSession.update("updateGoldAfter", userId);
 	}
-	
+
 	public int updateCount(Map<String, Object> params) {
 		return sqlSession.update("updateCount", params);
 	}
@@ -258,7 +272,7 @@ public class UserMapper {
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
- 
+
 	public String getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
 	}
@@ -318,7 +332,7 @@ public class UserMapper {
 	public List<PayhistoryDTO> RecepitByUserid(Map<String, String> params) {
 		return sqlSession.selectList("RecepitByUserid", params);
 	}
-	
+
 	public OrderDTO OrderInfoByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("OrderInfoByHistoryNum", payhistoryNum);
 	}
@@ -338,23 +352,23 @@ public class UserMapper {
 	public CardDTO CardInfoByHistoryNum(int payhistoryNum) {
 		return sqlSession.selectOne("CardInfoByHistoryNum", payhistoryNum);
 	}
-	
+
 	public int insertCart(Map<String, Object> params) {
 		return sqlSession.update("insertCart", params);
 	}
-	
+
 	public int updateCart(Map<String, Object> params) {
 		return sqlSession.update("updateCart", params);
 	}
-	
+
 	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
 		return sqlSession.selectOne("CartinfoByCartNum", params);
 	}
-	
+
 	public List<CartDTO> CartinfoByUserId(String userId) {
 		return sqlSession.selectList("CartinfoByUserId", userId);
 	}
-	
+
 	public int updateCartCount(Map<String, Integer> params) {
 		return sqlSession.update("updateCartCount", params);
 	}
@@ -362,51 +376,52 @@ public class UserMapper {
 	public List<CartDTO> OrderCartByUserid(String userId) {
 		return sqlSession.selectList("OrderCartByUserid", userId);
 	}
-	
+
 	public List<CartDTO> DeliversCartByUserid(String userId) {
 		return sqlSession.selectList("DeliversCartByUserid", userId);
 	}
-	
+
 	public int deleteCart(Map<String, Object> params) {
 		return sqlSession.delete("deleteCart", params);
 	}
-	
+
 	public int deleteAllCartOrder(String userId) {
 		return sqlSession.delete("deleteAllCartOrder", userId);
 	}
-	
+
 	public int deleteAllCartDelivers(String userId) {
 		return sqlSession.delete("deleteAllCartDelivers", userId);
 	}
-	
-	// 민영 작업-------------------------------------------------------------------------
-	
-	public List<OrderDTO> getOrderHistory(Map<String, String> params){
+
+	// 민영
+	// 작업-------------------------------------------------------------------------
+
+	public List<OrderDTO> getOrderHistory(Map<String, String> params) {
 		return sqlSession.selectList("getOrderHistory", params);
 	}
-	
-	public List<OrderDTO> getSearchStatusOrderHistory(Map<String, String> params){
+
+	public List<OrderDTO> getSearchStatusOrderHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchStatusOrderHistory", params);
 	}
-	
-	public List<OrderDTO> getSearchPeriodOrderHistory(Map<String, String> params){
+
+	public List<OrderDTO> getSearchPeriodOrderHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchPeriodOrderHistory", params);
 	}
-	
+
 	public String getMenuName(String menuCode) {
 		return sqlSession.selectOne("getMenuName", menuCode);
 	}
-	
-	public List<OrderDTO> getDeliversHistory(Map<String, String> params){
+
+	public List<OrderDTO> getDeliversHistory(Map<String, String> params) {
 		return sqlSession.selectList("getDeliversHistory", params);
 	}
-	
-	public List<OrderDTO> getSearchStatusDeliversHistory(Map<String, String> params){
+
+	public List<OrderDTO> getSearchStatusDeliversHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchStatusDeliversHistory", params);
 	}
-	
-	public List<OrderDTO> getSearchPeriodDeliversHistory(Map<String, String> params){
+
+	public List<OrderDTO> getSearchPeriodDeliversHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchPeriodDeliversHistory", params);
 	}
-	
+
 }

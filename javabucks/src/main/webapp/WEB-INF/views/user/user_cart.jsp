@@ -22,8 +22,10 @@
 				<p class="font_bold">장바구니</p>
 			</div>
 			<form name="" action="user_paynow" method="post">
-				<input type="hidden" id="modeInput" name="modeInput" value="${pickup}">
+				<input type="hidden" id="modeInput" name="modeInput" value="${modeInput}">
+				<input type="hidden" id="bucksId" name="bucksId" value="${bucksId}">
 				<input type="hidden" id="cart" name="cart" value="cart">
+				<input type="hidden" id="pickup" name="pickup" value="${pickup}">
 				<c:if test="${not empty cart}">
 				<div class="toolbar_box">
 					<label> <input type="checkbox" onclick="toggleCheckboxes(this); updateCheckedCount(); OrderButton()">전체 선택</label>			
@@ -289,6 +291,10 @@
 	   console.log(pickup)
 	   if (userConfirmed) {
 		   
+	   var modeInput = document.getElementById("modeInput").value;
+	   if (userConfirmed) {
+		   
+	   console.log(modeInput);
 		$.ajax({
 	        url: 'deleteCart',
 	        type: 'POST',
@@ -298,11 +304,12 @@
               eachOrAll: AllorEach, // 필요에 따라 이 값을 설정
               	pickup: pickup // 배달인지 주문인지
               	
+            modeInput: modeInput
           }),         
 	        success: function(response) {
 	            if (response.success) {
 	                alert("선택하신 메뉴가 삭제되었습니다.");
-	                window.location = "user_cart?pickup=" + encodeURIComponent(pickup);
+	                window.location = "user_cart?modeInput=" + encodeURIComponent(modeInput);
 	            } else {			
 	                alert("선택한 메뉴는 삭제가 불가합니다.");
 	            }	
