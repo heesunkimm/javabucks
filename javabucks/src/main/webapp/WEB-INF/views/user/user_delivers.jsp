@@ -22,7 +22,7 @@
 				</div>
 
 				<div class="search_box">
-					<form name="" action="user_delivers?mode=store" method="post">
+					<form name="" action="user_delivers?mode=store" method="post" onsubmit="return searchCheck()">
 						<label> 
 							<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="배달주소지" readonly>
 						</label> 
@@ -71,8 +71,8 @@
 								<div class="img_box">
 									<img src="../images/logo/starbucks_logo_black.png" style="width: 50px; height: auto;" alt="">
 								</div> 
-								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksName}</a>
-								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksLocation}</a>
+								<a href="javascript:;">${dto.bucksName}</a>
+								<a href="javascript:;">${dto.bucksLocation}</a>
 								<div class="txt_box"></div>
 							</li>
 						</c:when>
@@ -127,6 +127,15 @@
 			document.getElementById("insertAddress").style.display = "block";
 		}
 	};
+	
+	function searchCheck(){
+		var searchInput = document.getElementById("deliveryAddress").value;
+        if (searchInput.trim() === "") {
+            alert("배달 받으실 주소지를 입력해주세요.");
+            return false;  // 폼 제출을 막음
+        }
+        return true;  // 폼 제출을 허용
+    }
 
 	// 배달주소 검색
 	function checkPost() {

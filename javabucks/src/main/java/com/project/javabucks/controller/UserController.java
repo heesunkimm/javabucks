@@ -91,6 +91,11 @@ public class UserController {
 		UserDTO userDTO = userMapper.getInfoById(userId);
 		// 등급 업그레이드 전 별 갯수
 		int tot = 0;
+		int nowStar = 0;
+		int realStar = 0;
+		int untilStar = 0;
+		int updateCount = 0;
+		int gage = 0;
 		Map<String, Object> params = new HashMap<>();
 		Map<String, String> params2 = new HashMap<>();
 
@@ -100,133 +105,129 @@ public class UserController {
 			if(userDTO.getGradeCode().equals("welcome")) {
 				// 등급 업글된 이후 모아온 별 갯수 
 				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				tot = 0;
+				
 				for(FrequencyDTO fdt : frqDTO) {
 					// 업그레이드 이후 적립된 별 갯수 합
 					tot += fdt.getFrequencyCount();
 				}
-				// 업글 이후로 적립된 별이 일정갯수보다 많으면 업그레이드!
-				int res = userMapper.updateGreen(userId);
-				UserDTO tt = userMapper.getInfoById(userId);
-				String grade = tt.getGradeCode();
-				if(grade.equals("green")) {
+				// 남은 별 + 업그레이드 이후 적립한 별
+				realStar = udto.getReaminStar();
+				nowStar = realStar;
+				// green 가려면 5개
+				gage = (int) ((nowStar / 5.0) * 100);
+				untilStar = 5 - nowStar;
+				req.setAttribute("untilStar", untilStar);
+				req.setAttribute("maxStar", "5");
+				req.setAttribute("frequency", nowStar);
+				req.setAttribute("until", "Green Level");
+				req.setAttribute("progress_bar", gage);
+				
+				// 별 모은 갯수 5개 넘으면 업그레이드
+				if (realStar>= 5){
+					updateCount = realStar - 5;
+					// 남은 별 session에 저장
+					udto.setReaminStar(updateCount);
+					session.setAttribute("inUser", udto);
+					// 별이 일정갯수보다 많으면 알아서 업그레이드!
+					int res = userMapper.updateGreen(userId);
 					// 업그레이드 시 알람 추가
 					params2.put("grade", "Green");
 					params2.put("coupon", "[GREEN 등급 업그레이드]");
 					int cpup = userMapper.cpnInsertGreen(userId);
 					int upres = userMapper.insertAlamUpgrade(params2);
 					int cpres = userMapper.insertAlamCoupon(params2);
-					// 등급 업그레이드 후 별 갯수 업데이트
-					if(tot <= 5) {
-						tot = 0;
-					}else {
-						int updateCount = tot - 5;
-						params.put("frequencyCount",updateCount);
-						int res2 = userMapper.updateCount(params);
-					}
-				}
+					nowStar = updateCount;
+					// gold 가려면 15
+					gage = (int) ((nowStar / 15.0) * 100);
+					untilStar = 15 - nowStar;
+					req.setAttribute("untilStar", untilStar);
+					req.setAttribute("maxStar", "15");
+					req.setAttribute("frequency", nowStar);
+					req.setAttribute("until", "Gold Level");
+					req.setAttribute("progress_bar", gage);	
+				} 
 				
-			}else if(userDTO.getGradeCode().equals("green")) {	
+			}else if(userDTO.getGradeCode().equals("green")) {
 				// 업글 전 모아온 갯수
 				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				tot = 0;
+				
 				for(FrequencyDTO fdt : frqDTO) {
 					// 업그레이드 이후 적립된 별 갯수 합
 					tot += fdt.getFrequencyCount();
 				}
-				int res = userMapper.updateGold(userId);
-				// 업데이트 후 유저 등급 조회
-				UserDTO tt = userMapper.getInfoById(userId);
-				String grade = tt.getGradeCode();
-				if(grade.equals("gold")) { 
+				// 남은 별 + 업그레이드 이후 적립한 별
+				realStar = udto.getReaminStar() + tot;
+				nowStar = realStar;
+				// gold 가려면 15
+				gage = (int) ((nowStar / 15.0) * 100);
+				untilStar = 15 - nowStar;
+				req.setAttribute("untilStar", untilStar);
+				req.setAttribute("maxStar", "15");
+				req.setAttribute("frequency", nowStar);
+				req.setAttribute("until", "Gold Level");
+				req.setAttribute("progress_bar", gage);	
+				
+				// 등급 업그레이드 후 별 갯수 업데이트
+				if(realStar >= 15) {
+					updateCount = realStar - 15;
+					// 남은 별 session에 저장
+					udto.setReaminStar(updateCount);
+					session.setAttribute("inUser", udto);
+					// 별이 일정갯수보다 많으면 알아서 업그레이드!
+					int res = userMapper.updateGold(userId);
 					// 업그레이드 시 알람 추가
 					params2.put("grade", "Gold");
 					params2.put("coupon", "[GOLD 등급 업그레이드]");
 					int cpup = userMapper.cpnInsertGold(userId);
 					int upres = userMapper.insertAlamUpgrade(params2);
 					int cpres = userMapper.insertAlamCoupon(params2);
-					// 등급 업그레이드 후 별 갯수 업데이트
-					if(tot <= 15) {
-						tot = 0;
-					}else {
-						int updateCount = tot - 15;
-						params.put("frequencyCount",updateCount);
-						int res2 = userMapper.updateCount(params);
-					}
-				}
+					nowStar = updateCount;
+					
+					gage = (int) ((nowStar / 30.0) * 100);
+					untilStar = 30 - nowStar;
+					req.setAttribute("untilStar", untilStar);
+					req.setAttribute("maxStar", "30");
+					req.setAttribute("frequency", nowStar);
+					req.setAttribute("until", "next Reward");
+					req.setAttribute("progress_bar", gage);
+				}	
+								
 				
 			}else {
 				String date = userDTO.getUserGradedate();
 				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				tot = 0;
+				
 				for(FrequencyDTO fdt : frqDTO) {
 					// 업그레이드 이후 적립된 별 갯수 합
 					tot += fdt.getFrequencyCount();
 				}
-				int res = userMapper.updateGoldAfter(userId);
+				// 남은 별 + 업그레이드 이후 적립한 별
+				realStar = udto.getReaminStar() + tot;
+				nowStar = realStar;
 				UserDTO tt = userMapper.getInfoById(userId);
 				String gradedate = tt.getUserGradedate();
-				if(gradedate.equals(date)) {
+				if(!gradedate.equals(date)) {
+					updateCount = realStar - 30;
+					// 남은 별 session에 저장
+					udto.setReaminStar(updateCount);
+					session.setAttribute("inUser", udto);
+					// 별이 일정갯수보다 많으면 알아서 업그레이드!
+					int res = userMapper.updateGoldAfter(userId);
+					// 업그레이드 시 알람 추가
 					params2.put("coupon", "[무료 음료 1잔]");
 					int cpdr = userMapper.cpnInsertDrink(userId);
 					int cpres = userMapper.insertAlamCoupon(params2);
-					// 등급 업그레이드 후 별 갯수 업데이트
-					if(tot <= 30) {
-						tot = 0;
-					}else {
-						int updateCount = tot - 30;
-						params.put("frequencyCount",updateCount);
-						int res2 = userMapper.updateCount(params);
-					}
+					nowStar = updateCount;
 				}
+				// goldaward 가려면 30개
+				gage = (int) ((nowStar / 30.0) * 100);
+				untilStar = 30 - nowStar;
+				req.setAttribute("untilStar", untilStar);
+				req.setAttribute("maxStar", "30");
+				req.setAttribute("frequency", nowStar);
+				req.setAttribute("until", "next Reward");
+				req.setAttribute("progress_bar", gage);
 			}
-		
-		// 별 갯수 구하기
-		int frequencyById = 0;
-		int frequency = 0;
-		UserDTO userDTO2 = userMapper.getInfoById(userId);
-		List<FrequencyDTO> list = userMapper.getFrequencyById(userId);
-		// 등급 업데이트되면 별 갯수 초기화
-		if (list == null) {
-			frequency = 0;
-			// 등급 업데이트 후 별 갯수
-		} else {
-			for (FrequencyDTO dto : list) {
-				frequency = frequency + dto.getFrequencyCount();
-			}
-		}
-		// 현재 등급별 별 필요 갯수 및 게이지
-		if (userDTO2.getGradeCode().equals("green")) {
-			// gold 가려면 15
-			int gage = (int) ((frequency / 15.0) * 100);
-			frequencyById = 15 - frequency;
-			req.setAttribute("untilStar", frequencyById);
-			req.setAttribute("maxStar", "15");
-			req.setAttribute("frequency", frequency);
-			req.setAttribute("until", "Gold Level");
-			req.setAttribute("progress_bar", gage);
-
-		} else if (userDTO2.getGradeCode().equals("welcome")) {
-			// green 가려면 5개
-			frequencyById = 5 - frequency;
-			int gage = (int) ((frequency / 5.0) * 100);
-			req.setAttribute("untilStar", frequencyById);
-			req.setAttribute("maxStar", "5");
-			req.setAttribute("frequency", frequency);
-			req.setAttribute("until", "Green Level");
-			req.setAttribute("progress_bar", gage);
-
-			// 골드 등급
-		} else {
-			// goldaward 가려면 30개
-			frequencyById = 30 - frequency;
-			int gage = (int) ((frequency / 30.0) * 100);
-			req.setAttribute("untilStar", frequencyById);
-			req.setAttribute("maxStar", "30");
-			req.setAttribute("frequency", frequency);
-			req.setAttribute("until", "next Reward");
-			req.setAttribute("progress_bar", gage);
-		}
 
 		req.getSession().setAttribute("inUser", udto);
 		return "/user/user_index";
@@ -237,6 +238,10 @@ public class UserController {
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 		List<CouponListDTO> list = userMapper.getCouponListById(userId);
+		for(CouponListDTO tt : list) {
+			String endDate = tt.getCpnListEndDate().substring(0, 10);
+			tt.setCpnListEndDate(endDate);
+		}
 		req.setAttribute("couponlist", list);
 		return "/user/user_cpnhistory";
 	}
@@ -279,30 +284,31 @@ public class UserController {
 		// [음료] 정보, 주문가능한지
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
 		Map<String, String> params = new HashMap<>();
+		Map<String, String> params2 = new HashMap<>();
 		for (MenuDTO md : list) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			String Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status);
-			md.setMenuStatus(Status);
+			String storemenuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(storemenuStatus);
+			md.setMenuStatus(storemenuStatus);
 		} 
 		// [음식] 정보, 주문가능한지
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
 		for (MenuDTO md : list2) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			String Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status);
-			md.setMenuStatus(Status);
+			String storemenuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(storemenuStatus);
+			md.setMenuStatus(storemenuStatus);
 		}
 		// [상품] 정보, 주문가능한지
 		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
 		for (MenuDTO md : list3) {
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
-			String Status = userMapper.getMenuStatus(params);
-			md.setStoremenuStatus(Status);
-			md.setMenuStatus(Status);
+			String storemenuStatus = userMapper.getMenuStatus(params);
+			md.setStoremenuStatus(storemenuStatus);
+			md.setMenuStatus(storemenuStatus);
 		}
 
 		req.setAttribute("drinkList", list);
@@ -1605,6 +1611,7 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
+						
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}

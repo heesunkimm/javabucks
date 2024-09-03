@@ -66,7 +66,7 @@
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">
 				                        </div>                                              
 				                        <div class="txt_box">
-			                         	  <p class="txt_store">${dto.bucksName}</p>
+			                         	  <p class="txt_store">${dto.bucksName} [주문불가]</p>
 			             				  <p class="txt_location">${dto.bucksLocation}</p>
 										  <p class="txt_location">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 				                        </div>
@@ -110,7 +110,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="btn_box">
+                <div class="btn_boxz">
                     <button class="close_btn" type="button" data-popup="pickupselect">닫기</button>
                 </div>
                 <!-- e: 내용 작성 -->

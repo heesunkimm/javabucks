@@ -146,5 +146,18 @@ public class UserDTO {
 	public void setUserFrequencyCount(String userFrequencyCount) {
 		this.userFrequencyCount = userFrequencyCount;
 	}
+	
+	// [채성진] JOIN용 변수 설정
+	private int reaminStar; // 등급 업데이트 후의 별 갯수
+
+	public int getReaminStar() {
+		return reaminStar;
+	}
+
+	public void setReaminStar(int reaminStar) {
+		this.reaminStar = reaminStar;
+	}
+	
+	
 
 }

@@ -344,12 +344,12 @@
  	<!-- 등급 업하면 쿠폰넣어주기 -->
     <insert id="cpnInsertGreen" parameterType="String">
 	    INSERT INTO JAVABUCKS_COUPONLIST
-	    VALUES(seq_cpnListNum, 'G-2', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+	    VALUES(seq_cpnListNum.nextval, 'G-2', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
 	</insert>
 	
 	<insert id="cpnInsertGold" parameterType="String">
 	    INSERT INTO JAVABUCKS_COUPONLIST
-	    VALUES(seq_cpnListNum, 'G-3', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
+	    VALUES(seq_cpnListNum.nextval, 'G-3', #{userId}, '발급완료', sysdate, to_char(add_months(sysdate,+12),'yyyy-mm-dd'), '')
 	</insert>
 	
 	<!-- 골드 이후 30개 채우면 음료쿠폰 -->
@@ -388,9 +388,9 @@
  	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc, cc.cpnPrice
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
- 		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료' 
+ 		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료'
+ 		ORDER by cpnListStartDate desc
  	</select>
- 	
  	<select id="getBucksinfoById" resultType="BucksDTO">
  		SELECT *
  		FROM javabucks_bucks
@@ -434,7 +434,7 @@
  	</select>
  	
  	<select id="getMenuStatus"  parameterType="java.util.Map" resultType="String"> 
- 		 SELECT storeEnable
+ 		 SELECT storemenuStatus
    		 FROM javabucks_storemenu	   		    
    		 WHERE menuCode = #{menuCode}
    		 AND bucksId = #{bucksId} 

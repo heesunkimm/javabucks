@@ -46,8 +46,8 @@
 		                    </c:when>
 		                    <c:when test="${dto.storemenuStatus eq 'N'}">
 		                    	<c:set var="activeClass" value="pdt_dimm" />
-			                    <li class="menu_item">
-			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
+			                    	<li class="menu_item">
+		                    			<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
 			                            </div>
@@ -55,8 +55,8 @@
 			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
 			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
 			                            </div>
-			                        </a>
-			                    </li>
+			                            </a>
+			                   		</li>
 		                    </c:when>
 	                    </c:choose>
                    </c:forEach>
@@ -81,10 +81,10 @@
 			                        </a>
 		                        </li>
 	                      	</c:when>
-	                      	<c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}}">
+	                      	<c:when test="${dto.storemenuStatus eq 'N'}">
 	                      		<c:set var="activeClass" value="pdt_dimm" />
-	                      		<li class="menu_item">
-			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
+	                      			<li class="menu_item">
+	                      				<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                                <img src="upload_menuImages/${dto.menuImages}" alt="">
 			                            </div>
@@ -92,8 +92,8 @@
 			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
 			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
 			                            </div>
-			                        </a>
-		                        </li>
+			                            </a>
+		                        	</li>
 	                      	</c:when>
 	                     </c:choose>  
                     </c:forEach>
@@ -118,10 +118,10 @@
 			                        </a>
 			                    </li>
 		                    </c:when>
-		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}}">
+		                    <c:when test="${dto.storemenuStatus eq 'N'}">
 		                   		<c:set var="activeClass" value="pdt_dimm" />
 			                    <li class="menu_item">
-			                        <a href="user_menudetail?bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
+			                    	<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
 			                            </div>
@@ -129,7 +129,7 @@
 			                                <p class="txt_tit">${dto.menuName} [주문불가]</p>
 			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
 			                            </div>
-			                        </a>
+		                            </a>
 			                    </li>
 		                    </c:when>
 	                    </c:choose>
