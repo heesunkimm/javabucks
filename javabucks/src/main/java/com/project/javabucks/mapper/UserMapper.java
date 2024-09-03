@@ -276,6 +276,10 @@ public class UserMapper {
 	public String getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
 	}
+	
+	public String getMenuStatus2(Map<String, String> params) {
+		return sqlSession.selectOne("getMenuStatus2", params);
+	}
 
 	public List<MenuDTO> getStoreFoodList(String storeName) {
 		return sqlSession.selectList("getStoreFoodList", storeName);
@@ -365,8 +369,12 @@ public class UserMapper {
 		return sqlSession.selectOne("CartinfoByCartNum", params);
 	}
 
-	public List<CartDTO> CartinfoByUserId(String userId) {
-		return sqlSession.selectList("CartinfoByUserId", userId);
+	public List<CartDTO> CartinfoOdByUserId(Map<String, Object> params) {
+		return sqlSession.selectList("CartinfoOdByUserId", params);
+	}
+	
+	public List<CartDTO> CartinfoDlvByUserId(Map<String, Object> params) {
+		return sqlSession.selectList("CartinfoDlvByUserId", params);
 	}
 
 	public int updateCartCount(Map<String, Integer> params) {

@@ -461,7 +461,8 @@
    		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
    		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
    		 WHERE jb.bucksName = #{storeName} 
-   		 AND jm.menuCode LIKE 'B%' 	  		 
+   		 AND jm.menuCode LIKE 'B%'
+   		 AND jm.menuEnable = 'Y' 
  	</select>
  	
  	<select id="getMenuStatus"  parameterType="java.util.Map" resultType="String"> 
@@ -486,7 +487,8 @@
    		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
    		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
    		 WHERE jb.bucksName = #{storeName} 
-   		 AND jm.menuCode LIKE 'C%' 	  		 
+   		 AND jm.menuCode LIKE 'C%' 
+   		 AND jm.menuEnable = 'Y'	  		 
  	</select>
  	
  	<select id="getStoreProdcutList" parameterType="String" resultType="MenuDTO"> 
@@ -495,7 +497,8 @@
    		 JOIN javabucks_bucks jb ON js.bucksId = jb.bucksId
    		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
    		 WHERE jb.bucksName = #{storeName} 
-   		 AND jm.menuCode LIKE 'M%' 	  		 
+   		 AND jm.menuCode LIKE 'M%' 
+   		 AND jm.menuEnable = 'Y'	  		 
  	</select>
  	
  	<select id="getMenuInfoByCode" parameterType="String" resultType="MenuDTO"> 
@@ -668,17 +671,27 @@
  	</select>
  	
  	<!-- 장바구니 id로 조회하기 -->
- 	<select id="CartinfoByUserId" parameterType="String" resultType="CartDTO"> 
+ 	<!-- 오더만 조회 -->
+ 	<select id="CartinfoOdByUserId" parameterType="String" resultType="CartDTO"> 
  		 SELECT *
  		 FROM javabucks_cart		 
- 		 WHERE userId = #{userId}	 				 	  		 
+ 		 WHERE userId = #{userId}
+ 		 AND cartType = #{cartType}	 				 	  		 
+ 	</select>
+ 	
+ 	<!-- 배달만 조회 -->
+ 	<select id="CartinfoDlvByUserId" parameterType="java.util.Map" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}
+ 		 AND cartType = #{cartType}	 				 	  		 
  	</select>
  	
  	<!-- 장바구니에서 메뉴찾기 -->
- 	<select id="MenuByMenuCode" parameterType="String" resultType="MenuDTO"> 
+ 	<select id="MenuByMenuCode" parameterType="java.util.Map" resultType="MenuDTO"> 
  		 SELECT *
  		 FROM javabucks_menu		 
- 		 WHERE menuCode = #{menuCode}	 				 	  		 
+ 		 WHERE menuCode = #{menuCode}
  	</select>
  	
  	<!-- 장바구니에서 인서트하기 -->
