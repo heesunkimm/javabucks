@@ -23,6 +23,7 @@
 			</div>
 			<form name="" action="user_paynow" method="post">
 				<input type="hidden" id="modeInput" name="modeInput" value="${modeInput}">
+				<input type="hidden" id="bucksId" name="bucksId" value="${bucksId}">
 				<input type="hidden" id="cart" name="cart" value="cart">
 				<input type="hidden" id="pickup" name="pickup" value="${pickup}">
 				<c:if test="${not empty cart}">

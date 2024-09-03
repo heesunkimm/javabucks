@@ -846,6 +846,8 @@ public class UserController {
 			int totprice = oneprice * CartDTO.getcartCnt();
 			CartDTO.setEachPrice(oneprice);
 			CartDTO.setTotPrice(totprice);
+			String bucksId = CartDTO.getBucksId();
+			req.setAttribute("bucksId", bucksId);
 		}
 		req.setAttribute("cart", list);
 
@@ -1169,20 +1171,24 @@ public class UserController {
 		UserDTO user = (UserDTO) session.getAttribute("inUser");
 		String userId = user.getUserId();
 
+		int totMenuPrice = 0;
+		int totOptPrice = 0;
+		int totalPrice1 = 0;
+		int totalPrice2 = 0;
+		int cnt = 0;
+		int orderedAmount = 0;
+		int tottotOptPrice = 0;
+		List<String> orderList = new ArrayList<>();
+
 		// 채성진작업--------------------------------------------------------------
 		// 장바구니에서 결제눌렀을때
 		if ("cart".equals(cart)) {
+			int quantity = 0;
 			System.out.println(params);
 			// 체크된 장바구니 메뉴번호, 수량 각각 받아서 dto에 저장
 			List<CartToPay2> cartItemsList = new ArrayList<>();
 			List<CartToPay> ctpList = new ArrayList<>();
 			Map<String, Integer> params3 = new HashMap<>();
-			int totMenuPrice = 0;
-			int totOptPrice = 0;
-			int totalPrice1 = 0;
-			int totalPrice2 = 0;
-			int cnt = 0;
-			int quantity = 0;
 			for (int i = 0; i < cartNum.size(); i++) {
 				params3.put("cartNum", cartNum.get(i));
 				params3.put("cartCnt", cartCnt.get(i));
@@ -1213,6 +1219,7 @@ public class UserController {
 				// bucksid로 매장 정보 조회
 				String bucksId = cdto.getBucksId();
 				BucksDTO bdto = userMapper.getBucksinfoById(bucksId);
+				model.addAttribute("bucksId", bucksId);
 				// params에 매장 이름, 위치 임시로 저장하기
 				params.put("bucksName", bdto.getBucksName());
 				params.put("bucksLocation", bdto.getBucksLocation());
@@ -1271,24 +1278,33 @@ public class UserController {
 					totOptPrice += milkdto.getMilkPrice();
 				}
 				totMenuPrice = mdto.getMenuPrice();
+				orderedAmount += totMenuPrice * cnt;
+				tottotOptPrice += totOptPrice * cnt;
 				totalPrice1 = (totMenuPrice + totOptPrice) * cnt;
 				quantity += cnt;
 				totalPrice2 += totalPrice1;
-				// 페이지로 전송시킬 단일 결제 건 정보
-//					model.addAttribute("optdto", optdto);
-//					model.addAttribute("bdto", bdto);
+
+				String order = mdto.getMenuCode() + ":" + optId + ":" + cdto.getcartCnt();
+				orderList.add(order);
+
 			}
+			String firstOrder = ctpList.get(0).getMenuDTO().getMenuName();
+			System.out.println(firstOrder);
+			model.addAttribute("firstOrder", firstOrder);
 			String bucksName = params.get("bucksName");
 			String bucksLocation = params.get("bucksLocation");
 			String modeInput = params.get("modeInput");
-			model.addAttribute("ctpList", ctpList);
-			model.addAttribute("cart", cart);
 			model.addAttribute("bucksName", bucksName);
 			model.addAttribute("bucksLocation", bucksLocation);
 			model.addAttribute("modeInput", modeInput);
+			model.addAttribute("ctpList", ctpList);
+			model.addAttribute("cart", cart);
 			model.addAttribute("pickup", params.get("pickup"));
 			model.addAttribute("quantity", quantity);
+			model.addAttribute("totMenuPrice", orderedAmount);
 			model.addAttribute("totalPrice", totalPrice2);
+			model.addAttribute("totOptPrice", tottotOptPrice);
+
 		} else {
 
 			String bucksId = params.get("bucksId");
@@ -1322,18 +1338,85 @@ public class UserController {
 			MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
 			int quantity = Integer.parseInt(params.get("quantity"));
 
+			List<CartToPay> ctpList = new ArrayList<>();
+			CartToPay ctp = new CartToPay();
+			ctp.setBucksDTO(bdto);
+			ctp.setBucksId(bucksId);
+			ctp.setMenuDTO(mdto);
+			ctp.setCupDTO(cupdto);
+			ctp.setIceDTO(icedto);
+			ctp.setMenuDTO(mdto);
+			ctp.setMilkDTO(milkdto);
+			ctp.setOptId(optId);
+			ctp.setOptPrice(optPrice);
+			ctp.setOrderOptDTO(optdto);
+			ctp.setShotDTO(shotdto);
+			ctp.setSyrupDTO(syrupdto);
+			ctp.setWhipDTO(whipdto);
+			ctp.setCartCnt(quantity);
+
+			ctpList.add(ctp);
+
+			totOptPrice = 0;
+			// 옵션 가격들 더해주기
+			if (cupdto != null) {
+				totOptPrice += cupdto.getCupPrice();
+			}
+			if (icedto != null) {
+				totOptPrice += icedto.getIcePrice();
+			}
+			if (shotdto != null) {
+				totOptPrice += shotdto.getShotPrice() * optdto.getOptShotCount();
+			}
+			if (whipdto != null) {
+				totOptPrice += whipdto.getWhipPrice();
+			}
+			if (syrupdto != null) {
+				totOptPrice += syrupdto.getSyrupPrice() * optdto.getOptSyrupCount();
+			}
+			if (milkdto != null) {
+				totOptPrice += milkdto.getMilkPrice();
+			}
+
+			totMenuPrice = mdto.getMenuPrice();
+			orderedAmount += totMenuPrice * quantity;
+			tottotOptPrice += totOptPrice * quantity;
+			totalPrice1 = (totMenuPrice + totOptPrice) * quantity;
+			quantity += cnt;
+			totalPrice2 += totalPrice1;
+
 			model.addAttribute("mdto", mdto);
 			model.addAttribute("cart", cart);
 			model.addAttribute("quantity", quantity);
+			model.addAttribute("totMenuPrice", orderedAmount);
+			model.addAttribute("totalPrice", totalPrice2);
+			model.addAttribute("totOptPrice", tottotOptPrice);
 
+			String order = mdto.getMenuCode() + ":" + optId + ":" + quantity;
+			orderList.add(order);
+
+			String firstOrder = ctpList.get(0).getMenuDTO().getMenuName();
+			System.out.println(firstOrder);
+			model.addAttribute("firstOrder", firstOrder);
+			
 			// 페이지로 전송시킬 단일 결제 건 정보
 			model.addAttribute("optdto", optdto);
-
+			model.addAttribute("bucksId", bdto.getBucksId());
 			model.addAttribute("bdto", bdto);
 			String pickup = params.get("pickup");
 			model.addAttribute("pickup", pickup);
-
+			model.addAttribute("ctpList", ctpList);
+			model.addAttribute("cart", cart);
+			model.addAttribute("pickup", params.get("pickup"));
+			model.addAttribute("quantity", quantity);
+			model.addAttribute("totalPrice", totalPrice2);
 		}
+
+		// JSON 문자열로 변환
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonOrderList = objectMapper.writeValueAsString(orderList);
+		System.out.println("JSON Order List: " + jsonOrderList);
+
 		// 자바벅스 카드 리스트 넘기기
 		List<CardDTO> list = userMapper.listRegCardById(userId);
 		model.addAttribute("listCard", list);
@@ -1348,6 +1431,7 @@ public class UserController {
 			cp.setCpnListEndDate(ed);
 			model.addAttribute("couponlist", cplist);
 		}
+		model.addAttribute("orderList", jsonOrderList);
 		return "/user/user_paynow";
 	}
 
@@ -1488,13 +1572,13 @@ public class UserController {
 
 		String payhistoryPayType = "";
 		String orderType = "";
-		if ((params.get("payhistoryPayType")).equals("To-go")) {
+		if ((params.get("payhistoryPayType")).equals("To-go")||(params.get("payhistoryPayType")).equals("togo")) {
 			payhistoryPayType = "주문결제";
 			orderType = "togo";
-		} else if (params.get("payhistoryPayType").equals("매장이용")) {
+		} else if (params.get("payhistoryPayType").equals("매장이용")||(params.get("payhistoryPayType")).equals("order")) {
 			payhistoryPayType = "주문결제";
 			orderType = "order";
-		} else if ((params.get("payhistoryPayType")).equals("Delivers")) {
+		} else if ((params.get("payhistoryPayType")).equals("Delivers")||(params.get("payhistoryPayType")).equals("delivers")) {
 			payhistoryPayType = "배달결제";
 			orderType = "delivers";
 		} else {
@@ -1970,9 +2054,15 @@ public class UserController {
 		switch (pickUp) {
 		case "매장이용":
 			return "A";
+		case "order":
+			return "A";
+		case "togo":
+			return "B";
 		case "To-go":
 			return "B";
 		case "Delivers":
+			return "C";
+		case "delivers":
 			return "C";
 		default:
 			throw new IllegalArgumentException("Invalid pickUp value: " + pickUp);
