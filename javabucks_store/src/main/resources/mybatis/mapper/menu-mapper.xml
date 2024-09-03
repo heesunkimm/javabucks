@@ -16,14 +16,18 @@
 	</insert>
 	
 	<!-- 지점에 이미 등록된 메뉴가 있는지 확인 -->
-	<select id="getMenuByStore" parameterType="java.util.Map" resultType="StoreMenuDTO">
+	<select id="getMenuByStore" parameterType="StoreMenuDTO" resultType="StoreMenuDTO">
 	    select sm.*, m.menuEnable, m.menuStatus, m.menuName 
 	    from javabucks_storemenu sm 
-        inner join javabucks_menu m ON sm.menuCode = m.menuCode
-	    where sm.storeEnable = 'N' and sm.storemenuStatus in ('N', 'Y') 
-	    and sm.menuCode = #{menuCode} and sm.bucksId = #{bucksId} and m.menuStatus = 'Y'
+	    inner join javabucks_menu m ON sm.menuCode = m.menuCode
+	    where sm.menuCode = #{menuCode} and sm.bucksId = #{bucksId}
 	</select>
 	
+	<!-- 기존에 등록된 메뉴코드와 동일하다면 상태 업데이트 -->
+	<update id="updateMenuStatus" parameterType="StoreMenuDTO">
+	    update javabucks_storemenu set storeEnable = 'N', storemenuStatus = 'Y' where menuCode = #{menuCode} and bucksId = #{bucksId}
+	</update>
+
 	<!-- 지점에 등록된 메뉴 중 이미 주문막기 처리가 됐는지 여부 확인 -->
 	<select id="getMenuByStatus" parameterType="java.util.Map" resultType="StoreMenuDTO">
 	    select sm.*, m.menuEnable, m.menuStatus, m.menuName 
@@ -35,10 +39,10 @@
 	
 	<!-- 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 버튼 유지 -->
 	<select id="getSelectedMenu" parameterType="String" resultType="StoreMenuDTO">
-		select sm.*, m.menuEnable, m.menuStatus, m.menuName 
-	    from javabucks_storemenu sm 
-        inner join javabucks_menu m ON sm.menuCode = m.menuCode 
-		where sm.bucksId = #{bucksId} and  m.menuEnable = 'Y' sm.storeEnable = 'N' 
+		select sm.*, m.menuEnable, m.menuStatus 
+		from javabucks_storemenu sm
+		inner join javabucks_menu m ON sm.menuCode = m.menuCode 
+		where sm.bucksId = #{bucksId}
 	</select>
 	
 	<!-- 조건에 해당하는 음료 리스트 뽑기 -->

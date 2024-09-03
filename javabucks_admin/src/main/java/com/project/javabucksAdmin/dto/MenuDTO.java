@@ -10,6 +10,7 @@ public class MenuDTO {
 	private String menuEnable;
 	private String menuoptCode;
 	private String menuregDate;
+	private String menuStatus;
 	
 	public String getMenuCode() {
 		return menuCode;
@@ -58,5 +59,11 @@ public class MenuDTO {
 	}
 	public void setMenuregDate(String menuregDate) {
 		this.menuregDate = menuregDate;
+	}
+	public String getMenuStatus() {
+		return menuStatus;
+	}
+	public void setMenuStatus(String menuStatus) {
+		this.menuStatus = menuStatus;
 	}
 }

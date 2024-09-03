@@ -26,8 +26,12 @@ public class MenuMapper {
 		return sqlSession.insert("addMenu",dto);
 	}
 	// 지점에 이미 등록된 메뉴가 있는지 확인
-	public StoreMenuDTO getMenuByStore(Map<String, Object> params) {
-	    return sqlSession.selectOne("getMenuByStore", params);
+	public List<StoreMenuDTO> getMenuByStore(StoreMenuDTO dto) {
+	    return sqlSession.selectList("getMenuByStore", dto);
+	}
+	// 기존에 등록된 메뉴코드와 동일하다면 상태 업데이트
+	public int updateMenuStatus(StoreMenuDTO dto) {
+		return sqlSession.update("updateMenuStatus", dto);
 	}
 	// 지점에 등록된 메뉴 중 이미 주문막기 처리가 됐는지 여부 확인
 	public StoreMenuDTO getMenuByStatus(Map<String, Object> params) {

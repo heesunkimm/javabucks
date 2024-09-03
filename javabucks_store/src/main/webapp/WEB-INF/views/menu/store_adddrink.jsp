@@ -148,29 +148,31 @@
 	// 추가된 메뉴 리스트 불러오기 - 메뉴 추가 후 상태변경, 버튼 유지
 	function updateStatus() {
 	    let bucksId = `${inBucks.bucksId}`;
-	    
+	
 	    $.ajax({
 	        url: '${pageContext.request.contextPath}/getSelectedMenu.ajax',
 	        type: 'GET',
-	        data: {bucksId: bucksId},
+	        data: { bucksId: bucksId },
 	        dataType: 'json',
 	        success: function(res) {
-				// 메뉴 리스트 새로 업데이트
 	            $('.menu_list .menu_item').each(function () {
 	                let $btn = $(this).find('.menuAddBtn');
 	                let menuCode = $btn.data('code');
-
+	
 	                let item = res.find(item => item.menuCode === menuCode);
-	                if (item && item.storeEnable === 'N') {
-	                    $btn.addClass('btn_disable').attr('data-status', 'N');
-	                }else {
-						$btn.removeClass('btn_disable').attr('data-status', 'Y');
-					}
-					console.log(item && item.storeEnable);
+	
+	                if (item) {
+	                    // 상태에 따라 버튼 클래스와 data-status 업데이트
+	                    if (item.storeEnable === 'N') {
+	                        $btn.addClass('btn_disable').attr('data-status', 'N');
+	                    } else if (item.storeEnable === 'Y') {
+	                        $btn.removeClass('btn_disable').attr('data-status', 'Y');
+	                    }
+	                }
 	            });
 	        },
 	        error: function(err) {
-	            console.error('AJAX 요청 실패:', err);
+	            console.log('Error: ', err);
 	        }
 	    });
 	}
@@ -181,32 +183,39 @@
 	    let menuName = $btn.data('name');
 	    let storeId = $btn.data('store');
 	    let menuCode = $btn.data('code');
-
+	
 	    let data = {
 	        bucksId: storeId,
-	        menuCode: menuCode,
-	    }
-	    
+	        menuCode: menuCode
+	    };
+	
 	    // 이미 비활성화된 버튼 클릭 불가
 	    if ($btn.hasClass('btn_disable')) {
 	        return;
 	    }
-	    
-		$.ajax({
+	
+	    $.ajax({
 	        url: '${pageContext.request.contextPath}/addMenu.ajax',
 	        type: 'POST',
 	        data: JSON.stringify(data),
 	        contentType: "application/json",
-	        dataType: "text",
+	        dataType: "json",
 	        success: function(res) {
-	        	alert(res);
-	        	$btn.addClass('btn_disable').attr('data-status', 'N');
-	        	updateStatus();
+	        	// 지점 메뉴추가 알람
+	            alert(res.status === "updated" ? "메뉴 상태가 업데이트되었습니다." : menuName + "지점 메뉴에 추가되었습니다.");
+	            
+	            if (res.status === "updated" || res.status === "added") {
+	                // 버튼 상태 변경
+	                if (res.storeEnable === "Y") {
+	                    $btn.removeClass('btn_disable').attr('data-status', 'Y');
+	                } else {
+	                    $btn.addClass('btn_disable').attr('data-status', 'N');
+	                }
+	            }
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);
 	        }
 	    });
 	});
-
 </script>
