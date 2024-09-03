@@ -92,82 +92,46 @@ public class LoginController {
 		params.put("tel3", tel3);
 		params.put("grade", grade);
 		
-		// 회원가입 INSERT
-		int res =  loginMapper.insertUser(params);
-		 
-		if(res>0) {
-			// 웰컴 쿠폰 발급 INSERT
-			int cpnres = loginMapper.insertRegisterCoupon(userId);
-			if(cpnres > 0) {
-				// 생일자 쿠폰 발급 INSERT
-				// 오늘 날짜 가져오기
-		        LocalDate today = LocalDate.now();
-		        // 생일 가져오기
-		        String byear = "2024";
-		        String bmonth = birth.substring(4, 6);
-		        String bday = birth.substring(6, 8);
-		        String userBirth = byear+ bmonth +bday;
-		        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyyMMdd");
-		        LocalDate birthday = LocalDate.parse(userBirth, formatter2);
+		// 오늘 날짜 가져오기
+        LocalDate today = LocalDate.now();
+        // 생일 가져오기
+        String byear = "2024";
+        String bmonth = birth.substring(4, 6);
+        String bday = birth.substring(6, 8);
+        String userBirth = byear+ bmonth +bday;
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate birthday = LocalDate.parse(userBirth, formatter2);
 
-		        // 만약 생일이 이미 지나갔다면, 다음 해 생일로 계산
-		        if (birthday.isBefore(today)) {
-		            birthday = birthday.plusYears(1);
-		        }
-		        
-		        // 생일까지의 차이 계산
-		        long daysUntilBirthday = ChronoUnit.DAYS.between(today, birthday);
-	            
-		        //System.out.println("today: "+today);
-		        //System.out.println("birthday: "+birthday);
-				//System.out.println("daysUntilBirthday: "+daysUntilBirthday);
-		        
-			    if(daysUntilBirthday <= 7) {
-			    	// 생일쿠폰 발급
-			    	int bcpnres = loginMapper.insertBdayCoupon(userId);
-			    	if(bcpnres > 0) {
-			    		// 알람 INSERT
-						int alarmres = loginMapper.insertRegisterAlarm(userId);
-						if(alarmres > 0) {
-							int alarmres2 = loginMapper.insertBdayCouponAlarm(userId);
-							if(alarmres2 > 0) {
-								req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
-								req.setAttribute("url","user_login");
-							} else {
-								req.setAttribute("msg","생일 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
-								req.setAttribute("url","user_login");
-							}
-							
-						} else {
-							req.setAttribute("msg","웰컴 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
-							req.setAttribute("url","user_login");
-						}
-			    		
-			    	} else {
-			    		req.setAttribute("msg","생일 쿠폰 발급 실패! 관리자에게 문의해주세요.");
-						req.setAttribute("url","user_login");
-			    	}
-			    } else {
-			    	// 알람 INSERT
-					int alarmres2 = loginMapper.insertRegisterAlarm(userId);
-					if(alarmres2 > 0) {
-						req.setAttribute("msg","회원가입 성공! 로그인 페이지로 이동합니다.");
-						req.setAttribute("url","user_login");
-					} else {
-						req.setAttribute("msg","웰컴 쿠폰 알람 INSERT 실패! 관리자에게 문의해주세요.");
-						req.setAttribute("url","user_login");
-					}
-			    }
-			} else {
-				req.setAttribute("msg","WELCOME 쿠폰 발급 실패! 관리자에게 문의해주세요.");
-				req.setAttribute("url","user_login");
-			}			
-		}else {
-			req.setAttribute("msg", "회원가입 실패! 다시 시도 해주세요");
-			req.setAttribute("url","user_join");
-		}
-		
-		// 생일자 확인
+        // 만약 생일이 이미 지나갔다면, 다음 해 생일로 계산
+        if (birthday.isBefore(today)) {
+            birthday = birthday.plusYears(1);
+        }
+        
+        // 생일까지의 차이 계산
+        long daysUntilBirthday = ChronoUnit.DAYS.between(today, birthday);
+        
+        int registerResult = 0;
+        // 가입했는데 생일이 일주일 이내인 경우
+	    if(daysUntilBirthday <= 7) {
+	    	registerResult = loginMapper.insertUser(params);
+	    	if(registerResult > 0) {
+	    		loginMapper.insertBday(params);
+	    		req.setAttribute("msg","회원가입 완료! 로그인 후 이용해주세요.");
+	    	}else {
+	    		req.setAttribute("msg","회원가입 실패! 관리자에게 문의해주세요.");
+	    	}
+	    } 
+	    // 가입했는데 생일이 일주일 이내에 해당하지 않는 경우
+	    else {
+	    	registerResult = loginMapper.insertUser(params);
+	    	if(registerResult > 0) {
+	    		loginMapper.insertNotBday(params);
+	    		req.setAttribute("msg","회원가입 완료! 로그인 후 이용해주세요.");
+	    	}else {
+	    		req.setAttribute("msg","회원가입 실패! 관리자에게 문의해주세요.");
+	    	}
+	    }
+		req.setAttribute("url", "user_login");
 		
 		return "message";
 	}
