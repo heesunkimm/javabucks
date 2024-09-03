@@ -36,12 +36,13 @@
 		                <li class="search_item">
 		                    <div class="search_toolbar">
 		                        <p style="width: 14%;">주문번호</p>
-		                        <p style="width: 46%;">주문내역</p>
-		                        <p style="width: 15%;">주문금액</p>
+		                        <p style="width: 41%;">주문내역</p>
+		                        <p style="width: 10%;">주문상태</p>
+		                        <p style="width: 10%;">주문금액</p>
 		                        <p style="width: 25%;">주문일시</p>
 		                    </div>
 		                    <p class="order_num" style="width: 14%; text-align: center;">${delivers.orderCode}</p>
-		                    <ul class="menu_list" style="width: 46%;">
+		                    <ul class="menu_list" style="width: 41%;">
 		                    	<c:forEach var="menuOrder" items="${delivers.orderListbyMenuOrder}">
 		                        	<li class="menu_item">${menuOrder.menuName} ${menuOrder.quantity}개</li>
 			                        <li class="menu_opt" id="cup_opt">- CUP : ${menuOrder.cupType}  (${menuOrder.cupPrice}원)</li>
@@ -52,7 +53,8 @@
 			                        <li class="menu_opt" id="milk_opt">- MILK : ${menuOrder.milkType}  (${menuOrder.milkPrice}원)</li>
 		                        </c:forEach>
 		                    </ul>
-		                    <p class="order_price" style="width: 15%; text-align: center;"><fmt:formatNumber value="${delivers.orderPrice}" pattern="###,###"/>원</p>
+		                    <p class="order_status" style="width: 10%; text-align: center;">${delivers.orderStatus}</p>
+		                    <p class="order_price" style="width: 10%; text-align: center;"><fmt:formatNumber value="${delivers.orderPrice}" pattern="###,###"/>원</p>
 		                    <p class="order_date" style="width: 25%; text-align: center;">${delivers.orderDate}</p>
 		                </li>
 		            </c:forEach>
