@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.javabucksAdmin.dto.BaljooDTO;
 import com.project.javabucksAdmin.dto.BucksDTO;
@@ -102,7 +103,9 @@ public class SalesController {
             @RequestParam("bucksTel2") String bucksTel2,
             @RequestParam("bucksTel3") String bucksTel3,
             @RequestParam("bucksEmail1") String bucksEmail1,
-            @RequestParam("bucksEmail2") String bucksEmail2) {
+            @RequestParam("bucksEmail2") String bucksEmail2,
+		@RequestParam("startTime") String startTime,
+			@RequestParam("endTime") String endTime) {
        
         BucksDTO dto = new BucksDTO();
         dto.setBucksId(bucksId);
@@ -115,6 +118,8 @@ public class SalesController {
         dto.setBucksTel3(bucksTel3);
         dto.setBucksEmail1(bucksEmail1);
         dto.setBucksEmail2(bucksEmail2);
+        dto.setBucksStart(startTime);
+        dto.setBucksEnd(endTime);
 
         
         salesMapper.addBucks(dto);
@@ -198,8 +203,11 @@ public class SalesController {
 		            @RequestParam("bucksTel2") String bucksTel2,
 		            @RequestParam("bucksTel3") String bucksTel3,
 		            @RequestParam("bucksEmail1") String bucksEmail1,
-		            @RequestParam("bucksEmail2") String bucksEmail2) {
-		       
+		            @RequestParam("bucksEmail2") String bucksEmail2,
+		            @RequestParam("startTime") String startTime,
+					@RequestParam("endTime") String endTime,
+					RedirectAttributes redirectAttributes) {
+				try {
 		        BucksDTO dto = new BucksDTO();
 		        dto.setBucksId(bucksId);
 		        dto.setBucksName(bucksName);
@@ -209,9 +217,15 @@ public class SalesController {
 		        dto.setBucksTel3(bucksTel3);
 		        dto.setBucksEmail1(bucksEmail1);
 		        dto.setBucksEmail2(bucksEmail2);
+		        dto.setBucksStart(startTime);
+		        dto.setBucksEnd(endTime);
 
 		        
 		        salesMapper.editBucks(dto);
+		        redirectAttributes.addFlashAttribute("message", "지점정보를 업데이트했습니다.");
+		        } catch (Exception e) {
+		            redirectAttributes.addFlashAttribute("errorMessage", "오류가 발생했습니다.");
+		        }
 
 		        return "redirect:/storemanage.do"; // 성공 시 이동할 페이지
 		    }
@@ -512,6 +526,8 @@ public class SalesController {
 			        String branchId = order.getBucksId(); // 지점 등록번호
 			        String branchOwner = order.getBucksOwner(); // 점주명
 			        String payhistoryDate = order.getPayhistoryDate(); // 일자
+			        int coupon = order.getCpnListNum();
+			        //System.out.println("coupon: " + coupon);
 
 			     // 지점과 날짜별 매출 데이터를 초기화
 			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
@@ -528,6 +544,20 @@ public class SalesController {
 			        // 1. 대괄호 제거 및 쉼표로 분리
 			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
 			        String[] items = orderListJson.split(",");
+			        
+			     // 쿠폰 가져오기
+			        
+			       
+			        int couponDiscount = 0;
+
+			        
+			     // 쿠폰이 있을 경우, 쿠폰 할인 금액을 가져옴
+			        if (coupon > 0) {
+			            couponDiscount = salesMapper.getCouponPrice(coupon);
+			       //     System.out.println("couponDiscount: " + couponDiscount);
+			        }
+
+			        boolean isCouponApplied = false; // 쿠폰 적용 여부를 확인하는 변수
 
 			        // 각 아이템 처리
 			        for (String item : items) {
@@ -548,6 +578,14 @@ public class SalesController {
 
 			            // 총 가격 계산 (메뉴 가격 + 옵션 가격) * 수량
 			            int totalPrice = (menuPrice + optionPrice) * quantity;
+			            
+			         // 음료 카테고리에 쿠폰을 적용
+			            if (!isCouponApplied && couponDiscount > 0 && category.equals("음료")) {
+			                totalPrice -= couponDiscount;
+			                // 쿠폰 적용 후 음수가 되지 않도록 체크
+			                totalPrice = Math.max(totalPrice, 0);
+			                isCouponApplied = true; // 쿠폰이 적용되었음을 표시
+			            }
 
 			            // 해당 카테고리의 매출 합산
 			            totalSalesByCategory.put(category, totalSalesByCategory.get(category) + totalPrice);
@@ -630,6 +668,10 @@ public class SalesController {
 			        String branchId = order.getBucksId(); // 지점 등록번호
 			        String branchOwner = order.getBucksOwner(); // 점주명
 			        String payhistoryDate = order.getPayhistoryDate(); // 일자
+			        int coupon = order.getCpnListNum();
+			        //System.out.println("coupon: " + coupon);
+			        int couponDiscount = 0;
+
 
 			     // 지점과 날짜별 매출 데이터를 초기화
 			        String branchDateKey = branchId + "_" + payhistoryDate; // 지점 ID와 날짜를 조합하여 키 생성
@@ -646,6 +688,13 @@ public class SalesController {
 			        if ("MD상품".equals(category) || "".equals(category)) {
 			            totalSalesByCategory.putIfAbsent("MD상품", 0);
 			        }
+			        
+			     // 쿠폰이 있을 경우, 쿠폰 할인 금액을 가져옴
+			        if (coupon > 0) {
+			            couponDiscount = salesMapper.getCouponPrice(coupon);
+			        }
+
+			        boolean isCouponApplied = false; // 쿠폰이 적용되었는지 확인하는 변수
 
 			        // 1. 대괄호 제거 및 쉼표로 분리
 			        orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
@@ -681,6 +730,13 @@ public class SalesController {
 			            // 선택된 카테고리와 비교 (코드와 매핑된 이름 비교)
 			            if (!"".equals(category) && !cate.equals(category)) {
 			                continue; // 선택된 카테고리에 맞지 않으면 스킵
+			            }
+			            
+			         // 쿠폰을 음료 카테고리에만 적용
+			            if (!isCouponApplied && couponDiscount > 0 && "음료".equals(cate)) {
+			                totalPrice -= couponDiscount;
+			                totalPrice = Math.max(totalPrice, 0); // 할인 후 가격이 음수일 경우 0으로 설정
+			                isCouponApplied = true; // 쿠폰이 적용되었음을 표시
 			            }
 
 			            // 해당 카테고리의 매출 합산

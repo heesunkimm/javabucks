@@ -66,6 +66,16 @@
                             </select>
                             <button type="button" style="margin-top: 0;" onclick="checkEmail()">중복확인</button>
                         </div>
+                        
+                        <!-- 운영시간 추가 -->
+                        <div class="operating_hours">
+                            <label><span>운영 시작 시간</span>
+                                <input type="time" name="startTime" required>
+                            </label>
+                            <label><span>운영 마감 시간</span>
+                                <input type="time" name="endTime" required>
+                            </label>
+                        </div>
                     </div>
                     <div class="btn_box">
                         <button class="add_btn" type="submit">등록</button>

@@ -47,7 +47,7 @@ public class SalesMapper {
     
   //지점 리스트 
     public List<BucksDTO> bucksList(Map<String, Object> params){
-    	System.out.println(params);
+    	//System.out.println(params);
     	return sqlSession.selectList("bucksList",params);
     }
 
@@ -65,7 +65,7 @@ public class SalesMapper {
     
     //특정 검색 지점 리스트 
     public List<BucksDTO> searchBucks(Map<String, Object> params){
-    	System.out.println(params);
+    	//System.out.println(params);
     	return sqlSession.selectList("searchBucks", params);
     }
     
@@ -130,12 +130,12 @@ public class SalesMapper {
     }
     
     public List<String> baljooNamesByCodes(@Param("codes") List<String> codes) {
-    	System.out.println("매퍼콘솔 : " +codes);
+    	//System.out.println("매퍼콘솔 : " +codes);
     	return sqlSession.selectOne("baljooNameByCode",codes);
     }
 
 	public List<Object> getlistName(String stockCode) {
-		System.out.println("매퍼코드 : "+stockCode);
+		//System.out.println("매퍼코드 : "+stockCode);
 		return sqlSession.selectList("getlistName",stockCode);
 	}
     
@@ -176,7 +176,7 @@ public class SalesMapper {
     
     //쿠폰 코드로 쿠폰가격 가져오기
     public int getCouponPrice(int coupon) {
-    	System.out.println("coupon : " + coupon);
+    	//System.out.println("coupon : " + coupon);
     	return sqlSession.selectOne("getCouponPrice", coupon);
     }
     
@@ -198,6 +198,7 @@ public class SalesMapper {
  			}
  	
  	public List<PayhistoryDTO> searchDailySales(Map<String, Object> params) {
+ 		//System.out.println(params);
  		return sqlSession.selectList("searchDailySales",params);
  	}
 

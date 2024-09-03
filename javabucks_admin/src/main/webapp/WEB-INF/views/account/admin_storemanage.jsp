@@ -2,38 +2,8 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="../admin_top.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<style>
-.paging {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-.paging a {
-    margin: 0 3px; /* 좌우 간격을 줄여 버튼 사이의 간격을 좁힘 */
-    padding: 5px 10px; /* 패딩을 줄여 버튼을 작게 만듦 */
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    color: #333;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-size: 14px; /* 폰트 크기를 줄여 버튼을 더 작게 만듦 */
-}
-
-.paging a.active {
-    background-color: #006242;
-    color: white;
-    border-color: #006242;
-}
-
-.paging a:hover {
-    background-color: #0056b3;
-    color: white;
-}
-
-</style>
 <section id="admin_storelist" class="content managelist">
         <div class="inner_wrap">
             <div class="tit_box">
@@ -72,29 +42,25 @@
                             <li style="width: 12%;">지점명</li>
                             <li style="width: 13%;">지점등록번호</li>
                             <li style="width: 10%;">점주명</li>
-                            <li style="width: 32%;">위치</li>
+                            <li style="width: 30%;">위치</li>
                             <li style="width: 15%;">전화번호</li>
-                            <li style="width: 8%;">영업상태</li>
-                            <li style="width: 10%;"></li>
+                            <li style="width: 18%;">운영 시간</li> 
+                            <li style="width: 5%;">운영여부</li>
+                            <li style="width: 7%;"></li>
                         </ul>
                         
                          <ul class="search_cont">
                            <li class="store_name" style="width: 12%; text-align: center;">${bucks.bucksName}</li>
                             <li class="store_code" style="width: 13%; text-align: center;">${bucks.bucksId}</li>
                             <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
-                            <li class="store_location" style="width: 32%; text-align: center;">${bucks.bucksLocation}</li>
+                            <li class="store_location" style="width: 30%; text-align: center;">${bucks.bucksLocation}</li>
                             <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
-                            <li class="store_tel" style="width: 8%; text-align: center;">
-                            	<c:choose>
-								       <c:when test="${bucks.bucksEnable == 'Y'}">
-								           영업중
-								       </c:when>
-								       <c:otherwise>
-								           영업정지
-								       </c:otherwise>
-								   </c:choose>
-                            </li>
-                            <li style="width: 10%; text-align: center;">
+                            <li class="store_start_time" style="width: 18%; text-align: center;">
+                                ${fn:substring(bucks.bucksStart, 11, 16)} - ${fn:substring(bucks.bucksEnd, 11, 16)}
+                                 </li>
+                            <li class="store_tel" style="width: 3%; text-align: center;">${bucks.bucksEnable}</li>
+                            
+                            <li style="width: 9%; text-align: center;">
                             <c:choose>
                                         <c:when test="${bucks.bucksEnable == 'Y'}">
                                             <button type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button>
@@ -111,13 +77,13 @@
                 
                 </ul>  
                 <!-- s: 페이징  -->
-               <c:set var="startPage" value="${currentPage <= 2 ? 1 : currentPage - 1}"/>
+              <c:set var="startPage" value="${currentPage <= 2 ? 1 : (currentPage % 3 == 0 ? currentPage - 2 : (currentPage - (currentPage % 3) + 1))}"/>
 				<c:set var="endPage" value="${startPage + 2 > pageCount ? pageCount : startPage + 2}"/>
 				
 				<div class="pagination">
-				    <c:if test="${currentPage > 1}">
-				        <a class="page_btn prev_btn" href="?page=${currentPage - 1}">
-				          <img src="../../images/icons/arrow.png">
+				    <c:if test="${startPage > 1}">
+				        <a class="page_btn prev_btn" href="?page=${startPage - 1}">
+				            <img src="../../images/icons/arrow.png">
 				        </a>
 				    </c:if>
 				
@@ -132,8 +98,8 @@
 				        </c:choose>
 				    </c:forEach>
 				
-				    <c:if test="${currentPage < pageCount}">
-				        <a class="page_btn next_btn" href="?page=${currentPage + 1}">
+				    <c:if test="${endPage < pageCount}">
+				        <a class="page_btn next_btn" href="?page=${startPage + 3}">
 				            <img src="../../images/icons/arrow.png">
 				        </a>
 				    </c:if>
@@ -188,68 +154,82 @@ $(document).ready(function() {
             );
         } else {
             $.each(response.bucksList, function(index, store) {
-                $('.search_list').append(
-                    '<li class="search_item">' +
-                    '<ul class="search_toolbar">'+
-                    '<li style="width: 20%;">지점명</li>'+
-                    '<li style="width: 20%;">지점등록번호</li>'+
-                    '<li style="width: 10%;">점주명</li>'+
-                    '<li style="width: 20%;">위치</li>'+
-                    '<li style="width: 15%;">전화번호</li>'+
-                    '<li style="width: 15%;"></li>'+
-                '</ul>'+
-                    '<ul class="search_cont">' +
-                        '<li class="store_name" style="width: 20%; text-align: center;">' + store.bucksName + '</li>' +
-                        '<li class="store_code" style="width: 20%; text-align: center;">' + store.bucksId + '</li>' +
-                        '<li class="store_owner" style="width: 10%; text-align: center;">' + store.bucksOwner + '</li>' +
-                        '<li class="store_location" style="width: 20%; text-align: center;">' + store.bucksLocation + '</li>' +
-                        '<li class="store_tel" style="width: 15%; text-align: center;">' + store.bucksTel1 + '-' + store.bucksTel2 + '-' + store.bucksTel3 + '</li>' +
-                        '<li style="width: 15%; text-align: center;"><button class="store_btn" type="button" onclick="location.href=\'/editbucks.do?id=' + store.bucksId + '\'">상세보기</button></li>' +
-                    '</ul>' +
-                '</li>'
-                );
-            });
-        }
+            	$('.search_list').append(
+                        '<li class="search_item">' +
+                        '<ul class="search_toolbar">' +
+                            '<li style="width: 12%; text-align: center;">지점명</li>' +
+                            '<li style="width: 13%; text-align: center;">지점등록번호</li>' +
+                            '<li style="width: 10%; text-align: center;">점주명</li>' +
+                            '<li style="width: 30%; text-align: center;">위치</li>' +
+                            '<li style="width: 15%; text-align: center;">전화번호</li>' +
+                            '<li style="width: 18%; text-align: center;">운영 시간</li>' +
+                            '<li style="width: 5%; text-align: center;">운영여부</li>' +
+                            '<li style="width: 7%;"></li>' +
+                        '</ul>' +
+                        '<ul class="search_cont">' +
+                            '<li class="store_name" style="width: 12%; text-align: center;">' + store.bucksName + '</li>' +
+                            '<li class="store_code" style="width: 13%; text-align: center;">' + store.bucksId + '</li>' +
+                            '<li class="store_owner" style="width: 10%; text-align: center;">' + store.bucksOwner + '</li>' +
+                            '<li class="store_location" style="width: 30%; text-align: center;">' + store.bucksLocation + '</li>' +
+                            '<li class="store_tel" style="width: 15%; text-align: center;">' + store.bucksTel1 + '-' + store.bucksTel2 + '-' + store.bucksTel3 + '</li>' +
+                            '<li class="store_start_time" style="width: 18%; text-align: center;">' + 
+                                store.bucksStart.substring(11, 16) + ' - ' + store.bucksEnd.substring(11, 16) + 
+                            '</li>' +
+                            '<li class="store_tel" style="width: 5%; text-align: center;">' + store.bucksEnable + '</li>' +
+                            '<li style="width: 9%; text-align: center;">' +
+                                (store.bucksEnable === 'Y' 
+                                    ? '<button type="button" onclick="location.href=\'/editbucks.do?id=' + store.bucksId + '\'">상세보기</button>'
+                                    : '<button type="button" disabled>상세보기</button>') +
+                            '</li>' +
+                        '</ul>' +
+                        '</li>'
+                    );
+                });
+            }
 
         
+     // 페이징 처리
+        updatePagination(response.currentPage, response.pageCount);
+    }
 
-        $('.paging').empty(); // 기존 페이지네이션을 비움
+    function updatePagination(currentPage, pageCount) {
+        $('.pagination').empty(); // 기존 페이지네이션을 비움
 
-        if (response.pageCount > 1) {
-            let startPage = response.currentPage - 2;
-            let endPage = response.currentPage + 2;
+        let startPage = currentPage <= 2 ? 1 : (currentPage % 3 === 0 ? currentPage - 2 : (currentPage - (currentPage % 3) + 1));
+        let endPage = startPage + 2 > pageCount ? pageCount : startPage + 2;
 
-            if (startPage < 1) startPage = 1;
-            if (endPage > response.pageCount) endPage = response.pageCount;
-
-            console.log("Creating pagination from", startPage, "to", endPage);
-
-            $('.paging').append('<a href="#" class="firstPage" data-page="1">First</a>');
-
-            if (response.currentPage > 1) {
-                $('.paging').append('<a href="#" class="prevPage" data-page="' + (response.currentPage - 1) + '">Previous</a>');
-            }
-
-            for (let i = startPage; i <= endPage; i++) {
-                $('.paging').append('<a href="#" class="pageNumber ' + (i === response.currentPage ? 'active' : '') + '" data-page="' + i + '">' + i + '</a>');
-            }
-
-            if (response.currentPage < response.pageCount) {
-                $('.paging').append('<a href="#" class="nextPage" data-page="' + (response.currentPage + 1) + '">Next</a>');
-            }
-
-            $('.paging').append('<a href="#" class="lastPage" data-page="' + response.pageCount + '">End</a>');
-
-            console.log("Pagination HTML:", $('.paging').html());  // 페이징 HTML을 콘솔에 출력
+        if (startPage > 1) {
+            $('.pagination').append('<a class="page_btn prev_btn" href="#" data-page="' + (startPage - 1) + '"><img src="../../images/icons/arrow.png"></a>');
         }
 
-        $(document).on('click', '.paging a', function(event) {
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                $('.pagination').append('<a href="#" class="page_active" data-page="' + i + '">' + i + '</a>');
+            } else {
+                $('.pagination').append('<a href="#" class="page" data-page="' + i + '">' + i + '</a>');
+            }
+        }
+
+        if (endPage < pageCount) {
+            $('.pagination').append('<a class="page_btn next_btn" href="#" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+        }
+
+        // 페이징 버튼 클릭 이벤트 핸들러 설정
+        $('.pagination a').on('click', function(event) {
             event.preventDefault();
             let page = $(this).data('page');
-            fetchPageData(page); // 선택한 페이지로 다시 AJAX 요청
+            fetchPageData(page); // 클릭한 페이지로 데이터를 다시 로드
         });
     }
 });
+
+window.onload = function() {
+    // 성공 메시지 확인 및 알림창 표시
+    var message = "${message}";
+    if (message) {
+        alert(message);
+    }
+}
 
 
 </script>

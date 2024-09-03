@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="../admin_top.jsp"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <section id="admin_editstore" class="content store_info">
         <div class="inner_wrap">
             <div class="tit_box">
@@ -52,6 +53,14 @@
                             </select>
                             <button type="button" style="margin-top: 0;" onclick="checkEmail()">중복확인</button>
                         </div>
+                        <div class="time_box">
+                        <label><span>운영 시작 시간</span>
+                            <input type="time" name="startTime" value="${fn:substring(jbucks.bucksStart, 11, 16)}">
+                        </label>
+                        <label><span>운영 종료 시간</span>
+                            <input type="time" name="endTime" value="${fn:substring(jbucks.bucksEnd, 11, 16)}">
+                        </label>
+                    </div>
                     </div>
                     <div class="btn_box">
                         <button class="add_btn" type="submit">정보수정</button>
