@@ -36,7 +36,7 @@
 	                    </c:forEach>
                     </c:if>
                 </ul>
-                <c:if test="${cardCount <= 5}">
+                <c:if test="${listCardSize < 5}">
                 <!-- 카드등록 페이지 이동 -->
                 <div class="addcard_box div_box">
                     <a class="" href="user_addcard">

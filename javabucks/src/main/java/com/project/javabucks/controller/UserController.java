@@ -217,6 +217,15 @@ public class UserController {
 					int cpdr = userMapper.cpnInsertDrink(userId);
 					int cpres = userMapper.insertAlamCoupon(params2);
 					nowStar = updateCount;
+					
+					// goldaward 가려면 30개
+					gage = (int) ((nowStar / 30.0) * 100);
+					untilStar = 30 - nowStar;
+					req.setAttribute("untilStar", untilStar);
+					req.setAttribute("maxStar", "30");
+					req.setAttribute("frequency", nowStar);
+					req.setAttribute("until", "next Reward");
+					req.setAttribute("progress_bar", gage);
 				}
 				// goldaward 가려면 30개
 				gage = (int) ((nowStar / 30.0) * 100);
@@ -1502,13 +1511,13 @@ public class UserController {
 
 		String payhistoryPayType = "";
 		String orderType = "";
-		if ((params.get("payhistoryPayType")).equals("To-go")) {
+		if ((params.get("payhistoryPayType")).equals("To-go")||(params.get("payhistoryPayType")).equals("togo")) {
 			payhistoryPayType = "주문결제";
 			orderType = "togo";
-		} else if (params.get("payhistoryPayType").equals("매장이용")) {
+		} else if (params.get("payhistoryPayType").equals("매장이용")||(params.get("payhistoryPayType")).equals("order")) {
 			payhistoryPayType = "주문결제";
 			orderType = "order";
-		} else if ((params.get("payhistoryPayType")).equals("Delivers")) {
+		} else if ((params.get("payhistoryPayType")).equals("Delivers")||(params.get("payhistoryPayType")).equals("delivers")) {
 			payhistoryPayType = "배달결제";
 			orderType = "delivers";
 		} else {
