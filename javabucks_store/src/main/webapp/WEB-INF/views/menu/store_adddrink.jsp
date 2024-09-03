@@ -202,9 +202,9 @@
 	        dataType: "json",
 	        success: function(res) {
 	        	// 지점 메뉴추가 알람
-	            alert(res.status === "updated" ? "메뉴 상태가 업데이트되었습니다." : menuName + "지점 메뉴에 추가되었습니다.");
+	            alert(res.status === "addSucess" ? menuName + " 메뉴에 추가되었습니다." : menuName + " 메뉴 추가 실패했습니다.");
 	            
-	            if (res.status === "updated" || res.status === "added") {
+	            if (res.status === "addSucess") {
 	                // 버튼 상태 변경
 	                if (res.storeEnable === "Y") {
 	                    $btn.removeClass('btn_disable').attr('data-status', 'Y');

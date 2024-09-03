@@ -1,22 +1,22 @@
 package com.project.javabucksStore.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.javabucksStore.dto.BucksDTO;
 import com.project.javabucksStore.dto.MenuDTO;
-import com.project.javabucksStore.dto.MenuOrder;
 import com.project.javabucksStore.dto.OrderDTO;
 import com.project.javabucksStore.dto.StoreMenuDTO;
 import com.project.javabucksStore.mapper.MenuMapper;
@@ -73,11 +73,11 @@ public class MenuController {
 	                // 이미 등록된 메뉴의 상태 업데이트
 	                int updateRes = menuMapper.updateMenuStatus(dto);
 	                if (updateRes > 0) {
-	                    response.put("status", "updated");
+	                    response.put("status", "addSucess");
 	                    response.put("storeEnable", dto.getStoreEnable());
 	                    return response;
 	                } else {
-	                    response.put("status", "update_failed");
+	                    response.put("status", "addFail");
 	                    return response;
 	                }
 	            }
@@ -87,11 +87,11 @@ public class MenuController {
 	    // 지점에 메뉴 추가
 	    int res = menuMapper.addMenu(dto);
 	    if (res > 0) {
-	        response.put("status", "added");
+	        response.put("status", "addSucess");
 	        response.put("storeEnable", "Y");
 	        return response;
 	    } else {
-	        response.put("status", "add_failed");
+	        response.put("status", "addFail");
 	        return response;
 	    }
 	}
@@ -102,18 +102,35 @@ public class MenuController {
 	public List<StoreMenuDTO> getSelectedMenu(@RequestParam String bucksId) {
 	    return menuMapper.getSelectedMenu(bucksId);
 	}
-
-	@GetMapping("/store_alldrink")
-	public String getAllDrink(HttpServletRequest req) {
+	
+	@PostMapping("/adminMenuDisableCheck.ajax")
+	@ResponseBody
+	public List<MenuDTO> adminMenuDisableCheck(HttpServletRequest req) {
+		// 세션에서 ID꺼내기
+		HttpSession session = req.getSession();
+		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
+		String bucksId = dto.getBucksId();
+		
+		// 어드민에서 주문막기 처리된 메뉴가 스토어에 있는지 조회
+		List<MenuDTO> disableMenu = menuMapper.adminMenuDisableCheck(bucksId);
+//		for(MenuDTO list : disableMenu) {
+//			System.out.println(list.getMenuName());
+//		}
+		
+		return disableMenu;
+	}
+	
+	@RequestMapping("/store_alldrink")
+	public String getAllDrink(HttpServletRequest req, @RequestParam Map<String, Object> params) {
 		return "/menu/store_alldrink";
 	}
 	
-	@GetMapping("/store_alldessert")
+	@RequestMapping("/store_alldessert")
 	public String getAllDessert() {		
 		return "/menu/store_alldessert";
 	}
 	
-	@GetMapping("/store_allmd")
+	@RequestMapping("/store_allmd")
 	public String getAllMd() {
 		return "/menu/store_allmd";
 	}
@@ -139,7 +156,7 @@ public class MenuController {
 		searchParams.put("menuBase", menuBase);
 	    params.put("menuEnable","Y");
 	    params.put("menuStatus", "Y");
-		
+	    
 	    // 검색 조건에 따라 메뉴 리스트 가져오기	    
 	    List<StoreMenuDTO> drinkList = menuMapper.searchDrinks(searchParams);
 	    
@@ -276,7 +293,7 @@ public class MenuController {
 		return filterList;
 	}
 	
-	// 주문막기 - 상태변경
+	// 주문막기 상태 업데이트
 	@PostMapping("/menuStatusUpdate.ajax")
 	@ResponseBody
 	public String menuStatusUpdate(HttpServletRequest req, @RequestBody StoreMenuDTO dto) {
