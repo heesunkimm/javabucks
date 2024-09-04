@@ -105,7 +105,6 @@ public class UserController {
 		params2.put("userId", userId);
 		// 현재 등급을 가져오기
 		if (userDTO.getGradeCode().equals("welcome")) {
-			System.out.println("들어옴");
 			// 등급 업글된 이후 모아온 별 갯수
 			List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
 
@@ -146,79 +145,7 @@ public class UserController {
 				req.setAttribute("maxStar", "15");
 				req.setAttribute("frequency", nowStar);
 				req.setAttribute("until", "Gold Level");
-
 				req.setAttribute("progress_bar", gage);	
-				
-				// 등급 업그레이드 후 별 갯수 업데이트
-				if(realStar >= 15) {
-					updateCount = realStar - 15;
-					// 남은 별 session에 저장
-					udto.setReaminStar(updateCount);
-					session.setAttribute("inUser", udto);
-					// 별이 일정갯수보다 많으면 알아서 업그레이드!
-					int res = userMapper.updateGold(userId);
-					// 업그레이드 시 알람 추가
-					params2.put("grade", "Gold");
-					params2.put("coupon", "[GOLD 등급 업그레이드]");
-					int cpup = userMapper.cpnInsertGold(userId);
-					int upres = userMapper.insertAlamUpgrade(params2);
-					int cpres = userMapper.insertAlamCoupon(params2);
-					nowStar = updateCount;
-					
-					gage = (int) ((nowStar / 30.0) * 100);
-					untilStar = 30 - nowStar;
-					req.setAttribute("untilStar", untilStar);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", nowStar);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-				}	
-				
-			}else {
-				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				
-				// 업그레이드 이후 적립된 별 갯수 합
-				for(FrequencyDTO fdt : frqDTO) {
-					tot += fdt.getFrequencyCount();
-				}
-				// 남은 별 + 업그레이드 이후 적립한 별
-				// nowStar 진짜 현재 갯수(초과된 별 갯수 + 쌓은 별 갯수) 
-				nowStar = udto.getReaminStar() + tot;
-				// 다음 등급 위해 필요한 갯수
-				nextGrade = 30 - nowStar;
-				
-				if(nowStar >= 30) {
-					System.out.println("골드 이후 ");
-					// updateCount 초과된 별 저장
-					updateCount = nowStar - 30;
-					
-					// 남은 별 session에 저장
-					udto.setReaminStar(updateCount);
-					session.setAttribute("inUser", udto);
-					// 등급 업그레이드
-					int res = userMapper.updateGoldAfter(userId);
-					// 업그레이드 시 알람 추가
-					params2.put("coupon", "[무료 음료 1잔]");
-					int cpdr = userMapper.cpnInsertDrink(userId);
-					int cpres = userMapper.insertAlamCoupon(params2);
-					
-					// goldaward 가려면 30개
-					gage = (int) ((updateCount / 30.0) * 100);
-					nextGrade = 30 - updateCount;
-					req.setAttribute("untilStar", nextGrade);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", updateCount);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-					
-				}else {
-					gage = (int) ((nowStar / 30.0) * 100);
-					req.setAttribute("untilStar", nextGrade);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", nowStar);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-				}
 			}
 
 		} else if (userDTO.getGradeCode().equals("green")) {
@@ -313,10 +240,9 @@ public class UserController {
 				req.setAttribute("progress_bar", gage);
 			}
 		}
-
 		req.getSession().setAttribute("inUser", udto);
 
-		// s: 핑복코드 - 메인 추천메뉴
+		// s: 핑복코드 - 메인 top3 추천메뉴
 		List<OrderDTO> orderInfoList = userMapper.getOrderList(userId);
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -411,7 +337,6 @@ public class UserController {
 				}
 				req.setAttribute("storeList", list2);
 				req.setAttribute("notSearch", "notSearch");
-
 			}
 		}
 
@@ -848,15 +773,12 @@ public class UserController {
 				for (int i = 0; i < tt.size(); i++) {
 					if (i == 0) {
 						menuCode = tt.get(i); // 첫 번째 값
-						System.out.println(menuCode);
 					} else if (i == 1) {
 						String optId2 = tt.get(i); // 두 번째 값
 						optId = Integer.parseInt(optId2);
-						System.out.println(optId);
 					} else if (i == 2) {
 						String quentity2 = tt.get(i);
 						quentity = Integer.parseInt(quentity2); // 세 번째 값
-						System.out.println(quentity);
 					}
 				}
 				// 메뉴코드로 메뉴 정보 조회
@@ -945,7 +867,6 @@ public class UserController {
 	@RequestMapping("/user_cart")
 	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
 
-		System.out.println(params);
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 
@@ -1115,8 +1036,6 @@ public class UserController {
 	@ResponseBody
 	@PostMapping("/afterdeleteCart")
 	public Map<String, Object> afterdeleteCart(HttpSession session, @RequestBody Map<String, List<String>> cartlist) {
-
-		System.out.println(cartlist);
 
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
@@ -1454,7 +1373,6 @@ public class UserController {
 		// 장바구니에서 결제눌렀을때
 		if ("cart".equals(cart)) {
 			int quantity = 0;
-			System.out.println(params);
 			// 체크된 장바구니 메뉴번호, 수량 각각 받아서 dto에 저장
 			List<CartToPay2> cartItemsList = new ArrayList<>();
 			List<CartToPay> ctpList = new ArrayList<>();
