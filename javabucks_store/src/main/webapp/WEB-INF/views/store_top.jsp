@@ -33,7 +33,7 @@
 <body>
     <header class="bg_beige">
         <div class="logo_box img_box">
-            <a href="javascript:;">
+            <a href="/store_index.do">
                 <img src="../images/icons/starbucks_logo.png" alt="">
                 <span>JAVABUCKS</span>
             </a>
