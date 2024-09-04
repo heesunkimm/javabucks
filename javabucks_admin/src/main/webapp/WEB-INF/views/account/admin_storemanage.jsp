@@ -12,14 +12,7 @@
 
             <div class="search_box">
                 <form name="searchForm" action="/searchBucks.do" method="post">
-                    <div style="width: 100%;">
-                        <label>등록일
-                            <input type="date" name="startDate" value="">
-                        </label>
-                        <label>~
-                            <input type="date" name="endDate" value="">
-                        </label>
-                    </div>
+                    
                     <label>지점등록번호
                         <input type="text" name="bucksId" value="">
                     </label>
