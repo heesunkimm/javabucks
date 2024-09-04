@@ -207,7 +207,7 @@
                                 </c:forEach>        
                                 <c:if test="${listCardSize < 5}">
                                 <li class="add_slide card_slide swiper-slide">
-                                    <a href="javascript:;">
+                                    <a href="javascript:;" onclick="confirmAndRedirect()">
                                         <p>JavaBucks 카드를 등록하고 <br/>다양한 혜택을 누려보세요!</p>
                                         <div class="add_icon img_box">
                                             <img src="../images/icons/plus.png" alt="">
@@ -400,19 +400,51 @@
 		    
 		});
 
+		// 카드 번호에 하이픈 추가
+		function formatCardNumber(cardNum) {
+		    // 카드 번호를 하이픈을 추가해서 포맷하는 함수
+		    return cardNum.replace(/(\d{4})(?=\d)/g, '$1-');
+		}
+
+		// 카드 번호에서 하이픈 제거
+		function removeHyphens(cardNum) {
+		    return cardNum.replace(/-/g, '');
+		}
+
 		$(document).ready(function(){
 		    // 카드 이미지 클릭 이벤트
 		    $('.card_slide').on('click', function(){
-		        // 클릭된 카드 슬라이드에서 카드 이름과 잔액을 선택
+		        // 클릭된 카드 슬라이드에서 카드 번호와 관련된 정보를 선택
 		        var cardRegNum = $(this).find('.txt_cardNum').text();
 		        var cardName = $(this).find('.txt_name').text();
 		        var cardPrice = $(this).find('.txt_price').text();
-		
-		        $("input[name='cardRegNum']").val(cardRegNum);
+
+		        // 하이픈을 제거한 카드 번호를 설정
+		        var cardRegNumWithoutHyphens = removeHyphens(cardRegNum);
+
+		        $("input[name='cardRegNum']").val(cardRegNumWithoutHyphens);
 		        console.log($("input[name='cardRegNum']").val());
 		    });
-		});
 
+		    // 카드 번호에 하이픈 추가
+		    $('.card_slide').each(function() {
+		        var cardNumElement = $(this).find('.txt_cardNum');
+		        var rawCardNum = cardNumElement.text();
+		        var formattedCardNum = formatCardNumber(removeHyphens(rawCardNum));
+		        cardNumElement.text(formattedCardNum);
+		    });
+		});
+		
+		function confirmAndRedirect() {
+		    // 확인 창을 띄우고 사용자의 선택을 받습니다.
+		    var userConfirmed = window.confirm("단일 결제라면 주문하신 내역은 사라집니다. 카드등록 페이지로 이동하시겠습니까?");
+		    
+		    if (userConfirmed) {
+		        window.location.href = "/user_addcard";
+		    } else {
+		    	
+		    }
+		}
 		
 		function requestPay() {
 			
@@ -456,26 +488,6 @@
 	                buyer_name: payUser // 구매자 이름
 	            }, function (rsp) {
 	                if (rsp.success) {
-	                	// 카트삭제
-	    				$.ajax({
-	        		        url: '/afterdeleteCart',
-	        		        type: 'POST',
-	        		        contentType: "application/json",
-	        		        data: JSON.stringify({
-	        		        	cartNum: cartNumList
-	        	          }),         
-	        		        success: function(response) {
-	        		            if (response.success) {
-	        		            	console.log("카트삭제성공");
-	        		            } else {			
-	        		            	console.log("구매한 카트가 삭제 실패");
-	        		            }	
-	        		        },
-	        		        error: function() {
-	        		            alert("서버 오류가 발생했습니다.");
-	        		            return;
-	        		        }
-	        		   	 });
 	                    // 결제 성공 시 서버에 데이터 전송
 	                     $.ajax({
 	                    url: 'orderPayCheck.ajax',
@@ -502,9 +514,29 @@
 	                    success: function(response) {
 	                        if (response.status === 'success') {
 	                            alert('결제가 성공적으로 완료되었습니다.');
-	                            window.location.replace("/user_index");
+	                         // 카트삭제
+	                			$.ajax({
+	                		        url: '/afterdeleteCart',
+	                		        type: 'POST',
+	                		        contentType: "application/json",
+	                		        data: JSON.stringify({
+	                		        	cartNum: cartNumList
+	                	          }),         
+	                		        success: function(response) {
+	                		            if (response.success) {
+	                		            	console.log("카트삭제성공");
+	                		            	window.location.replace("/user_index");
+	                		            } else {			
+	                		            	console.log("구매한 카트가 삭제 실패");
+	                		            }	
+	                		        },
+	                		        error: function() {
+	                		            alert("서버 오류가 발생했습니다.");
+	                		        }
+	                		   	 });
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                            return;
 	                        }
 	                    },
 	                    error: function(xhr, status, error) {
@@ -515,6 +547,7 @@
 	                } else {
 	                    // 결제 실패 시 처리
 	                    alert(rsp.error_msg);
+	                    return;
 	                }
 	            });
 			} else if (payhistoryPayWay === '자바벅스카드'){
@@ -524,26 +557,6 @@
 					alert("카드를 선택해주세요");
 					return;
 				}
-				// 카트삭제
-				$.ajax({
-    		        url: '/afterdeleteCart',
-    		        type: 'POST',
-    		        contentType: "application/json",
-    		        data: JSON.stringify({
-    		        	cartNum: cartNumList
-    	          }),         
-    		        success: function(response) {
-    		            if (response.success) {
-    		            	console.log("카트삭제성공");
-    		            } else {			
-    		            	console.log("구매한 카트가 삭제 실패");
-    		            }	
-    		        },
-    		        error: function() {
-    		            alert("서버 오류가 발생했습니다.");
-    		            return;
-    		        }
-    		   	 });
 				// 자바벅스카드로 결제
 				 $.ajax({
 	                    url: 'orderPayBucksCard.ajax',
@@ -570,15 +583,37 @@
 							console.log(res)
 	                    	if (res === 'PASS') {
 	                        	alert("잔액이 부족합니다. 충전 후 다시 이용해 주세요");
+	                        	return;
 	                        } else if (res === 'OK') {
 		                        alert("결제가 완료 되었습니다.");
-		                        window.location.replace("/user_index");
+		                     // 카트삭제
+		            			$.ajax({
+		            		        url: '/afterdeleteCart',
+		            		        type: 'POST',
+		            		        contentType: "application/json",
+		            		        data: JSON.stringify({
+		            		        	cartNum: cartNumList
+		            	          }),         
+		            		        success: function(response) {
+		            		            if (response.success) {
+		            		            	console.log("카트삭제성공");
+		            		            	window.location.replace("/user_index");
+		            		            } else {			
+		            		            	console.log("구매한 카트가 삭제 실패");
+		            		            }	
+		            		        },
+		            		        error: function() {
+		            		            alert("서버 오류가 발생했습니다.");
+		            		        }
+		            		   	 });
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                            return;
 	                        }
 	                    },
 	                    error: function(error) {
 	                        console.error('처리 중 오류가 발생했습니다:', error.message || error);
+	                        return;
 	                    }
 	                });
 				

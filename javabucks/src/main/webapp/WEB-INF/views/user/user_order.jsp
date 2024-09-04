@@ -31,7 +31,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                 		<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y'}">
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}">
 			                    <li class="menu_item">
 			                        <a href="user_menudetail?mode=origin&storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}
 																					&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
@@ -63,7 +63,6 @@
                    </c:forEach>
                 </ul>
             </div>
-            
             
             <div id="cate_foond" class="tab-content">
                 <ul class="menu_list">
@@ -106,14 +105,14 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                 		<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y'}">
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}">
 			                    <li class="menu_item">
 			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
 			                            </div>
 			                            <div class="txt_box">
-			                                <p class="txt_tit">${dto.menuName}</p>
+			                                <p class="txt_tit">${dto.menuName} ${dto.menuStatus}</p>
 			                                <p class="txt_price"><fmt:formatNumber value="${dto.menuPrice}" pattern="#,###"/>원</p>
 			                            </div>
 			                        </a>

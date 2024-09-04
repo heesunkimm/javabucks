@@ -1,5 +1,6 @@
 package com.project.javabucks.controller;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +89,7 @@ public class UserController {
 		// 등급(리워드)
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-		
+
 		UserDTO userDTO = userMapper.getInfoById(userId);
 		// 등급 업그레이드 전 별 갯수
 		int tot = 0;
@@ -99,66 +101,43 @@ public class UserController {
 		int nextGrade = 0;
 		Map<String, Object> params = new HashMap<>();
 		Map<String, String> params2 = new HashMap<>();
-		params.put("userId",userId);
-		params2.put("userId",userId);
-			// 현재 등급을 가져오기 
-			if(userDTO.getGradeCode().equals("welcome")) {
-				System.out.println("들어옴");
-				// 등급 업글된 이후 모아온 별 갯수 
-				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				
-				for(FrequencyDTO fdt : frqDTO) {
-					// 업그레이드 이후 적립된 별 갯수 합
-					tot += fdt.getFrequencyCount();
-				}
-				// 현재 별 갯수
-				nowStar = tot;
-				// green 가려면 5개
-				gage = (int) ((nowStar / 5.0) * 100);
-				untilStar = 5 - nowStar;
-				req.setAttribute("untilStar", untilStar);
-				req.setAttribute("maxStar", "5");
-				req.setAttribute("frequency", nowStar);
-				req.setAttribute("until", "Green Level");
-				req.setAttribute("progress_bar", gage);
-				
-				// 별 모은 갯수 5개 넘으면 업그레이드
-				if (nowStar>= 5){
-					updateCount = nowStar - 5;
-					// 남은 별 session에 저장
-					udto.setReaminStar(updateCount);
-					session.setAttribute("inUser", udto);
-					// 별이 일정갯수보다 많으면 알아서 업그레이드!
-					int res = userMapper.updateGreen(userId);
-					// 업그레이드 시 알람 추가
-					params2.put("grade", "Green");
-					params2.put("coupon", "[GREEN 등급 업그레이드]");
-					int cpup = userMapper.cpnInsertGreen(userId);
-					int upres = userMapper.insertAlamUpgrade(params2);
-					int cpres = userMapper.insertAlamCoupon(params2);
-					nowStar = updateCount;
-					// gold 가려면 15
-					gage = (int) ((nowStar / 15.0) * 100);
-					untilStar = 15 - nowStar;
-					req.setAttribute("untilStar", untilStar);
-					req.setAttribute("maxStar", "15");
-					req.setAttribute("frequency", nowStar);
-					req.setAttribute("until", "Gold Level");
-					req.setAttribute("progress_bar", gage);	
-				} 
-				
-			}else if(userDTO.getGradeCode().equals("green")) {
-				// 업글 전 모아온 갯수
-				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				
-				for(FrequencyDTO fdt : frqDTO) {
-					// 업그레이드 이후 적립된 별 갯수 합
-					tot += fdt.getFrequencyCount();
-				}
-				// 남은 별 + 업그레이드 이후 적립한 별
-				realStar = udto.getReaminStar() + tot;
-				nowStar = realStar;
+		params.put("userId", userId);
+		params2.put("userId", userId);
+		// 현재 등급을 가져오기
+		if (userDTO.getGradeCode().equals("welcome")) {
+			// 등급 업글된 이후 모아온 별 갯수
+			List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
 
+			for (FrequencyDTO fdt : frqDTO) {
+				// 업그레이드 이후 적립된 별 갯수 합
+				tot += fdt.getFrequencyCount();
+			}
+			// 현재 별 갯수
+			nowStar = tot;
+			// green 가려면 5개
+			gage = (int) ((nowStar / 5.0) * 100);
+			untilStar = 5 - nowStar;
+			req.setAttribute("untilStar", untilStar);
+			req.setAttribute("maxStar", "5");
+			req.setAttribute("frequency", nowStar);
+			req.setAttribute("until", "Green Level");
+			req.setAttribute("progress_bar", gage);
+
+			// 별 모은 갯수 5개 넘으면 업그레이드
+			if (nowStar >= 5) {
+				updateCount = nowStar - 5;
+				// 남은 별 session에 저장
+				udto.setReaminStar(updateCount);
+				session.setAttribute("inUser", udto);
+				// 별이 일정갯수보다 많으면 알아서 업그레이드!
+				int res = userMapper.updateGreen(userId);
+				// 업그레이드 시 알람 추가
+				params2.put("grade", "Green");
+				params2.put("coupon", "[GREEN 등급 업그레이드]");
+				int cpup = userMapper.cpnInsertGreen(userId);
+				int upres = userMapper.insertAlamUpgrade(params2);
+				int cpres = userMapper.insertAlamCoupon(params2);
+				nowStar = updateCount;
 				// gold 가려면 15
 				gage = (int) ((nowStar / 15.0) * 100);
 				untilStar = 15 - nowStar;
@@ -166,136 +145,157 @@ public class UserController {
 				req.setAttribute("maxStar", "15");
 				req.setAttribute("frequency", nowStar);
 				req.setAttribute("until", "Gold Level");
-
 				req.setAttribute("progress_bar", gage);	
-				
-				// 등급 업그레이드 후 별 갯수 업데이트
-				if(realStar >= 15) {
-					updateCount = realStar - 15;
-					// 남은 별 session에 저장
-					udto.setReaminStar(updateCount);
-					session.setAttribute("inUser", udto);
-					// 별이 일정갯수보다 많으면 알아서 업그레이드!
-					int res = userMapper.updateGold(userId);
-					// 업그레이드 시 알람 추가
-					params2.put("grade", "Gold");
-					params2.put("coupon", "[GOLD 등급 업그레이드]");
-					int cpup = userMapper.cpnInsertGold(userId);
-					int upres = userMapper.insertAlamUpgrade(params2);
-					int cpres = userMapper.insertAlamCoupon(params2);
-					nowStar = updateCount;
-					
-					gage = (int) ((nowStar / 30.0) * 100);
-					untilStar = 30 - nowStar;
-					req.setAttribute("untilStar", untilStar);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", nowStar);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-				}	
-				
-			}else {
-				List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
-				
-				// 업그레이드 이후 적립된 별 갯수 합
-				for(FrequencyDTO fdt : frqDTO) {
-					
-					tot += fdt.getFrequencyCount();
-				}
-				// 남은 별 + 업그레이드 이후 적립한 별
-				// nowStar 진짜 현재 갯수(초과된 별 갯수 + 쌓은 별 갯수) 
-				nowStar = udto.getReaminStar() + tot;
-				// 다음 등급 위해 필요한 갯수
-				nextGrade = 30 - nowStar;
-				
-				if(nowStar >= 30) {
-					// updateCount 초과된 별 저장
-					updateCount = nowStar - 30;
-					
-					// 남은 별 session에 저장
-					udto.setReaminStar(updateCount);
-					session.setAttribute("inUser", udto);
-					// 등급 업그레이드
-					int res = userMapper.updateGoldAfter(userId);
-					// 업그레이드 시 알람 추가
-					params2.put("coupon", "[무료 음료 1잔]");
-					int cpdr = userMapper.cpnInsertDrink(userId);
-					int cpres = userMapper.insertAlamCoupon(params2);
-					
-					// goldaward 가려면 30개
-					gage = (int) ((updateCount / 30.0) * 100);
-					nextGrade = 30 - updateCount;
-					req.setAttribute("untilStar", nextGrade);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", updateCount);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-					
-				}else {
-					req.setAttribute("untilStar", nextGrade);
-					req.setAttribute("maxStar", "30");
-					req.setAttribute("frequency", nowStar);
-					req.setAttribute("until", "next Reward");
-					req.setAttribute("progress_bar", gage);
-				}
 			}
 
-		req.getSession().setAttribute("inUser", udto);		
-		
-		//s: 핑복코드 - 메인 추천메뉴
+		} else if (userDTO.getGradeCode().equals("green")) {
+			// 업글 전 모아온 갯수
+			List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
+
+			for (FrequencyDTO fdt : frqDTO) {
+				// 업그레이드 이후 적립된 별 갯수 합
+				tot += fdt.getFrequencyCount();
+			}
+			// 남은 별 + 업그레이드 이후 적립한 별
+			realStar = udto.getReaminStar() + tot;
+			nowStar = realStar;
+
+			// gold 가려면 15
+			gage = (int) ((nowStar / 15.0) * 100);
+			untilStar = 15 - nowStar;
+			req.setAttribute("untilStar", untilStar);
+			req.setAttribute("maxStar", "15");
+			req.setAttribute("frequency", nowStar);
+			req.setAttribute("until", "Gold Level");
+
+			req.setAttribute("progress_bar", gage);
+
+			// 등급 업그레이드 후 별 갯수 업데이트
+			if (realStar >= 15) {
+				updateCount = realStar - 15;
+				// 남은 별 session에 저장
+				udto.setReaminStar(updateCount);
+				session.setAttribute("inUser", udto);
+				// 별이 일정갯수보다 많으면 알아서 업그레이드!
+				int res = userMapper.updateGold(userId);
+				// 업그레이드 시 알람 추가
+				params2.put("grade", "Gold");
+				params2.put("coupon", "[GOLD 등급 업그레이드]");
+				int cpup = userMapper.cpnInsertGold(userId);
+				int upres = userMapper.insertAlamUpgrade(params2);
+				int cpres = userMapper.insertAlamCoupon(params2);
+				nowStar = updateCount;
+
+				gage = (int) ((nowStar / 30.0) * 100);
+				untilStar = 30 - nowStar;
+				req.setAttribute("untilStar", untilStar);
+				req.setAttribute("maxStar", "30");
+				req.setAttribute("frequency", nowStar);
+				req.setAttribute("until", "next Reward");
+				req.setAttribute("progress_bar", gage);
+			}
+
+		} else {
+			List<FrequencyDTO> frqDTO = userMapper.getFrequencyById(userId);
+
+			// 업그레이드 이후 적립된 별 갯수 합
+			for (FrequencyDTO fdt : frqDTO) {
+
+				tot += fdt.getFrequencyCount();
+			}
+			// 남은 별 + 업그레이드 이후 적립한 별
+			// nowStar 진짜 현재 갯수(초과된 별 갯수 + 쌓은 별 갯수)
+			nowStar = udto.getReaminStar() + tot;
+			// 다음 등급 위해 필요한 갯수
+			nextGrade = 30 - nowStar;
+
+			if (nowStar >= 30) {
+				// updateCount 초과된 별 저장
+				updateCount = nowStar - 30;
+
+				// 남은 별 session에 저장
+				udto.setReaminStar(updateCount);
+				session.setAttribute("inUser", udto);
+				// 등급 업그레이드
+				int res = userMapper.updateGoldAfter(userId);
+				// 업그레이드 시 알람 추가
+				params2.put("coupon", "[무료 음료 1잔]");
+				int cpdr = userMapper.cpnInsertDrink(userId);
+				int cpres = userMapper.insertAlamCoupon(params2);
+
+				// goldaward 가려면 30개
+				gage = (int) ((updateCount / 30.0) * 100);
+				nextGrade = 30 - updateCount;
+				req.setAttribute("untilStar", nextGrade);
+				req.setAttribute("maxStar", "30");
+				req.setAttribute("frequency", updateCount);
+				req.setAttribute("until", "next Reward");
+				req.setAttribute("progress_bar", gage);
+
+			} else {
+				req.setAttribute("untilStar", nextGrade);
+				req.setAttribute("maxStar", "30");
+				req.setAttribute("frequency", nowStar);
+				req.setAttribute("until", "next Reward");
+				req.setAttribute("progress_bar", gage);
+			}
+		}
+		req.getSession().setAttribute("inUser", udto);
+
+		// s: 핑복코드 - 메인 top3 추천메뉴
 		List<OrderDTO> orderInfoList = userMapper.getOrderList(userId);
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		Map<String, Integer> menuCountMap = new HashMap<>();
 
 		if (!orderInfoList.isEmpty()) {
-		    // 결제 내역이 있을 경우
-		    for (OrderDTO order : orderInfoList) {
-		        try {
-		            List<String> orderList = objectMapper.readValue(order.getOrderList(),
-		                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+			// 결제 내역이 있을 경우
+			for (OrderDTO order : orderInfoList) {
+				try {
+					List<String> orderList = objectMapper.readValue(order.getOrderList(),
+							objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
 
-		            List<MenuOrder> updateOrderHistory = new ArrayList<>();
+					List<MenuOrder> updateOrderHistory = new ArrayList<>();
 
-		            for (String orderItem : orderList) {
-		                String[] s = orderItem.split(":");
-		                String menuCode = s[0];
-		                String optId = s[1];
-		                int quantity = Integer.parseInt(s[2]);
+					for (String orderItem : orderList) {
+						String[] s = orderItem.split(":");
+						String menuCode = s[0];
+						String optId = s[1];
+						int quantity = Integer.parseInt(s[2]);
 
-		                MenuOrder menuOrder = new MenuOrder(menuCode, optId, quantity);
-		                String menuName = userMapper.getMenuName(menuCode);
-		                menuOrder.setMenuName(menuName);
+						MenuOrder menuOrder = new MenuOrder(menuCode, optId, quantity);
+						String menuName = userMapper.getMenuName(menuCode);
+						menuOrder.setMenuName(menuName);
 
-		                updateOrderHistory.add(menuOrder);
-		                menuCountMap.merge(menuCode, quantity, Integer::sum);
-		            }
+						updateOrderHistory.add(menuOrder);
+						menuCountMap.merge(menuCode, quantity, Integer::sum);
+					}
 
-		            order.setOrderListbyMenuOrder(updateOrderHistory);
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		        }
-		    }
+					order.setOrderListbyMenuOrder(updateOrderHistory);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 
-		    // value 값을 기준으로 정렬한 후, 상위 3개의 키를 추출
-		    List<Map.Entry<String, Integer>> entryList = new ArrayList<>(menuCountMap.entrySet());
-		    entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+			// value 값을 기준으로 정렬한 후, 상위 3개의 키를 추출
+			List<Map.Entry<String, Integer>> entryList = new ArrayList<>(menuCountMap.entrySet());
+			entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
-		    List<String> top3MenuCodes = new ArrayList<>();
-		    for (int i = 0; i < Math.min(3, entryList.size()); i++) {
-		        top3MenuCodes.add(entryList.get(i).getKey());
-		    }
+			List<String> top3MenuCodes = new ArrayList<>();
+			for (int i = 0; i < Math.min(3, entryList.size()); i++) {
+				top3MenuCodes.add(entryList.get(i).getKey());
+			}
 
-		    // 상위 3개의 메뉴 정보를 DB에서 조회
-		    List<MenuDTO> top3MenuNames = userMapper.top3MenuNames(top3MenuCodes);
-		    req.setAttribute("top3MenuNames", top3MenuNames);
+			// 상위 3개의 메뉴 정보를 DB에서 조회
+			List<MenuDTO> top3MenuNames = userMapper.top3MenuNames(top3MenuCodes);
+			req.setAttribute("top3MenuNames", top3MenuNames);
 
 		} else {
-		    // 결제 내역이 없을 경우 최신 메뉴 3개를 가져옴
-		    List<MenuDTO> top3MenuNames = userMapper.getLatestMenus();
-		    req.setAttribute("top3MenuNames", top3MenuNames);
+			// 결제 내역이 없을 경우 최신 메뉴 3개를 가져옴
+			List<MenuDTO> top3MenuNames = userMapper.getLatestMenus();
+			req.setAttribute("top3MenuNames", top3MenuNames);
 		}
-		//e: 핑복코드 
+		// e: 핑복코드
 		return "/user/user_index";
 	}
 
@@ -337,7 +337,6 @@ public class UserController {
 				}
 				req.setAttribute("storeList", list2);
 				req.setAttribute("notSearch", "notSearch");
-
 			}
 		}
 
@@ -358,7 +357,6 @@ public class UserController {
 			md.setStoremenuStatus(storemenuStatus);
 			md.setMenuStatus(menuStatus);
 		} 
-
 
 		// [음식] 정보, 주문가능한지
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
@@ -393,31 +391,31 @@ public class UserController {
 
 	@RequestMapping("/user_menudetail")
 	public String menudetail(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
-		
-		// 메뉴코드로 메뉴정보 꺼내오기 
+
+		// 메뉴코드로 메뉴정보 꺼내오기
 		String menuCode = params.get("menuCode");
 		String menuoptCode;
 		// order페이지에서 넘어왔는지
-		if("origin".equals(params.get("mode"))) {
+		if ("origin".equals(params.get("mode"))) {
 			menuoptCode = params.get("menuoptCode");
-		// mymenu에서 넘어왔는지	
-		}else {
+			// mymenu에서 넘어왔는지
+		} else {
 			menuoptCode = userMapper.getMenuOptCode(menuCode);
-			if(menuCode.startsWith("B")) {
+			if (menuCode.startsWith("B")) {
 				params.put("menuCode", menuCode);
 				params.put("drink", "drink");
 			}
 		}
-		
+
 		// mymenu에 담겨있으면 하트 표시
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 		params.put("userId", userId);
 		MymenuDTO mm = userMapper.SearchMyMenu(params);
-		if(mm != null) {
+		if (mm != null) {
 			req.setAttribute("mymenuCheck", "mymenuCheck");
 		}
-		
+
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);
 		req.setAttribute("drink", params.get("drink"));
@@ -578,7 +576,7 @@ public class UserController {
 	@RequestMapping("/user_mymenu")
 	public String userMymenu(HttpSession session, HttpServletRequest req, String mode,
 			@RequestParam Map<String, String> params) {
-
+		
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 
@@ -598,7 +596,18 @@ public class UserController {
 			}
 		}
 		
+		params.put("userId", userId);
 		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
+		for(MenuDTO tt : list) {
+			
+			// 메뉴코드랑 id 넣어서 mymenu 조회
+			params.put("menuCode", tt.getMenuCode());
+			MymenuDTO mm =  userMapper.SearchMyMenu(params);
+			// 조회한 mymenu 매장 id를 list에 넣어주기
+			tt.setBucksId(mm.getBucksId());
+		}
+		// 벅스id 가져와서 마이메뉴 페이지에 넣어주기
+		
 		req.setAttribute("mymenu", list);
 
 		return "/user/user_mymenu";
@@ -764,15 +773,12 @@ public class UserController {
 				for (int i = 0; i < tt.size(); i++) {
 					if (i == 0) {
 						menuCode = tt.get(i); // 첫 번째 값
-						System.out.println(menuCode);
 					} else if (i == 1) {
 						String optId2 = tt.get(i); // 두 번째 값
 						optId = Integer.parseInt(optId2);
-						System.out.println(optId);
 					} else if (i == 2) {
 						String quentity2 = tt.get(i);
 						quentity = Integer.parseInt(quentity2); // 세 번째 값
-						System.out.println(quentity);
 					}
 				}
 				// 메뉴코드로 메뉴 정보 조회
@@ -861,7 +867,6 @@ public class UserController {
 	@RequestMapping("/user_cart")
 	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
 
-		System.out.println(params);
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 
@@ -999,8 +1004,8 @@ public class UserController {
 
 		int totCnt = 0;
 		// 장바구니에 다른 지점 메뉴 담을때 처리
-		// 카트에서 오더만 조회 
-		if("매장이용".equals(params.get("pickup")) || "To-go".equals(params.get("pickup"))) {
+		// 카트에서 오더만 조회
+		if ("매장이용".equals(params.get("pickup")) || "To-go".equals(params.get("pickup"))) {
 			List<CartDTO> dto = userMapper.CartinfoOdByUserId(params);
 			for (CartDTO tt : dto) {
 				if (!params.get("bucksId").equals(tt.getBucksId())) {
@@ -1008,15 +1013,15 @@ public class UserController {
 				}
 				totCnt += tt.getcartCnt();
 			}
-		}else {	
+		} else {
 			// 카드에서 배달만 조회
 			List<CartDTO> dto2 = userMapper.CartinfoDlvByUserId(params);
-				for (CartDTO tt : dto2) {
-					if (!params.get("bucksId").equals(tt.getBucksId())) {
-						return -1;
-					}
-					totCnt += tt.getcartCnt();
+			for (CartDTO tt : dto2) {
+				if (!params.get("bucksId").equals(tt.getBucksId())) {
+					return -1;
 				}
+				totCnt += tt.getcartCnt();
+			}
 		}
 		// 장바구니 수량 20개 넘으면 못담게하기
 		if (quantity + totCnt > 20) {
@@ -1048,6 +1053,10 @@ public class UserController {
 			}
 		} catch (NumberFormatException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid cartNum format", e);
+		}
+		if (list == null || list.size() == 0) {
+			resultMap.put("success", true);
+			return resultMap;
 		}
 
 		for (Integer cartNum : list) {
@@ -1282,7 +1291,12 @@ public class UserController {
 				AlarmDTO adto = new AlarmDTO();
 				adto.setUserId(udto.getUserId());
 				adto.setAlarmCate("charge");
-				adto.setAlarmCont(cdto.getCardName() + "에 " + dto.getPayhistoryPrice() + "원 충전되었습니다.");
+
+				// 천 단위 구분 기호 추가
+				NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
+				String formattedPrice = formatter.format(dto.getPayhistoryPrice());
+
+				adto.setAlarmCont(cdto.getCardName() + "에 " + formattedPrice + "원 충전되었습니다.");
 				userMapper.insertOrderAlarm(adto);
 				response.put("status", "success");
 				response.put("message", "카드 충전이 완료되었습니다.");
@@ -1341,10 +1355,10 @@ public class UserController {
 //		cart 는 단순결제 imme 랑 카트결제 cart 있음
 		UserDTO user = (UserDTO) session.getAttribute("inUser");
 		String userId = user.getUserId();
-		
+
 		if (cartNum == null) {
-	        cartNum = new ArrayList<>();
-	    }
+			cartNum = new ArrayList<>();
+		}
 
 		int totMenuPrice = 0;
 		int totOptPrice = 0;
@@ -1359,7 +1373,6 @@ public class UserController {
 		// 장바구니에서 결제눌렀을때
 		if ("cart".equals(cart)) {
 			int quantity = 0;
-			System.out.println(params);
 			// 체크된 장바구니 메뉴번호, 수량 각각 받아서 dto에 저장
 			List<CartToPay2> cartItemsList = new ArrayList<>();
 			List<CartToPay> ctpList = new ArrayList<>();
@@ -1631,13 +1644,15 @@ public class UserController {
 		String payhistoryPayType = "";
 		String orderType = "";
 
-		if ((params.get("payhistoryPayType")).equals("To-go")||(params.get("payhistoryPayType")).equals("togo")) {
+		if ((params.get("payhistoryPayType")).equals("To-go") || (params.get("payhistoryPayType")).equals("togo")) {
 			payhistoryPayType = "주문결제";
 			orderType = "togo";
-		} else if (params.get("payhistoryPayType").equals("매장이용")||(params.get("payhistoryPayType")).equals("order")) {
+		} else if (params.get("payhistoryPayType").equals("매장이용")
+				|| (params.get("payhistoryPayType")).equals("order")) {
 			payhistoryPayType = "주문결제";
 			orderType = "order";
-		} else if ((params.get("payhistoryPayType")).equals("Delivers")||(params.get("payhistoryPayType")).equals("delivers")) {
+		} else if ((params.get("payhistoryPayType")).equals("Delivers")
+				|| (params.get("payhistoryPayType")).equals("delivers")) {
 			payhistoryPayType = "배달결제";
 			orderType = "delivers";
 		} else {
@@ -1820,25 +1835,25 @@ public class UserController {
 	public String userStore(HttpServletRequest req, @RequestParam Map<String, String> params, String mode,
 			String storeSearch) {
 
-		
 		String menuCode = params.get("menuCode");
 		req.setAttribute("menuCode", params.get("menuCode"));
 //		List<BucksDTO> list = new ArrayList<>();
 
 		// 매장 검색하기
 		if (mode != null) {
-			System.out.println("tt" + menuCode);
+			
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
+				
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
 				// 파라미터를 Map에 담아 전달
 				Map<String, Object> paramMap = new HashMap<>();
 				paramMap.put("searchTerms", searchTerms);
-				
+
 //				if(menuCode != null) {
 //					List<BucksDTO> list = userMapper.getStoreListByMenuCode(menuCode);
 //				}else {
-					List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
+				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
 //				}
 				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
@@ -1859,10 +1874,10 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
-
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}
+				
 				req.setAttribute("storeList", list);
 				req.setAttribute("storeSearch", storeSearch);
 
@@ -2255,8 +2270,5 @@ public class UserController {
 			throw new IllegalArgumentException("Invalid pickUp value: " + pickUp);
 		}
 	}
-	
-	
-	
 
 }
