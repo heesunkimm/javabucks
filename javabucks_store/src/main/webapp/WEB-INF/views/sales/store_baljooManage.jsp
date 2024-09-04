@@ -77,11 +77,66 @@
                         </tbody>
                     </table>
                     <!-- 페이징 -->
-                    <div class="pagination">
-					    <c:forEach var="i" begin="1" end="${totalPages}">
-					        <a href="?year=${param.year}&month=${param.month}&page=${i}&size=${param.size}" class="${i == currentPage ? 'active' : ''}">${i}</a>
-					    </c:forEach>
-					</div>  
+                    <c:if test="${not empty startPage and not empty endPage}">
+                    
+                    <div class="pagination pagination">
+			        <c:if test="${startPage > pageBlock}"> 
+			            <a class="page_btn prev_btn" href="store_baljooManage.do?pageNum=${startPage-3}">
+			                <img src="../../images/icons/arrow.png">
+			            </a>
+			        </c:if>
+			        
+			        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+			            <c:set var="activeClass" value=""/>
+			            <c:choose>
+			                <c:when test="${empty param.pageNum and i == 1}">
+			                    <c:set var="activeClass" value="page_active"/>
+			                </c:when>
+			                <c:when test="${param.pageNum == i}">
+			                    <c:set var="activeClass" value="page_active"/>
+			                </c:when>
+			            </c:choose>
+			            <a href="store_baljooManage.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+			        </c:forEach>
+			        
+			        <c:if test="${pageCount > endPage}">
+			            <a class="page_btn next_btn" href="store_baljooManage.do?pageNum=${startPage+3}">
+			                <img src="../../images/icons/arrow.png">
+			            </a>
+			        </c:if>
+			    </div>
+			    </c:if>
+			    
+			    <c:if test="${not empty startPage2 and not empty endPage2}">
+    <div class="pagination pagination">
+    <c:if test="${startPage2 > pageBlock2}">
+       <a class="page_btn prev_btn" href="searchBaljoo.do?pageNum=${startPage2-3}&year=${param.year}&month=${param.month}">
+            <img src="../../images/icons/arrow.png">
+        </a>
+    </c:if>
+    
+    <c:forEach var="i" begin="${startPage2}" end="${endPage2}">
+        <c:set var="activeClass" value=""/>
+        <c:choose>
+            <c:when test="${empty param.pageNum and i == 1}">
+                <c:set var="activeClass" value="page_active"/>
+            </c:when>
+            <c:when test="${param.pageNum == i}">
+                <c:set var="activeClass" value="page_active"/>
+            </c:when>
+        </c:choose>
+        <a href="searchBaljoo.do?pageNum=${i}&year=${param.year}&month=${param.month}" class="${activeClass} page_num">${i}</a>
+    </c:forEach>
+    
+    <c:if test="${pageCount2 > endPage2}">
+        <a class="page_btn next_btn" href="searchBaljoo.do?pageNum=${startPage2+3}&year=${param.year}&month=${param.month}">
+            <img src="../../images/icons/arrow.png">
+        </a>
+    </c:if>
+</div>
+</c:if>
+			    
+  
                 </div>
             </div>
         </div>

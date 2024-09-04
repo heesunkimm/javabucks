@@ -19,8 +19,8 @@ public class SalesMapper {
 	private SqlSession sqlSession;
 	
 	
-	public List<BaljooDTO> baljooList(String bucksId){
-		return sqlSession.selectList("baljooList",bucksId);
+	public List<BaljooDTO> baljooList(Map<String, Object> params){
+		return sqlSession.selectList("baljooList",params);
 	}
 	
 	public Map<String, Object> getStockInfo(String stockCode){
@@ -32,8 +32,8 @@ public class SalesMapper {
 		return sqlSession.selectList("searchBaljooList",params);
 	}
 	
-	public List<PayhistoryDTO> getSalesList(Map<String, Object> searchParams){
-		return sqlSession.selectList("getSalesList", searchParams);
+	public List<PayhistoryDTO> getSalesList(Map<String, Object> params){
+		return sqlSession.selectList("getSalesList", params);
 	}
 	
 	public int getSalesCount(String bucksId){
@@ -87,5 +87,21 @@ public class SalesMapper {
 		  //System.out.println(coupon);
     	return sqlSession.selectOne("getCouponPrice", coupon);
     }
+	
+	public int baljooCount(String bucksId){
+		return sqlSession.selectOne("baljooCount", bucksId);
+	}
+	public int searchBaljooCount(Map<String, Object> params){
+		return sqlSession.selectOne("searchBaljooCount", params);
+	}
+	
+	public List<BaljooDTO> baljooPriceList(String bucksId){
+		return sqlSession.selectList("baljooPriceList",bucksId);
+	}
+	
+	
+	public List<BaljooDTO> searchBaljooPriceList(Map<String, Object> params){
+		return sqlSession.selectList("searchBaljooPriceList",params);
+	}
 	
 }
