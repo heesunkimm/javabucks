@@ -540,6 +540,7 @@ public class SalesController {
 				params.put("endRow", pagingMap.get("endRow"));
 				
 				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales(params);
+				int priceList = salesMapper.dailyBucksSalesPrice();
 
 				// 지점별로 카테고리별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
@@ -637,7 +638,8 @@ public class SalesController {
 			    req.setAttribute("list", orderList);
 			    //System.out.println(orderList);
 			    
-			    req.setAttribute("total", totalSalesSum);
+			  //  req.setAttribute("total", totalSalesSum);
+			    req.setAttribute("total", priceList);
 
 			    req.setAttribute("startPage", (int)pagingMap.get("startPage"));
 				req.setAttribute("endPage", (int)pagingMap.get("endPage"));

@@ -183,6 +183,10 @@ public class SalesMapper {
     public List<PayhistoryDTO> dailyBucksSales(Map<String, Object> params) {
     	return sqlSession.selectList("dailyBucksSales", params);
     }
+    public int dailyBucksSalesPrice() {
+    	return sqlSession.selectOne("dailyBucksSalesPrice");
+    }
+    
     
     // 메뉴코드의 첫 글자를 통해 카테고리 분류
  	public String categorizeMenu(String menuCode) {
