@@ -68,6 +68,8 @@
 	// 화면 접속완료 시 메뉴 리스트 로딩 함수 실행하여 디폴트 옵션 표출
 	$(document).ready(function() {
         loadMenuList();
+        checkAdminDisabledMenus();
+		setInterval(checkAdminDisabledMenus, 10000);
     });
 	
 	// 체크박스 메뉴 리스트 로딩 함수
@@ -117,6 +119,7 @@
                 }
                 bindEvents();
 	        	updateStatus();
+	        	checkAdminDisabledMenus();
             },
             error: function(err) {
                 console.log("Error: ", err);
@@ -319,4 +322,33 @@
 	        });
 	    });
     }
+    
+	// 어드민에서 주문막기 처리된 메뉴 딤처리 함수
+	function checkAdminDisabledMenus() {
+	    let bucksId = `${inBucks.bucksId}`;
+	
+	    $.ajax({
+	        url: '${pageContext.request.contextPath}/adminMenuDisableCheck.ajax',
+	        type: 'POST',
+	        data: JSON.stringify({ bucksId: bucksId }),
+	        contentType: 'application/json',
+	        dataType: 'json',
+	        success: function(res) {
+	            res.forEach(function(item) {
+	                $('.menu_list .menu_item').each(function() {
+	                    let btns = $(this).find('.btns');
+	                    let menuCode = $(this).find('.holdBtn').data('code');
+	
+	                    if (item.menuCode === menuCode) {
+	                        $(this).addClass('menu_dimm');
+	                        btns.prop('disabled', true);
+	                    }
+	                });
+	            });
+	        },
+	        error: function(err) {
+	            console.error('AJAX 요청 실패:', err);
+	        }
+	    });
+	};
 </script>

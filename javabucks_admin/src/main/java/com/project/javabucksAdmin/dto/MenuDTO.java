@@ -12,14 +12,6 @@ public class MenuDTO {
 	private String menuregDate;
 	private String menuStatus;
 	
-	
-	
-	public String getMenuStatus() {
-		return menuStatus;
-	}
-	public void setMenuStatus(String menuStatus) {
-		this.menuStatus = menuStatus;
-	}
 	public String getMenuCode() {
 		return menuCode;
 	}

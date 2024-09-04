@@ -180,10 +180,17 @@
 		                </div>
 			                
 		                <button type="button" onclick="orderCheck('order')">주문하기</button>
-		                
-		                <button class="addlike" type="button" onclick="addMyMenu()">
-		                    <img src="../images/icons/like.png" alt="">
-		                </button>
+		               
+						<c:if test= "${not empty mymenuCheck}" >
+			                <button class="addlike" type="button" onclick="addMyMenu(this)">
+			                    <img src="../images/icons/like2.png" alt="">
+			                </button>
+						</c:if>
+						<c:if test= "${empty mymenuCheck}" >
+			                <button class="addlike" type="button" onclick="addMyMenu(this)">
+			                    <img src="../images/icons/like.png" alt="">
+			                </button>
+						</c:if>
 		            </div>
 			</form>
     </section>
@@ -553,7 +560,7 @@
 	        });
 	    });
 		    
-	    function addMyMenu() {
+	    function addMyMenu(buttonElement) {
 	        // input 요소에서 값을 가져옵니다.
 	        var menuCode = document.querySelector('input[name="menuCode"]').value;
 	        var bucksId = document.querySelector('input[name="bucksId"]').value;
@@ -570,8 +577,16 @@
 	            success: function(res) {
 	            	if (res > 0){
 	            		alert('나만의 메뉴에 추가되었습니다.');
+	            		// 버튼에 liked 클래스를 추가하고 이미지 변경
+	                    buttonElement.classList.add('liked');
+	                    buttonElement.querySelector('img').src = "../images/icons/like2.png";
+	            	
 	            	}else if(res === -1){
 	            		alert('나만의 메뉴에서 삭제되었습니다.');
+	            		// 버튼에서 liked 클래스를 제거하고 이미지 원래대로 변경
+	                    buttonElement.classList.remove('liked');
+	                    buttonElement.querySelector('img').src = "../images/icons/like.png";
+	            	
 	            	}else {
 	            	
 	            		console.log('처리 중 오류가 발생했습니다.');

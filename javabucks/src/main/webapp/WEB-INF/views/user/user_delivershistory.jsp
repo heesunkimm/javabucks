@@ -132,19 +132,14 @@
 <%@ include file="user_bottom.jsp"%>
 
 <script>
-	function setOneMonth() {
-        var startDate = document.querySelector('input[name="startDate"]').value;
-        var endDate = document.querySelector('input[name="endDate"]').value;
-        startDate = '';
-        endDate = '';
-	}
-	
-	function setThreeMonth() {
-		document.getElementById('startDate').value = '';
-        document.getElementById('endDate').value = '';
-        document.getElementById('startDate').disabled = true;
-        document.getElementById('endDate').disabled = true;
-	}
+	// 기간 선택시 input disabled 유무처리
+	$("input[name='period_option']").change(function(){
+		if($("input[name='period_option']:checked").val() != 'custom') {
+			$(".period_date input[type='date']").prop("disabled", true);
+		}else {
+			$(".period_date input[type='date']").prop("disabled", false);
+		}
+	});
 		
 	function setSearchPeriod(){
 		var orderStatus = document.querySelector('select[name="orderStatus"]').value;

@@ -264,6 +264,10 @@ public class UserMapper {
 	public List<BucksDTO> getStoreList2(List<String> searchTerms) {
 		return sqlSession.selectList("getStoreList2", searchTerms);
 	}
+	
+	public List<BucksDTO> getStoreListByMenuCode(Map<String, Object> params) {
+		return sqlSession.selectList("getStoreListByMenuCode", params);
+	}
 
 	public String getOrderEnableBybucksId(String bucksId) {
 		return sqlSession.selectOne("getOrderEnableBybucksId", bucksId);
@@ -272,9 +276,17 @@ public class UserMapper {
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}
+	
+	public String getMenuOptCode(String menuCode) {
+		return sqlSession.selectOne("getMenuOptCode", menuCode);
+	}
 
 	public String getMenuStatus(Map<String, String> params) {
 		return sqlSession.selectOne("getMenuStatus", params);
+	}
+	
+	public String getMenuStatus2(Map<String, String> params) {
+		return sqlSession.selectOne("getMenuStatus2", params);
 	}
 
 	public List<MenuDTO> getStoreFoodList(String storeName) {
@@ -365,8 +377,12 @@ public class UserMapper {
 		return sqlSession.selectOne("CartinfoByCartNum", params);
 	}
 
-	public List<CartDTO> CartinfoByUserId(String userId) {
-		return sqlSession.selectList("CartinfoByUserId", userId);
+	public List<CartDTO> CartinfoOdByUserId(Map<String, Object> params) {
+		return sqlSession.selectList("CartinfoOdByUserId", params);
+	}
+	
+	public List<CartDTO> CartinfoDlvByUserId(Map<String, Object> params) {
+		return sqlSession.selectList("CartinfoDlvByUserId", params);
 	}
 
 	public int updateCartCount(Map<String, Integer> params) {
@@ -423,5 +439,22 @@ public class UserMapper {
 	public List<OrderDTO> getSearchPeriodDeliversHistory(Map<String, String> params) {
 		return sqlSession.selectList("getSearchPeriodDeliversHistory", params);
 	}
+	
+	//s: 핑복코드 
+	public List<OrderDTO> getOrderList(String userId){
+	      return sqlSession.selectList("getOrderList", userId);
+	   }
+	
+	public List<MenuDTO> top3MenuNames(List<String> top3MenuCodes) {
+	//	System.out.println("top3MenuCodes:"+top3MenuCodes);
+		return sqlSession.selectList("top3MenuNames", top3MenuCodes);
+	}
+	
+	
+	public List<MenuDTO> getLatestMenus() {
+		return sqlSession.selectList("getLatestMenus");
+	}
+	
+	//e:핑복코드
 
 }

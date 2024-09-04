@@ -25,6 +25,7 @@
                     <form name="" action="user_store?mode=store" method="post" onsubmit="return searchCheck()">
                         <label>
                             <input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="검색">
+							<input type="hidden" name="menuCode" value="${menuCode}">
                         </label>
                         <button type="submit">검색</button>
                     </form>
@@ -40,7 +41,8 @@
 	                	<c:choose>
 							<c:when test="${dto.orderEnalbe eq 'Y'}">
 	                			<li class="store_item">
-				                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksId="${dto.bucksId}" data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}">
+				                    <a class="popup_btn" href="javascript:;" data-popup="pickupselect" data-bucksId="${dto.bucksId}" 
+										data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-menuCode="${menuCode}">
 				                        <div class="img_box">
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">
 				                        </div>                                              
@@ -60,7 +62,7 @@
 							<c:when test="${dto.orderEnalbe eq 'N'}">
 								<c:set var="activeClass" value="pdt_dimm" />
 	                			<li class="store_item">
-				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" 
+				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" data-storeName="${dto.storeName}"
 											data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-orderEnable="${dto.orderEnalbe}">
 				                        <div class="img_box">
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">
@@ -84,12 +86,13 @@
             <div class="tit_box">
                 <p class="txt_tit">픽업은 어떻게 하시겠어요?</p>
             </div>
-            <form name="f" action="user_order" method="post">
+            <form name="f" id = "pickupForm" action="user_order" method="post">
                 <!-- s: 내용 작성 -->
                  <input type="hidden" name="store" value="">
                  <input type="hidden" name="pickup" value="">
                  <input type="hidden" name="storeName" value="">
                  <input type="hidden" name="bucksId" value="">
+				 <input type="hidden" name="menuCode" value="">
                 <div class="select_box">
                     <a class="select_btn" href="javascript:;" onclick="submitForm('매장이용')">
                         <div class="img_box">
@@ -144,11 +147,14 @@
 		        // 선택한 매장 정보 가져오기
 		        let bucksName = $(this).data('bucksname');
 		        let bucksId = $(this).data('bucksid');
+				let menuCode = $(this).data('menuCode');
+				let storeName = $(this).data('storeName');
 		        let popupId = $(this).data('popup');
-		
+				
 		        // 팝업 내의 요소들에 매장 정보 삽입
 				$("#pickupselect input[name='storeName']").val(bucksName);
 		        $("#pickupselect input[name='bucksId']").val(bucksId);
+				$("#pickupselect input[name='menuCode']").val(menuCode);
 		        // 팝업 열기
 		        $('#' + popupId).show();
 		        $('.dimm').show();
@@ -173,20 +179,24 @@
 					        }
 			});
 		});
-		 	// ${where} 값이 존재하는지 확인하여 페이지 이동 처리
-		    const whereValue = "${where}"; // JSP에서 넘겨받은 where 값을 자바스크립트로 가져옴
-			console.log(whereValue)
-		    if(whereValue) {
-		        // form을 자동 제출하여 user_menudetail 페이지로 이동
-		        $("form[name='f']").attr('action', 'user_menudetail').submit();
-		    }
-		
 		
 		function submitForm(pickupType) {
 		    // 선택한 pickupType (매장이용 또는 To-go)을 input에 설정
 		    $("input[name='pickup']").val(pickupType);
 
+		    // menuCode 값을 가져오기
+		    let menuCode = $("input[name='menuCode']").val();
+			let storeName = $("input[name='storeName']").val();
+		    
+		    // menuCode가 있는지 확인하고, 있을 경우 action URL을 변경
+		    if (menuCode) {
+		        $("#pickupForm").attr("action", "user_menudetail?menuCode=" + 
+										encodeURIComponent(menuCode) + "&storeName=" + encodeURIComponent(storeName));
+		    } else {
+		        $("#pickupForm").attr("action", "user_order");
+		    }
+
 		    // form 제출
-		    $("form[name='f']").submit();
+		    $("#pickupForm").submit();
 		}
 </script>

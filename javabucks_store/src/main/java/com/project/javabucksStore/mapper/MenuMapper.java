@@ -65,6 +65,10 @@ public class MenuMapper {
 	public List<StoreMenuDTO> searchMdList(Map<String, Object> params) {
 		return sqlSession.selectList("searchMdList", params);
 	}
+	// 어드민에서 주문막기 처리된 메뉴가 스토어에 있는지 조회
+	public List<MenuDTO> adminMenuDisableCheck(String bucksId) {
+		return sqlSession.selectList("adminMenuDisableCheck", bucksId);
+	}
 	// 주문막기 상태 업데이트
 	public int menuStatusUpdate(StoreMenuDTO dto) {
 		return sqlSession.update("menuStatusUpdate", dto);

@@ -189,10 +189,6 @@ public class SalesController {
 	
 	//매출관리 
 	
-//	@GetMapping("/store_sales.do")
-//	public String storeSales() {
-//		return "sales/store_salesmanage";
-//	}
 	
 	@RequestMapping("/store_sales.do")
 	public String allStoreSales(Model model, HttpServletRequest req, 
@@ -367,11 +363,10 @@ public class SalesController {
 	@RequestMapping("/store_selectCate.ajax")
 	@ResponseBody
 	public Map<String, Object> selectCateSales(HttpServletRequest req, 
-	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
-	        @RequestParam(value = "pageSize", required = false, defaultValue = "5") int pageSize,
 	        @RequestParam(value = "menu_cate", required = false) String menuCate,
 	        @RequestParam(value = "disert_cate", required = false) String disertCate,
-	        @RequestParam(value = "Md_cate", required = false) String mdCate) {
+	        @RequestParam(value = "Md_cate", required = false) String mdCate,
+	        @RequestParam(value = "pageNum", defaultValue = "1") int pageNum){
 
 	    String selectedCate = null;
 	    if (menuCate != null && !menuCate.trim().isEmpty()) {
@@ -465,29 +460,12 @@ public class SalesController {
 	        }
 	    }
 
-	    // 필터링된 전체 항목 수
-	    int totalItems = filteredSalesList.size();
-
-	    // 페이징 처리
-	    int offset = (pageNum - 1) * pageSize;
-	    int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-
-	    // 현재 페이지에 맞는 데이터 추출
-	    List<PayhistoryDTO> paginatedList = filteredSalesList.stream()
-	        .skip(offset)
-	        .limit(pageSize)
-	        .collect(Collectors.toList());
-
 	    Map<String, Object> result = new HashMap<>();
-	    result.put("currentPage", pageNum);
-	    result.put("totalPages", totalPages); // 총 페이지 수
-	    result.put("salesList", paginatedList); // 현재 페이지 데이터
+	    result.put("salesList", filteredSalesList); // 모든 필터링된 데이터 반환
 	    result.put("totalSalesAmount", totalSalesAmount); // 총 매출 금액
-
 	    return result;
 	}
 
-	
 				
 				
 }

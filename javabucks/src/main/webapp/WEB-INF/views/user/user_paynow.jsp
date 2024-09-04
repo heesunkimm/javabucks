@@ -294,28 +294,25 @@
 <script type="text/javascript">
 				
 		let selectedCouponPrice = 0;
-		// 원래 기존 소스
-//      let totalAmount = ${(mdto.menuPrice*quantity)+(optPrice*quantity)};
-// 		document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
 
 	    document.addEventListener('DOMContentLoaded', function() {
-        // 'orderedAmount' 요소에서 포맷된 숫자와 단위를 가져옵니다.
-        const orderedAmountElement = document.getElementById('orderedAmount');
-        let orderedAmountText = orderedAmountElement.innerText; // 예: "1,234원"
-
-        // '원' 단위를 제거하고 숫자만 추출합니다.
-        let orderedAmountValue = orderedAmountText.replace('원', '').replace(/,/g, '');
-        
-        // 문자열을 숫자로 변환합니다.
-        let totalAmount = parseFloat(orderedAmountValue);
-
-        // totalAmount가 올바른 숫자인지 확인
-        if (!isNaN(totalAmount)) {
-            // 'totcountAmount' 요소에 totalAmount 값을 설정합니다.
-            document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
-        } else {
-            console.error('totalAmount가 올바른 숫자가 아닙니다.');
-        }
+	        // 'orderedAmount' 요소에서 포맷된 숫자와 단위를 가져옵니다.
+	        const orderedAmountElement = document.getElementById('orderedAmount');
+	        let orderedAmountText = orderedAmountElement.innerText; // 예: "1,234원"
+	
+	        // '원' 단위를 제거하고 숫자만 추출합니다.
+	        let orderedAmountValue = orderedAmountText.replace('원', '').replace(/,/g, '');
+	        
+	        // 문자열을 숫자로 변환합니다.
+	        let totalAmount = parseFloat(orderedAmountValue);
+	
+	        // totalAmount가 올바른 숫자인지 확인
+	        if (!isNaN(totalAmount)) {
+	            // 'totcountAmount' 요소에 totalAmount 값을 설정합니다.
+	            document.getElementById('totcountAmount').innerText = totalAmount.toLocaleString() + "원";
+	        } else {
+	            console.error('totalAmount가 올바른 숫자가 아닙니다.');
+	        }
     	});
 		
 		//쿠폰 항목 클릭 시 가격을 저장
@@ -368,6 +365,12 @@
 		    let discountAmount = parseInt(document.getElementById('discountAmount').innerText.replace(/[^0-9]/g, ''), 10);
 		    // 최종 결제 금액 계산
 		    let totalAmount = orderedAmount - discountAmount;
+		    
+		    if (totalAmount < 0) {
+		        alert("주문 금액보다 쿠폰의 할인 금액이 더 큽니다. 쿠폰을 확인해 주세요.");
+		        totalAmount = 0; // totalAmount가 음수일 경우 0으로 설정
+		    }
+		    
 		    // 할인 금액 업데이트
 		    document.getElementById('discountAmount').innerText = discountAmount.toLocaleString() + "원";
 		    // 최종 결제 금액 업데이트
@@ -436,6 +439,11 @@
 	        let quantity = '${quantity}';
 	        let orderName = "${firstOrder} 등";
 	        
+	        let cartNumList = ${cartNumList};
+	        if (!${cartNumList} || cartNumList.length === 0) {
+	            cartNumList = [];
+	        }
+	        
 	        	
 	        // 결제 요청
 			if (payhistoryPayWay === '카카오페이'){
@@ -448,6 +456,26 @@
 	                buyer_name: payUser // 구매자 이름
 	            }, function (rsp) {
 	                if (rsp.success) {
+	                	// 카트삭제
+	    				$.ajax({
+	        		        url: '/afterdeleteCart',
+	        		        type: 'POST',
+	        		        contentType: "application/json",
+	        		        data: JSON.stringify({
+	        		        	cartNum: cartNumList
+	        	          }),         
+	        		        success: function(response) {
+	        		            if (response.success) {
+	        		            	console.log("카트삭제성공");
+	        		            } else {			
+	        		            	console.log("구매한 카트가 삭제 실패");
+	        		            }	
+	        		        },
+	        		        error: function() {
+	        		            alert("서버 오류가 발생했습니다.");
+	        		            return;
+	        		        }
+	        		   	 });
 	                    // 결제 성공 시 서버에 데이터 전송
 	                     $.ajax({
 	                    url: 'orderPayCheck.ajax',
@@ -481,6 +509,7 @@
 	                    },
 	                    error: function(xhr, status, error) {
 	                        console.error('처리 중 오류가 발생했습니다:', error);
+	                        return;
 	                    }
 	                });
 	                } else {
@@ -495,8 +524,26 @@
 					alert("카드를 선택해주세요");
 					return;
 				}
-				
-				
+				// 카트삭제
+				$.ajax({
+    		        url: '/afterdeleteCart',
+    		        type: 'POST',
+    		        contentType: "application/json",
+    		        data: JSON.stringify({
+    		        	cartNum: cartNumList
+    	          }),         
+    		        success: function(response) {
+    		            if (response.success) {
+    		            	console.log("카트삭제성공");
+    		            } else {			
+    		            	console.log("구매한 카트가 삭제 실패");
+    		            }	
+    		        },
+    		        error: function() {
+    		            alert("서버 오류가 발생했습니다.");
+    		            return;
+    		        }
+    		   	 });
 				// 자바벅스카드로 결제
 				 $.ajax({
 	                    url: 'orderPayBucksCard.ajax',
@@ -517,7 +564,7 @@
 	                        menuPrice: menuPrice,
 	                        optPrice: optPrice,
 	                        quantity: quantity,
-	                        cpnListNum: cpnListNum
+	                        cpnListNum: cpnListNum,
 	                    }),
 	                    success: function(res) {
 							console.log(res)

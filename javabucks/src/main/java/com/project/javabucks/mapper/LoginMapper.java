@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.project.javabucks.dto.UserDTO;
 
 @Service
@@ -14,11 +16,36 @@ public class LoginMapper {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	// 회원가입 insert 
-	public int insertUser(Map<String,Object> params){
+	// 회원가입
+	public int insertUser(Map<String, Object> params) {
 		return sqlSession.insert("insertUser", params);
 	}
-	 
+	
+
+	// 생일 해당
+	@Transactional
+	public void insertBday(Map<String, Object> params) {
+		// 웰컴 쿠폰
+		sqlSession.insert("insertWelcomeCoupon", params);
+		// 웰컴 알람
+		sqlSession.insert("insertWelcomeAlarm", params);
+		// 생일 쿠폰
+		sqlSession.insert("insertBdayCoupon", params);
+		// 생일 알람
+		sqlSession.insert("insertBdayCouponAlarm", params);
+		
+	}
+	
+	// 생일 미해당
+	@Transactional
+	public void insertNotBday(Map<String, Object> params) {
+		// 웰컴 쿠폰
+		sqlSession.insert("insertWelcomeCoupon", params);
+		// 웰컴 알람
+		sqlSession.insert("insertWelcomeAlarm", params);
+	}
+	
+	
 	// 아이디 중복체크 
 	public int checkId(String id) {
 		return sqlSession.selectOne("checkId", id);
@@ -67,25 +94,5 @@ public class LoginMapper {
 	// 회원탈퇴
 	public int updateUserDel(String userId) {
 		return sqlSession.update("updateUserDel", userId);
-	}
-	
-	// 회원가입 쿠폰 INSERT
-	public int insertRegisterCoupon(String userId) {
-		return sqlSession.insert("insertRegisterCoupon", userId);
-	}
-	
-	// 생일 쿠폰 INSERT
-	public int insertBdayCoupon(String userId) {
-		return sqlSession.insert("insertBdayCoupon", userId);
-	}
-	
-	// 웰컴 쿠폰 발급 알람 INSERT
-	public int insertRegisterAlarm(String userId) {
-		return sqlSession.insert("insertRegisterAlarm", userId);
-	}
-	
-	// 생일 쿠폰 발급 알람 INSERT
-	public int insertBdayCouponAlarm(String userId) {
-		return sqlSession.insert("insertBdayCouponAlarm", userId);
 	}
 }
