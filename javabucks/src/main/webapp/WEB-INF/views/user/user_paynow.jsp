@@ -456,26 +456,6 @@
 	                buyer_name: payUser // 구매자 이름
 	            }, function (rsp) {
 	                if (rsp.success) {
-	                	// 카트삭제
-	    				$.ajax({
-	        		        url: '/afterdeleteCart',
-	        		        type: 'POST',
-	        		        contentType: "application/json",
-	        		        data: JSON.stringify({
-	        		        	cartNum: cartNumList
-	        	          }),         
-	        		        success: function(response) {
-	        		            if (response.success) {
-	        		            	console.log("카트삭제성공");
-	        		            } else {			
-	        		            	console.log("구매한 카트가 삭제 실패");
-	        		            }	
-	        		        },
-	        		        error: function() {
-	        		            alert("서버 오류가 발생했습니다.");
-	        		            return;
-	        		        }
-	        		   	 });
 	                    // 결제 성공 시 서버에 데이터 전송
 	                     $.ajax({
 	                    url: 'orderPayCheck.ajax',
@@ -502,9 +482,9 @@
 	                    success: function(response) {
 	                        if (response.status === 'success') {
 	                            alert('결제가 성공적으로 완료되었습니다.');
-	                            window.location.replace("/user_index");
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                            return;
 	                        }
 	                    },
 	                    error: function(xhr, status, error) {
@@ -515,6 +495,7 @@
 	                } else {
 	                    // 결제 실패 시 처리
 	                    alert(rsp.error_msg);
+	                    return;
 	                }
 	            });
 			} else if (payhistoryPayWay === '자바벅스카드'){
@@ -524,26 +505,6 @@
 					alert("카드를 선택해주세요");
 					return;
 				}
-				// 카트삭제
-				$.ajax({
-    		        url: '/afterdeleteCart',
-    		        type: 'POST',
-    		        contentType: "application/json",
-    		        data: JSON.stringify({
-    		        	cartNum: cartNumList
-    	          }),         
-    		        success: function(response) {
-    		            if (response.success) {
-    		            	console.log("카트삭제성공");
-    		            } else {			
-    		            	console.log("구매한 카트가 삭제 실패");
-    		            }	
-    		        },
-    		        error: function() {
-    		            alert("서버 오류가 발생했습니다.");
-    		            return;
-    		        }
-    		   	 });
 				// 자바벅스카드로 결제
 				 $.ajax({
 	                    url: 'orderPayBucksCard.ajax',
@@ -572,19 +533,40 @@
 	                        	alert("잔액이 부족합니다. 충전 후 다시 이용해 주세요");
 	                        } else if (res === 'OK') {
 		                        alert("결제가 완료 되었습니다.");
-		                        window.location.replace("/user_index");
 	                        } else {
 	                            console.log('처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
+	                            return;
 	                        }
 	                    },
 	                    error: function(error) {
 	                        console.error('처리 중 오류가 발생했습니다:', error.message || error);
+	                        return;
 	                    }
 	                });
 				
 			} else {
 				alert("결제방식을 선택해주세요");
 			}
+			// 카트삭제
+			$.ajax({
+		        url: '/afterdeleteCart',
+		        type: 'POST',
+		        contentType: "application/json",
+		        data: JSON.stringify({
+		        	cartNum: cartNumList
+	          }),         
+		        success: function(response) {
+		            if (response.success) {
+		            	console.log("카트삭제성공");
+		            	window.location.replace("/user_index");
+		            } else {			
+		            	console.log("구매한 카트가 삭제 실패");
+		            }	
+		        },
+		        error: function() {
+		            alert("서버 오류가 발생했습니다.");
+		        }
+		   	 });
         }
 </script>	
 	
