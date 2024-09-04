@@ -46,9 +46,9 @@
                         <p class="txt_tit">${menu.menuName}</p>
                         <p class="txt_price"><fmt:formatNumber value="${menu.menuPrice}" pattern="#,###"/> 원</p>
                         <div class="btn_box">
-                            <button type="button" onclick="ToCart('${menu.menuCode}', '매장이용')">매장 이용</button>
-                            <button type="button" onclick="ToOrder('${menu.menuCode}', 'To-go')">To-go</button>
-                            <button type="button" onclick="ToOrder('${menu.menuCode}', 'Delivers')">Delivers</button>
+                            <button id="store" type="button" onclick="ToOrder('${menu.menuCode}', '매장이용', this)">매장 이용</button>
+                            <button id="togo" type="button" onclick="ToOrder('${menu.menuCode}', 'To-go', this)">To-go</button>
+                            <button id="delivers" type="button" onclick="ToOrder('${menu.menuCode}', 'Delivers', this)">Delivers</button>
                         </div>
                     </div>
                 </li>
@@ -60,21 +60,42 @@
 <%@ include file="user_bottom.jsp"%>
 <script>
 	
-	function ToCart(menuCode, pickup) {
+	function ToOrder(menuCode, pickup, clickedButton) {
+		
+		// 버튼들에 대한 ID를 설정합니다.
+        var buttons = document.querySelectorAll('.btn_box button');
+
+		// 희선님 여기입니다(버튼 클릭 시 클래스 추가)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // 모든 버튼에서 active 클래스를 제거합니다.
+        buttons.forEach(function(button) {
+            button.classList.remove('active');
+        });
+
+        // 클릭된 버튼에 active 클래스를 추가합니다.
+        clickedButton.classList.add('active');
+    	
+        // hidden input 요소의 값을 가져옵니다.
+        var pickupInput = document.getElementById('pickup');
+        if (pickupInput) {
+            pickupInput.value = pickup;
+        }
 	    // 알림창을 띄웁니다.
 	    var userConfirmed = confirm("메뉴 상세 페이지로 이동합니다.");
 
 	    // 사용자가 '확인'을 눌렀다면 페이지를 이동합니다.
 	    if (userConfirmed) {
-	        // hidden input 요소의 값을 가져옵니다.
+	    		        
 	        var hiddenInput = document.getElementById('menuCode');
 	        var menuCodeValue = hiddenInput ? hiddenInput.value : menuCode;
 	        
 	        var hiddenInput2 = document.getElementById('bucksId');
-	        var menuCodeValue2 = hiddenInput ? hiddenInput.value : bucksId;
+	        var bucksIdValue  = hiddenInput2 ? hiddenInput.value2 : bucksId;
+
 	        
 	        // URL에 menuCode를 포함하여 이동합니다.
-	        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue)& encodeURIComponent(menuCodeValue2);
+	        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue) + 
+	        			"&bucksId=" + encodeURIComponent(bucksIdValue ) + 
+	        			"&pickup=" + encodeURIComponent(pickupInput.value);
 	        window.location.href = url;
 	    }
 	}    

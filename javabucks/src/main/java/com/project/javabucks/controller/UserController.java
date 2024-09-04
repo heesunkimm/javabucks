@@ -360,7 +360,6 @@ public class UserController {
 			md.setMenuStatus(menuStatus);
 		} 
 
-
 		// [음식] 정보, 주문가능한지
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
 		for (MenuDTO md : list2) {
