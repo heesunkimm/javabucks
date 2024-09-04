@@ -25,7 +25,6 @@ $(function() {
 
 		$(".close_btn").on('click', function() {
 			let popupId = $(this).data('popup');
-			console.log(popupId)
 
 			$('#' + popupId).removeClass('s_active');
             $('.dimm').removeClass('s_active');

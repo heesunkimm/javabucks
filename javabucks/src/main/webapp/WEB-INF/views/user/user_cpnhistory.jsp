@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>     
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_cpnhistory" class="content">
         <div class="inner_wrap">
@@ -31,8 +20,9 @@
                     </div>
                     <div class="txt_box">
                         <p class="txt_sub">JavaBucks</p>
-                        <p class="txt_tit">${dto.cpnName} ${dto.cpnDesc}</p>
-                        <ul class="txt_desc">
+                        <p class="txt_tit">${dto.cpnName}</p>
+                        <p class="txt_desc">${dto.cpnDesc}</p>
+                        <ul class="txt_noti">
                             <li>${dto.cpnListEndDate}까지</li>
                             <li>${dto.cpnListStatus}</li>
                         </ul>

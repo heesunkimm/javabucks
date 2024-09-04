@@ -2,18 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>        
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="../css/reset.css">
-        <link rel="stylesheet" href="../css/user.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_recepit" class="content">
         <div class="inner_wrap">
@@ -67,7 +56,7 @@
                     
                     <!-- e: 내용 작성 -->
                     <div class="pbtn_box">
-                        <button type="button">취소</button>
+                        <button class="cancel_btn" type="button">취소</button>
                         <button type="submit">조회</button>
                     </div>
                 </form>
@@ -80,7 +69,7 @@
                 </div>
                 <ul class="add_list">
                 	<c:if test="${empty recepitList}">
-                		<p class="txt_store">조회 결과가 없습니다.</p>
+                		<li class="nolist">조회 결과가 없습니다.</li>
 					</c:if>
 					<c:if test="${not empty recepitList}">
                 	<c:forEach var="dto" items="${recepitList}">
@@ -248,6 +237,9 @@
     <!-- e: content -->	
 <%@ include file="user_bottom.jsp"%>
 <script>
+	$(".cancel_btn").on("click", function(){
+		$(".period_date").hide();
+	})
 	// 버튼 클릭시 클래스 먹이기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//버튼 클릭 이벤트 설정
 	document.querySelectorAll('.btn').forEach(button => {

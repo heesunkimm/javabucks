@@ -95,7 +95,5 @@
 			$('input[name=cardRegNum]').on('input',function () {
 				   $(this).val($(this).val().replace(/[^0-9\-]/g, ''));
 			})
-		 
-		 
 	</script>
 <%@ include file="user_bottom.jsp" %>

@@ -2,18 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_delivershistory" class="content">
         <div class="inner_wrap">
@@ -49,11 +38,7 @@
             </div>
 			<c:if test="${empty deliversInfoList}">
             	<ul class="history_list">
-	                <li class="history_item">
-	                    <div class="txt_box">
-	                        <p class="txt_tit">주문내역이 없습니다.</p>
-	                    </div>
-	                </li>
+	                <li class="history_item nolist">주문내역이 없습니다.</li>
 	            </ul>
             </c:if>			
 

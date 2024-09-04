@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp" %>
     <!-- s: content -->
     <section id="user_main" class="content">
         <div class="inner_wrap">
@@ -75,7 +64,6 @@
             <div class="whats_new div_box">
                 <div class="tit_box">
                     <p>What's New</p>
-                    <!-- <a class="veiw_more font_green" href="javascript:;">see all</a> -->
                 </div>
                 <div class="news_box swiper">
                         <ul class="news_wrapper swiper-wrapper">
@@ -97,14 +85,16 @@
     
             <div class="recommend_menu div_box">
                 <div class="tit_box">
-                    <p><span>
-                    <c:if test="${not empty inUser.userNickname}">
-                    ${inUser.userNickname}
-                    </c:if>
-                    <c:if test="${empty inUser.userNickname}">
-                    ${inUser.userId}
-                    </c:if>
-                    </span>님을 위한 추천 메뉴</p>
+                    <p>
+                    	<span>
+                    		<c:if test="${not empty inUser.userNickname}">
+                    			${inUser.userNickname}
+                   			</c:if>
+                    		<c:if test="${empty inUser.userNickname}">
+                    			${inUser.userId}
+                    		</c:if>
+                   		</span>님을 위한 추천 메뉴
+                 	</p>
                 </div>
                 <ul class="recommend_list">
                	<c:forEach var="menu" items="${top3MenuNames}">

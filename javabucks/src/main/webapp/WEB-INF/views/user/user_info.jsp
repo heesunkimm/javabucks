@@ -2,18 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="../css/reset.css">
-        <link rel="stylesheet" href="../css/user.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_info" class="content">
         <div class="inner_wrap">
@@ -36,10 +25,12 @@
                         </label>
                         <div class="gender_box">
                         	<c:if test="${userInfo.userGender eq 'F' }">
-                            <span>♀ 여자</span>
+                            <span style="color: #006241;">♀ 여자</span>
+                            <span>♂ 남자</span>
                             </c:if>
                             <c:if test="${userInfo.userGender eq 'M' }">
-                            <span>♂ 남자</span>
+                            <span>♀ 여자</span>
+                            <span style="color: #006241;">♂ 남자</span>
                             </c:if>
                         </div>
                     </div>

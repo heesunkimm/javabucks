@@ -1,18 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document</title>
-<link rel="stylesheet" href="../css/reset.css">
-<link rel="stylesheet" href="../css/user.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="../js/user.js"></script>
-</head>
-<body>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ include file="user_top.jsp"%>
 	<!-- s: content -->
 	<section id="user_delivers" class="content">
 		<div class="inner_wrap">
@@ -23,20 +13,25 @@
 
 				<div class="search_box">
 					<form name="" action="user_delivers?mode=store" method="post" onsubmit="return searchCheck()">
-						<label> 
-							<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="배달주소지" readonly>
-						</label> 
-						<c:if test="${not empty storeSearch}">
-						<label> 
-							<input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="지점명 검색">
-						</label>
-						</c:if>
-						<c:if test="${empty storeSearch}">
-						<label> 
-							<input type="text" id ="storeSearch" name="storeSearch" value="" placeholder="지점명 검색">
-						</label>
-						</c:if>
-						<button type="submit">검색</button>
+						<div class="loca_box my_location">
+							<label>
+								<input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" placeholder="배달주소지" readonly>
+							</label>
+							<button class="popup_btn" type="button" data-popup="insertAddress">주소검색</button>
+						</div>
+						<div class="loca_box store_location" style="display: none;">
+							<c:if test="${not empty storeSearch}">
+							<label>
+								<input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="지점명 검색">
+							</label>
+							</c:if>
+							<c:if test="${empty storeSearch}">
+							<label>
+								<input type="text" id ="storeSearch" name="storeSearch" value="" placeholder="지점명 검색">
+							</label>
+							</c:if>
+							<button type="submit">검색</button>
+						</div>
 					</form>
 					<!-- <a href="javascript:;">자주가는 매장</a> -->
 				</div>
@@ -52,12 +47,16 @@
 					<c:choose>
 						<c:when test="${dto.orderEnalbe eq 'Y'}">
 							<li class="store_item">
-								<div class="img_box">
-									<img src="../images/logo/starbucks_logo_black.png" style="width: 50px; height: auto;" alt="">
-								</div> 
-								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksName}</a>
-								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">${dto.bucksLocation}</a>
-								<div class="txt_box"></div>
+								<a href="user_order?storeName=${dto.bucksName}&bucksId=${dto.bucksId}&pickup=Delivers&store=${bucksName}">
+									<div class="img_box">
+										<img src="../images/logo/starbucks_logo_black.png" alt="">
+									</div>
+									<div class="txt_box">
+										<p class="txt_store">${dto.bucksName}</p>
+										<p class="txt_location">${dto.bucksLocation}</p>
+										<p class="txt_time">운영시간 ${fn:substring(dto.bucksStart, 11, 16)} - ${fn:substring(dto.bucksEnd, 11, 16)}</p>
+									</div>
+								</a>
 							</li>
 						</c:when>
 					</c:choose>					
@@ -69,11 +68,13 @@
 							<c:set var="activeClass" value="pdt_dimm" />
 							<li class="store_item">
 								<div class="img_box">
-									<img src="../images/logo/starbucks_logo_black.png" style="width: 50px; height: auto;" alt="">
-								</div> 
-								<a href="javascript:;">${dto.bucksName}</a>
-								<a href="javascript:;">${dto.bucksLocation}</a>
-								<div class="txt_box"></div>
+									<img src="../images/logo/starbucks_logo_black.png" alt="">
+								</div>
+								<div class="txt_box">
+									<p class="txt_store">${dto.bucksName}</p>
+									<p class="txt_location">${dto.bucksLocation}</p>
+									<p class="txt_time">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
+								</div>
 							</li>
 						</c:when>
 					</c:choose>
@@ -83,8 +84,7 @@
 		</div>
 
 		<!-- 픽업 선택 팝업 -->
-		<div class="popup_box pickup_box" id="insertAddress"
-			style="display: none;">
+		<div class="popup_box pickup_box" id="insertAddress" style="display: none;">
 			<div class="tit_box">
 				<p class="txt_tit">주소 설정</p>
 			</div>
@@ -92,17 +92,18 @@
 				<!-- s: 내용 작성 -->
 				<div class="select_box">
 					<div class="location_box">
-						<label> <input class="" type="text" id="address"
-							name="addr1" size="50" placeholder="주소" readonly>
-						</label> <label> <input class="" type="text" id="detailAddress"
-							name="addr2" size="50" placeholder="상세주소">
+						<label>
+							<input class="" type="text" id="address" name="addr1" size="50" placeholder="주소" readonly>
+						</label>
+						<label>
+							<input class="" type="text" id="detailAddress" name="addr2" size="50" placeholder="상세주소">
 						</label>
 					</div>
-					<input class="" type="button" value="주소 검색" onclick="checkPost()">
+					<input class="" type="button" value="주소 검색" onclick="checkPost()" style="cursor: pointer;">
 					<input type="hidden" id="house_addr" name="house_addr">
 				</div>
 				<div class="btn_box">
-					<button class="" type="button">확인</button>
+					<button class="submit_btn" type="button">확인</button>
 					<button class="close_btn" type="button" data-popup="insertAddress">취소</button>
 				</div>
 				<!-- e: 내용 작성 -->
@@ -111,13 +112,12 @@
 		<div class="dimm"></div>
 	</section>
 	<!-- e: content -->
-
 <%@ include file="user_bottom.jsp"%>
 <!-- 주소 검색 API -->
 <script
 	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-	window.onload = function() {
+	/* window.onload = function() {
 		// input 필드의 value 값을 가져옴
 		var deliveryAddressValue = document
 				.getElementById("deliveryAddress").value;
@@ -126,7 +126,7 @@
 		if (!deliveryAddressValue) {
 			document.getElementById("insertAddress").style.display = "block";
 		}
-	};
+	}; */
 	
 	function searchCheck(){
 		var searchInput = document.getElementById("deliveryAddress").value;
@@ -179,23 +179,21 @@
 	}
 
 	// 확인 버튼 클릭 시 팝업의 주소 데이터를 메인 화면으로 전달
-	document
-	.querySelector(".btn_box button[type='button']")
-	.addEventListener(
-			"click",
-			function() {
-				// 팝업의 주소와 상세주소 값을 가져옴
-				var addr1 = document.getElementById("address").value;
-				var addr2 = document
-						.getElementById("detailAddress").value;
-
-				// 메인 화면의 배달 주소지 필드에 값을 설정
-				document.getElementById("deliveryAddress").value = addr1
-						+ " " + addr2;
-
-				// 팝업을 닫음
-				document.getElementById("insertAddress").style.display = "none";
-			});
+	$(".btn_box .submit_btn").on('click', function() {
+		let addr1 = $("#address").val();
+		let addr2 = $("#detailAddress").val();
+		
+		if(addr1 === '') {
+			alert("배달받을주소지를 입력해주세요.");
+		}else {
+			$("#deliveryAddress").val(addr1 + " " + addr2);
+			$("#insertAddress").removeClass("s_active");
+			$(".dimm").removeClass("s_active");
+			$("input[name='addr1']").val("");
+			$("input[name='addr2']").val("");
+			$(".store_location").show();
+		}
+	})
 	
 	$(document).ready(function() {
         // storeSearch 입력 필드에 키 입력이 발생할 때마다 실행

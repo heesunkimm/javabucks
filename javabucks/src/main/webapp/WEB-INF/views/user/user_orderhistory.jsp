@@ -48,11 +48,7 @@
             </div>
             <c:if test="${empty orderInfoList}">
             	<ul class="history_list">
-	                <li class="history_item">
-	                    <div class="txt_box">
-	                        <p class="txt_tit">주문내역이 없습니다.</p>
-	                    </div>
-	                </li>
+	                <li class="history_item nolist">주문내역이 없습니다.</li>
 	            </ul>
             </c:if>
 			<c:if test="${not empty orderInfoList}">
