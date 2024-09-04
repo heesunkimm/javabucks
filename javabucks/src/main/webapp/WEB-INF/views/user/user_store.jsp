@@ -20,7 +20,6 @@
                 <div class="tit_box">
                     <p class="font_bold">Order</p>
                 </div>
-    
                 <div class="search_box">
                     <form name="" action="user_store?mode=store" method="post" onsubmit="return searchCheck()">
                         <label>

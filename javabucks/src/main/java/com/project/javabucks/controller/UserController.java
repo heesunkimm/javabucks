@@ -1827,6 +1827,7 @@ public class UserController {
 
 		// 매장 검색하기
 		if (mode != null) {
+			System.out.println("tt" + menuCode);
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
