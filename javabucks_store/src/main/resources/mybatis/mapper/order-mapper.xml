@@ -8,7 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from javabucks_order
 		where bucksId = #{bucksId}
 			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{searchOpt_orderDate}
-			and orderType = 'order'
+			and (orderType = 'order' OR orderType = 'togo')
 		order by orderDate desc		
 	</select>
 	
