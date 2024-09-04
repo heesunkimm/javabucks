@@ -19,16 +19,6 @@ $(function() {
             e.preventDefault();
             let popupId = $(this).data('popup');
 			
-			let cardName = $(this).data('cardname');
-			let cardPrice = $(this).data('cardprice');
-			let cardRegNum = $(this).data('cardregnum');
-
-			$('#cardpay .card_num').text(cardRegNum);
-			$('#cardpay .txt_tit').text(cardName);
-			$('#cardpay .card_price span').text(cardPrice);
-			
-			$("#cardpay input[name='cardRegNum']").val(cardRegNum);
-			
             $('#' + popupId).addClass('s_active');
             $('.dimm').addClass('s_active');
         });
