@@ -239,6 +239,65 @@ public class UserController {
 			}
 
 		req.getSession().setAttribute("inUser", udto);
+		
+		
+		//s: 핑복코드 - 메인 추천메뉴
+		List<OrderDTO> orderInfoList = userMapper.getOrderList(userId);
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		Map<String, Integer> menuCountMap = new HashMap<>();
+
+		if (!orderInfoList.isEmpty()) {
+		    // 결제 내역이 있을 경우
+		    for (OrderDTO order : orderInfoList) {
+		        try {
+		            List<String> orderList = objectMapper.readValue(order.getOrderList(),
+		                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, String.class));
+
+		            List<MenuOrder> updateOrderHistory = new ArrayList<>();
+
+		            for (String orderItem : orderList) {
+		                String[] s = orderItem.split(":");
+		                String menuCode = s[0];
+		                String optId = s[1];
+		                int quantity = Integer.parseInt(s[2]);
+
+		                MenuOrder menuOrder = new MenuOrder(menuCode, optId, quantity);
+		                String menuName = userMapper.getMenuName(menuCode);
+		                menuOrder.setMenuName(menuName);
+
+		                updateOrderHistory.add(menuOrder);
+		                menuCountMap.merge(menuCode, quantity, Integer::sum);
+		            }
+
+		            order.setOrderListbyMenuOrder(updateOrderHistory);
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+
+		    // value 값을 기준으로 정렬한 후, 상위 3개의 키를 추출
+		    List<Map.Entry<String, Integer>> entryList = new ArrayList<>(menuCountMap.entrySet());
+		    entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+		    List<String> top3MenuCodes = new ArrayList<>();
+		    for (int i = 0; i < Math.min(3, entryList.size()); i++) {
+		        top3MenuCodes.add(entryList.get(i).getKey());
+		    }
+
+		    // 상위 3개의 메뉴 정보를 DB에서 조회
+		    List<MenuDTO> top3MenuNames = userMapper.top3MenuNames(top3MenuCodes);
+		    req.setAttribute("top3MenuNames", top3MenuNames);
+
+		} else {
+		    // 결제 내역이 없을 경우 최신 메뉴 3개를 가져옴
+		    List<MenuDTO> top3MenuNames = userMapper.getLatestMenus();
+		    req.setAttribute("top3MenuNames", top3MenuNames);
+		}
+		//e: 핑복코드 
+		
+		
+		
 		return "/user/user_index";
 	}
 
@@ -2159,5 +2218,8 @@ public class UserController {
 			throw new IllegalArgumentException("Invalid pickUp value: " + pickUp);
 		}
 	}
+	
+	
+	
 
 }

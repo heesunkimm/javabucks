@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
- "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
  <mapper namespace="mybatis.mapper.user-mapper">
  	<select id="noReadAlarm" parameterType="String" resultType="AlarmDTO">
@@ -840,5 +840,34 @@
         	</if>
  		order by A.orderDate desc
  	</select>
+ 	
+ 	<select id="getOrderList" parameterType="java.util.Map" resultType="OrderDTO">
+       select * from javabucks_order
+       where userId = #{userId}
+    </select>
+    
+    <!-- s:핑복코드  -->
+    <select id="top3MenuNames" parameterType="list" resultType="MenuDTO">
+         SELECT menuName, menuCode, menuImages
+	    FROM javabucks_menu
+	    WHERE menuCode IN 
+	    <foreach item="code" collection="list" open="(" separator="," close=")">
+	        #{code}
+	    </foreach>
+	    <if test="list == null or list.size() == 0">
+	        AND 1 = 0
+	    </if>
+    </select>
+    
+    <select id="getLatestMenus" resultType="MenuDTO">
+	    SELECT menuName, menuCode, menuImages
+	    FROM (
+	        SELECT menuName, menuCode, menuImages
+	        FROM javabucks_menu
+	        ORDER BY menuregDate DESC
+	    )
+	    WHERE ROWNUM &lt;= 3
+	</select>
+    <!-- e:핑복코드  -->
  	
  </mapper>
