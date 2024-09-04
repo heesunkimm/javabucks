@@ -159,6 +159,9 @@ header .store_box {font-size: 16px;}
 .allMenu .menu_list {margin-top: 20px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
 .allMenu .menu_list li + li {border-top: 1px solid #ccc;}
 .allMenu .menu_list .menu_item {display: flex; align-items: center; justify-content: space-between; padding: 16px 30px;}
+/* 주문막기 처리된 메뉴 딤처리 css */
+.allMenu .menu_list .menu_item.menu_dimm {position: relative;}
+.allMenu .menu_list .menu_item.menu_dimm::after {content:'본사에서 주문을 막았습니다. \A 해당 메뉴는 잠시 판매가 중단됩니다.'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; background: rgba(0, 0, 0, 0.6); align-items: center; justify-content: center; white-space: pre; color: #fefefe; font-size: 20px; font-weight: 700; text-align: center;}
 .allMenu .menu_list .menu_item.noMenu {justify-content: center;}
 .allMenu .menu_list .menu_item .menu_info {display: flex; align-items: center; justify-content: space-between; gap: 30px;}
 .allMenu .menu_list .menu_item .img_box {width: 120px; height: 120px;}

@@ -127,7 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<select id="getOptionPriceByCode" parameterType="string" resultType="int">
 		   SELECT
 	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
-	        NVL(c.cupPrice, 0) + NVL(s.shotPrice, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice * o.optShotCount, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
 	    FROM
 	        javabucks_order_opt o
 	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
