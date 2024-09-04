@@ -129,88 +129,9 @@
                     <p>(주문번호)</p>
                 </div>
                 <ul class="order_list"> 
-                	<c:forEach var="item" items="${items}">
-	                    <li class="order_item">
-	                        <span>${item.menuname}</span>
-	                        <div>
-	                            <span>${item.menuprice}</span>
-	                            <span>${item.cartCnt}</span>
-	                        </div>
-	                        <span>${item.menuprice*item.cartCnt}</span>
-	                    </li>
-	                    
-	                <!-- 컵타입 -->
-                    <c:if test = "${not empty item.cupType}"> 
-                    	<li class="order_item">
-                        <span> -${item.cupType}</span>
-                        <div>
-                            <span>${item.cupPrice}</span>
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.cupPrice*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    
-                    <!-- 얼음 -->
-                    <c:if test = "${not empty item.iceType}"> 
-                    	<li class="order_item">
-                        <span> -${item.iceType}</span>
-                        <div>
-                            <span>${item.icePrice}</span>
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.icePrice*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    
-                     <!-- 샷 -->
-                    <c:if test = "${not empty item.shotType}"> 
-                    	<li class="order_item">
-                        <span> -${item.shotType} X ${item.shotCount}</span>
-                        <div>
-                            <span>${item.shotPrice*item.shotCount}</span>
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.shotPrice*item.shotCount*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    
-                     <!-- 시럽 -->
-                    <c:if test = "${not empty item.syrupType}"> 
-                    	<li class="order_item">
-                        <span> -${item.syrupType} X ${item.syrupCount}</span>
-                        <div>
-                            <span>${item.syrupPrice*item.syrupCount}</span> 
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.syrupPrice*item.syrupCount*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    
-                     <!-- 휘핑 -->
-                    <c:if test = "${not empty item.whipType}"> 
-                    	<li class="order_item">
-                        <span> -${item.whipType}</span>
-                        <div>
-                            <span>${item.whipPrice}</span>
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.whipPrice*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    
-                     <!-- 우유 -->
-                    <c:if test = "${not empty item.milkType}"> 
-                    	<li class="order_item">
-                        <span> -${item.milkType}</span>
-                        <div>
-                            <span>${item.milkPrice}</span>
-                            <span>${item.cartCnt}</span>
-                        </div>
-                        <span>${item.milkPrice*item.cartCnt}</span>
-                    </li>
-                    </c:if>
-                    </c:forEach>
+					
+	              <!--  ajax로 메뉴 리스트 들어올 예정-->      
+
                 </ul>
                 <div class="total_box">
                     <span>합계</span>
@@ -338,30 +259,309 @@
 		// 주문번호 설정
 		document.querySelector("#recepitbox .user_info .order_num p:last-child").textContent = data.orderCode;
 	
-		
+		data.payhistoryPayWay
 	    // 합계 및 결제 정보 업데이트
 	    document.querySelector("#recepitbox .total_box span:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원';
 	    document.querySelector("#recepitbox .addvat_box em:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원'; // 부가세 포함 금액
 	    document.querySelector("#recepitbox .pay_box dl:nth-child(1) dd").textContent = data.payhistoryPrice.toLocaleString() + '원';
 	    document.querySelector("#recepitbox .pay_box dl:nth-child(2) dd").textContent = data.cardRegNum;
 	    document.querySelector("#recepitbox .pay_box dl:nth-child(3) dd").textContent = data.cardPrice.toLocaleString() + '원';
-		}
 		
-	// 	//메뉴 정보 표시
-	// 	const orderList = document.querySelector("#recepitbox .order_list");
-	// 	orderList.innerHTML = ""; // 기존 항목 제거
-	// 	data.items.forEach(item => {
-	// 	    const listItem = document.createElement("li");
-	// 	    listItem.className = "order_item";
-	// 	    listItem.innerHTML = `<span>${item.menuName}</span>
-	// 	                          <div>
-	// 	                              <span>${item.price.toLocaleString()}원</span>
-	// 	                              <span>${item.quantity}개</span>
-	// 	                          </div>
-	// 	                          <span>${item.totalPrice.toLocaleString()}원</span>`;
-	// 	    orderList.appendChild(listItem);
-	// 	});
-	
+		// <dt>와 <dd> 요소를 선택합니다.
+		    const payWayDtElements = document.querySelectorAll('.pay_box dl dt');
+		    const payWayDdElements = document.querySelectorAll('.pay_box dl dd');
+		    
+		    // <dt>와 <dd> 요소가 있는 경우
+		    if (payWayDtElements.length > 0) {
+		        // 각 <dt> 요소에 대해
+		        payWayDtElements.forEach((dtElement, index) => {
+		            if (index === 0) {
+		                // 첫 번째 <dt>에 payhistoryPayWay 값 설정
+		                if (data.payhistoryPayWay === '카카오페이') {
+		                    dtElement.textContent = data.payhistoryPayWay;
+		                } else {
+		                    dtElement.textContent = '스타벅스카드'; // 기본값
+		                }
+		            } else if (index === 1) {
+		                // 두 번째 <dt>에 카드번호 값 설정
+		                dtElement.textContent = data.cardRegNum || '카드번호';
+		            } else if (index === 2) {
+		                // 세 번째 <dt>에 카드잔액 값 설정
+		                dtElement.textContent = data.cardPrice || '카드잔액';
+		            }
+		        });
+
+		        // <dd> 요소에 값 설정
+		        payWayDdElements.forEach((ddElement, index) => {
+		            if (index === 0) {
+		                // 첫 번째 <dd>에 payhistoryPayWay 값 설정
+		                if (data.payhistoryPayWay === '카카오페이') {
+		                    ddElement.textContent = '카카오페이'; // 두 번째 <dt> 값과 일치
+		                } else {
+		                    ddElement.textContent = '스타벅스카드'; // 기본값
+		                }
+		            } else if (index === 1) {
+		                // 두 번째 <dd>에 카드번호 값 설정
+		                ddElement.textContent = data.cardRegNum || '카드번호';
+		            } else if (index === 2) {
+		                // 세 번째 <dd>에 카드잔액 값 설정
+		                ddElement.textContent = data.cardPrice || '카드잔액';
+		            }
+		        });
+
+		        // 카카오페이인 경우 특정 <dl> 요소 숨기기
+		        if (data.payhistoryPayWay === '카카오페이') {
+		            // 카드번호와 카드잔액 정보가 있는 <dl> 요소 숨기기
+		            const cardInfoDlElements = document.querySelectorAll('.pay_box dl:nth-child(2), .pay_box dl:nth-child(3)');
+		            cardInfoDlElements.forEach(dlElement => {
+		                dlElement.style.display = 'none';
+		            });
+		        } else {
+		            // 카카오페이가 아닌 경우 숨겨진 요소를 표시
+		            const cardInfoDlElements = document.querySelectorAll('.pay_box dl:nth-child(2), .pay_box dl:nth-child(3)');
+		            cardInfoDlElements.forEach(dlElement => {
+		                dlElement.style.display = 'block';
+		            });
+		        }
+		    }
+		
+		
+		const orderList = document.querySelector("#recepitbox .order_list");
+		// 기존의 주문 목록을 초기화
+	    orderList.innerHTML = '';
+		// AJAX로 받은 데이터 배열이 data.items라고 가정합니다
+		data.items.forEach(item => {
+		    // 리스트 항목(li) 생성
+		    const li = document.createElement('li');
+		    li.className = 'order_item';
+
+		    // 메뉴 이름(span) 생성
+		    const span = document.createElement('span');
+		    span.textContent = item.menuname;
+		    li.appendChild(span);
+
+		    // 가격과 수량을 포함하는 div 생성
+		    const div = document.createElement('div');
+		    
+		    // 가격(span) 생성
+		    const priceSpan = document.createElement('span');
+		    priceSpan.textContent = item.menuprice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
+		    div.appendChild(priceSpan);
+		    
+		    // 수량(span) 생성
+		    const countSpan = document.createElement('span');
+		    countSpan.textContent = item.cartCnt;
+		    div.appendChild(countSpan);
+		    
+		    li.appendChild(div);
+
+		    // 총 가격(span) 생성
+		    const totalPriceSpan = document.createElement('span');
+		    totalPriceSpan.textContent = (item.menuprice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+		    li.appendChild(totalPriceSpan);
+
+		    // 리스트 항목을 리스트에 추가
+		    orderList.appendChild(li);
+
+		    // 선택적 필드를 확인하고 추가
+		    if (item.cupType) {
+		        // 컵 항목(li) 생성
+		        const cupLi = document.createElement('li');
+		        cupLi.className = 'order_item';
+		        // 컵 타입(span) 생성
+		        const cupSpan = document.createElement('span');
+		        cupSpan.textContent = "┖" + item.cupType;
+		        cupLi.appendChild(cupSpan);
+		        // 가격과 수량을 포함하는 div 생성
+		        const cupDiv = document.createElement('div');
+		        // 컵 가격(span) 생성
+		        const cupPriceSpan = document.createElement('span');
+		        cupPriceSpan.textContent = item.cupPrice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
+		        cupDiv.appendChild(cupPriceSpan);
+		        // 수량(span) 생성
+		        const cupCountSpan = document.createElement('span');
+		        cupCountSpan.textContent = item.cartCnt;
+		        cupDiv.appendChild(cupCountSpan);
+		        cupLi.appendChild(cupDiv);
+		        // 컵 총 가격(span) 생성
+		        const cupTotalPriceSpan = document.createElement('span');
+		        cupTotalPriceSpan.textContent = (item.cupPrice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+		        cupLi.appendChild(cupTotalPriceSpan);
+		        // 컵 항목을 리스트에 추가
+		        orderList.appendChild(cupLi);
+			   }
+
+			    if (item.iceType) {
+			        // 얼음 항목(li) 생성
+			        const iceLi = document.createElement('li');
+			        iceLi.className = 'order_item';
+			        
+			        // 얼음 타입(span) 생성
+			        const iceSpan = document.createElement('span');
+			        iceSpan.textContent = "┖얼음 "+ item.iceType;
+			        iceLi.appendChild(iceSpan);
+			        
+			        // 가격과 수량을 포함하는 div 생성
+			        const iceDiv = document.createElement('div');
+			        
+			        // 얼음 가격(span) 생성
+			        const icePriceSpan = document.createElement('span');
+			        icePriceSpan.textContent = item.icePrice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        iceDiv.appendChild(icePriceSpan);
+			        
+			        // 수량(span) 생성
+			        const iceCountSpan = document.createElement('span');
+			        iceCountSpan.textContent = item.cartCnt;
+			        iceDiv.appendChild(iceCountSpan);
+			        
+			        iceLi.appendChild(iceDiv);
+			        
+			        // 얼음 총 가격(span) 생성
+			        const iceTotalPriceSpan = document.createElement('span');
+			        iceTotalPriceSpan.textContent = (item.icePrice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        iceLi.appendChild(iceTotalPriceSpan);
+			        
+			        // 얼음 항목을 리스트에 추가
+			        orderList.appendChild(iceLi);
+			    }
+
+			    if (item.shotType) {
+			        // 샷 항목(li) 생성
+			        const shotLi = document.createElement('li');
+			        shotLi.className = 'order_item';
+			        
+			        // 샷 타입(span) 생성
+			        const shotSpan = document.createElement('span');
+			        shotSpan.textContent = "┖" + item.shotType+ "X"+ item.shotCount;
+			        shotLi.appendChild(shotSpan);
+			        
+			        // 가격과 수량을 포함하는 div 생성
+			        const shotDiv = document.createElement('div');
+			        
+			        // 샷 가격(span) 생성
+			        const shotPriceSpan = document.createElement('span');
+			        shotPriceSpan.textContent = (item.shotPrice * item.shotCount).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        shotDiv.appendChild(shotPriceSpan);
+			        
+			        // 수량(span) 생성
+			        const shotCountSpan = document.createElement('span');
+			        shotCountSpan.textContent = item.cartCnt;
+			        shotDiv.appendChild(shotCountSpan);
+			        
+			        shotLi.appendChild(shotDiv);
+			        
+			        // 샷 총 가격(span) 생성
+			        const shotTotalPriceSpan = document.createElement('span');
+			        shotTotalPriceSpan.textContent = (item.shotPrice * item.shotCount * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        shotLi.appendChild(shotTotalPriceSpan);
+			        
+			        // 샷 항목을 리스트에 추가
+			        orderList.appendChild(shotLi);
+			    }
+
+			    if (item.syrupType) {
+			        // 시럽 항목(li) 생성
+			        const syrupLi = document.createElement('li');
+			        syrupLi.className = 'order_item';
+			        
+			        // 시럽 타입(span) 생성
+			        const syrupSpan = document.createElement('span');
+			        syrupSpan.textContent = "┖" + item.syrupType+ "X"+ item.syrupCount;
+			        syrupLi.appendChild(syrupSpan);
+			        
+			        // 가격과 수량을 포함하는 div 생성
+			        const syrupDiv = document.createElement('div');
+			        
+			        // 시럽 가격(span) 생성
+			        const syrupPriceSpan = document.createElement('span');
+			        syrupPriceSpan.textContent = (item.syrupPrice * item.syrupCount).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        syrupDiv.appendChild(syrupPriceSpan);
+			        
+			        // 수량(span) 생성
+			        const syrupCountSpan = document.createElement('span');
+			        syrupCountSpan.textContent = item.cartCnt;
+			        syrupDiv.appendChild(syrupCountSpan);
+			        
+			        syrupLi.appendChild(syrupDiv);
+			        
+			        // 시럽 총 가격(span) 생성
+			        const syrupTotalPriceSpan = document.createElement('span');
+			        syrupTotalPriceSpan.textContent = (item.syrupPrice * item.syrupCount * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        syrupLi.appendChild(syrupTotalPriceSpan);
+			        
+			        // 시럽 항목을 리스트에 추가
+			        orderList.appendChild(syrupLi);
+			    }
+
+			    if (item.whipType) {
+			        // 휘핑 항목(li) 생성
+			        const whipLi = document.createElement('li');
+			        whipLi.className = 'order_item';
+			        
+			        // 휘핑 타입(span) 생성
+			        const whipSpan = document.createElement('span');
+			        whipSpan.textContent = "┖휘핑 " + item.whipType;
+			        whipLi.appendChild(whipSpan);
+			        
+			        // 가격과 수량을 포함하는 div 생성
+			        const whipDiv = document.createElement('div');
+			        
+			        // 휘핑 가격(span) 생성
+			        const whipPriceSpan = document.createElement('span');
+			        whipPriceSpan.textContent = item.whipPrice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        whipDiv.appendChild(whipPriceSpan);
+			        
+			        // 수량(span) 생성
+			        const whipCountSpan = document.createElement('span');
+			        whipCountSpan.textContent = item.cartCnt;
+			        whipDiv.appendChild(whipCountSpan);
+			        
+			        whipLi.appendChild(whipDiv);
+			        
+			        // 휘핑 총 가격(span) 생성
+			        const whipTotalPriceSpan = document.createElement('span');
+			        whipTotalPriceSpan.textContent = (item.whipPrice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        whipLi.appendChild(whipTotalPriceSpan);
+			        
+			        // 휘핑 항목을 리스트에 추가
+			        orderList.appendChild(whipLi);
+			    }
+
+			    if (item.milkType) {
+			        // 우유 항목(li) 생성
+			        const milkLi = document.createElement('li');
+			        milkLi.className = 'order_item';
+			        
+			        // 우유 타입(span) 생성
+			        const milkSpan = document.createElement('span');
+			        milkSpan.textContent = "┖" + item.milkType;
+			        milkLi.appendChild(milkSpan);
+			        
+			        // 가격과 수량을 포함하는 div 생성
+			        const milkDiv = document.createElement('div');
+			        
+			        // 우유 가격(span) 생성
+			        const milkPriceSpan = document.createElement('span');
+			        milkPriceSpan.textContent = item.milkPrice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        milkDiv.appendChild(milkPriceSpan);
+			        
+			        // 수량(span) 생성
+			        const milkCountSpan = document.createElement('span');
+			        milkCountSpan.textContent = item.cartCnt;
+			        milkDiv.appendChild(milkCountSpan);
+			        
+			        milkLi.appendChild(milkDiv);
+			        
+			        // 우유 총 가격(span) 생성
+			        const milkTotalPriceSpan = document.createElement('span');
+			        milkTotalPriceSpan.textContent = (item.milkPrice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
+			        milkLi.appendChild(milkTotalPriceSpan);
+			        
+			        // 우유 항목을 리스트에 추가
+			        orderList.appendChild(milkLi);
+			    }
+			});
+	}
 	
 		// 팝업 닫기 버튼 이벤트 추가
 		document.querySelector(".close_btn").addEventListener('click', function() {

@@ -129,6 +129,9 @@ public class CartDTO {
 	private int milkPrice;
 	private int eachPrice;
 	private int totPrice;
+	private String cardRegNum;
+	private int cardPrice;
+	
 	
 	public String getCupType() {
 		return cupType;
@@ -257,5 +260,20 @@ public class CartDTO {
 		this.totPrice = totPrice;
 	}
 
-	
+	public String getCardRegNum() {
+		return cardRegNum;
+	}
+
+	public void setCardRegNum(String cardRegNum) {
+		this.cardRegNum = cardRegNum;
+	}
+
+	public int getCardPrice() {
+		return cardPrice;
+	}
+
+	public void setCardPrice(int cardPrice) {
+		this.cardPrice = cardPrice;
+	}
+
 }

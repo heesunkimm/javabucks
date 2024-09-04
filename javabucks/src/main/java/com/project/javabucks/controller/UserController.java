@@ -233,6 +233,7 @@ public class UserController {
 				req.setAttribute("progress_bar", gage);
 
 			} else {
+				gage = (int) ((nowStar / 30.0) * 100);
 				req.setAttribute("untilStar", nextGrade);
 				req.setAttribute("maxStar", "30");
 				req.setAttribute("frequency", nowStar);
@@ -770,6 +771,7 @@ public class UserController {
 			CartDTO CartDTO = new CartDTO();
 			for (List<String> tt : splitList) {
 
+				// 메뉴, 옵션id, 수량 꺼내기
 				for (int i = 0; i < tt.size(); i++) {
 					if (i == 0) {
 						menuCode = tt.get(i); // 첫 번째 값
@@ -781,12 +783,18 @@ public class UserController {
 						quentity = Integer.parseInt(quentity2); // 세 번째 값
 					}
 				}
-				// 메뉴코드로 메뉴 정보 조회
+				
+				// 꺼낸 메뉴코드로 메뉴 정보 조회
 				MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
 				CartDTO.setMenuname(mdto.getMenuName());
 				CartDTO.setMenuprice(mdto.getMenuPrice());
 				CartDTO.setcartCnt(quentity);
-
+				
+				// 카드 정보 조회
+				CardDTO cd = userMapper.CardInfoByHistoryNum(payhistoryNum);
+				CartDTO.setCardPrice(cd.getCardPrice());
+				CartDTO.setCardRegNum(cd.getCardRegNum());
+				
 				// DTO 초기화
 				OrderOptDTO optdto = userMapper.findOrderOpt(optId);
 				MenuOptCupDTO cupdto = null;
@@ -844,6 +852,8 @@ public class UserController {
 			response.put("bucksOwner", dto.getBucksOwner());
 			response.put("bucksCode", bucksId);
 			response.put("payhistoryDate", dto2.getPayhistoryDate());
+			response.put("payhistoryPayWay", dto2.getPayhistoryPayWay());
+
 			// 닉네임, 주문번호
 			response.put("userNickname", userNickname);
 			String ordercode = dto2.getOrderCode().substring(7);
@@ -1874,6 +1884,7 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
+					dto.setOrderEnalbe("Y");
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}
