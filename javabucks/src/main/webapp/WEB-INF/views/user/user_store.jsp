@@ -61,7 +61,7 @@
 							<c:when test="${dto.orderEnalbe eq 'N'}">
 								<c:set var="activeClass" value="pdt_dimm" />
 	                			<li class="store_item">
-				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" data-storeName="${dto.storeName}"
+				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" 
 											data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-orderEnable="${dto.orderEnalbe}">
 				                        <div class="img_box">
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">

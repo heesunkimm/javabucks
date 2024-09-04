@@ -199,7 +199,6 @@ public class UserController {
 				
 				// 업그레이드 이후 적립된 별 갯수 합
 				for(FrequencyDTO fdt : frqDTO) {
-					
 					tot += fdt.getFrequencyCount();
 				}
 				// 남은 별 + 업그레이드 이후 적립한 별
@@ -209,6 +208,7 @@ public class UserController {
 				nextGrade = 30 - nowStar;
 				
 				if(nowStar >= 30) {
+					System.out.println("골드 이후 ");
 					// updateCount 초과된 별 저장
 					updateCount = nowStar - 30;
 					
@@ -232,6 +232,7 @@ public class UserController {
 					req.setAttribute("progress_bar", gage);
 					
 				}else {
+					gage = (int) ((nowStar / 30.0) * 100);
 					req.setAttribute("untilStar", nextGrade);
 					req.setAttribute("maxStar", "30");
 					req.setAttribute("frequency", nowStar);
@@ -578,7 +579,7 @@ public class UserController {
 	@RequestMapping("/user_mymenu")
 	public String userMymenu(HttpSession session, HttpServletRequest req, String mode,
 			@RequestParam Map<String, String> params) {
-
+		
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
 
@@ -598,7 +599,18 @@ public class UserController {
 			}
 		}
 		
+		params.put("userId", userId);
 		List<MenuDTO> list = userMapper.MyMenuByUserid(userId);
+		for(MenuDTO tt : list) {
+			
+			// 메뉴코드랑 id 넣어서 mymenu 조회
+			params.put("menuCode", tt.getMenuCode());
+			MymenuDTO mm =  userMapper.SearchMyMenu(params);
+			// 조회한 mymenu 매장 id를 list에 넣어주기
+			tt.setBucksId(mm.getBucksId());
+		}
+		// 벅스id 가져와서 마이메뉴 페이지에 넣어주기
+		
 		req.setAttribute("mymenu", list);
 
 		return "/user/user_mymenu";
@@ -1827,8 +1839,9 @@ public class UserController {
 
 		// 매장 검색하기
 		if (mode != null) {
-			System.out.println("tt" + menuCode);
+			
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
+				
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
 				// 파라미터를 Map에 담아 전달
@@ -1859,10 +1872,10 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
-
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}
+				
 				req.setAttribute("storeList", list);
 				req.setAttribute("storeSearch", storeSearch);
 

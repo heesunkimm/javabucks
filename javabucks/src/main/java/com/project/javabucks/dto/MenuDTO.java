@@ -64,6 +64,7 @@ public class MenuDTO {
 	
 	private String storemenuStatus;
 	private String menuStatus;
+	private String bucksId;
 	
 	public String getStoremenuStatus() {
 		return storemenuStatus;
@@ -79,6 +80,14 @@ public class MenuDTO {
 	
 	public void setMenuStatus(String menuStatus) {
 		this.menuStatus = menuStatus;
+	}
+	
+	public String getBucksId() {
+		return bucksId;
+	}
+
+	public void setBucksId(String bucksId) {
+		this.bucksId = bucksId;
 	}
 	
 	

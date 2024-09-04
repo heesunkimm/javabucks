@@ -31,6 +31,8 @@
             	<c:if test="${not empty mymenu}">
             	<c:forEach var="menu" items="${mymenu}">
 					<input type="hidden" id = "menuCode" name="menuCode" value="${menu.menuCode}">
+					<input type="hidden" id = "bucksId" name="bucksId" value="${menu.bucksId}">
+					<input type="hidden" id = "pickup" name="pickup" value="">
                 <li class="menu_item">
                     <div class="close_icon img_box">
                         <a href="user_mymenu?mode=deleteMymenu&menuCode=${menu.menuCode}">
@@ -42,10 +44,11 @@
                     </div>
                     <div class="txt_box">
                         <p class="txt_tit">${menu.menuName}</p>
-                        <p class="txt_price"><fmt:formatNumber value="${menu.menuPrice}" pattern="#,###"/></p>
+                        <p class="txt_price"><fmt:formatNumber value="${menu.menuPrice}" pattern="#,###"/> 원</p>
                         <div class="btn_box">
-                            <button type="button" onclick="ToCart('${menu.menuCode}')">담기</button>
-                            <button type="button" onclick="ToOrder('${menu.menuCode}')">주문하기</button>
+                            <button type="button" onclick="ToCart('${menu.menuCode}', '매장이용')">매장 이용</button>
+                            <button type="button" onclick="ToOrder('${menu.menuCode}', 'To-go')">To-go</button>
+                            <button type="button" onclick="ToOrder('${menu.menuCode}', 'Delivers')">Delivers</button>
                         </div>
                     </div>
                 </li>
@@ -57,35 +60,22 @@
 <%@ include file="user_bottom.jsp"%>
 <script>
 	
-	function ToCart(menuCode) {
+	function ToCart(menuCode, pickup) {
 	    // 알림창을 띄웁니다.
-	    var userConfirmed = confirm("주문하실 매장을 선택해주세요.");
+	    var userConfirmed = confirm("메뉴 상세 페이지로 이동합니다.");
 
 	    // 사용자가 '확인'을 눌렀다면 페이지를 이동합니다.
 	    if (userConfirmed) {
 	        // hidden input 요소의 값을 가져옵니다.
 	        var hiddenInput = document.getElementById('menuCode');
 	        var menuCodeValue = hiddenInput ? hiddenInput.value : menuCode;
-
+	        
+	        var hiddenInput2 = document.getElementById('bucksId');
+	        var menuCodeValue2 = hiddenInput ? hiddenInput.value : bucksId;
+	        
 	        // URL에 menuCode를 포함하여 이동합니다.
-	        var url = "/user_store?menuCode=" + encodeURIComponent(menuCodeValue);
+	        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue)& encodeURIComponent(menuCodeValue2);
 	        window.location.href = url;
 	    }
-	}
-    
-    function ToOrder() {
-        // 알림창을 띄웁니다.
-        var userConfirmed = confirm("주문하실 매장을 선택해주세요.");
-
-		// 사용자가 '확인'을 눌렀다면 페이지를 이동합니다.
-			    if (userConfirmed) {
-			        // hidden input 요소의 값을 가져옵니다.
-			        var hiddenInput = document.getElementById('menuCode');
-			        var menuCodeValue = hiddenInput ? hiddenInput.value : menuCode;
-
-			        // URL에 menuCode를 포함하여 이동합니다.
-			        var url = "/user_store?menuCode=" + encodeURIComponent(menuCodeValue);
-			        window.location.href = url;
-			    }
-			}
+	}    
 </script>
