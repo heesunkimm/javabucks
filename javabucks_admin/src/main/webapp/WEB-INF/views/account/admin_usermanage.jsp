@@ -104,43 +104,33 @@
                         </tbody>
                         
                     </table>
-                    <!-- 페이징 -->
-                    <c:set var="startPage" value="${1}"/>
-					<c:set var="endPage" value="${3}"/>
-					
-					<c:if test="${currentPage > endPage}">
-					    <c:set var="startPage" value="${currentPage}"/>
-					    <c:set var="endPage" value="${currentPage + 2}"/>
-					</c:if>
-					
-					<c:if test="${endPage > pageCount}">
-					    <c:set var="endPage" value="${pageCount}"/>
-					</c:if>
-					
-					<div class="pagination">
-					    <c:if test="${startPage > 1}">
-					        <a class="page_btn prev_btn" href="?page=${startPage - 1}">
-					            <img src="../../images/icons/arrow.png">
-					        </a>
-					    </c:if>
-					
-					    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-					        <c:choose>
-					            <c:when test="${i == currentPage}">
-					                <a href="?page=${i}" class="page_active">${i}</a>
-					            </c:when>
-					            <c:otherwise>
-					                <a href="?page=${i}" class="page">${i}</a>
-					            </c:otherwise>
-					        </c:choose>
-					    </c:forEach>
-					
-					    <c:if test="${endPage < pageCount}">
-					        <a class="page_btn next_btn" href="?page=${startPage+3}">
-					            <img src="../../images/icons/arrow.png">
-					        </a>
-					    </c:if>
-					</div>
+                    <!--  페이징 -->
+			<div class="pagination pagination">
+			    <c:if test="${startPage > pageBlock}"> 
+			        <a class="page_btn prev_btn" href="admin_usermanage.do?pageNum=${startPage-3}">
+			        	<img src="../../images/icons/arrow.png">
+			        </a>
+			    </c:if>
+			    
+			    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+			        <c:set var="activeClass" value=""/>
+			        <c:choose>
+			            <c:when test="${empty param.pageNum and i == 1}">
+			                <c:set var="activeClass" value="page_active"/>
+			            </c:when>
+			            <c:when test="${param.pageNum == i}">
+			                <c:set var="activeClass" value="page_active"/>
+			            </c:when>
+			        </c:choose>
+			        <a href="admin_usermanage.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+			    </c:forEach>
+			    
+			    <c:if test="${pageCount > endPage}">
+			        <a class="page_btn next_btn" href="admin_usermanage.do?pageNum=${startPage+3}">
+			        	<img src="../../images/icons/arrow.png">
+			        </a>
+			    </c:if>
+			</div>
     <!-- e: content -->
 <jsp:include page="../admin_bottom.jsp"/>
     
@@ -154,7 +144,7 @@ $(document).ready(function() {
         event.preventDefault(); // 폼의 기본 제출 동작을 막음
         fetchPageData(1); // 첫 페이지 데이터를 가져옴
     });
-    function fetchPageData(page) {
+    function fetchPageData(pageNum) {
         $.ajax({
             url: '/searchUser.do',
             type: 'POST',
@@ -165,7 +155,7 @@ $(document).ready(function() {
                 userId: $('input[name="userId"]').val(),
                 userNickname: $('input[name="userNickname"]').val(),
                 gradeCode: $('select[name="gradeCode"]').val(),
-                page: page,
+                pageNum: pageNum,
                 itemsPerPage: 5 // 페이지당 항목 수를 서버로 전달
             },
             success: function(response) {
@@ -218,39 +208,52 @@ $(document).ready(function() {
         }
 
         // 페이지네이션을 업데이트
-        updatePagination(response.currentPage, response.pageCount);
+        updatePagination(response);
     }
 
-    function updatePagination(currentPage, pageCount) {
-        $('.pagination').empty(); // 기존 페이지네이션을 비움
+ // 페이지네이션을 업데이트하는 함수
+    function updatePagination(response) {
+     var $pagination = $('.pagination');
+     $pagination.empty(); // 기존 페이징 요소를 모두 제거
 
-        let startPage = currentPage <= 2 ? 1 : (currentPage % 3 === 0 ? currentPage - 2 : (currentPage - (currentPage % 3) + 1));
-        let endPage = startPage + 2 > pageCount ? pageCount : startPage + 2;
+     if (response && response.pageCount > 1) {
+         var currentPage = response.currentPage ; // 현재 페이지 번호
+         var totalPages = response.pageCount; // 전체 페이지 수
+         var startPage =  response.startPage; // 현재 페이지 블록의 시작 페이지
+         var endPage = response.endPage; // 현재 페이지 블록의 끝 페이지
 
-        if (startPage > 1) {
-            $('.pagination').append('<a class="page_btn prev_btn" href="#" data-page="' + (startPage - 1) + '"><img src="../../images/icons/arrow.png"></a>');
-        }
+         // 이전 페이지 블록으로 이동하는 버튼
+         if (startPage > 1) {
+             $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
+         }
 
-        for (let i = startPage; i <= endPage; i++) {
-            if (i === currentPage) {
-                $('.pagination').append('<a href="#" class="page_active" data-page="' + i + '">' + i + '</a>');
-            } else {
-                $('.pagination').append('<a href="#" class="page" data-page="' + i + '">' + i + '</a>');
-            }
-        }
+         // 페이지 번호 링크 생성
+         for (var i = startPage; i <= endPage; i++) {
+             if (i == currentPage) {
+                 $pagination.append('<a href="javascript:;" class="page_active" data-page="' + i + '">' + i + '</a>');
+             } else {
+                 $pagination.append('<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>');
+             }
+         }
 
-        if (endPage < pageCount) {
-            $('.pagination').append('<a class="page_btn next_btn" href="#" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
-        }
+         // 다음 페이지 블록으로 이동하는 버튼
+         if (endPage < totalPages) {
+             $pagination.append('<a class="page_btn next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+         }
 
-        // 페이징 버튼 클릭 이벤트 핸들러 설정
-        $('.pagination a').on('click', function(event) {
-            event.preventDefault();
-            let page = $(this).data('page');
-            fetchPageData(page); // 클릭한 페이지로 데이터를 다시 로드
-        });
-    }
-});
+         // 페이지 클릭 이벤트 추가
+         $('.page-link').on('click', function() {
+             var pageNum = $(this).data('page'); // pageNum으로 이름 변경
+             fetchPageData(pageNum); // 페이지 데이터를 비동기적으로 로드
+         });
+
+         $('.prev_btn, .next_btn').on('click', function() {
+             var pageNum = $(this).data('page'); // pageNum으로 이름 변경
+             fetchPageData(pageNum); // 페이지 데이터를 비동기적으로 로드
+         });
+     }
+ }
+ });
 
 
 

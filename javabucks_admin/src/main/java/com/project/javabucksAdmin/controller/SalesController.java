@@ -28,6 +28,8 @@ import com.project.javabucksAdmin.dto.OrderItem;
 import com.project.javabucksAdmin.dto.PayhistoryDTO;
 import com.project.javabucksAdmin.mapper.SalesMapper;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class SalesController {
 	
@@ -38,26 +40,23 @@ public class SalesController {
 	
 	//지점 계정 관리 페이지로 이동 
 		@RequestMapping("/storemanage.do")
-		public String storemanage(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+		public String storemanage(HttpServletRequest req, @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 			
-			int itemsPerPage = 5; // 한 페이지에 보여질 리뷰 수
-		    int startIndex = (page - 1) * itemsPerPage; // 시작 인덱스 수정
-		    int endIndex = page * itemsPerPage; // 끝 인덱스 수정
-		    
+			int totalCount = salesMapper.bucksListCount();
+			Map<String, Object> pagingMap = paging(totalCount, pageNum);
 		    // 파라미터 설정
 		    Map<String, Object> params = new HashMap<>();
-		    params.put("startIndex", startIndex);
-		    params.put("endIndex", endIndex);
-		    //System.out.println(startIndex);
-		    //System.out.println(endIndex);
+		    params.put("startIndex", pagingMap.get("startRow"));
+			params.put("endIndex", pagingMap.get("endRow"));
 		    
 			List<BucksDTO> list = salesMapper.bucksList(params);
-			int totalCount = salesMapper.bucksListCount();
-		    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); // 전체 페이지 수 계산
+			
 		    
-			model.addAttribute("bucksList", list);
-			model.addAttribute("currentPage", page);
-			model.addAttribute("pageCount", pageCount);
+			req.setAttribute("bucksList", list);
+			req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+			req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+			req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+			req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
 			
 			return "account/admin_storemanage";
 		}
@@ -139,36 +138,62 @@ public class SalesController {
 		        @RequestParam(value = "bucksId", required = false) String bucksId,
 		        @RequestParam(value = "startDate", required = false) String startDate,
 		        @RequestParam(value = "endDate", required = false) String endDate,
-		        @RequestParam(value = "page", defaultValue = "1") int page) {
+		        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum){      
 
-		    int itemsPerPage = 5; // 한 페이지에 보여줄 항목 수
-		    int startIndex = (page - 1) * itemsPerPage + 1;
-		    int endIndex = page * itemsPerPage;
 
 		    Map<String, Object> params = new HashMap<>();
 		    params.put("bucksName", bucksName != null ? bucksName : ""); // 널값이면 빈 문자열로 처리
 		    params.put("bucksId", bucksId != null ? bucksId : ""); // 널값이면 빈 문자열로 처리
 		    params.put("startDate", startDate != null ? startDate : ""); // 널값이면 빈 문자열로 처리
 		    params.put("endDate", endDate != null ? endDate : ""); // 널값이면 빈 문자열로 처리
-		    params.put("startIndex", startIndex);
-		    params.put("endIndex", endIndex);
-//		    System.out.println(startIndex);
-//		    System.out.println(endIndex);
+		    
+		    int totalCount = salesMapper.searchBucksCount(params);
+		    Map<String, Object> pagingMap = paging(totalCount, pageNum);
+		    
+		    params.put("startIndex", pagingMap.get("startRow"));
+			params.put("endIndex", pagingMap.get("endRow"));
 
 		    // 검색 결과와 총 카운트 가져오기
 		    List<BucksDTO> list = salesMapper.searchBucks(params);
-		    int totalCount = salesMapper.searchBucksCount(params);
-		    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage);
+		   
 
 		    // 결과를 JSON 형태로 반환
 		    Map<String, Object> response = new HashMap<>();
 		    response.put("bucksList", list);
-		    response.put("currentPage", page);
-		    response.put("pageCount", pageCount);
+		    response.put("startPage", (int)pagingMap.get("startPage"));
+		    response.put("endPage", (int)pagingMap.get("endPage"));
+		    response.put("pageCount", (int)pagingMap.get("pageCount"));
+		    response.put("pageBlock", (int)pagingMap.get("pageBlock"));
 		    //System.out.println(pageCount);
 
 		    return response;
 		}
+		
+		// 페이징 처리 메서드
+					public Map<String, Object> paging(int count, int pageNum) {
+						int pageSize = 4; // 한 페이지에 보여질 게시글 수
+						int startRow = (pageNum-1) * pageSize + 1; // 페이지별 시작 넘버
+						int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
+						if (endRow > count) endRow = count;		
+						int no = count-startRow + 1; // 넘버링		
+						int pageBlock = 3; //페이지별 보여줄 페이징번호 개수
+						int pageCount = count/pageSize + (count%pageSize == 0 ? 0 : 1); //총 페이징번호 개수		
+						int startPage = (pageNum-1)/pageBlock * pageBlock +1; // 페이지별 시작 페이징번호
+						int endPage = startPage + pageBlock -1;	// 페이지별 끝 페이징번호
+						if(endPage > pageCount) endPage = pageCount;
+						
+						Map<String, Object> pagingMap = new HashMap<>();
+						pagingMap.put("pageSize", pageSize);
+						pagingMap.put("no", no);
+						pagingMap.put("startRow", startRow);
+						pagingMap.put("endRow", endRow);
+						pagingMap.put("pageBlock", pageBlock);
+						pagingMap.put("pageCount", pageCount);
+						pagingMap.put("startPage", startPage);
+						pagingMap.put("endPage", endPage);
+						
+						return pagingMap;
+					}
 
 	
 	//지점 상세보기 
@@ -503,28 +528,19 @@ public class SalesController {
 			
 			//일별 매출관리 
 			@GetMapping("/bucksSalesD.do")
-			public String dailyBucksSales(Model model,@RequestParam(value = "page", defaultValue = "1") int page,
-                    @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+			public String dailyBucksSales(@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+					HttpServletRequest req) {
+				
+				int totalCount = salesMapper.dailySalesCount();
 				
 				
-				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales();
-				//model.addAttribute("list",orderList);
+				Map<String, Object> pagingMap = paging(totalCount, pageNum);
+				Map<String, Object> params = new HashMap<>();
+			    params.put("startRow", pagingMap.get("startRow"));
+				params.put("endRow", pagingMap.get("endRow"));
 				
-				// 페이징 처리를 위해 필요한 변수들 계산
-			    int totalItems = orderList.size(); // 전체 아이템 수
-			    int totalPages = (int) Math.ceil((double) totalItems / pageSize); // 총 페이지 수 계산
-			    int fromIndex = (page - 1) * pageSize; // 시작 인덱스 계산
-			    int toIndex = Math.min(fromIndex + pageSize, totalItems); // 끝 인덱스 계산
+				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales(params);
 
-			    // 잘라낸 서브리스트를 모델에 추가
-			    List<PayhistoryDTO> paginatedList = orderList.subList(fromIndex, toIndex);
-			    model.addAttribute("list", paginatedList);
-
-			    // 페이징 정보도 모델에 추가
-			    model.addAttribute("currentPage", page);
-			    model.addAttribute("totalPages", totalPages);
-			    model.addAttribute("pageSize", pageSize);
-			    
 				// 지점별로 카테고리별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
 			    Map<String, Integer> branchTotalSalesMap = new HashMap<>(); // 지점별 총 매출을 저장하는 맵
@@ -612,18 +628,21 @@ public class SalesController {
 			    }
 
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
-			    model.addAttribute("branchSalesMap", branchSalesMap);
-			    model.addAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
+			    req.setAttribute("branchSalesMap", branchSalesMap);
+			    req.setAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
 			    //System.out.println(branchSalesMap);
 
-			    // 주문 내역 리스트를 모델에 추가
-			    //model.addAttribute("list", orderList);
+			    
 			 // 주문 내역 리스트를 모델에 추가
-			    model.addAttribute("list", paginatedList);
+			    req.setAttribute("list", orderList);
 			    //System.out.println(orderList);
 			    
-			    model.addAttribute("total", totalSalesSum);
+			    req.setAttribute("total", totalSalesSum);
 
+			    req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+				req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+				req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+				req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
 			    // 결과 페이지로 이동
 			    return "sales/admin_dailysales";
 			}
@@ -637,8 +656,8 @@ public class SalesController {
 		            						@RequestParam("endDate") String endDate,
 		            						@RequestParam("bucksName") String bucksName,
 		            						@RequestParam("category") String category,
-		            						@RequestParam(value = "page", defaultValue = "1") int page,
-		            	                    @RequestParam(value = "pageSize", defaultValue = "5") int pageSize, Model model) {
+		            						@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+		            						HttpServletRequest req) {
 //				System.out.println(startDate);
 //				System.out.println(endDate);
 //				System.out.println(bucksName);
@@ -649,25 +668,15 @@ public class SalesController {
 			    params.put("endDate", endDate);
 			    params.put("bucksName", bucksName);
 				
-				
+			    int totalCount = salesMapper.searchDSalesCount(params);
+			    System.out.println(totalCount);
+			    Map<String, Object> pagingMap = paging(totalCount, pageNum);
+			    params.put("startRow", pagingMap.get("startRow"));
+				params.put("endRow", pagingMap.get("endRow"));
+			    
 			    List<PayhistoryDTO> orderList = salesMapper.searchDailySales(params);
 				//System.out.println(orderList);
 				
-			 // 페이징 처리를 위해 필요한 변수들 계산
-			    int totalItems = orderList.size(); // 전체 아이템 수
-			    int totalPages = (int) Math.ceil((double) totalItems / pageSize); // 총 페이지 수 계산
-			    int fromIndex = (page - 1) * pageSize; // 시작 인덱스 계산
-			    int toIndex = Math.min(fromIndex + pageSize, totalItems); // 끝 인덱스 계산
-			    
-			    // 잘라낸 서브리스트를 모델에 추가
-			    List<PayhistoryDTO> paginatedList = orderList.subList(fromIndex, toIndex);
-			    model.addAttribute("list", paginatedList);
-			    
-			 // 페이징 정보도 모델에 추가
-			    model.addAttribute("currentPage", page);
-			    model.addAttribute("totalPages", totalPages);
-			    model.addAttribute("pageSize", pageSize);
-			    
 			    
 			 /// 지점별로 일자별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
@@ -770,21 +779,26 @@ public class SalesController {
 			    
 
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
-			    model.addAttribute("branchSalesMap", branchSalesMap);
-			    model.addAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
+			    req.setAttribute("branchSalesMap", branchSalesMap);
+			    req.setAttribute("branchTotalSalesMap", branchTotalSalesMap); // 지점별 총 매출액 추가
 			    //System.out.println(branchSalesMap);
 
 			    // 주문 내역 리스트를 모델에 추가
-			    model.addAttribute("list", orderList);
+			    req.setAttribute("list", orderList);
 			   // System.out.println(orderList);
 			    
-			    model.addAttribute("total", totalSalesSum);
+			    req.setAttribute("total", totalSalesSum);
 			    
 			 // 검색 조건을 모델에 추가
-			    model.addAttribute("startDate", startDate);
-			    model.addAttribute("endDate", endDate);
-			    model.addAttribute("bucksName", bucksName);
-			    model.addAttribute("category", category);
+			    req.setAttribute("startDate", startDate);
+			    req.setAttribute("endDate", endDate);
+			    req.setAttribute("bucksName", bucksName);
+			    req.setAttribute("category", category);
+			    
+				req.setAttribute("startPage2", (int)pagingMap.get("startPage"));
+				req.setAttribute("endPage2", (int)pagingMap.get("endPage"));
+				req.setAttribute("pageCount2", (int)pagingMap.get("pageCount"));
+				req.setAttribute("pageBlock2", (int)pagingMap.get("pageBlock"));
 
 			    // 결과 페이지로 이동
 			    return "sales/admin_dailysales";

@@ -180,8 +180,8 @@ public class SalesMapper {
     	return sqlSession.selectOne("getCouponPrice", coupon);
     }
     
-    public List<PayhistoryDTO> dailyBucksSales() {
-    	return sqlSession.selectList("dailyBucksSales");
+    public List<PayhistoryDTO> dailyBucksSales(Map<String, Object> params) {
+    	return sqlSession.selectList("dailyBucksSales", params);
     }
     
     // 메뉴코드의 첫 글자를 통해 카테고리 분류
@@ -201,6 +201,14 @@ public class SalesMapper {
  		//System.out.println(params);
  		return sqlSession.selectList("searchDailySales",params);
  	}
+ 	
+ 	public int dailySalesCount() {
+    	return sqlSession.selectOne("dailySalesCount");
+    }
+ 	
+ 	public int searchDSalesCount(Map<String, Object> params) {
+    	return sqlSession.selectOne("searchDSalesCount",params);
+    }
 
  			
 	 
