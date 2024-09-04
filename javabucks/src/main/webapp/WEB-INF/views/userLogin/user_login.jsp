@@ -158,7 +158,7 @@
                         <button class="confirm_btn" type="button" onclick="sendEmailPw()">인증번호 발송</button>
                     </div>
                 </div>
-                <div class="confirm_box">
+                <div class="confirm_box" id="confirm_box" style="display: none">
                     <label>
                         <input type="text" class="codePw" name="code" value="" placeholder="인증번호 입력">
                         <span id="timerMinPw">3</span>:<span id="timerSecPw">00</span>
@@ -350,7 +350,7 @@
 	        return $('.userEmail1').focus();
 	    }
 		
-	    document.querySelector('.confirm_box').style.display = 'block';
+	    document.getElementById('confirm_box').style.display = 'block';
 	    timeRemaining = 180;
 	    startTimerPw();
 	
