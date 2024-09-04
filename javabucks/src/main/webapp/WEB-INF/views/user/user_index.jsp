@@ -7,14 +7,14 @@
         <div class="inner_wrap">
             <div class="top_box">
                 <div class="random_box">
-                    <p>
-                    <c:if test="${not empty inUser.userNickname}">
-                    ${inUser.userNickname}님,
-                    </c:if>
-                    <c:if test="${empty inUser.userNickname}">
-                    ${inUser.userId}님,
-                    </c:if>
-                    <br/> 오늘도 힘찬 하루★ 반가워요!
+                    <p class="random_txt">
+	                    <c:if test="${not empty inUser.userNickname}">
+	                    ${inUser.userNickname}님,
+	                    </c:if>
+	                    <c:if test="${empty inUser.userNickname}">
+	                    ${inUser.userId}님,
+	                    </c:if>
+	                    <br/> 오늘도 힘찬 하루★ 반가워요!
                     </p>
                 </div>
                 <div class="reward_box div_box"> 
@@ -118,6 +118,7 @@
 	<script>
 		$(document).ready(function() {
 			let userId = `${inUser.userId}`;
+			
 			let swiper = new Swiper(".news_box", {
 	            slidesPerView: 1,
 	            spaceBetween: 0,

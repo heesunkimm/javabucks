@@ -420,16 +420,17 @@ body {max-width: 768px!important;}
 #user_info .edit_form .mail_box label {width: 360px;}
 
 #user_info .edit_form .btn_box {text-align: center;}
-#user_info .edit_form .btn_box button {width: 300px; padding: 6px 0; border-radius: 4px; font-size: 20px; text-align: center;}
-#user_info .edit_form .btn_box button:first-child {border: 1px solid #006241; color: #006241;}
-#user_info .edit_form .btn_box button:last-child {border: 1px solid #555; color: #555;}
+#user_info .edit_form .btn_box button {width: 300px; padding: 6px 0; background: #006241; border-radius: 4px; font-size: 20px; text-align: center; color: #fefefe;}
+#user_info .del_box {margin-top: 10px; text-align: center;}
+#user_info .del_box button {width: 300px; padding: 6px 0; border: 1px solid #555; border-radius: 4px; font-size: 20px; text-align: center; color: #555;}
 
 /* user_mymenu */
 #user_mymenu .menu_list {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
 #user_mymenu .menu_list li + li {border-top: 1px solid #ccc;}
 #user_mymenu .menu_list li {position: relative; display: flex; align-items: center; gap: 20px; padding: 20px;}
+#user_mymenu .menu_list .nolist {justify-content: center; text-align: center;}
 #user_mymenu .menu_list .close_icon {position: absolute; right: 0; top: 0; width: 30px; height: 30px;}
-#user_mymenu .menu_list li .menu_icon {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_mymenu .menu_list li .menu_icon {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
 #user_mymenu .menu_list li .txt_box .txt_tit {font-size: 18px;}
 #user_mymenu .menu_list li .txt_box .txt_price {margin-top: 6px; font-size: 16px; color: #555;}
 #user_mymenu .menu_list li .btn_box {position: absolute; right: 20px; bottom: 20px;}
@@ -441,7 +442,7 @@ body {max-width: 768px!important;}
 #user_addcard .addcard_box label + label {margin-top: 10px;}
 #user_addcard .addcard_box input {margin-top: 4px; width: 100%; height: 36px; border-left: none; border-top: none; border-right: none; border-bottom: 1px solid #ccc; padding: 0 6px; font-size: 18px;}
 #user_addcard .addcard_box form .btn_box {margin-top: 20px; text-align: center;}
-#user_addcard .addcard_box form .btn_box button {width: 100%; padding: 10px 0; background-color: #006241; border-radius: 25px; font-size: 20px; color: #fefefe;}
+#user_addcard .addcard_box form .btn_box .submitBtn {width: 100%; padding: 10px 0; background-color: #006241; border-radius: 25px; font-size: 20px; color: #fefefe;}
 
 /* user_cpnhistory */
 #user_cpnhistory .cpn_list {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
@@ -474,7 +475,7 @@ body {max-width: 768px!important;}
 
 #user_orderhistory .history_list .history_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
 #user_orderhistory .history_list .history_item.nolist {justify-content: center; border-bottom: 1px solid #ccc;}
-#user_orderhistory .history_list .history_item .img_box {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_orderhistory .history_list .history_item .img_box {width: 100px; height: 100px;}
 
 #user_orderhistory .history_list .history_item .img_box.menu_status {position: relative;}
 #user_orderhistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}
@@ -494,7 +495,7 @@ body {max-width: 768px!important;}
 
 #user_delivershistory .history_list .history_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
 #user_delivershistory .history_list .history_item.nolist {justify-content: center; border-bottom: 1px solid #ccc;}
-#user_delivershistory .history_list .history_item .img_box {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_delivershistory .history_list .history_item .img_box {width: 100px; height: 100px;}
 
 #user_delivershistory .history_list .history_item .img_box.menu_status {position: relative;}
 #user_delivershistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}

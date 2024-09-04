@@ -1,17 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_addcard" class="content">
         <div class="inner_wrap">
@@ -29,7 +18,7 @@
                         <input type="text" id="cardRegNum" name="cardRegNum" value="" placeholder="JAVABUCKS 카드번호 16자리 (필수)" maxlength="19">
                     </label>
                     <div class="btn_box">
-                        <button type="submit" >등록하기</button>
+                        <button class="submitBtn" type="submit" disabled>등록하기</button>
                     </div>
                 </form>
             </div>
@@ -38,7 +27,6 @@
     </section>
     <!-- e: content -->
 	<script type="text/javascript">
-	
 		//카드번호 유효성 검사
 		function cardCheck(){
 			let cardRegNum = $("#cardRegNum").val();

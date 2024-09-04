@@ -98,10 +98,10 @@
                         <button type="submit">개인정보 수정</button>
                     </div>
                 </form>
-                <div class="btn_box">
+                <div class="del_box">
                 	<form name="del_f" action="userDel.do" method="get">
                     	<input type="hidden" name="userId" value="${userInfo.userId}">
-                    	<button type="submit" style="background:grey; color:white">회원탈퇴</button>
+                    	<button type="submit">회원탈퇴</button>
                     </form>
                 </div>
             </div>
