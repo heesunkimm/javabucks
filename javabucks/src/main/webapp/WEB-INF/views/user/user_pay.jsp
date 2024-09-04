@@ -59,7 +59,7 @@
                 </a>
             	<p class="card_num">카드번호</p>
             </div>
-            <p class="card_price">잔액: <span>0</span><fmt:formatNumber value="" pattern="#,###" />원</p>
+            <p class="card_price">잔액: <span><fmt:formatNumber value="" pattern="#,###" />0</span>원</p>
             <div class="card_img img_box">
                 <img src="../images/icons/starbucksCard.png" alt="">
             </div>
@@ -97,6 +97,25 @@
     </section>
     <!-- e: content -->
      <script>
+	     // 숫자를 천 단위로 포맷하는 함수
+	     function formatNumber(num) {
+	         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	     }
+     
+         $(".popup_btn").on('click', function(e) {
+ 			let cardName = $(".popup_btn").data('cardname');
+ 			let cardPrice = $(".popup_btn").data('cardprice');
+ 			let cardRegNum = $(".popup_btn").data('cardregnum');
+	
+ 			let formattedCardNum = String(cardRegNum).replace(/(\d{4})(?=\d)/g, '$1-');
+ 			
+ 			$('#cardpay .card_num').text(formattedCardNum);
+ 			$('#cardpay .txt_tit').text(cardName);
+ 			$('#cardpay .card_price span').text(formatNumber(cardPrice));
+ 			
+ 			$("#cardpay input[name='cardRegNum']").val(cardRegNum);
+         });
+     
         $(".edit_btn").on("click",function () {
             if(!$(".edit_card").hasClass("s_active")) {
                 $(".pay_card").removeClass("s_active");
