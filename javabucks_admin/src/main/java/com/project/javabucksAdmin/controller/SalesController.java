@@ -105,8 +105,8 @@ public class SalesController {
             @RequestParam("bucksEmail1") String bucksEmail1,
             @RequestParam("bucksEmail2") String bucksEmail2,
 		@RequestParam("startTime") String startTime,
-			@RequestParam("endTime") String endTime) {
-       
+			@RequestParam("endTime") String endTime, RedirectAttributes redirectAttributes) {
+		try {
         BucksDTO dto = new BucksDTO();
         dto.setBucksId(bucksId);
         dto.setBucksPasswd(bucksPasswd);
@@ -123,6 +123,10 @@ public class SalesController {
 
         
         salesMapper.addBucks(dto);
+        redirectAttributes.addFlashAttribute("message", "지점이 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "등록 중 오류가 발생했습니다.");
+        }
 
         return "redirect:/storemanage.do";
     }
@@ -232,8 +236,14 @@ public class SalesController {
 			
 			//지점 삭제
 			@RequestMapping(value = "/deleteBucks.do", method = RequestMethod.POST)
-			public String deleteBucks(@RequestParam("bucksId") String bucksId) {
+			public String deleteBucks(@RequestParam("bucksId") String bucksId,
+					RedirectAttributes redirectAttributes) {
+				try {
 			    salesMapper.deleteBucks(bucksId);
+			    redirectAttributes.addFlashAttribute("message", "지점을 삭제했습니다.");
+		        } catch (Exception e) {
+		            redirectAttributes.addFlashAttribute("errorMessage", "오류가 발생했습니다.");
+		        }
 			    return "redirect:/storemanage.do";  // 삭제 후 리다이렉트할 페이지
 			}
 
@@ -575,10 +585,11 @@ public class SalesController {
 
 			            // 옵션 가격 조회
 			            int optionPrice = salesMapper.getOptPrice(optionId);
+//			            System.out.println(optionPrice);
 
 			            // 총 가격 계산 (메뉴 가격 + 옵션 가격) * 수량
 			            int totalPrice = (menuPrice + optionPrice) * quantity;
-			            
+//			            System.out.println(totalPrice);
 			         // 음료 카테고리에 쿠폰을 적용
 			            if (!isCouponApplied && couponDiscount > 0 && category.equals("음료")) {
 			                totalPrice -= couponDiscount;
@@ -587,8 +598,9 @@ public class SalesController {
 			                isCouponApplied = true; // 쿠폰이 적용되었음을 표시
 			            }
 
-			            // 해당 카테고리의 매출 합산
-			            totalSalesByCategory.put(category, totalSalesByCategory.get(category) + totalPrice);
+			         // 매출 합산 시 null 체크 후 처리
+			            int currentTotal = totalSalesByCategory.getOrDefault(category, 0);
+			            totalSalesByCategory.put(category, currentTotal + totalPrice);
 
 			            branchTotalSalesMap.put(branchId, branchTotalSalesMap.getOrDefault(branchId, 0) + totalPrice);
 			            

@@ -66,10 +66,10 @@ public class AccountController {
 	            @RequestParam(value = "page", defaultValue = "1") int page,       
 	            @RequestParam(value = "itemsPerPage", defaultValue = "5") int itemsPerPage ) {
 			
-			System.out.println(startDate);
-			System.out.println(endDate);
-			System.out.println(adminId);
-			System.out.println(authority);
+//			System.out.println(startDate);
+//			System.out.println(endDate);
+//			System.out.println(adminId);
+//			System.out.println(authority);
 			
 		    int startIndex = (page - 1) * itemsPerPage + 1;
 		    int endIndex = page * itemsPerPage;
@@ -203,6 +203,8 @@ public class AccountController {
 				AdminDTO dto = new AdminDTO();
 				dto.setAdminEmail(email);
 				dto.setAdminId(adminId);
+//				 System.out.println(adminId);
+
 				if (accountMapper.editCheckAdminEmail(dto)) {
 					return "ok";
 				} else {
@@ -212,7 +214,7 @@ public class AccountController {
 			
 			//수정 업데이트
 			@RequestMapping(value = "/editUpdateAdmin.do", method = RequestMethod.POST )
-			public String editUpdateAdmin( @RequestParam("adminId") String adminId,
+			public String editUpdateAdmin( @RequestParam("userId") String adminId,
 					//@RequestParam("adminPasswd") String adminPasswd,
 		            @RequestParam("adminEmail1") String adminEmail1,
 		            @RequestParam("adminEmail2") String adminEmail2) {
@@ -221,7 +223,8 @@ public class AccountController {
 		        dto.setAdminId(adminId);
 		       // dto.setAdminPasswd(adminPasswd);
 		        dto.setAdminEmail(adminEmail1 + adminEmail2);
-
+		        
+		       
 		        
 		        accountMapper.editUpdateAdmin(dto);
 
@@ -281,7 +284,7 @@ public class AccountController {
 				
 			    int startIndex = (page - 1) * itemsPerPage + 1;
 			    int endIndex = page * itemsPerPage;
-			    System.out.println(userId);
+//			    System.out.println(userId);
 			    
 
 			    Map<String, Object> params = new HashMap<>();
@@ -295,7 +298,17 @@ public class AccountController {
 			    params.put("endIndex", endIndex);     
 			    
 			    List<UserDTO> list = accountMapper.searchUserList(params); 
-			    System.out.println("list : "+list);
+//			    System.out.println("list : "+list);
+			    for (UserDTO user : list) {
+			        // 이메일을 합침
+			        String fullEmail = user.getUserEmail1() + "@" + user.getUserEmail2();
+			        user.setFullEmail(fullEmail);
+			        
+			        // 전화번호를 합침
+			        String fullPhoneNumber = user.getUserTel1() + "-" + user.getUserTel2() + "-" + user.getUserTel3();
+			        user.setFullPhoneNumber(fullPhoneNumber);
+			    }
+			    
 			    int totalCount = accountMapper.searchUserCount(params); 
 			    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); 
 

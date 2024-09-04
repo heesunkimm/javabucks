@@ -37,7 +37,7 @@
             AND COALESCE(adminAuthority, '') LIKE '%' || #{authority} || '%'
             AND COALESCE(adminEnable, '') LIKE '%' || #{enable} || '%'
             AND adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
-                                 AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE)
+                                 AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE)
         ORDER BY 
             adminJoindate DESC, adminId ASC
     ) a
@@ -57,7 +57,7 @@ WHERE
     AND (#{authority} IS NULL OR #{authority} = '' OR adminAuthority = #{authority})
     AND (#{enable} IS NULL OR #{enable} = '' OR adminEnable = #{enable})
     AND (adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
-                         AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE))
+                         AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE))
             
     </select>
     
@@ -71,7 +71,7 @@ WHERE
 
 <!-- 이메일 중복 확인 쿼리 -->
     <select id="checkAdminEmail" parameterType="AdminDTO" resultType="int">
-        SELECT COUNT(*) FROM javabucks_admin WHERE AdminEmail = #{adminEmail}
+        SELECT COUNT(*) FROM javabucks_admin WHERE AdminEmail = #{adminEmail} AND adminId != #{adminId}
     </select>
     
     <!-- 아이디 중복 확인 쿼리 -->
@@ -177,46 +177,39 @@ WHERE
 		
 		<!-- user 검색 쿼리 -->
     <select id="searchUserList" parameterType="map" resultType="UserDTO">
-        SELECT * FROM (
-    SELECT 
-        ROWNUM AS rnum,
-        a.*
+    SELECT * 
     FROM (
         SELECT 
-            userId,
-            userPasswd,
-            userName,
-            userNickname,
-            userGender,
-            userBirth,
-            userEmail1,
-            userEmail2,
-            userTel1,
-            userTel2,
-            userTel3,
-            gradeCode,
-            userGradedate,
-            userJoindate,
-            userEnable,
-            userFrequencyCount
+            ROW_NUMBER() OVER (ORDER BY userJoindate DESC) AS rn, 
+            u.*
         FROM 
-            javabucks_user
+            javabucks_user u
         WHERE 
-            userId LIKE '%' || COALESCE(#{userId}, '') || '%'
-            AND userNickname LIKE '%' || COALESCE(#{userNickname}, '') || '%'
-            AND gradeCode = COALESCE(#{gradeCode}, gradeCode)
-            AND userEnable = COALESCE(#{enable}, userEnable)
-            AND (COALESCE(#{startDate}, '') = '' OR userJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD'))
-            AND (COALESCE(#{endDate}, '') = '' OR userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD'))
-        ORDER BY 
-            userJoindate DESC
-    ) a
+            1=1
+            <if test="userId != null and userId != ''">
+                AND userId LIKE '%' || #{userId} || '%'
+            </if>
+            <if test="userNickname != null and userNickname != ''">
+                AND userNickname LIKE '%' || #{userNickname} || '%'
+            </if>
+            <!-- 여기서 gradeCode가 null이 아닐 때에만 필터를 적용 -->
+            <if test="gradeCode != null and gradeCode != ''">
+                AND gradeCode = #{gradeCode}
+            </if>
+            <if test="enable != null and enable != ''">
+                AND userEnable = #{enable}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND userJoindate &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND
+            </if>
+        ) u
     WHERE 
-        ROWNUM &lt;= #{endIndex}
-) 
-WHERE 
-    rnum &gt;= #{startIndex}
-    </select>
+        rn BETWEEN #{startIndex} AND #{endIndex}
+</select>
+
 
     <!-- user 총 카운트 쿼리 -->
     <select id="searchUserCount" parameterType="map" resultType="int">
@@ -228,7 +221,7 @@ WHERE
     AND gradeCode = COALESCE(#{gradeCode}, gradeCode)
     AND userEnable = COALESCE(#{enable}, userEnable)
     AND userJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD'))
-                        AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD'), SYSDATE)
+                        AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE)
     </select>
 		
 		

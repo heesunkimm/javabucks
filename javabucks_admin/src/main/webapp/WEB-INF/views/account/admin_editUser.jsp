@@ -24,7 +24,7 @@
                             <input type="text" name="userName" value="${juser.userName}" >
                         </label>
                         <label><span>닉네임</span>
-                            <input type="text" name="userNickname" value="${juser.userNickname}" >
+                           <input type="text" name="userNickname" value="${juser.userNickname}" maxlength="6">
                         </label>
                         <label><span>생년월일</span>
                             <input type="text" name="userBirth" value="${juser.userBirth}" >

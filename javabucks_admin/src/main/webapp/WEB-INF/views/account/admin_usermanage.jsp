@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="../admin_top.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!-- s: content -->
     <section id="admin_usermanage" class="content accountmanage">
         <div class="inner_wrap">
@@ -61,12 +62,12 @@
                         <tbody >
                         <c:forEach items="${userList}" var ="user">
                             <tr>
-                                <td>${user.userJoindate}</td>
+                                <td>${fn:substring(user.userJoindate, 0, 10)}</td>
                                 <td>${user.userId}</td>
                                 <td>${user.userName}</td>
-                                <td>${user.userNickname}</td>
-                                <td>${user.fullEmail}</td>
-                                <td>${user.fullPhoneNumber}</td>
+                                <td>${user.userNickname != null ? user.userNickname : '-'}</td>
+						        <td>${user.fullEmail != null ? user.fullEmail : '-'}</td>
+						        <td>${user.fullPhoneNumber != null ? user.fullPhoneNumber : '-'}</td>
                                 <td>${user.gradeCode}</td>
                                 <td>
                                 	<c:choose>
@@ -184,14 +185,19 @@ $(document).ready(function() {
         if (response && response.userList && response.userList.length > 0) { // userList 확인
             $.each(response.userList, function(index, user) {
                 var enableText = user.userEnable === 'Y' ? '활성화' : '탈퇴';
+                var userJoindateFormatted = user.userJoindate.substring(0, 10);
+                
+                var userNickname = user.userNickname ? user.userNickname : '-';
+                var fullEmail = user.fullEmail ? user.fullEmail : '-';
+                var fullPhoneNumber = user.fullPhoneNumber ? user.fullPhoneNumber : '-';
 
                 var rowHtml = '<tr>' +
-                              '<td>' + user.userJoindate + '</td>' +
+                              '<td>' + userJoindateFormatted + '</td>' +
                               '<td>' + user.userId + '</td>' +
                               '<td>' + user.userName + '</td>' +
-                              '<td>' + user.userNickname + '</td>' +
-                              '<td>' + user.fullEmail + '</td>' +
-                              '<td>' + user.fullPhoneNumber + '</td>' +
+                              '<td>' + userNickname + '</td>' +
+                              '<td>' + fullEmail + '</td>' +
+                              '<td>' + fullPhoneNumber + '</td>' +
                               '<td>' + user.gradeCode + '</td>' +
                               '<td>' + enableText + '</td>' +
                               '<td>' +

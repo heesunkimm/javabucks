@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="../admin_top.jsp"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
     <!-- s: content -->
     <section id="admin_adminmanage" class="content accountmanage">
         <div class="inner_wrap">
@@ -29,6 +30,7 @@
                         
                         <label>권한
                             <select name="authority">
+                            	<option value="">전체</option>
                                 <option value="Normal">기본권한</option>
                                 <option value="admin">관리자권한</option>
                             </select>
@@ -57,7 +59,7 @@
                         <tbody >
                         <c:forEach items="${adminList}" var ="admin">
                             <tr>
-                                <td>${admin.adminJoindate}</td>
+                                <td>${fn:substring(admin.adminJoindate, 0, 10)}</td>
                                 <td>${admin.adminId}</td>
                                 <td>${admin.adminEmail}</td>
                                 <td>${admin.adminAuthority}</td>
@@ -183,9 +185,10 @@ $(document).ready(function() {
         if (response && response.adminList && response.adminList.length > 0) {
             $.each(response.adminList, function(index, admin) {
                 var enableText = admin.adminEnable === 'Y' ? '활성화' : '탈퇴';
+                var adminJoindateFormatted = admin.adminJoindate.substring(0, 10);
 
                 var rowHtml = '<tr>' +
-                              '<td>' + admin.adminJoindate + '</td>' +
+                              '<td>' + adminJoindateFormatted + '</td>' +
                               '<td>' + admin.adminId + '</td>' +
                               '<td>' + admin.adminEmail + '</td>' +
                               '<td>' + admin.adminAuthority + '</td>' +
