@@ -20,6 +20,7 @@ import com.project.javabucksAdmin.dto.BucksDTO;
 import com.project.javabucksAdmin.dto.UserDTO;
 import com.project.javabucksAdmin.mapper.AccountMapper;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -31,25 +32,26 @@ public class AccountController {
 	
 		
 		@GetMapping("/admin_adminmanage.do")
-		public String adminList(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+		public String adminList(HttpServletRequest req, @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum) {
 			
-			int itemsPerPage = 5; // 한 페이지에 보여질 리뷰 수
-		    int startIndex = (page - 1) * itemsPerPage; // 시작 인덱스 수정
-		    int endIndex = page * itemsPerPage; // 끝 인덱스 수정
+			
+			int totalCount = accountMapper.adminListCount();
+			Map<String, Object> pagingMap = paging(totalCount, pageNum);
 			
 		 // 파라미터 설정
 		    Map<String, Object> params = new HashMap<>();
-		    params.put("startIndex", startIndex);
-		    params.put("endIndex", endIndex);
+		    params.put("startIndex", pagingMap.get("startRow"));
+			params.put("endIndex", pagingMap.get("endRow"));
 		    
 		    List<AdminDTO> list = accountMapper.adminList(params);
-		   // System.out.println(list);
-			int totalCount = accountMapper.adminListCount();
-		    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); // 전체 페이지 수 계산
+		  // System.out.println(list);
+			
 		    
-			model.addAttribute("adminList", list);
-			model.addAttribute("currentPage", page);
-			model.addAttribute("pageCount", pageCount);
+		    req.setAttribute("adminList", list);
+			req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+			req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+			req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+			req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
 			
 			return "account/admin_adminmanage";
 		} 
@@ -63,16 +65,14 @@ public class AccountController {
 				@RequestParam(value = "enable", required = false) String enable,    
 				@RequestParam(value = "adminId", required = false) String adminId,   
 				@RequestParam(value = "authority", required = false) String authority, 
-	            @RequestParam(value = "page", defaultValue = "1") int page,       
-	            @RequestParam(value = "itemsPerPage", defaultValue = "5") int itemsPerPage ) {
-			
+				@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum){      
+//			
 //			System.out.println(startDate);
 //			System.out.println(endDate);
 //			System.out.println(adminId);
 //			System.out.println(authority);
-			
-		    int startIndex = (page - 1) * itemsPerPage + 1;
-		    int endIndex = page * itemsPerPage;
+//			
+		    
 		    
 		    
 
@@ -82,19 +82,24 @@ public class AccountController {
 		    params.put("enable", enable != null ? enable : "");          
 		    params.put("adminId", adminId != null ? adminId : "");       
 		    params.put("authority", authority != null ? authority : ""); 
-		    params.put("startIndex", startIndex); 
-		    params.put("endIndex", endIndex);     
+		    
+		    int totalCount = accountMapper.searchAdminCount(params);
+		    Map<String, Object> pagingMap = paging(totalCount, pageNum);
+		    
+		    params.put("startIndex", pagingMap.get("startRow"));
+			params.put("endIndex", pagingMap.get("endRow"));
 		    
 		    List<AdminDTO> list = accountMapper.searchAdminList(params); 
-		    int totalCount = accountMapper.searchAdminCount(params); 
-		    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); 
+		    
 
 		    // 결과를 JSON 형태로 반환
 		    Map<String, Object> response = new HashMap<>();
 		    response.put("adminList", list);
-		    response.put("currentPage", page);
-		    response.put("pageCount", pageCount);
-		   // System.out.println("response : "+response);
+		    response.put("startPage", (int)pagingMap.get("startPage"));
+		    response.put("endPage", (int)pagingMap.get("endPage"));
+		    response.put("pageCount", (int)pagingMap.get("pageCount"));
+		    response.put("pageBlock", (int)pagingMap.get("pageBlock"));
+		 //   System.out.println("response : "+response);
 
 		    return response;
 		}
@@ -234,16 +239,14 @@ public class AccountController {
 ////////////////////유저계정
 			
 			@GetMapping("/admin_usermanage.do")
-			public String userList(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+			public String userList(HttpServletRequest req, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum) {
 				
-				int itemsPerPage = 5; // 한 페이지에 보여질 리뷰 수
-			    int startIndex = (page - 1) * itemsPerPage; // 시작 인덱스 수정
-			    int endIndex = page * itemsPerPage; // 끝 인덱스 수정
-				
+				int totalCount = accountMapper.userListCount();
+				Map<String, Object> pagingMap = paging(totalCount, pageNum);
 			 // 파라미터 설정
 			    Map<String, Object> params = new HashMap<>();
-			    params.put("startIndex", startIndex);
-			    params.put("endIndex", endIndex);
+			    params.put("startIndex", pagingMap.get("startRow"));
+				params.put("endIndex", pagingMap.get("endRow"));		
 			    
 			    List<UserDTO> list = accountMapper.userList(params);
 			   // System.out.println(list);
@@ -258,12 +261,13 @@ public class AccountController {
 			        user.setFullPhoneNumber(fullPhoneNumber);
 			    }
 			    
-				int totalCount = accountMapper.userListCount();
-			    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); // 전체 페이지 수 계산
+				
 			    
-				model.addAttribute("userList", list);
-				model.addAttribute("currentPage", page);
-				model.addAttribute("pageCount", pageCount);
+			    req.setAttribute("userList", list);
+				req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+				req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+				req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+				req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
 				
 				return "account/admin_usermanage";
 			} 
@@ -279,12 +283,12 @@ public class AccountController {
 					@RequestParam(value = "userId", required = false) String userId,   
 					@RequestParam(value = "userNickname", required = false) String userNickname, 
 					@RequestParam(value = "gradeCode", required = false) String gradeCode, 
-		            @RequestParam(value = "page", defaultValue = "1") int page,       
-		            @RequestParam(value = "itemsPerPage", defaultValue = "5") int itemsPerPage ) {
+					 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+					 HttpServletRequest req) {
 				
-			    int startIndex = (page - 1) * itemsPerPage + 1;
-			    int endIndex = page * itemsPerPage;
-//			    System.out.println(userId);
+				System.out.println(startDate);
+				
+			    
 			    
 
 			    Map<String, Object> params = new HashMap<>();
@@ -294,11 +298,15 @@ public class AccountController {
 			    params.put("userId", userId != null ? userId : "");       
 			    params.put("userNickname", userNickname);                        
 			    params.put("gradeCode", gradeCode); 
-			    params.put("startIndex", startIndex); 
-			    params.put("endIndex", endIndex);     
+			    
+			    int totalCount = accountMapper.searchUserCount(params); 
+				Map<String, Object> pagingMap = paging(totalCount, pageNum);
+				
+				params.put("startIndex", pagingMap.get("startRow"));
+				params.put("endIndex", pagingMap.get("endRow"));		  
 			    
 			    List<UserDTO> list = accountMapper.searchUserList(params); 
-//			    System.out.println("list : "+list);
+			    System.out.println("list : "+list);
 			    for (UserDTO user : list) {
 			        // 이메일을 합침
 			        String fullEmail = user.getUserEmail1() + "@" + user.getUserEmail2();
@@ -309,15 +317,15 @@ public class AccountController {
 			        user.setFullPhoneNumber(fullPhoneNumber);
 			    }
 			    
-			    int totalCount = accountMapper.searchUserCount(params); 
-			    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); 
 
 			    // 결과를 JSON 형태로 반환
 			    Map<String, Object> response = new HashMap<>();
 			    response.put("userList", list);
-			    response.put("currentPage", page);
-			    response.put("pageCount", pageCount);
-			   
+			    response.put("startPage", (int)pagingMap.get("startPage"));
+			    response.put("endPage", (int)pagingMap.get("endPage"));
+			    response.put("pageCount", (int)pagingMap.get("pageCount"));
+			    response.put("pageBlock", (int)pagingMap.get("pageBlock"));
+			    
 
 			    return response;
 			}
@@ -402,6 +410,31 @@ public class AccountController {
 			}
 			
 
+			// 페이징 처리 메서드
+			public Map<String, Object> paging(int count, int pageNum) {
+				int pageSize = 5; // 한 페이지에 보여질 게시글 수
+				int startRow = (pageNum-1) * pageSize + 1; // 페이지별 시작 넘버
+				int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
+				if (endRow > count) endRow = count;		
+				int no = count-startRow + 1; // 넘버링		
+				int pageBlock = 3; //페이지별 보여줄 페이징번호 개수
+				int pageCount = count/pageSize + (count%pageSize == 0 ? 0 : 1); //총 페이징번호 개수		
+				int startPage = (pageNum-1)/pageBlock * pageBlock +1; // 페이지별 시작 페이징번호
+				int endPage = startPage + pageBlock -1;	// 페이지별 끝 페이징번호
+				if(endPage > pageCount) endPage = pageCount;
+				
+				Map<String, Object> pagingMap = new HashMap<>();
+				pagingMap.put("pageSize", pageSize);
+				pagingMap.put("no", no);
+				pagingMap.put("startRow", startRow);
+				pagingMap.put("endRow", endRow);
+				pagingMap.put("pageBlock", pageBlock);
+				pagingMap.put("pageCount", pageCount);
+				pagingMap.put("startPage", startPage);
+				pagingMap.put("endPage", endPage);
+				
+				return pagingMap;
+			}
 		
 		
 }

@@ -6,38 +6,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
   
-<style>
-.paging {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-.paging a {
-    margin: 0 3px; /* 좌우 간격을 줄여 버튼 사이의 간격을 좁힘 */
-    padding: 5px 10px; /* 패딩을 줄여 버튼을 작게 만듦 */
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    color: #333;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-size: 14px; /* 폰트 크기를 줄여 버튼을 더 작게 만듦 */
-}
-
-.paging a.active {
-    background-color: #006242;
-    color: white;
-    border-color: #006242;
-}
-
-.paging a:hover {
-    background-color: #0056b3;
-    color: white;
-}
-
-</style>
-
  <section id="admin_dailysales" class="content management">
         <div class="inner_wrap">
             <div class="tit_box">
@@ -46,28 +14,30 @@
 
             <div class="select_box">
                 <form name="dailySearchForm" action="/searchDailySales.do" method="post">
-                    <div class="search_box">
-                        <label>기간
-                            <input type="date" name="startDate" value="${startDate}"  >
-                            ~
-                            <input type="date" name="endDate" value="${endDate}" >
-                        </label>
-                        
-                        <label>지점명
-                            <input type="text" name="bucksName"  value="${bucksName}">
-                        </label>
-                        <label>메뉴 카테고리
-                            <select name="category">
-                            	<option value="" ${category == '' ? 'selected' : ''}>전체</option>
-				                <option value="음료" ${category == '음료' ? 'selected' : ''}>음료</option>
-				                <option value="디저트" ${category == '디저트' ? 'selected' : ''}>디저트</option>
-				                <option value="MD상품" ${category == 'MD상품' ? 'selected' : ''}>MD상품</option>
-                            </select>
-                        </label>
-                        <button type="submit">검색</button>
-                    </div>
-                </form>
+    <div class="search_box">
+        <label>기간
+            <input type="date" name="startDate" value="${startDate}">
+            ~
+            <input type="date" name="endDate" value="${endDate}">
+        </label>
 
+        <label>지점명
+            <input type="text" name="bucksName" value="${bucksName}">
+        </label>
+        <label>메뉴 카테고리
+            <select name="category">
+                <option value="" ${category == '' ? 'selected' : ''}>전체</option>
+                <option value="음료" ${category == '음료' ? 'selected' : ''}>음료</option>
+                <option value="디저트" ${category == '디저트' ? 'selected' : ''}>디저트</option>
+                <option value="MD상품" ${category == 'MD상품' ? 'selected' : ''}>MD상품</option>
+            </select>
+        </label>
+        <button type="submit">검색</button>
+    </div>
+</form>
+
+
+			
                 <div class="list_box">
                     <p class="totabl_sales"> 해당 기간 총 매출액:<span><fmt:formatNumber value="${total}" pattern="#,##0"/>원</span></p> 
                     <table class="search_list s_table">
@@ -132,24 +102,63 @@
                         </tbody>
                     </table>
                     <!-- 페이징 -->
-                    <div class="paging">
-					    <c:if test="${currentPage > 1}">
-					        <a href="?page=${currentPage - 1}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">&laquo; 이전</a>
-					    </c:if>
-					
-					    <c:forEach var="i" begin="1" end="${totalPages}">
-					        <c:if test="${i == currentPage}">
-					            <strong>${i}</strong>
-					        </c:if>
-					        <c:if test="${i != currentPage}">
-					            <a href="?page=${i}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">${i}</a>
-					        </c:if>
-					    </c:forEach>
-					
-					    <c:if test="${currentPage < totalPages}">
-					        <a href="?page=${currentPage + 1}&pageSize=${pageSize}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">다음 &raquo;</a>
-					    </c:if>
-					</div>
+                    <c:if test="${not empty startPage and not empty endPage}">
+    <div class="pagination pagination">
+        <c:if test="${startPage > pageBlock}"> 
+            <a class="page_btn prev_btn" href="bucksSalesD.do?pageNum=${startPage-3}">
+                <img src="../../images/icons/arrow.png">
+            </a>
+        </c:if>
+        
+        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+            <c:set var="activeClass" value=""/>
+            <c:choose>
+                <c:when test="${empty param.pageNum and i == 1}">
+                    <c:set var="activeClass" value="page_active"/>
+                </c:when>
+                <c:when test="${param.pageNum == i}">
+                    <c:set var="activeClass" value="page_active"/>
+                </c:when>
+            </c:choose>
+            <a href="bucksSalesD.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+        </c:forEach>
+        
+        <c:if test="${pageCount > endPage}">
+            <a class="page_btn next_btn" href="bucksSalesD.do?pageNum=${startPage+3}">
+                <img src="../../images/icons/arrow.png">
+            </a>
+        </c:if>
+    </div>
+</c:if>
+
+<c:if test="${not empty startPage2 and not empty endPage2}">
+    <div class="pagination pagination">
+    <c:if test="${startPage2 > pageBlock2}">
+        <a class="page_btn prev_btn" href="searchDailySales.do?pageNum=${startPage2-3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
+            <img src="../../images/icons/arrow.png">
+        </a>
+    </c:if>
+    
+    <c:forEach var="i" begin="${startPage2}" end="${endPage2}">
+        <c:set var="activeClass" value=""/>
+        <c:choose>
+            <c:when test="${empty param.pageNum and i == 1}">
+                <c:set var="activeClass" value="page_active"/>
+            </c:when>
+            <c:when test="${param.pageNum == i}">
+                <c:set var="activeClass" value="page_active"/>
+            </c:when>
+        </c:choose>
+        <a href="searchDailySales.do?pageNum=${i}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}" class="${activeClass} page_num">${i}</a>
+    </c:forEach>
+    
+    <c:if test="${pageCount2 > endPage2}">
+        <a class="page_btn next_btn" href="searchDailySales.do?pageNum=${startPage2+3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
+            <img src="../../images/icons/arrow.png">
+        </a>
+    </c:if>
+</div>
+</c:if>
         <!-- e:페이징 -->   
                 </div>
             </div>
@@ -160,7 +169,24 @@
  <jsp:include page="../admin_bottom.jsp"/>
  
  <script>
- 
- 
- 
- </script>
+ $(document).ready(function() {
+	    // 현재 날짜 가져오기
+	    var today = new Date();
+	    
+	    // 날짜를 YYYY-MM-DD 형식으로 변환
+	    var year = today.getFullYear();
+	    var month = ('0' + (today.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1 필요
+	    var day = ('0' + today.getDate()).slice(-2);
+
+	    // 포맷된 날짜 문자열
+	    var formattedDate = year + '-' + month + '-' + day;
+
+	    // input 요소에 날짜 설정
+	    $('input[name="startDate"]').val(function(index, value) {
+	        return value || formattedDate;
+	    });
+	    $('input[name="endDate"]').val(function(index, value) {
+	        return value || formattedDate;
+	    });
+	});
+</script>

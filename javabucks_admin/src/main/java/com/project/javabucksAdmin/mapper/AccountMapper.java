@@ -105,7 +105,7 @@ public class AccountMapper {
 			    }   
 	    
 			    public List<UserDTO> searchUserList(Map<String, Object> params){
-			    	System.out.println(params);
+			    	//System.out.println(params);
 			    	return sqlSession.selectList("searchUserList",params);
 			    }
 					 
