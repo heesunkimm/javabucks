@@ -44,7 +44,7 @@
 	<![CDATA[ 
 	SELECT * FROM 
 	( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_bucks ORDER BY bucksJoindate DESC, bucksName ASC ) R 
-	WHERE ROWNUM <= #{endIndex} ) WHERE rnum > #{startIndex} ]]>
+	WHERE ROWNUM <= #{endIndex} ) WHERE rnum >= #{startIndex} ]]>
 	<!--  select * from javabucks_bucks   -->
 	</select>
 			
@@ -281,35 +281,26 @@
 	</select>
 	
 	<!--  daily Sales  -->
-		<select id="dailyBucksSales" resultType="PayhistoryDTO">
-		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
-		p.payhistoryPrice AS payhistoryPrice, p.bucksId, p.cpnListNum, o.orderCode AS orderCode, o.orderList 
-		AS orderList, b.bucksName AS branchName, b.bucksOwner 
-		FROM javabucks_payhistory p 
-		JOIN javabucks_order o 
-		ON p.orderCode = o.orderCode 
-		JOIN javabucks_bucks b 
-		ON p.bucksId = b.bucksId 
-		WHERE TRUNC(p.payhistoryDate) = TRUNC(SYSDATE)
-		ORDER BY b.bucksName ASC
+		<select id="dailyBucksSales" parameterType="map" resultType="PayhistoryDTO"> SELECT * FROM ( SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate, p.payhistoryPrice AS payhistoryPrice, p.bucksId, p.cpnListNum, o.orderCode AS orderCode, o.orderList AS orderList, b.bucksName AS branchName, b.bucksOwner, DENSE_RANK() OVER (ORDER BY TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') DESC, b.bucksId) AS rn FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE TRUNC(p.payhistoryDate) = TRUNC(SYSDATE) ) WHERE rn BETWEEN #{startRow} AND #{endRow} </select>
+		
+		<select id="dailyBucksSalesPrice" resultType="int"> 
+		    SELECT 
+		        SUM(p.payhistoryPrice) AS totalSales
+		    FROM 
+		        javabucks_payhistory p 
+		    JOIN 
+		        javabucks_order o ON p.orderCode = o.orderCode 
+		    JOIN 
+		        javabucks_bucks b ON p.bucksId = b.bucksId 
+		    WHERE 
+		        TRUNC(p.payhistoryDate) = TRUNC(SYSDATE)
+		   
+		    
 		</select>
 		
 		
-		<select id="searchDailySales" parameterType="map" resultType="PayhistoryDTO">
-		SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate,
-           p.payhistoryPrice AS payhistoryPrice, 
-           p.bucksId, 
-           p.cpnListNum, 
-           o.orderCode AS orderCode, 
-           o.orderList AS orderList, 
-           b.bucksName AS branchName, 
-           b.bucksOwner 
-    FROM javabucks_payhistory p 
-    JOIN javabucks_order o ON p.orderCode = o.orderCode 
-    JOIN javabucks_bucks b ON p.bucksId = b.bucksId 
-    WHERE (TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN COALESCE(#{startDate}, '1900-01-01') AND COALESCE(#{endDate}, TO_CHAR(SYSDATE, 'YYYY-MM-DD')))
-      AND b.bucksName LIKE '%' || #{bucksName} || '%'
-    ORDER BY p.payhistoryDate DESC, b.bucksName
-		</select>
+<select id="searchDailySales" parameterType="map" resultType="PayhistoryDTO"> SELECT * FROM ( SELECT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') AS payhistoryDate, p.payhistoryPrice AS payhistoryPrice, p.bucksId, p.cpnListNum, o.orderCode AS orderCode, o.orderList AS orderList, b.bucksName AS branchName, b.bucksOwner, DENSE_RANK() OVER (ORDER BY TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') DESC, b.bucksId) AS rn FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE (TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN COALESCE(#{startDate}, '1900-01-01') AND COALESCE(#{endDate}, TO_CHAR(SYSDATE, 'YYYY-MM-DD'))) AND b.bucksName LIKE '%' || #{bucksName} || '%' ) WHERE rn BETWEEN #{startRow} AND #{endRow} </select>
+<select id="dailySalesCount" parameterType="int" resultType="int"> SELECT COUNT(DISTINCT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') || '-' || p.bucksId) AS totalCount FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE TRUNC(p.payhistoryDate) = TRUNC(SYSDATE) </select>
+<select id="searchDSalesCount" parameterType="map" resultType="int"> SELECT COUNT(DISTINCT TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') || '-' || p.bucksId) AS totalCount FROM javabucks_payhistory p JOIN javabucks_order o ON p.orderCode = o.orderCode JOIN javabucks_bucks b ON p.bucksId = b.bucksId WHERE (TO_CHAR(p.payhistoryDate, 'YYYY-MM-DD') BETWEEN COALESCE(#{startDate}, '1900-01-01') AND COALESCE(#{endDate}, TO_CHAR(SYSDATE, 'YYYY-MM-DD'))) AND b.bucksName LIKE '%' || #{bucksName} || '%' </select>
 		
   </mapper>
