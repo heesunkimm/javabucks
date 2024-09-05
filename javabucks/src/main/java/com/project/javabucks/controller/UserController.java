@@ -345,7 +345,7 @@ public class UserController {
 	}
 
 	@RequestMapping("/user_order")
-	public String orderMenu(HttpServletRequest req, String storeName, String pickup, String bucksId) {
+	public String orderMenu(HttpSession session, HttpServletRequest req, String storeName, String pickup, String bucksId) {
 
 		// [음료] 정보, 주문가능한지
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
@@ -388,7 +388,24 @@ public class UserController {
 			md.setMenuStatus(menuStatus);
 			md.setStoreEnable(storeEnable);
 		}
-
+		Map<String, String> params2 = new HashMap<>();
+		UserDTO udto = (UserDTO) session.getAttribute("inUser");
+		String userId = udto.getUserId();
+		params2.put("userId", userId);
+		
+		if("매장이용".equals(pickup)) {
+			System.out.println("매장 들어옴");
+			params2.put("cartType", "order");
+		}else if("To-go".equals(pickup)) {
+			System.out.println("To-go 들어옴");
+			params2.put("cartType", "togo");
+		}else {
+			System.out.println("delivers 들어옴");
+			params2.put("cartType", "delivers");
+		}
+		
+		int cartCount = userMapper.CartManyByUserid(params2);
+		req.setAttribute("cartCount", cartCount);
 		req.setAttribute("drinkList", list);
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
@@ -1863,7 +1880,6 @@ public class UserController {
 
 		String menuCode = params.get("menuCode");
 		req.setAttribute("menuCode", params.get("menuCode"));
-//		List<BucksDTO> list = new ArrayList<>();
 
 		// 매장 검색하기
 		if (mode != null) {
@@ -1876,11 +1892,7 @@ public class UserController {
 				Map<String, Object> paramMap = new HashMap<>();
 				paramMap.put("searchTerms", searchTerms);
 
-//				if(menuCode != null) {
-//					List<BucksDTO> list = userMapper.getStoreListByMenuCode(menuCode);
-//				}else {
 				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
-//				}
 				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);

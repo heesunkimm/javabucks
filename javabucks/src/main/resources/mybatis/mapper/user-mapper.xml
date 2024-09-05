@@ -477,7 +477,9 @@
    		 JOIN javabucks_menu jm ON js.menuCode = jm.menuCode    		    
    		 WHERE jb.bucksName = #{storeName} 
    		 AND jm.menuCode LIKE 'B%'
-   		 AND jm.menuEnable = 'Y' 
+   		 AND jm.menuEnable = 'Y'
+   		 AND js.storeEnable = 'N'
+   		  
  	</select>
  	
  	<select id="getMenuOptCode" parameterType="String" resultType="String"> 
@@ -659,7 +661,7 @@
  		 SELECT *
  		 FROM javabucks_cart		 
  		 WHERE userId = #{userId}
- 		 AND (cartType = 'order' OR cartType = 'togo')	 				 	  		 
+ 		 AND cartType = 'order'	 				 	  		 
  	</select>
  	
  	<select id="DeliversCartByUserid" parameterType="String" resultType="CartDTO"> 
@@ -667,6 +669,14 @@
  		 FROM javabucks_cart		 
  		 WHERE userId = #{userId}
  		 AND cartType = 'delivers'	 				 	  		 
+ 	</select>
+ 	
+ 	<!-- 장바구니 얼마나 담겼는지 조회 -->
+ 	<select id="CartManyByUserid" parameterType="java.util.Map" resultType="CartDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_cart		 
+ 		 WHERE userId = #{userId}
+ 		 AND cartType = #{cartType}				 	  		 
  	</select>		
  			
 	<delete id="deleteCart" parameterType="java.util.Map"> 
