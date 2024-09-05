@@ -343,7 +343,6 @@
 		    // 리스트 항목(li) 생성
 		    const li = document.createElement('li');
 		    li.className = 'order_item';
-
 		    // 메뉴 이름(span) 생성
 		    const span = document.createElement('span');
 		    span.textContent = item.menuname;

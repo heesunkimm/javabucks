@@ -102,18 +102,17 @@
         const endDateInput = document.querySelector('input[name="endDate"]');
         const periodRadioButtons = document.querySelectorAll('input[name="period_startdate"]');
         
-        periodRadioButtons.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === '1month' || this.value === '3months') {
-                    startDateInput.disabled = true;
-                    endDateInput.disabled = true;
-                } else {
-                    startDateInput.disabled = false;
-                    endDateInput.disabled = false;
-                }
-            });
-        });
+		// 선택된 라디오 버튼에 따라 날짜 입력 필드 활성화/비활성화 처리
+        if (selectedRadio && (selectedRadio.value === '1month' || selectedRadio.value === '3months')) {
+            startDateInput.disabled = true;
+            endDateInput.disabled = true;
+        } else {
+            startDateInput.disabled = false;
+            endDateInput.disabled = false;
+        }
+    }
 
+		// 팝업이 열릴 때 선택된 라디오 버튼에 따라 날짜 입력 필드 비활성화
         const selectedRadio = document.querySelector('input[name="period_startdate"]:checked');
         if (selectedRadio && (selectedRadio.value === '1month' || selectedRadio.value === '3months')) {
             startDateInput.disabled = true;
@@ -122,7 +121,7 @@
             startDateInput.disabled = false;
             endDateInput.disabled = false;
         }
-
+	
         startDateInput.addEventListener('change', function() {
             const selectedDate = new Date(this.value);
 
@@ -152,17 +151,16 @@
                 endDateInput.disabled = false; // 활성화
             }
         });
+	}
+	// 팝업 열림 시 toggleDateInputs 호출
+	    document.querySelectorAll('[data-popup="periodselect"]').forEach(element => {
+	        element.addEventListener('click', function() {
+	            toggleDateInputs(); // 팝업이 열릴 때마다 라디오 버튼 상태를 확인하여 필드 비활성화 처리
+	        });
+	    });
 
-        // 페이지 로드 시 초기 설정
-        if (startDateInput.value) {
-            startDateInput.dispatchEvent(new Event('change'));
-        }
-    }
-  
- 	// 팝업이 열릴 때마다 toggleDateInputs 함수 호출
-    document.querySelectorAll('[data-popup="periodselect"]').forEach(element => {
-        element.addEventListener('click', function() {
-            toggleDateInputs();
-        });
-    });
+	    // 페이지 로드 시에도 초기 설정을 적용
+	    window.addEventListener('load', function() {
+	        toggleDateInputs(); // 팝업이 열리지 않더라도 처음 로드 시 라디오 버튼 상태를 확인
+	    });
 </script>

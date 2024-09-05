@@ -57,7 +57,7 @@
 									<div class="txt_box">
 										<p class="txt_store">${dto.bucksName}</p>
 										<p class="txt_location">${dto.bucksLocation}</p>
-										<p class="txt_time">운영시간 ${fn:substring(dto.bucksStart, 11, 16)} - ${fn:substring(dto.bucksEnd, 11, 16)}</p>
+										<p class="txt_time">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 									</div>
 								</a>
 							</li>
@@ -76,7 +76,7 @@
 								<div class="txt_box">
 									<p class="txt_store">${dto.bucksName}</p>
 									<p class="txt_location">${dto.bucksLocation}</p>
-									<p class="txt_time">운영시간 ${fn:substring(dto.bucksStart, 11, 16)} - ${fn:substring(dto.bucksEnd, 11, 16)}</p>
+									<p class="txt_time">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 								</div>
 								</a>
 							</li>

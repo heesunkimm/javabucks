@@ -614,7 +614,8 @@
     	</if>
     	<if test="payhistoryPayWay != null">
         	AND payhistoryPayWay = #{payhistoryPayWay}
-    	</if>	
+    	</if>
+		ORDER BY jp.payhistoryDate desc	
  	</select>	
  	
  	 <select id="StoreInfoByBucksId" parameterType="String" resultType="BucksDTO"> 

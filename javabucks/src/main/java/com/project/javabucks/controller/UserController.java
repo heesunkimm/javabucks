@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -319,26 +321,63 @@ public class UserController {
 			if (storeSearch != null && !storeSearch.trim().isEmpty()) {
 				// 공백을 기준으로 문자열을 분리하여 List로 저장
 				List<String> searchTerms = Arrays.asList(storeSearch.split("\\s+"));
-
 				List<BucksDTO> list = userMapper.getStoreList2(searchTerms);
 				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
+					
+					// 시간가져와서 00:00식으로 변환
+					String startTime = dto.getBucksStart();
+					String st = startTime.substring(11, 16);
+					String endTime = dto.getBucksEnd();
+					String ed = endTime.substring(11, 16);
+					
+					// 시간을 비교하기 위해 LocalTime으로 변환
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+					LocalTime start = LocalTime.parse(st, formatter);
+					LocalTime end = LocalTime.parse(ed, formatter);
+					LocalTime now = LocalTime.now();
+					
+					// 현재 시간과 비교
+					if (now.isBefore(start) || now.isAfter(end)) {
+						dto.setOrderEnalbe("N");
+					}
+					dto.setBucksStart(st);
+					dto.setBucksEnd(ed);
+					
 				}
 				req.setAttribute("storeSearch", storeSearch);
 				req.setAttribute("storeList", list);
 
 			} else {
-				List<BucksDTO> list2 = userMapper.getStoreList(storeSearch);
-				for (BucksDTO dto : list2) {
+				List<BucksDTO> list = userMapper.getStoreList(storeSearch);
+				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
+					
+					// 시간가져와서 00:00식으로 변환
+					String startTime = dto.getBucksStart();
+					String st = startTime.substring(11, 16);
+					String endTime = dto.getBucksEnd();
+					String ed = endTime.substring(11, 16);
+					
+					// 시간을 비교하기 위해 LocalTime으로 변환
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+					LocalTime start = LocalTime.parse(st, formatter);
+					LocalTime end = LocalTime.parse(ed, formatter);
+					LocalTime now = LocalTime.now();
+					
+					// 현재 시간과 비교
+					if (now.isBefore(start) || now.isAfter(end)) {
+						dto.setOrderEnalbe("N");
+					}
+					dto.setBucksStart(st);
+					dto.setBucksEnd(ed);
 				}
-				req.setAttribute("storeList", list2);
-				req.setAttribute("notSearch", "notSearch");
+				req.setAttribute("storeSearch", storeSearch);
+				req.setAttribute("storeList", list);
 			}
 		}
-
 		return "/user/user_delivers";
 	}
 
@@ -720,7 +759,7 @@ public class UserController {
 			req.setAttribute("recepitList", list);
 			req.setAttribute("totalPrice", totalPrice);
 			req.setAttribute("number", number);
-
+		// 페이지 들어오자마자 초기 내역들	
 		} else {
 
 			String startDate = oneMonthAgo.format(formatter);
@@ -754,148 +793,151 @@ public class UserController {
 	@ResponseBody
 	@PostMapping("/user_recepit.ajax")
 	public Map<String, Object> userRecepit(@RequestBody Map<String, Object> params) {
-		try {
-			String bucksId = (String) params.get("bucksId");
+		  try {
+		        String bucksId = (String) params.get("bucksId");
 
-			// 안전한 타입 변환
-			Integer payhistoryNum = null;
-			Object payhistoryObj = params.get("payhistoryNum");
-			payhistoryNum = Integer.valueOf((String) payhistoryObj);
+		        // 안전한 타입 변환
+		        Integer payhistoryNum = null;
+		        Object payhistoryObj = params.get("payhistoryNum");
+		        payhistoryNum = Integer.valueOf((String) payhistoryObj);
 
-			// bucksId에 해당하는 데이터를 조회합니다.
-			BucksDTO dto = userMapper.StoreInfoByBucksId(bucksId);
-			PayhistoryDTO dto2 = userMapper.PayInfoByHistoryNum(payhistoryNum);
-			String userNickname = userMapper.NicknameByHistoryNum(payhistoryNum);
-			CardDTO dto3 = userMapper.CardInfoByHistoryNum(payhistoryNum);
-			OrderDTO dto4 = userMapper.OrderInfoByHistoryNum(payhistoryNum);
-			String order = dto4.getOrderList();
-			String order2 = order.replace("[", "").replace("]", "").replace("\"", "").trim();
+		        // bucksId에 해당하는 데이터를 조회합니다.
+		        BucksDTO dto = userMapper.StoreInfoByBucksId(bucksId);
+		        PayhistoryDTO dto2 = userMapper.PayInfoByHistoryNum(payhistoryNum);
+		        String userNickname = userMapper.NicknameByHistoryNum(payhistoryNum);
+		        CardDTO dto3 = userMapper.CardInfoByHistoryNum(payhistoryNum);
+		        OrderDTO dto4 = userMapper.OrderInfoByHistoryNum(payhistoryNum);
+		        String order = dto4.getOrderList();
+		        String order2 = order.replace("[", "").replace("]", "").replace("\"", "").trim();
 
-			// 문자열을 ','를 기준으로 나누어 각 메뉴들을 배열에 저장
-			String[] splitOrder = order2.split(",");
-			// 배열을 리스트로 변환
-			List<String> orderList = Arrays.asList(splitOrder);
-			// 나누어진 값을 저장할 리스트
-			List<List<String>> splitList = new ArrayList<>();
-			// 조회한 메뉴정보 담을 리스트
-			List<CartDTO> menuList = new ArrayList<>();
+		        // 문자열을 ','를 기준으로 나누어 각 메뉴들을 배열에 저장
+		        String[] splitOrder = order2.split(",");
+		        // 배열을 리스트로 변환
+		        List<String> orderList = Arrays.asList(splitOrder);
+		        // 나누어진 값을 저장할 리스트
+		        List<List<String>> splitList = new ArrayList<>();
+		        // 조회한 메뉴정보 담을 리스트
+		        List<CartDTO> menuList = new ArrayList<>();
+		        Set<String> addedMenuCodes = new HashSet<>(); // 메뉴 코드에 기반한 중복 체크용 Set
 
-			// orderList의 각 요소를 ':'로 나누기
-			for (String order_L : orderList) {
-				// ':'를 기준으로 문자열 나누기
-				String[] parts = order_L.split(":");
-				List<String> orderList2 = Arrays.asList(parts);
-				// 나누어진 부분들을 splitList에 추가
-				splitList.add(orderList2);
-			}
+		        // orderList의 각 요소를 ':'로 나누기
+		        for (String order_L : orderList) {
+		            // ':'를 기준으로 문자열 나누기
+		            String[] parts = order_L.split(":");
+		            List<String> orderList2 = Arrays.asList(parts);
+		            // 나누어진 부분들을 splitList에 추가
+		            splitList.add(orderList2);
+		        }
 
-			String menuCode = null;
-			int optId = 0;
-			int quentity = 0;
-			CartDTO CartDTO = new CartDTO();
-			for (List<String> tt : splitList) {
+		        for (List<String> tt : splitList) {
+		            String menuCode = null;
+		            int optId = 0;
+		            int quantity = 0;
 
-				// 메뉴, 옵션id, 수량 꺼내기
-				for (int i = 0; i < tt.size(); i++) {
-					if (i == 0) {
-						menuCode = tt.get(i); // 첫 번째 값
-					} else if (i == 1) {
-						String optId2 = tt.get(i); // 두 번째 값
-						optId = Integer.parseInt(optId2);
-					} else if (i == 2) {
-						String quentity2 = tt.get(i);
-						quentity = Integer.parseInt(quentity2); // 세 번째 값
-					}
-				}
-				
-				// 꺼낸 메뉴코드로 메뉴 정보 조회
-				MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
-				CartDTO.setMenuname(mdto.getMenuName());
-				CartDTO.setMenuprice(mdto.getMenuPrice());
-				CartDTO.setcartCnt(quentity);
-				
-				// 카드 정보 조회
-				CardDTO cd = userMapper.CardInfoByHistoryNum(payhistoryNum);
-				CartDTO.setCardPrice(cd.getCardPrice());
-				CartDTO.setCardRegNum(cd.getCardRegNum());
-				
-				// DTO 초기화
-				OrderOptDTO optdto = userMapper.findOrderOpt(optId);
-				MenuOptCupDTO cupdto = null;
-				MenuOptIceDTO icedto = null;
-				MenuOptShotDTO shotdto = null;
-				MenuOptWhipDTO whipdto = null;
-				MenuOptSyrupDTO syrupdto = null;
-				MenuOptMilkDTO milkdto = null;
+		            // 메뉴, 옵션id, 수량 꺼내기
+		            if (tt.size() >= 3) {
+		                menuCode = tt.get(0); // 첫 번째 값
+		                optId = Integer.parseInt(tt.get(1)); // 두 번째 값
+		                quantity = Integer.parseInt(tt.get(2)); // 세 번째 값
+		            }
 
-				// 받은 optId 로 optDTO 만들기
-				if (optdto.getCupNum() != 0) {
-					cupdto = userMapper.getCupInfo(optId);
-					CartDTO.setCupType(cupdto.getCupType());
-					CartDTO.setCupPrice(cupdto.getCupPrice());
-				}
-				if (optdto.getIceNum() != 0) {
-					icedto = userMapper.getIceInfo(optId);
-					CartDTO.setIceType(icedto.getIceType());
-					CartDTO.setIcePrice(icedto.getIcePrice());
-				}
-				if (optdto.getShotNum() != 0) {
-					shotdto = userMapper.getShotInfo(optId);
-					CartDTO.setShotPrice(shotdto.getShotPrice());
-					CartDTO.setShotType(shotdto.getShotType());
-					CartDTO.setShotCount(optdto.getOptShotCount());
-				}
-				if (optdto.getWhipNum() != 0) {
-					whipdto = userMapper.getWhipInfo(optId);
-					CartDTO.setWhipPrice(whipdto.getWhipPrice());
-					CartDTO.setWhipType(whipdto.getWhipType());
-				}
-				if (optdto.getSyrupNum() != 0) {
-					syrupdto = userMapper.getSyrupInfo(optId);
-					CartDTO.setSyrupType(syrupdto.getSyrupType());
-					CartDTO.setSyrupPrice(syrupdto.getSyrupPrice());
-					CartDTO.setSyrupCount(optdto.getOptSyrupCount());
-				}
-				if (optdto.getMilkNum() != 0) {
-					milkdto = userMapper.getMilkInfo(optId);
-					CartDTO.setMilkType(milkdto.getMilkType());
-					CartDTO.setMilkPrice(milkdto.getMilkPrice());
-				}
-				menuList.add(CartDTO);
-			}
+		            // 중복된 메뉴 코드가 있는지 확인
+		            if (!addedMenuCodes.contains(menuCode)) {
+		                // 새로운 CartDTO 객체 생성
+		                CartDTO cartDTO = new CartDTO();
 
-			// 조회된 데이터를 JSON 형식으로 반환합니다.
-			Map<String, Object> response = new HashMap<>();
+		                // 꺼낸 메뉴코드로 메뉴 정보 조회
+		                MenuDTO mdto = userMapper.getMenuInfoByCode(menuCode);
+		                cartDTO.setMenuname(mdto.getMenuName());
+		                cartDTO.setMenuprice(mdto.getMenuPrice());
+		                cartDTO.setcartCnt(quantity);
 
-			// 지점 정보
-			response.put("bucksName", dto.getBucksName());
-			response.put("bucksTel1", dto.getBucksTel1());
-			response.put("bucksTel2", dto.getBucksTel2());
-			response.put("bucksTel3", dto.getBucksTel3());
-			response.put("bucksLocation", dto.getBucksLocation());
-			response.put("bucksOwner", dto.getBucksOwner());
-			response.put("bucksCode", bucksId);
-			response.put("payhistoryDate", dto2.getPayhistoryDate());
-			response.put("payhistoryPayWay", dto2.getPayhistoryPayWay());			
+		                // 카드 정보 조회
+		                CardDTO cd = userMapper.CardInfoByHistoryNum(payhistoryNum);
+		                cartDTO.setCardPrice(cd.getCardPrice());
+		                cartDTO.setCardRegNum(cd.getCardRegNum());
 
-			// 닉네임, 주문번호
-			response.put("userNickname", userNickname);
-			String ordercode = dto2.getOrderCode().substring(7);
-			response.put("orderCode", ordercode);
-			// 주문내역
-			response.put("items", menuList);
-			// 결제금액
-			response.put("payhistoryPrice", dto2.getPayhistoryPrice());
-			// 결제카드
-			response.put("cardRegNum", dto3.getCardRegNum());
-			response.put("cardPrice", dto3.getCardPrice());
+		                // DTO 초기화
+		                OrderOptDTO optdto = userMapper.findOrderOpt(optId);
+		                MenuOptCupDTO cupdto = null;
+		                MenuOptIceDTO icedto = null;
+		                MenuOptShotDTO shotdto = null;
+		                MenuOptWhipDTO whipdto = null;
+		                MenuOptSyrupDTO syrupdto = null;
+		                MenuOptMilkDTO milkdto = null;
 
-			return response;
-		} catch (Exception e) {
-			e.printStackTrace(); // 예외 발생 시 스택 트레이스를 로그에 출력합니다.
-			return Collections.singletonMap("error", "서버 오류가 발생했습니다.");
+		                // 받은 optId 로 optDTO 만들기
+		                if (optdto.getCupNum() != 0) {
+		                    cupdto = userMapper.getCupInfo(optId);
+		                    cartDTO.setCupType(cupdto.getCupType());
+		                    cartDTO.setCupPrice(cupdto.getCupPrice());
+		                }
+		                if (optdto.getIceNum() != 0) {
+		                    icedto = userMapper.getIceInfo(optId);
+		                    cartDTO.setIceType(icedto.getIceType());
+		                    cartDTO.setIcePrice(icedto.getIcePrice());
+		                }
+		                if (optdto.getShotNum() != 0) {
+		                    shotdto = userMapper.getShotInfo(optId);
+		                    cartDTO.setShotPrice(shotdto.getShotPrice());
+		                    cartDTO.setShotType(shotdto.getShotType());
+		                    cartDTO.setShotCount(optdto.getOptShotCount());
+		                }
+		                if (optdto.getWhipNum() != 0) {
+		                    whipdto = userMapper.getWhipInfo(optId);
+		                    cartDTO.setWhipPrice(whipdto.getWhipPrice());
+		                    cartDTO.setWhipType(whipdto.getWhipType());
+		                }
+		                if (optdto.getSyrupNum() != 0) {
+		                    syrupdto = userMapper.getSyrupInfo(optId);
+		                    cartDTO.setSyrupType(syrupdto.getSyrupType());
+		                    cartDTO.setSyrupPrice(syrupdto.getSyrupPrice());
+		                    cartDTO.setSyrupCount(optdto.getOptSyrupCount());
+		                }
+		                if (optdto.getMilkNum() != 0) {
+		                    milkdto = userMapper.getMilkInfo(optId);
+		                    cartDTO.setMilkType(milkdto.getMilkType());
+		                    cartDTO.setMilkPrice(milkdto.getMilkPrice());
+		                }
+
+		                // 중복된 메뉴가 아니면 메뉴 리스트에 추가
+		                menuList.add(cartDTO);
+		                addedMenuCodes.add(menuCode); // 메뉴 코드 추가
+		            }
+		        }
+
+		        // 조회된 데이터를 JSON 형식으로 반환합니다.
+		        Map<String, Object> response = new HashMap<>();
+
+		        // 지점 정보
+		        response.put("bucksName", dto.getBucksName());
+		        response.put("bucksTel1", dto.getBucksTel1());
+		        response.put("bucksTel2", dto.getBucksTel2());
+		        response.put("bucksTel3", dto.getBucksTel3());
+		        response.put("bucksLocation", dto.getBucksLocation());
+		        response.put("bucksOwner", dto.getBucksOwner());
+		        response.put("bucksCode", bucksId);
+		        response.put("payhistoryDate", dto2.getPayhistoryDate());
+		        response.put("payhistoryPayWay", dto2.getPayhistoryPayWay());            
+
+		        // 닉네임, 주문번호
+		        response.put("userNickname", userNickname);
+		        String ordercode = dto2.getOrderCode().substring(7);
+		        response.put("orderCode", ordercode);
+		        // 주문내역
+		        response.put("items", menuList);
+		        // 결제금액
+		        response.put("payhistoryPrice", dto2.getPayhistoryPrice());
+		        // 결제카드
+		        response.put("cardRegNum", dto3.getCardRegNum());
+		        response.put("cardPrice", dto3.getCardPrice());
+
+		        return response;
+		    } catch (Exception e) {
+		        e.printStackTrace(); // 예외 발생 시 스택 트레이스를 로그에 출력합니다.
+		        return Collections.singletonMap("error", "서버 오류가 발생했습니다.");
+		    }
 		}
-	}
 
 	@RequestMapping("/user_cart")
 	public String userCart(HttpSession session, HttpServletRequest req, @RequestParam Map<String, String> params) {
@@ -1894,6 +1936,7 @@ public class UserController {
 				for (BucksDTO dto : list) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
+					
 					// 시간가져와서 00:00식으로 변환
 					String startTime = dto.getBucksStart();
 					String st = startTime.substring(11, 16);
@@ -1922,6 +1965,25 @@ public class UserController {
 				for (BucksDTO dto : list2) {
 					String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
 					dto.setOrderEnalbe(orderEnalbe);
+					
+					// 시간가져와서 00:00식으로 변환
+					String startTime = dto.getBucksStart();
+					String st = startTime.substring(11, 16);
+					String endTime = dto.getBucksEnd();
+					String ed = endTime.substring(11, 16);
+
+					// 시간을 비교하기 위해 LocalTime으로 변환
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+					LocalTime start = LocalTime.parse(st, formatter);
+					LocalTime end = LocalTime.parse(ed, formatter);
+					LocalTime now = LocalTime.now();
+
+					// 현재 시간과 비교
+					if (now.isBefore(start) || now.isAfter(end)) {
+						dto.setOrderEnalbe("N");
+					}
+					dto.setBucksStart(st);
+					dto.setBucksEnd(ed);
 				}
 				req.setAttribute("storeList", list2);
 			}
