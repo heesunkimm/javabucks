@@ -676,7 +676,7 @@
  		 SELECT *
  		 FROM javabucks_cart		 
  		 WHERE userId = #{userId}
- 		 AND cartType = #{cartType}				 	  		 
+ 		 AND cartType = #{cartType}	
  	</select>		
  			
 	<delete id="deleteCart" parameterType="java.util.Map"> 

@@ -69,8 +69,6 @@ public class UserController {
 	public int noReadAlarmCheck(@RequestParam String userId) {
 		List<AlarmDTO> alarmCheck = userMapper.noReadAlarm(userId);
 		if (alarmCheck != null) {
-			// System.out.println("userId: " + userId + " / 읽지 않은 알람 갯수: " +
-			// alarmCheck.size());
 			return alarmCheck.size();
 		}
 		return 0;
@@ -394,18 +392,18 @@ public class UserController {
 		params2.put("userId", userId);
 		
 		if("매장이용".equals(pickup)) {
-			System.out.println("매장 들어옴");
 			params2.put("cartType", "order");
 		}else if("To-go".equals(pickup)) {
-			System.out.println("To-go 들어옴");
 			params2.put("cartType", "togo");
 		}else {
-			System.out.println("delivers 들어옴");
 			params2.put("cartType", "delivers");
 		}
-		
-		int cartCount = userMapper.CartManyByUserid(params2);
-		req.setAttribute("cartCount", cartCount);
+		int totCnt = 0;
+		List<CartDTO> cartList = userMapper.CartManyByUserid(params2);
+		for(CartDTO tt : cartList) {
+			totCnt += tt.getcartCnt();
+		}
+		req.setAttribute("cartCount", totCnt);
 		req.setAttribute("drinkList", list);
 		req.setAttribute("foodList", list2);
 		req.setAttribute("productList", list3);
@@ -2012,7 +2010,6 @@ public class UserController {
 		String userId = dto.getUserId();
 
 		params.put("userId", userId);
-		// System.out.println(params);
 
 		// Order테이블 리스트 조회
 		List<OrderDTO> updateStatusDeliversHistory = new ArrayList<>();
@@ -2173,7 +2170,6 @@ public class UserController {
 		String userId = dto.getUserId();
 
 		params.put("userId", userId);
-		// System.out.println(params);
 
 		// Order테이블 리스트 조회
 		List<OrderDTO> updateStatusOrderHistory = new ArrayList<>();

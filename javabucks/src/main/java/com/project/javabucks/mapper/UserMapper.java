@@ -377,8 +377,8 @@ public class UserMapper {
 		return sqlSession.update("updateCart", params);
 	}
 	
-	public int CartManyByUserid(Map<String, String> params) {
-		return sqlSession.selectOne("CartManyByUserid", params);
+	public List<CartDTO> CartManyByUserid(Map<String, String> params) {
+		return sqlSession.selectList("CartManyByUserid", params);
 	}
 
 	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
