@@ -212,6 +212,7 @@
 	                    $btn.addClass('btn_disable').attr('data-status', 'N');
 	                }
 	            }
+                updateStatus();
 	        },
 	        error: function(err) {
 	            console.log('Error: ', err);
