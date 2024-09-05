@@ -360,25 +360,31 @@
 		        // 컵 항목(li) 생성
 		        const cupLi = document.createElement('li');
 		        cupLi.className = 'order_item';
+		        
 		        // 컵 타입(span) 생성
 		        const cupSpan = document.createElement('span');
 		        cupSpan.textContent = "┖" + item.cupType;
 		        cupLi.appendChild(cupSpan);
+		        
 		        // 가격과 수량을 포함하는 div 생성
 		        const cupDiv = document.createElement('div');
+		        
 		        // 컵 가격(span) 생성
 		        const cupPriceSpan = document.createElement('span');
 		        cupPriceSpan.textContent = item.cupPrice.toLocaleString(); // 화폐 단위 또는 포맷을 추가
 		        cupDiv.appendChild(cupPriceSpan);
+		        
 		        // 수량(span) 생성
 		        const cupCountSpan = document.createElement('span');
 		        cupCountSpan.textContent = item.cartCnt;
 		        cupDiv.appendChild(cupCountSpan);
 		        cupLi.appendChild(cupDiv);
+		        
 		        // 컵 총 가격(span) 생성
 		        const cupTotalPriceSpan = document.createElement('span');
 		        cupTotalPriceSpan.textContent = (item.cupPrice * item.cartCnt).toLocaleString(); // 화폐 단위 또는 포맷을 추가
 		        cupLi.appendChild(cupTotalPriceSpan);
+		        
 		        // 컵 항목을 리스트에 추가
 		        orderList.appendChild(cupLi);
 			   }
