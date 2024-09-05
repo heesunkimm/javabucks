@@ -437,6 +437,9 @@ body {max-width: 768px!important;}
 #user_mymenu .menu_list li .txt_box .txt_price {margin-top: 6px; font-size: 16px; color: #555;}
 #user_mymenu .menu_list li .btn_box {position: absolute; right: 20px; bottom: 20px;}
 #user_mymenu .menu_list li .btn_box button {padding: 3px 16px; border: 1px solid #006241; border-radius: 25px; font-size: 18px; color: #006241;}
+#user_mymenu .menu_list li .btn_box {position: absolute; right: 20px; bottom: 20px; display: flex; align-items: center;}
+#user_mymenu .menu_list li .btn_box button + button {margin-left: 6px;}
+#user_mymenu .menu_list li .btn_box button {height: 27px; padding: 0px 10px; border: 1px solid #006241; border-radius: 25px; font-size: 18px; color: #006241;}
 
 #user_addcard .addcard_box form {display: flex; flex-direction: column;}
 #user_addcard .addcard_box input:focus {border-color: #006241;}

@@ -110,7 +110,7 @@
                                 <li class="card_slide swiper-slide">
                                     <a href="javascript:;">
                                         <div class="img_box">
-                                            <img src="../images/icons/starbucksCard.png" alt="">
+                                            <img src="../images/icons/buckscard.png" alt="">
                                         </div>
                                     </a>
                                         <div class="txt_box">
