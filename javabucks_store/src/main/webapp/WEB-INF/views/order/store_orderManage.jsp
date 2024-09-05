@@ -245,20 +245,39 @@ function orderStart(element){
 			console.log(response);
 			var resp = response;
 			var respVal = resp.response;
+			var notEnoughStocks = resp.notEnoughStocksMap;
+			
+			
 			if(respVal === "success"){
 				alert("주문번호 " +orderCode + "번의 주문이 접수되었습니다.");
+				window.location.href='orderManage.do';
 			} else if (respVal === "notEnough"){
-				alert("재고가 부족하여 주문번호 " +orderCode + "번의 주문을 접수할 수 없습니다.");
+				var alertMsg = "재고가 부족하여 주문번호 " + orderCode + "번의 주문을 접수할 수 없습니다.\n";
+			    
+			    // Object.entries()로 notEnoughStocks 객체의 키와 값을 동시에 꺼냄
+			    //for (var [key, value] of Object.entries(notEnoughStocks)) {
+			    	var stocks = notEnoughStocks.stockListName;
+			    	var quantity = notEnoughStocks.notEnoughQuantity;
+			        alertMsg += "재고명 : " + stocks + " - " + quantity + "개 부족\n"; // stockListCode와 부족한 수량 추가
+
+			    //}
+			    
+				alert(alertMsg);
+				location.reload();
 			} else if(respVal === "stockMinusFail"){
 				alert("재고 차감 실패. 관리자에게 문의하세요.");
+				location.reload();
 			} else if(respVal === "orderStatusFail"){
 				alert("주문 상태 변경 실패. 관리자에게 문의하세요.");
+				location.reload();
 			} else if(respVal === "alarmInsertFail"){
-				alert("알람 인서트 실패. 관리자에게 문의하세요.");			
+				alert("알람 인서트 실패. 관리자에게 문의하세요.");
+				location.reload();
 			} else {
 				alert("주문 접수 실패. 관리자에게 문의하세요.");
+				location.reload();
 			}
-			location.reload();
+			
 		},
 		error : function(error){
 			alert("에러 발생. 관리자에게 문의하세요.");

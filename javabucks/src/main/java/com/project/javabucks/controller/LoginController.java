@@ -455,7 +455,7 @@ public class LoginController {
 
 		
 	// 개인정보 수정 화면
-	@PostMapping("/userInfo.do")
+	@GetMapping("/userInfo.do")
 	public String userInfo(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		UserDTO dto = (UserDTO)session.getAttribute("inUser");
@@ -526,7 +526,7 @@ public class LoginController {
 	// 회원탈퇴
 	@GetMapping("/userDel.do")
 	public String userDel(HttpServletRequest req, String userId) {
-		System.out.println("userId :" +userId);
+		//System.out.println("userId :" +userId);
 		int userEnableNUpdate = loginMapper.updateUserDel(userId);
 		
 		String msg = null;
