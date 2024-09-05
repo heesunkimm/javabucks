@@ -429,6 +429,13 @@
  		WHERE bucksID = #{bucksId}
  	</select>
  	
+ 	<!--모든 매장 -->
+ 	<select id="StoreAll" resultType="BucksDTO"> 
+ 		 SELECT *
+ 		 FROM javabucks_bucks
+ 		 WHERE bucksEnable = 'Y'		 
+ 	</select>
+ 	
  	<select id="getStoreList"  parameterType="String" resultType="BucksDTO"> 
  		 SELECT * 
    		 FROM javabucks_bucks 
@@ -662,7 +669,7 @@
  		 SELECT *
  		 FROM javabucks_cart		 
  		 WHERE userId = #{userId}
- 		 AND cartType = 'order'	 				 	  		 
+ 		 AND (cartType = 'order' OR cartType = 'togo')				 	  		 
  	</select>
  	
  	<select id="DeliversCartByUserid" parameterType="String" resultType="CartDTO"> 

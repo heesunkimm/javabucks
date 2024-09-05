@@ -342,6 +342,7 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
+					dto.setOrderEnalbe("Y");
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 					
@@ -944,7 +945,7 @@ public class UserController {
 
 		UserDTO udto = (UserDTO) session.getAttribute("inUser");
 		String userId = udto.getUserId();
-
+		http://localhost:8887/user_cart?pickup=To-go
 		// 주문인지 배달인지 구분위해 other 페이지 구분.
 		if (params.get("modeInput") != null) {
 			req.setAttribute("modeInput", params.get("modeInput"));
@@ -1987,6 +1988,33 @@ public class UserController {
 				}
 				req.setAttribute("storeList", list2);
 			}
+		}else {
+			List<BucksDTO> list = userMapper.StoreAll();
+			for (BucksDTO dto : list) {
+				String orderEnalbe = userMapper.getOrderEnableBybucksId(dto.getBucksId());
+				dto.setOrderEnalbe(orderEnalbe);
+				
+				// 시간가져와서 00:00식으로 변환
+				String startTime = dto.getBucksStart();
+				String st = startTime.substring(11, 16);
+				String endTime = dto.getBucksEnd();
+				String ed = endTime.substring(11, 16);
+
+				// 시간을 비교하기 위해 LocalTime으로 변환
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+				LocalTime start = LocalTime.parse(st, formatter);
+				LocalTime end = LocalTime.parse(ed, formatter);
+				LocalTime now = LocalTime.now();
+
+				// 현재 시간과 비교
+				if (now.isBefore(start) || now.isAfter(end)) {
+					dto.setOrderEnalbe("N");
+				}
+				dto.setOrderEnalbe("Y");
+				dto.setBucksStart(st);
+				dto.setBucksEnd(ed);
+			}
+			req.setAttribute("storeList", list);
 		}
 
 		return "/user/user_store";

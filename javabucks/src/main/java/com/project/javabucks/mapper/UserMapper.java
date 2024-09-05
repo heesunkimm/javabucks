@@ -256,7 +256,11 @@ public class UserMapper {
 	public List<CouponListDTO> getCouponListById(String userId) {
 		return sqlSession.selectList("getCouponListById", userId);
 	}
-
+	
+	public List<BucksDTO> StoreAll() {
+		return sqlSession.selectList("StoreAll");
+	}
+	
 	public List<BucksDTO> getStoreList(String storeSearch) {
 		return sqlSession.selectList("getStoreList", storeSearch);
 	}

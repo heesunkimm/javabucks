@@ -18,9 +18,9 @@
             	</c:if>
             	<c:if test="${not empty mymenu}">
             	<c:forEach var="menu" items="${mymenu}">
-					<input type="hidden" id = "menuCode" name="menuCode" value="${menu.menuCode}">
-					<input type="hidden" id = "bucksId" name="bucksId" value="${menu.bucksId}">
-					<input type="hidden" id = "pickup" name="pickup" value="">
+					<input type="hidden" id = "menuCode_${menu.menuCode}" name="menuCode" value="${menu.menuCode}">
+					<input type="hidden" id = "bucksId_${menu.menuCode}" name="bucksId" value="${menu.bucksId}">
+					<input type="hidden" id = "pickup_${menu.menuCode}" name="pickup" value="">
                 <li class="menu_item">
                     <div class="close_icon img_box">
                         <a href="user_mymenu?mode=deleteMymenu&menuCode=${menu.menuCode}">
@@ -54,28 +54,28 @@
         var buttons = document.querySelectorAll('.btn_box button');
     	
         // hidden input 요소의 값을 가져옵니다.
-        var pickupInput = document.getElementById('pickup');
-        if (pickupInput) {
-            pickupInput.value = pickup;
-        }
+        var pickupInput = document.getElementById('pickup_' + menuCode);
+		var menuCodeInput = document.getElementById('menuCode_' + menuCode);
+	    var bucksIdInput = document.getElementById('bucksId_' + menuCode);
+		
+		if (pickupInput) {
+		        pickupInput.value = pickup;
+		    }
+			
 	    // 알림창을 띄웁니다.
 	    var userConfirmed = confirm("메뉴 상세 페이지로 이동합니다.");
-
+		
 	    // 사용자가 '확인'을 눌렀다면 페이지를 이동합니다.
 	    if (userConfirmed) {
 	    		        
-	        var hiddenInput = document.getElementById('menuCode');
-	        var menuCodeValue = hiddenInput ? hiddenInput.value : menuCode;
-	        
-	        var hiddenInput2 = document.getElementById('bucksId');
-	        var bucksIdValue  = hiddenInput2 ? hiddenInput2.value : bucksId;
+			var menuCodeValue = menuCodeInput ? menuCodeInput.value : '';
+			        var bucksIdValue = bucksIdInput ? bucksIdInput.value : '';
 
-	        
-	        // URL에 menuCode를 포함하여 이동합니다.
-	        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue) + 
-	        			"&bucksId=" + encodeURIComponent(bucksIdValue) + 
-	        			"&pickup=" + encodeURIComponent(pickupInput.value);
-	        window.location.href = url;
-	    }
-	}    
+			        // URL에 menuCode를 포함하여 이동합니다.
+			        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue) + 
+			                  "&bucksId=" + encodeURIComponent(bucksIdValue) + 
+			                  "&pickup=" + encodeURIComponent(pickupInput.value);
+			        window.location.href = url;
+			    }
+			}
 </script>
