@@ -76,20 +76,20 @@
 							   <td>
 							    <c:choose>
                                         <c:when test="${admin.adminEnable == 'Y'}">
-                                            <button type="button" onclick="location.href='/editAdmin.do?adminId=${admin.adminId}'">수정</button>
+                                            <button class="editBtn" type="button" onclick="location.href='/editAdmin.do?adminId=${admin.adminId}'">수정</button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="button" disabled>수정</button>
+                                            <button class="editBtn disabled_btn" type="button" disabled>수정</button>
                                         </c:otherwise>
                                     </c:choose>
 							   </td>
                               <td>
 			                    <c:choose>
 			                        <c:when test="${admin.adminEnable == 'Y'}">
-			                            <a href="/deleteAdmin.do?adminId=${admin.adminId}" onclick="return confirm('정말로 이 계정을 탈퇴하시겠습니까?');">삭제</a>
+			                            <a class="delBtn" href="/deleteAdmin.do?adminId=${admin.adminId}" onclick="return confirm('정말로 이 계정을 탈퇴하시겠습니까?');">삭제</a>
 			                        </c:when>
 			                        <c:otherwise>
-			                            <button type="button" disabled>탈퇴</button>
+			                            <button class="delBtn" type="button" disabled>탈퇴</button>
 			                        </c:otherwise>
 			                    </c:choose>
 			                </td>
@@ -186,13 +186,13 @@ $(document).ready(function() {
                               '<td>' + enableText + '</td>' +
                               '<td>' +
                                   (admin.adminEnable === 'Y' 
-                                  ? '<button type="button" onclick="location.href=\'/editAdmin.do?adminId=' + admin.adminId + '\'">수정</button>'
-                                  : '<button type="button" disabled>수정</button>') +
+                                  ? '<button class="editBtn" type="button" onclick="location.href=\'/editAdmin.do?adminId=' + admin.adminId + '\'">수정</button>'
+                                  : '<button class="editBtn disabled_btn" type="button" disabled>수정</button>') +
                               '</td>' +
                               '<td>' +
                                   (admin.adminEnable === 'Y' 
                                   ? '<a href="/deleteAdmin.do?adminId=' + admin.adminId + '" onclick="return confirm(\'정말로 이 계정을 탈퇴하시겠습니까?\');">삭제</a>'
-                                  : '<button type="button" disabled>탈퇴</button>') +
+                                  : '<button class="delBtn disabled_btn" type="button" disabled>탈퇴</button>') +
                               '</td>' +
                               '</tr>';
                 $tbody.append(rowHtml);

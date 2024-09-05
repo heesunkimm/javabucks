@@ -13,7 +13,7 @@
             <div class="search_box">
                 <form name="searchForm" action="/searchBucks.do" method="post">
                     
-                    <label>지점등록번호
+                    <label>등록번호
                         <input type="text" name="bucksId" value="">
                     </label>
                     <label>지점명
@@ -29,45 +29,41 @@
                     <button type="button" onclick="location.href='/inputstore.do'">지점등록</button>
                 </div>
                 <ul class="search_list bg_beige">
+           		<c:set var="activeClass" value="store_dimm" />
                 <c:forEach items="${bucksList}" var ="bucks">
-                      <li class="search_item">
-                        <ul class="search_toolbar">
-                            <li style="width: 12%;">지점명</li>
-                            <li style="width: 13%;">지점등록번호</li>
-                            <li style="width: 10%;">점주명</li>
-                            <li style="width: 30%;">위치</li>
-                            <li style="width: 15%;">전화번호</li>
-                            <li style="width: 18%;">운영 시간</li> 
-                            <li style="width: 5%;">운영여부</li>
-                            <li style="width: 7%;"></li>
-                        </ul>
-                        
-                         <ul class="search_cont">
-                           <li class="store_name" style="width: 12%; text-align: center;">${bucks.bucksName}</li>
-                            <li class="store_code" style="width: 13%; text-align: center;">${bucks.bucksId}</li>
-                            <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
-                            <li class="store_location" style="width: 30%; text-align: center;">${bucks.bucksLocation}</li>
-                            <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
-                            <li class="store_start_time" style="width: 18%; text-align: center;">
-                                ${fn:substring(bucks.bucksStart, 11, 16)} - ${fn:substring(bucks.bucksEnd, 11, 16)}
-                                 </li>
-                            <li class="store_tel" style="width: 3%; text-align: center;">${bucks.bucksEnable}</li>
-                            
-                            <li style="width: 9%; text-align: center;">
-                            <c:choose>
-                                        <c:when test="${bucks.bucksEnable == 'Y'}">
-                                            <button type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button type="button" disabled>상세보기</button>
-                                        </c:otherwise>
-                                    </c:choose>
-                            </li>
-                        </ul>
-                       
-                    </li>
-                    </c:forEach>
-                
+               	<li class="search_item">
+                    <ul class="search_toolbar">
+                        <li style="width: 12%;">지점명</li>
+                        <li style="width: 13%;">등록번호</li>
+                        <li style="width: 10%;">점주명</li>
+                        <li style="width: 30%;">위치</li>
+                        <li style="width: 15%;">전화번호</li>
+                        <li style="width: 15%;">운영시간</li> 
+                        <!-- <li style="width: 5%;">운영여부</li> -->
+                        <li style="width: 12%;"></li>
+                    </ul>
+                    
+                     <ul class="search_cont">
+                       <li class="store_name" style="width: 12%; text-align: center;">${bucks.bucksName}</li>
+                        <li class="store_code" style="width: 13%; text-align: center;">${bucks.bucksId}</li>
+                        <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
+                        <li class="store_location" style="width: 30%; text-align: center;">${bucks.bucksLocation}</li>
+                        <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
+                        <li class="store_start_time" style="width: 15%; text-align: center;">${fn:substring(bucks.bucksStart, 11, 16)} - ${fn:substring(bucks.bucksEnd, 11, 16)}</li>
+                        <%-- <li class="store_tel" style="width: 3%; text-align: center;">${bucks.bucksEnable}</li> --%>
+                        <li style="width: 12%; text-align: center;">
+                        <c:choose>
+                            <c:when test="${bucks.bucksEnable == 'Y'}">
+                                <button type="button" onclick="location.href='/editbucks.do?id=${bucks.bucksId}'" >상세보기</button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="button" disabled>상세보기</button>
+                            </c:otherwise>
+                        </c:choose>
+                        </li>
+                    </ul>
+               	</li>
+                </c:forEach>
                 </ul>  
                 <!-- s: 페이징  -->
              <div class="pagination pagination">

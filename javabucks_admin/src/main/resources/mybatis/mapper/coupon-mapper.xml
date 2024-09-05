@@ -82,11 +82,11 @@
 	    inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
 	    where
 	        (
-	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or
-	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or
-	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or 
 	            (#{searchStartDate} is null and #{searchEndDate} is null)
 	        )
@@ -104,11 +104,11 @@
 	    inner join javabucks_coupon c on cl.cpnCode = c.cpnCode 
 	    where
 	        (
-	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListStartDate' and cl.cpnListStartDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or
-	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListEndDate' and cl.cpnListEndDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or
-	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD'))
+	            (#{searchDate} = 'cpnListUseDate' and cl.cpnListUseDate between TO_DATE(#{searchStartDate}, 'YYYY-MM-DD') and TO_DATE(#{searchEndDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY - INTERVAL '1' SECOND)
 	            or 
 	            (#{searchStartDate} is null and #{searchEndDate} is null)
 	        )

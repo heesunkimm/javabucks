@@ -2,15 +2,15 @@ $(function() {
 	// admin_top 설정 토글
 	$("header .setBtn").on('click', function(e){
 	    e.stopPropagation();
-	    $(".setting_box").toggle();
+	    $(".setting_box, .dimm").toggle();
 	});
 	$(document).on('click', function(e){
 	    if(!$(e.target).closest('.setting_box, .setBtn').length){
-	        $(".setting_box").hide();
+	        $(".setting_box, .dimm").hide();
 	    }
 	});
 	$("header .setting_box li:first-child").on('click', function() {
-	    $(".setting_box").hide();
+	    $(".setting_box, .dimm").hide();
 	});
 	
 	// tab foreach 통합
