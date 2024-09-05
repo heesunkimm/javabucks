@@ -752,3 +752,761 @@ body {max-width: 768px!important;}
 #user_paycharge .price_box button {width: 90px; padding: 4px 0; border-radius: 4px; border: 1px solid #ccc; font-size: 18px;}
 #user_paycharge .price_box button.p_active {background-color: #006241; border-color: #006241; color: #fefefe;}
 #user_paycharge .pricecheck_box dl {margin-top: 0; font-size: 20px; font-weight: 700;}
+
+
+@media all and (max-width:768px) {
+	body {max-width: 100.0000vw!important;}
+
+	.tab-content {display: none;}
+	.div_box {margin-top: 2.6042vw;}
+	.content {padding: 0 0 13.0208vw;}
+	.addcontent {padding: 0 0 18.2292vw;}
+	.inner_wrap > .tit_box {padding: 2.6042vw 0; font-size: 4.1667vw;}
+
+	.content .popup_box.period_date {width: 57.2917vw; padding-top: 2.6042vw; border-top: 0.1302vw solid #ccc;}
+	.content .popup_box.period_date .tit_box {margin-bottom: 2.6042vw; font-size: 2.8646vw; text-align: center;}
+
+	/* 상품 주문불가 딤처리 */
+	.pdt_dimm {position: relative;}
+	.pdt_dimm::before {content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);}
+	.pdt_dimm::after {content: '주문불가'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 13.0208vw; height: 13.0208vw; border-radius: 50%; border: 0.2604vw solid #fefefe; font-size: 2.6042vw; color: #fefefe;}
+
+	.content .popup_box.period_date .date_box {display: flex; flex-direction: column;}
+	.content .popup_box.period_date .date_box label {display: flex; align-items: center; justify-content: space-between; padding: 1.3021vw 0; border-top: 0.1302vw solid #ccc; font-size: 2.3438vw;}
+	.content .popup_box.period_date .date_box input {font-size: 2.3438vw;}
+	.content .popup_box.period_date .select_period {border-top: 0.1302vw solid #ccc; padding-top: 1.3021vw; font-size: 2.3438vw; text-align: center;}
+	.content .popup_box.period_date .select_period label + label {margin-left: 0.7813vw;}
+	.content .popup_box.period_date .date_noti {margin-top: 1.3021vw; font-size: 1.8229vw; color: #555; text-align: center;}
+	.content .popup_box.period_date .pbtn_box button {padding: 1.8229vw 10.4167vw; border-radius: 0.5208vw; font-size: 2.3438vw;}
+	.content .popup_box.period_date .pbtn_box button:first-child {border: 0.1302vw solid #006241; color: #006241;}
+	.content .popup_box.period_date .pbtn_box button:last-child {background-color: #006241; color: #fefefe;}
+
+	#user_nav {position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100.0000vw; background-color: #f6f5ef; z-index: 99;}
+	#user_nav .nav_list {display: flex; align-items: center;}
+	#user_nav .nav_list li {width: calc(100%/5); padding: 1.3021vw; text-align: center;}
+	#user_nav .nav_list li .nav_icon {width: 4.6875vw; height: 4.6875vw; margin: 0 auto; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+	#user_nav .nav_list li .nav_tit {font-size: 2.3438vw; color: #555;}
+
+	/* user_login */
+	#user_login {display: grid; place-items: center; min-height: 100dvh;}
+	#user_login input {border: 0.1302vw solid #ccc; border-radius: 0.2604vw;}
+	#user_login input[type="text"]:focus, #user_login input[type="password"]:focus {border-color: #006241;}
+	#user_login .login_box .input_box label + label, 
+	#user_login .popup_box .input_box > label + label {margin-top: 0.7813vw;}
+	#user_login .login_box .input_box input {width: 40.6250vw; height: 4.6875vw; padding: 0 0.7813vw; font-size: 2.3438vw;}
+
+	#user_login .login_box {padding: 3.9063vw 2.6042vw; border: 0.1302vw solid #eee; border-radius: 0.5208vw; box-shadow: 0 0.3906vw 0.9115vw #ccc;}
+	#user_login .login_box .top_box {display: flex; align-items: center; justify-content: center; gap: 2.6042vw;}
+	#user_login .login_box .top_box .img_box {width: 6.5104vw; height: 6.5104vw;}
+	#user_login .login_box .top_box p {font-size: 3.9063vw; font-family: 'Santana_bold'; text-align: center;}
+	#user_login .login_box form {margin-top: 1.3021vw;}
+	#user_login .login_box .input_box, #user_login .login_box .input_box label {width: 42.4479vw;}
+
+	#user_login .login_box .login_btn {margin-top: 1.3021vw; width: 42.4479vw; height: 4.6875vw; border-radius: 0.2604vw; background-color: #006241; font-size: 2.0833vw; color: #fefefe;}
+
+	#user_login .login_box .find_box {margin-top: 1.8229vw; text-align: center;}
+	#user_login .login_box .find_box label {margin-right: 2.0833vw; font-size: 1.8229vw;}
+	#user_login .login_box .find_box a {font-size: 1.8229vw; line-height: 2.3438vw; color: #555; border-bottom: 0.1302vw solid #555;}
+
+	#user_login .popup_box > p {font-size: 2.6042vw; font-weight: 700; color: #006241; text-align: left;}
+	#user_login .popup_box .close_btn {position: absolute; top: 0.7813vw; right: 0.7813vw; display: inline-block; width: 3.9063vw; height: 3.9063vw;}
+
+	#user_login .popup_box .input_box > label {margin-bottom: 1.3021vw; width: 42.7083vw; height: 4.9479vw;}
+	#user_login .popup_box .input_box > label input {width: 100%; height: 100%; padding: 0 0.7813vw; font-size: 2.0833vw;}
+	#user_login .popup_box .email_box {display: flex; align-items: center; justify-content: space-between;}
+	#user_login .popup_box .email_box label {margin-right: 0.7813vw; width: 20.8333vw; display: flex; align-items: center;}
+	#user_login .popup_box .email_box input {width: 100%; height: 4.6875vw; padding: 0 0.7813vw; font-size: 2.0833vw;}
+	#user_login .popup_box .email_box select {width: 100%; height: 4.9479vw; font-size: 2.0833vw;}
+
+	#user_login .popup_box .confirm_box {margin-top: 1.3021vw;}
+	#user_login .popup_box .confirm_box label {position: relative;}
+	#user_login .popup_box .confirm_box input {width: 40.6250vw; height: 4.6875vw; padding: 0 0.7813vw; font-size: 1.8229vw;}
+
+	#user_login .popup_box .btn_box {text-align: center;}
+	#user_login .popup_box button {padding: 0.9115vw 1.3021vw; border-radius: 0.2604vw; background-color: #006241; font-size: 2.0833vw; color: #fff;}
+	#user_login .popup_box button.confirm_btn {width: 17.8385vw;}
+	#user_login .popup_box .submit_btn {width: 10.4167vw;}
+	#user_login .popup_box .btn_box .setting_btn {position: relative; font-size: 1.8229vw; line-height: 2.3438vw; color: #555;}
+	#user_login .popup_box .btn_box .setting_btn::after {content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 0.1302vw; background-color: #555;}
+
+	#user_login #findbypw .confirm_box input {width: 42.5781vw;}
+
+	/* user_join */
+	#user_join {display: grid; place-items: center; min-height: 100dvh;}
+	#user_join input {border: 0.1302vw solid #ccc; border-radius: 0.2604vw;}
+	#user_join input[type="text"]:focus {border-color: #006241;}
+	#user_join .join_box .input_box > label + label, 
+	#user_join .join_box .input_box .pw_box label, 
+	#user_join .join_box .input_box .hp_box, 
+	#user_join .join_box .input_box .email_box {margin-top: 0.7813vw;}
+	#user_join .join_box .input_box input[type="text"], 
+	#user_join .join_box .input_box input[type="password"] {width: 100%; height: 4.6875vw; padding: 0 0.7813vw;}
+
+	#user_join .join_box {padding: 3.9063vw 2.6042vw; border: 0.1302vw solid #eee; border-radius: 0.5208vw; box-shadow: 0 0.3906vw 0.9115vw #ccc;}
+	#user_join .join_box .top_box {display: flex; align-items: center; justify-content: center; gap: 2.6042vw;}
+	#user_join .join_box .top_box .img_box {width: 6.5104vw; height: 6.5104vw;}
+	#user_join .join_box .top_box p {font-size: 3.1250vw; font-family: 'Santana_bold'; text-align: center;}
+	#user_join .join_box form {margin-top: 1.3021vw;}
+	#user_join .join_box .input_box {width: 42.4479vw;}
+	#user_join .join_box .input_box > label, #user_join .join_box .input_box .pw_box input {width: 40.6250vw;}
+
+	#user_join .join_box .input_box .gender_box {margin-top: 0.7813vw; display: flex; align-items: center;}
+	#user_join .join_box .input_box .gender_box label {width: 50%; padding-left: 2.6042vw; font-size: 1.8229vw;}
+	#user_join .join_box .input_box .gender_box input[type="radio"] {margin-right: 1.3021vw; width: 2.0833vw; height: 2.0833vw;}
+
+	#user_join .join_box .input_box .hp_box {width: 42.1875vw; display: flex; align-items: center; justify-content: space-between;}
+	#user_join .join_box .input_box .hp_box label {width: 13.0208vw; height: 4.6875vw;}
+	#user_join .join_box .input_box .hp_box input, #user_join .join_box .input_box .hp_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
+
+	#user_join .join_box .input_box .email_box label {width: 13.9323vw; height: 4.6875vw;}
+	#user_join .join_box .input_box .email_box input, #user_join .join_box .input_box .email_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
+	#user_join .join_box .input_box .email_box button {padding: 0 0.7813vw; height: 4.6875vw; background: #006241; border-radius: 0.2604vw; font-size: 1.8229vw; color: #fefefe;}
+
+	#user_join .join_box .input_box .confirm_box, #user_join .join_box .input_box .id_box {margin-top: 0.7813vw; display: flex; align-items: center; justify-content: space-between;}
+	#user_join .join_box .input_box .id_box {position: relative; margin-bottom: 2.8646vw;}
+	#user_join .join_box .input_box .id_box .tooltip {position: absolute; bottom: -2.8646vw; font-size: 1.5625vw; color: #666;}
+	#user_join .join_box .input_box .id_box label, #user_join .join_box .input_box .confirm_box label {position: relative;}
+	#user_join .join_box .input_box .id_box input, #user_join .join_box .input_box .confirm_box input {width: 29.9479vw; height: 4.6875vw; padding: 0 0.7813vw; font-size: 1.8229vw;}
+	#user_login .popup_box .confirm_box .timer, #user_join .join_box .input_box .confirm_box .timer {position: absolute; top: 50%; transform: translateY(-50%); right: 0.7813vw; font-size: 1.8229vw; color: #006241; margin-right:0.5208vw;}
+	#user_join .join_box .input_box .confirm_box button, #user_join .join_box .input_box .id_box button {padding: 0 1.3021vw; height: 4.6875vw; background: #006241; border-radius: 0.2604vw; font-size: 1.8229vw; color: #fefefe;}
+
+	#user_join .join_box .join_btn {margin-top: 1.3021vw; width: 100%; height: 4.6875vw; border-radius: 0.2604vw; background-color: #006241; font-size: 2.0833vw; color: #fefefe;}
+
+
+	/* home */
+	#user_main .random_box {position: relative; height: 31.2500vw;}
+	#user_main .random_box .img_box {height: 31.2500vw;}
+	#user_main .random_box .random_txt {position: absolute; top: 50%; left: 6.5104vw; transform: translateY(-50%); font-size: 4.1667vw; line-height: 5.9896vw; white-space: pre-line; color: #333;}
+
+	#user_main .star_icon {display: inline-block; background: url('../images/icons/star.png')no-repeat center center/contain; filter: brightness(0) saturate(100%) invert(27%) sepia(33%) saturate(1900%) hue-rotate(122deg) brightness(92%) contrast(101%);}
+	#user_main .star_icon--01 {margin: 0 1.3021vw; width: 2.6042vw; height: 2.6042vw;}
+	#user_main .star_icon--02 {margin-left: 0.7813vw; width: 3.1250vw; height: 3.1250vw;}
+	#user_main .top_box .reward_box .remain_count {display: flex; align-items: center; font-size: 3.6458vw;}
+	#user_main .top_box .reward_box .progress_box {margin-top: 1.8229vw; display: flex; align-items: center; justify-content: space-between;}
+	#user_main .top_box .reward_box .progress_box .progress_bar {width: 72.9167vw; height: 3.6458vw; appearance: none;}
+	#user_main .top_box .reward_box .progress_box .progress_bar::-webkit-progress-bar {width: 72.9167vw; height: 3.6458vw; background: #fefefe; border-radius: 1.5625vw; border: 0.1302vw solid #eeeeee; overflow: hidden;}
+	#user_main .top_box .reward_box .progress_box .progress_bar::-webkit-progress-value {width: 6.2500vw; height: 3.6458vw; background: #006241; border-radius: 0.0000vw;}
+	#user_main .top_box .reward_box .progress_box .total_count {display: flex; align-items: baseline; font-size: 3.3854vw;}
+	#user_main .top_box .reward_box .progress_box .total_count > span:first {font-size: 4.1667vw;}
+
+	#user_main .summary_box {display: flex; align-items: center; justify-content: space-between;}
+	#user_main .summary_box .summary_list {display: flex; align-items: center; gap: 3.9063vw;}
+	#user_main .summary_box .summary_list li .link_btn {display: flex; align-items: center; gap: 1.8229vw;}
+	#user_main .summary_box .summary_list li .link_btn span {font-size: 2.6042vw;}
+	#user_main .summary_box .summary_list li .link_btn .img_box, #user_main .summary_box .alarm_box .img_box {width: 5.2083vw; height: 5.2083vw;}
+
+	#user_main .summary_box .alarm_box {position: relative;}
+	#user_main .summary_box .alarm_box:hover {cursor: pointer;}
+	#user_main .summary_box .alarm_box .noReadNum {position: absolute; display: inline-flex; bottom: 0; left: 0; z-index: 99; width: 2.6042vw; height: 2.6042vw; background: #006241; border-radius: 50%; justify-content: center; font-size: 1.6927vw; line-height: 2.6042vw; color: #fefefe;}
+
+	#user_main .whats_new .tit_box {display: flex; align-items: center; justify-content: space-between;}
+	#user_main .whats_new .tit_box p {font-size: 3.3854vw;}
+	#user_main .whats_new .tit_box a {font-size: 2.6042vw;}
+	#user_main .whats_new .news_box {margin-top: 2.6042vw; height: 39.0625vw; border-radius: 0.5208vw;}
+	#user_main .whats_new .news_box .img_box {height: 39.0625vw;}
+
+	#user_main .recommend_menu .tit_box {font-size: 3.3854vw;}
+	#user_main .recommend_menu .recommend_list {margin-top: 2.6042vw; display: flex; align-items: center; justify-content: flex-start; padding: 0 2.6042vw; gap: 2.6042vw;}
+	#user_main .recommend_menu .recommend_list li .img_box {width: 28.6458vw; height: 28.6458vw; margin: 0 auto; border-radius: 50%; overflow: hidden;}
+	#user_main .recommend_menu .recommend_list li p {margin-top: 1.8229vw; font-size: 2.0833vw; text-align: center; color: #555;}
+
+	/* pay */
+	#user_pay .card_box > p {font-size: 2.8646vw;}
+	#user_pay .card_box .card_list li + li {margin-top: 2.6042vw;}
+	#user_pay .card_box .card_list li {height: 39.0625vw; border-radius: 0.5208vw;}
+	#user_pay .card_box .card_list li .img_box {height: 39.0625vw;}
+
+	#user_pay .addcard_box {height: 39.0625vw; background-color: #eee; border: 0.1302vw solid #ccc; border-radius: 2.6042vw;}
+	#user_pay .addcard_box a {display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 2.6042vw;}
+	#user_pay .addcard_box p {font-size: 2.3438vw; line-height: 3.1250vw; text-align: center; color: #555;}
+	#user_pay .addcard_box .add_icon {width: 3.1250vw; height: 3.1250vw; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+
+	#user_pay .pay_card, 
+	#user_pay .edit_card {width: 57.2917vw; padding: 3.9063vw 0 0 0;}
+	#user_pay .pay_card .tit_box {margin-top: 2.6042vw; text-align: center;}
+	#user_pay .pay_card .tit_box .txt_tit {font-size: 2.8646vw; color: #006241;}
+	#user_pay .pay_card .tit_box .card_num {margin-top: 1.3021vw; font-size: 2.6042vw; color: #555;}
+	#user_pay .pay_card .tit_box .popup_btn {position: absolute; top: 6.6406vw; right: 3.1250vw;  width: 2.6042vw; height: 2.6042vw;}
+	#user_pay .pay_card .card_price {margin-top: 0.1302vw; font-size: 2.3438vw; text-align: center; color: #555;}
+	#user_pay .pay_card .card_img {margin: 2.0833vw auto 0; width: 52.0833vw; height: 19.5313vw;}
+
+	#user_pay .edit_card .insert_box{padding: 0 2.6042vw;}
+	#user_pay .edit_card .insert_box p {font-size: 2.6042vw;}
+	#user_pay .edit_card .insert_box label {margin-top: 2.6042vw; display: flex; flex-direction: column; font-size: 2.0833vw;}
+	#user_pay .edit_card .insert_box input {margin-top: 1.0417vw; padding: 0.7813vw; border-left: none; border-top: none; border-right: none; border-bottom: 0.2604vw solid #006241; font-size: 2.3438vw;}
+
+	#user_pay .popup_box .pbtn_box {width: 100%; display: flex; align-items: center; justify-content: center; border-top: 0.1302vw solid #ccc;}
+	#user_pay .popup_box .pbtn_box button {position: relative; width: 50%; padding: 2.6042vw 0;}
+	#user_pay .popup_box .pbtn_box button:first-child {border-right: 0.1302vw solid #ccc;}
+	/* 카드결제 팝업 */
+	#user_pay .popup_box.pay_card .pbtn_box button:first-child:before {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: 6.5104vw; display: block; width: 2.6042vw; height: 2.6042vw; background: url('../images/icons/pay_card.png')no-repeat center center/contain;}
+
+	/* user_paynow */
+	#user_paynow .store_confirm {border-top: 0.1302vw solid #ccc; border-bottom: 0.1302vw solid #ccc; padding: 3.9063vw 2.6042vw 2.6042vw;}
+	#user_paynow .store_confirm {position: relative; font-size: 2.2135vw; line-height: 3.6458vw;}
+	#user_paynow .store_confirm::after {content: 'Check!'; position: absolute; top: 1.3021vw; left: 0; transform:rotate(-18deg); font-size: 2.3438vw; font-weight: 700; color: #006241;}
+
+	#user_paynow .sec_tit {padding: 1.3021vw 0; font-size: 2.6042vw;}
+
+	#user_paynow .pay_list {padding: 2.6042vw 0;}
+	#user_paynow .pay_list .pay_item {display: flex; align-items: flex-start; justify-content: space-between; padding:  1.3021vw 2.6042vw;}
+	#user_paynow .pay_list .pay_item .img_box {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; overflow: hidden;}
+
+	#user_paynow .pay_list .pay_item .img_box.cpn_icon {width: 6.5104vw; height: 6.5104vw; filter: brightness(0) saturate(100%) invert(32%) sepia(3%) saturate(8%) hue-rotate(339deg) brightness(96%) contrast(87%); border-radius: 0; border: none;}
+
+	#user_paynow .pay_list .pay_item .txt_box {width: 78.1250vw;}
+	#user_paynow .pay_list .pay_item .txt_box dl:first-child {font-size: 2.0833vw;}
+	#user_paynow .pay_list .pay_item .txt_box dl:not(:first-child) {margin-top: 0.7813vw; font-size: 1.8229vw;}
+	#user_paynow .pay_list .pay_item .txt_box dl {display: flex; align-items: center; justify-content: space-between;}
+
+	#user_paynow #howtopay input[type="radio"] {margin-right: 1.3021vw; width: 2.6042vw; height: 2.6042vw;}
+	#user_paynow #howtopay > li {padding: 1.5625vw 0;}
+	#user_paynow #howtopay .cardlist_wrap {width: 100.0000vw; overflow: hidden;}
+	#user_paynow #howtopay .cardlist {overflow: visible; margin: 2.6042vw 0 0 0; width: 54.6875vw; height: 48.1771vw;}
+	#user_paynow #howtopay .cardlist li +li {margin-left: 2.6042vw;}
+	#user_paynow #howtopay .cardlist .card_slide {width: 54.6875vw;}
+	#user_paynow #howtopay .cardlist .card_slide a {display: inline-block; width: 100%; height: 34.3750vw;}
+	#user_paynow #howtopay .cardlist .card_slide .img_box {border: 0.1302vw solid transparent; padding: 0.3906vw; box-sizing: border-box;}
+	#user_paynow #howtopay .cardlist .card_slide .img_box.active {border: 0.2604vw solid #006241;}
+	#user_paynow #howtopay .cardlist .card_slide .txt_box {margin-top: 0.7813vw; text-align: center;}
+	#user_paynow #howtopay .cardlist .card_slide .txt_box .txt_name {height: 2.7344vw; font-size: 2.0833vw;}
+	#user_paynow #howtopay .cardlist .card_slide .txt_box .txt_price {margin-top: 0.5208vw; font-size: 2.0833vw; color: #555;}
+	#user_paynow #howtopay .cardlist .add_slide {height: 34.3750vw; border: 0.1302vw solid #ccc; border-radius: 1.0417vw;}
+	#user_paynow #howtopay .cardlist .add_slide a {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6042vw;}
+	#user_paynow #howtopay .cardlist .add_slide .add_icon {width: 3.9063vw; height: 3.9063vw; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+
+	#user_paynow .cpn_box {border-top: 0.1302vw solid #ccc;}
+	#user_paynow .cpn_box a {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_paynow .cpn_box .img_box {width: 3.9063vw; height: 3.9063vw;}
+
+	#user_paynow .cpnpop {width: 52.0833vw; padding: 3.9063vw 2.6042vw 0;}
+	#user_paynow .cpnpop .tit_box {font-size: 2.3438vw;}
+	#user_paynow .cpnpop form {margin-top: 2.0833vw;}
+	#user_paynow .cpnpop .cpn_list li + li {border-top: 0.1302vw solid #ccc;}
+	#user_paynow .cpnpop .cpn_list li a {display: flex; align-items: center; gap: 2.6042vw; padding: 1.3021vw 2.0833vw;}
+	#user_paynow .cpnpop .cpn_list li a.cpn-no {height: 8.7240vw; padding: 0 2.0833vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_paynow .cpnpop .cpn_list li a.selected {position: relative;}
+	#user_paynow .cpnpop .cpn_list li a.selected::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%); right: 1.3021vw; display: block; width: 2.6042vw; height: 2.6042vw; background: url('../images/icons/check.png')no-repeat center center/contain; filter: brightness(0) saturate(100%) invert(13%) sepia(94%) saturate(4306%) hue-rotate(163deg) brightness(90%) contrast(105%);}
+
+	#user_paynow .cpnpop .cpn_list li .img_box {width: 10.4167vw;}
+	#user_paynow .cpnpop .cpn_list li .txt_box .txt_tit {font-size: 2.0833vw;}
+	#user_paynow .cpnpop .cpn_list li .txt_box .txt_date {margin-top: 0.7813vw; font-size: 1.8229vw; color: #555;}
+
+	#user_paynow .cpnpop .cpn_list li .img_box.nocpn_img {position: relative;}
+	#user_paynow .cpnpop .cpn_list li .img_box.nocpn_img::after {content: 'NO!'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-18deg); display: inline-flex; align-items: center; justify-content: center; width: 5.2083vw; height: 5.2083vw; border-radius: 50%; border: 0.2604vw solid #006241; background: rgba(255, 255, 255, 0.6); font-size: 2.0833vw; font-weight: 700; color: #006241;}
+
+
+	#user_paynow .cpnpop .pbtn_box {width: 100%; display: flex; align-items: center; justify-content: center; border-top: 0.1302vw solid #ccc;}
+	#user_paynow .cpnpop .pbtn_box button {position: relative; width: 50%; padding: 2.6042vw 0;}
+	#user_paynow .cpnpop .pbtn_box button:first-child {border-right: 0.1302vw solid #ccc;}
+
+	#user_paynow .pricecheck_box {padding: 2.6042vw; background-color: #eee;}
+	#user_paynow .pricecheck_box dl {display: flex; align-items: center; justify-content: space-between;}
+	#user_paynow .pricecheck_box dl:not(:nth-child(3)) {margin-top: 1.3021vw; font-size: 2.3438vw;}
+	#user_paynow .pricecheck_box dl:nth-child(3) {margin-top: 2.0833vw; font-size: 2.6042vw; font-weight: 700;}
+	#user_paynow .pricecheck_box .pay_btn {margin-top: 2.0833vw; width: 100%; height: 5.2083vw; padding: 0 1.3021vw; border-radius: 3.2552vw; background-color: #006241; font-size: 2.6042vw; color: #fefefe;}
+
+	/* user_delivers */
+	#user_delivers.content {padding: 0 0 10.4167vw;}
+	#user_delivers .top_box {position: fixed; top:0; left:50%; transform: translateX(-50%); width: 100.0000vw; padding: 5.2083vw 0 2.6042vw; background-color: #fff; border-bottom: 0.1302vw solid #ccc;}
+	#user_delivers .top_box .tit_box {margin-bottom: 2.6042vw; font-size: 4.1667vw;}
+
+	#user_delivers .search_box form {display: flex; flex-direction: column;}
+	#user_delivers .search_box .store_location {margin-top: 1.3021vw;}
+	#user_delivers .search_box .loca_box input {width: 84.6354vw; height: 4.1667vw; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_delivers .search_box .loca_box button {width: 12.2396vw; height: 4.4271vw; border-radius: 0.5208vw; border: 0.1302vw solid #006241; font-size: 2.2135vw; color: #006241;}
+
+	#user_delivers .cate_list {margin-top: 2.6042vw; display: flex;}
+	#user_delivers .cate_list li {width: 9.1146vw; padding: 0.7813vw 0; font-size: 2.6042vw; text-align: center;}
+	#user_delivers .cate_list li a.s_active {width: 100%; height: 100%; border-bottom: 0.2604vw solid #006241; color: #006241;}
+
+	#user_delivers .store_list {margin-top: 26.4323vw;}
+	#user_delivers .store_list li + li {border-top: 0.1302vw solid #ccc;}
+	#user_delivers .store_list .store_item a {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_delivers .store_list .store_item .img_box {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; overflow: hidden;}
+	#user_delivers .store_list .store_item .txt_box p + p {margin-top: 0.7813vw;}
+	#user_delivers .store_list .store_item .txt_box .txt_store {font-size: 2.3438vw;}
+	#user_delivers .store_list .store_item .txt_box .txt_location {font-size: 2.0833vw; color: #555;}
+	#user_delivers .store_list .store_item .txt_box .txt_time {font-size: 1.8229vw; color: #999;}
+
+	#user_delivers .pickup_box .txt_tit {margin-bottom: 1.0417vw; font-size: 2.3438vw;}
+	#user_delivers .pickup_box form .select_box {display: flex; align-items: center; gap: 2.0833vw;}
+	#user_delivers .pickup_box form .select_box .location_box {width: 66.9271vw;}
+	#user_delivers .pickup_box form .select_box label + label {margin-top: 1.0417vw;}
+	#user_delivers .pickup_box form .select_box label {height: 3.9063vw;}
+	#user_delivers .pickup_box form .select_box label input {width: 65.1042vw; height: 100%; padding: 0 0.7813vw; font-size: 2.0833vw;}
+	#user_delivers .pickup_box form .select_box input[type="button"], #user_delivers .pickup_box form .btn_box button {padding: 0.2604vw 1.3021vw; background: #006241; border-radius: 0.5208vw; font-size: 2.3438vw; color: #fefefe;}
+
+	#user_delivers .pickup_box form .btn_box {margin-top: 1.3021vw; text-align: center;}
+	#user_delivers .pickup_box form .btn_box .close_btn {border: 0.1302vw solid #006241; background:transparent; color: #006241;}
+
+	/* user_other */
+	#user_other.content {padding: 0 0 10.4167vw 0;}
+	#user_other .inner_wrap {padding: 0 2.6042vw;}
+	#user_other .div_tit {margin-bottom: 2.6042vw; font-size: 3.3854vw;}
+	#user_other .div_box {padding-bottom: 2.6042vw;}
+	#user_other .top_box .btn_list {display: flex; align-items: center; justify-content: end; gap: 1.8229vw;}
+	#user_other .top_box .btn_list li {width: 5.2083vw; height: 5.2083vw;}
+	#user_other .top_box .btn_list li .alarm_icon {filter: brightness(0) saturate(100%) invert(32%) sepia(0%) saturate(1329%) hue-rotate(266deg) brightness(98%) contrast(90%);}
+	#user_other .top_box .tit_box  {font-size: 4.1667vw;}
+
+	#user_other .user_box > p {font-size: 4.1667vw; line-height: 5.9896vw; text-align: center;}
+	#user_other .user_box ul {display: flex; flex-wrap: wrap; align-content: center; gap: 2.9948vw;}
+	#user_other .user_box ul li {width: 23.4375vw; height: 23.4375vw; border-radius: 3.2552vw; box-shadow: 0.0000vw 0.0000vw 0.6510vw #ccc;}
+	#user_other .user_box ul li a {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.0833vw; height: 100%;}
+	#user_other .user_box ul li .img_box {width: 10.4167vw; height: 10.4167vw; filter: brightness(0) saturate(100%) invert(27%) sepia(31%) saturate(1682%) hue-rotate(118deg) brightness(96%) contrast(104%);}
+	#user_other .user_box ul li p {font-size: 2.3438vw; text-align: center;}
+
+	#user_other .other_list {display: flex; flex-wrap: wrap; gap: 2.6042vw 0;}
+	#user_other .other_list li {width: 50%;}
+	#user_other .other_list li a {display: flex; align-items: center; gap: 2.6042vw;}
+	#user_other .other_list li .img_box {width: 4.5573vw; height: 4.5573vw; filter: brightness(0) saturate(100%) invert(30%) sepia(5%) saturate(5%) hue-rotate(131deg) brightness(99%) contrast(83%);}
+	#user_other .other_list li p {font-size: 2.3438vw;}
+
+	#user_other  #pwbox .txt_tit {font-size: 2.2135vw;}
+	#user_other  #pwbox .date_box {margin-top: 1.3021vw;}
+	#user_other  #pwbox .date_box input {width: 26.0417vw; height: 3.5156vw; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_other  #pwbox .btn_box {margin-top: 1.3021vw; text-align: center}
+	#user_other  #pwbox .btn_box button {height: 3.5156vw; padding: 0.0000vw 1.3021vw; border: 0.1302vw solid #006241; border-radius: 0.5208vw; box-sizing: border-box; font-size: 2.3438vw; color: #006241;}
+	#user_other  #pwbox .btn_box button.submit_btn {margin-left: 0.5208vw; background: #006241; color: #fefefe;}
+
+	#user_other .logout_box {text-align: center;}
+	#user_other .logout_box a {border-bottom: 0.1302vw solid #555; padding-bottom: 0.2604vw; font-size: 2.3438vw; color: #555;}
+
+	/* user_starhistory */
+	#user_starhistory .star_count dl {display: flex; justify-content: space-between; font-size: 2.6042vw;}
+	#user_starhistory .star_count .star_noti {margin-top: 2.6042vw; font-size: 2.0833vw; color: #ccc;}
+
+	#user_starhistory .view_date {display: flex; align-items: center; justify-content: space-between; padding: 2.6042vw 0; border-top: 0.1302vw solid #000; border-bottom: 0.1302vw solid #ccc;}
+	#user_starhistory .view_date p {font-size: 2.6042vw;}
+	#user_starhistory .view_date a {padding: 0.3906vw 1.3021vw; border: 0.1302vw solid #006241; border-radius: 3.2552vw; font-size: 2.3438vw;}
+
+	#user_starhistory .add_list > li {display: flex; gap: 5.2083vw; padding: 2.6042vw;}
+	#user_starhistory .add_list > li + li {border-top: 0.1302vw solid #ccc;}
+	#user_starhistory .add_list > li .add_box {width: 9.1146vw; padding-top: 1.3021vw; display: flex; align-items: center; gap: 1.3021vw;}
+	#user_starhistory .add_list > li .add_box .img_box {width: 2.6042vw; height: 2.6042vw;}
+	#user_starhistory .add_list > li .add_box p, #user_starhistory .add_list .txt_box .txt_tit {font-size: 2.6042vw;}
+	#user_starhistory .add_list .txt_box .txt_desc {margin-top: 0.7813vw; font-size: 2.0833vw; line-height: 3.1250vw; color: #555;}
+	#user_starhistory .addlist_noti {padding-top: 2.6042vw; border-top: 0.1302vw solid #ccc;}
+	#user_starhistory .addlist_noti li {font-size: 2.0833vw; line-height: 3.1250vw; color: #555;}
+
+	/* user_recepit */
+	#user_recepit .view_date {display: flex; align-items: center; justify-content: space-between; padding: 1.3021vw 0; border-top: 0.1302vw solid #ccc; border-bottom: 0.1302vw solid #ccc; font-size: 2.6042vw;}
+	#user_recepit .view_date div {display: flex; gap: 0.7813vw;}
+
+	#user_recepit .period_date {padding: 1.3021vw 2.6042vw 3.9063vw;}
+
+	#user_recepit .period_date .select_period, 
+	#user_recepit .period_date .date_box, 
+	#user_recepit .period_date .select_pay, 
+	#user_recepit .period_date .pbtn_box {display: flex; align-items: center; justify-content: center; gap: 1.3021vw;}
+	#user_recepit .period_date .date_box label, 
+	#user_recepit .period_date .select_pay label {width: 50%;}
+	#user_recepit .period_date .select_period button {width: calc(100%/3); padding: 1.3021vw 0; border: 0.2604vw solid #ccc; border-radius: 0.5208vw; font-size: 2.3438vw; color: #555;}
+	#user_recepit .period_date .select_period button.active {border: 0.2604vw solid #006241;}
+
+	#user_recepit .period_date .date_box {margin-top: 1.3021vw;}
+	#user_recepit .period_date .date_box input {width: 100%; padding: 1.3021vw 0; border: none; background-color: #eee; font-size: 2.3438vw; color: #555;}
+
+	#user_recepit .period_date .select_pay {margin-top: 2.6042vw;}
+	#user_recepit .period_date .select_pay label {display: flex; flex-direction: column;}
+	#user_recepit .period_date .select_pay select {margin-top: 0.7813vw; padding: 1.3021vw 0;}
+
+	#user_recepit .period_date .pbtn_box {margin-top: 2.6042vw;}
+	#user_recepit .period_date .pbtn_box button {width: 50%; padding: 1.8229vw 0; border-radius: 0.5208vw; font-size: 2.3438vw;}
+	#user_recepit .period_date .pbtn_box button:first-child {border: 0.1302vw solid #006241; color: #006241;}
+	#user_recepit .period_date .pbtn_box button:last-child {background-color: #006241; color: #fefefe;}
+
+	#user_recepit .list_box {padding: 0 2.6042vw;}
+	#user_recepit .list_box .count_box {display: flex; align-items: center; justify-content: space-between; padding: 1.3021vw 0; font-size: 2.6042vw;}
+	#user_recepit .list_box .add_list {padding-top: 2.0833vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_recepit .list_box .add_list li {display: flex; align-items: center; justify-content: space-between; padding: 2.0833vw 0;}
+	#user_recepit .list_box .add_list li.nolist {justify-content: center; font-size: 2.3438vw;}
+	#user_recepit .list_box .add_list li + li {border-top: 0.1302vw solid #ccc;}
+	#user_recepit .list_box .add_list li .txt_box .txt_store {font-size: 2.6042vw;}
+	#user_recepit .list_box .add_list li .txt_box div {margin-top: 0.7813vw; display: flex; font-size: 2.3438vw;}
+	#user_recepit .list_box .add_list li .txt_box div p:last-child {position: relative; margin-left: 2.0833vw;}
+	#user_recepit .list_box .add_list li .txt_box div p:last-child::before {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -0.7813vw; display: block; width: 0.1302vw; height: 1.8229vw; background-color: #555;}
+	#user_recepit .list_box .add_list li .txt_box .txt_price {margin-top: 0.7813vw; font-size: 2.6042vw;}
+	#user_recepit .list_box .add_list li .img_box {width: 4.5573vw; height: 4.5573vw;}
+
+	#user_recepit .recepit_detail {width: 49.4792vw; max-height: 104.1667vw; overflow: scroll;}
+	#user_recepit .recepit_detail .tit_box {font-size: 5.4688vw; font-family: 'Santana_bold'; text-align: center;}
+
+	#user_recepit .recepit_detail .store_info li + li {margin-top: 0.5208vw;}
+	#user_recepit .recepit_detail .store_info li:nth-child(1), #user_recepit .recepit_detail .store_info li:nth-child(3) {display: flex; align-items: center; justify-content: space-between;}
+	#user_recepit .recepit_detail .store_info li:nth-child(4) {text-align: right;}
+
+	#user_recepit .recepit_detail .user_info {margin-top: 1.3021vw; border-top: 0.2604vw dashed #555;}
+	#user_recepit .recepit_detail .user_info .order_num {padding: 1.3021vw 0; display: flex; align-items: center; justify-content: center; gap: 1.3021vw; font-size: 3.1250vw;}
+
+	#user_recepit .recepit_detail .user_info .order_list {border-top: 0.2604vw dashed #555;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item {display: flex; justify-content: space-between; padding: 0.7813vw 0;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item > span:first-child {display: inline-block; width: 60%;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item > span:last-child {display: inline-block; width: 17%; text-align: right;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item div {width: 23%; text-align: center;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item div > span:first-child {display: inline-block; width: 70%; text-align: center;}
+	#user_recepit .recepit_detail .user_info .order_list .order_item div > span:last-child {display: inline-block; width: 30%; text-align: right;}
+
+	#user_recepit .recepit_detail .user_info .total_box {display: flex; justify-content: space-between; border-top: 0.2604vw dashed #555; padding: 0.7813vw 0;}
+	#user_recepit .recepit_detail .user_info .addvat_box {display: flex; justify-content: space-between; border-top: 0.2604vw dashed #555; padding: 0.7813vw 0; text-align: center;}
+	#user_recepit .recepit_detail .user_info .addvat_box em {font-size: 2.3438vw; font-weight: 700;}
+
+	#user_recepit .recepit_detail .user_info .pay_box {border-top: 0.2604vw dashed #555; padding: 0.7813vw 0;}
+	#user_recepit .recepit_detail .user_info .pay_box dl {display: flex; justify-content: space-between;}
+	#user_recepit .recepit_detail .user_info .pay_box dl + dl {margin-top: 0.5208vw;}
+	#user_recepit .recepit_detail .pbtn_box button {width: 100%; padding: 1.3021vw 0; border: 0.1302vw solid #ccc; border-radius: 0.5208vw; font-size: 2.3438vw;}
+
+	/* user_info */
+	#user_info .edit_form .read_box {display: flex; flex-direction: column; background-color: #eee; padding: 2.6042vw;}
+	#user_info .edit_form .read_box label {display: flex; flex-direction: column; font-size: 2.3438vw;}
+	#user_info .edit_form .read_box label + label {margin-top: 1.3021vw;}
+	#user_info .edit_form .read_box input {margin-top: 0.5208vw; padding: 0.3906vw 0.7813vw; background-color: transparent; border-left: none; border-top: none; border-right: none; border-bottom: 0.1302vw solid #ccc; font-size: 2.3438vw;}
+
+	#user_info .edit_form .gender_box {margin-top: 1.3021vw; text-align: right;}
+	#user_info .edit_form .gender_box span:last-child {position: relative; margin-left: 2.0833vw;}
+	#user_info .edit_form .gender_box span:last-child::before {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -1.3021vw; display: block; width: 0.1302vw; height: 1.8229vw; background-color: #555;}
+
+	#user_info .edit_form .edit_box {padding: 2.6042vw;}
+	#user_info .edit_form .edit_box select:focus, #user_info .edit_form .edit_box input:focus {border-color: #006241;}
+	#user_info .edit_form .edit_box label {display: flex; flex-direction: column;}
+
+	#user_info .edit_form .edit_box .toggle_btn {margin: 2.6042vw 0; display: inline-block; width: 100%; font-size: 2.6042vw;}
+	#user_info .edit_form .edit_box .change_pw label + label {margin-top: 0.7813vw;}
+	#user_info .edit_form .edit_box .change_pw input {width: 100%;}
+
+	#user_info .edit_form .tel_box, #user_info .edit_form .mail_box {display: flex; flex-wrap: wrap; justify-content: space-between;}
+	#user_info .edit_form .nickname_box p, 
+	#user_info .edit_form .tel_box p, 
+	#user_info .edit_form .mail_box p {margin: 2.6042vw 0; width: 100%; font-size: 2.6042vw;}
+
+	#user_info .edit_form select,
+	#user_info .edit_form input {height: 4.6875vw; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_info .edit_form .tel_box select, 
+	#user_info .edit_form .tel_box label, 
+	#user_info .edit_form .tel_box input, 
+	#user_info .edit_form .mail_box select, 
+	#user_info .edit_form .mail_box input {text-align: center;}
+
+	#user_info .edit_form .tel_box select, #user_info .edit_form .tel_box label {width: 29.9479vw;}
+	#user_info .edit_form .mail_box label {width: 46.8750vw;}
+
+	#user_info .edit_form .btn_box {text-align: center;}
+	#user_info .edit_form .btn_box button {width: 39.0625vw; padding: 0.7813vw 0; background: #006241; border-radius: 0.5208vw; font-size: 2.6042vw; text-align: center; color: #fefefe;}
+	#user_info .del_box {margin-top: 1.3021vw; text-align: center;}
+	#user_info .del_box button {width: 39.0625vw; padding: 0.7813vw 0; border: 0.1302vw solid #555; border-radius: 0.5208vw; font-size: 2.6042vw; text-align: center; color: #555;}
+
+	/* user_mymenu */
+	#user_mymenu .menu_list {border-top: 0.1302vw solid #ccc; border-bottom: 0.1302vw solid #ccc;}
+	#user_mymenu .menu_list li + li {border-top: 0.1302vw solid #ccc;}
+	#user_mymenu .menu_list li {position: relative; display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_mymenu .menu_list .nolist {justify-content: center; text-align: center;}
+	#user_mymenu .menu_list .close_icon {position: absolute; right: 0; top: 0; width: 3.9063vw; height: 3.9063vw;}
+	#user_mymenu .menu_list li .menu_icon {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; overflow: hidden;}
+	#user_mymenu .menu_list li .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_mymenu .menu_list li .txt_box .txt_price {margin-top: 0.7813vw; font-size: 2.0833vw; color: #555;}
+	#user_mymenu .menu_list li .btn_box {position: absolute; right: 2.6042vw; bottom: 2.6042vw;}
+	#user_mymenu .menu_list li .btn_box button {padding: 0.3906vw 2.0833vw; border: 0.1302vw solid #006241; border-radius: 3.2552vw; font-size: 2.3438vw; color: #006241;}
+	#user_mymenu .menu_list li .btn_box {position: absolute; right: 2.6042vw; bottom: 2.6042vw; display: flex; align-items: center;}
+	#user_mymenu .menu_list li .btn_box button + button {margin-left: 0.7813vw;}
+	#user_mymenu .menu_list li .btn_box button {height: 3.5156vw; padding: 0.0000vw 1.3021vw; border: 0.1302vw solid #006241; border-radius: 3.2552vw; font-size: 2.3438vw; color: #006241;}
+
+	#user_addcard .addcard_box form {display: flex; flex-direction: column;}
+	#user_addcard .addcard_box input:focus {border-color: #006241;}
+	#user_addcard .addcard_box label + label {margin-top: 1.3021vw;}
+	#user_addcard .addcard_box input {margin-top: 0.5208vw; width: 100%; height: 4.6875vw; border-left: none; border-top: none; border-right: none; border-bottom: 0.1302vw solid #ccc; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_addcard .addcard_box form .btn_box {margin-top: 2.6042vw; text-align: center;}
+	#user_addcard .addcard_box form .btn_box .submitBtn {width: 100%; padding: 1.3021vw 0; background-color: #006241; border-radius: 3.2552vw; font-size: 2.6042vw; color: #fefefe;}
+
+	/* user_cpnhistory */
+	#user_cpnhistory .cpn_list {border-top: 0.1302vw solid #ccc; border-bottom: 0.1302vw solid #ccc;}
+	#user_cpnhistory .cpn_list > li + li {border-top: 0.1302vw solid #ccc;}
+	#user_cpnhistory .cpn_list .cpn_item {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	/* 쿠폰사용완료 딤처리 */
+	#user_cpnhistory .cpn_list .cpn_item.use_dimm  {position: relative;}
+	#user_cpnhistory .cpn_list .cpn_item.use_dimm::before {content: ''; position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background-color: rgba(255,255,255, 0.6);}
+	#user_cpnhistory .cpn_list .cpn_item.use_dimm.use_end::after {content: '기간만료'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-15deg); display: flex; align-items: center; justify-content: center; width: 13.0208vw; height: 13.0208vw; border-radius: 50%; border: 0.2604vw solid #555; font-size: 2.3438vw; font-weight: 700; color: #555;}
+	#user_cpnhistory .cpn_list .cpn_item.use_dimm.use_complete::after {content: '사용완료'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-15deg); display: flex; align-items: center; justify-content: center; width: 13.0208vw; height: 13.0208vw; border-radius: 50%; border: 0.2604vw solid #006241; font-size: 2.3438vw; font-weight: 700; color: #006241;}
+
+	#user_cpnhistory .cpn_list .cpn_item .img_box {width: 13.0208vw; height: 7.8125vw;}
+
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_sub, 
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc li {font-size: 2.0833vw;}
+
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc {font-size: 2.2135vw; color: #555;}
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti {margin-top: 0.7813vw; display: flex; align-items: center; gap: 2.0833vw; color: #555;}
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti li:last-child {position: relative;}
+	#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti li:last-child::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -1.0417vw; width: 0.1302vw; height: 1.8229vw; background-color: #555;}
+
+	/* user_orderhistory */
+	#user_orderhistory .period_box {padding: 2.6042vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_orderhistory .period_box label {width: 100%;}
+	#user_orderhistory .period_box select {width: 100%; height: 4.6875vw; font-size: 2.3438vw; color: #555;}
+	#user_orderhistory .view_date {display: flex; align-content: center; justify-content: space-between;  padding: 2.6042vw 1.3021vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_orderhistory .view_date p {font-size: 2.6042vw;}
+	#user_orderhistory .view_date a  {padding: 0.3906vw 1.3021vw; border: 0.1302vw solid #006241; border-radius: 3.2552vw; font-size: 2.3438vw}
+	#user_orderhistory .history_list > li:nth-child(odd) {background-color: #f6f5ef;}
+
+	#user_orderhistory .history_list .history_item {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_orderhistory .history_list .history_item.nolist {justify-content: center; border-bottom: 0.1302vw solid #ccc;}
+	#user_orderhistory .history_list .history_item .img_box {width: 13.0208vw; height: 13.0208vw;}
+
+	#user_orderhistory .history_list .history_item .img_box.menu_status {position: relative;}
+	#user_orderhistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}
+	#user_orderhistory .history_list .history_item .img_box.menu_status::after {content: ''; position: absolute; top: 0; right: 0; display: block; width: 3.9063vw; height: 3.9063vw; border-radius: 50%; background-color: #006241;}
+
+	#user_orderhistory .history_list .history_item .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_orderhistory .history_list .history_item .txt_box .txt_desc {margin-top: 0.7813vw; display: flex; align-items: center; gap: 2.0833vw; font-size: 2.0833vw;}
+
+	/* user_delivershistory */
+	#user_delivershistory .period_box {padding: 2.6042vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_delivershistory .period_box label {width: 100%;}
+	#user_delivershistory .period_box select {width: 100%; height: 4.6875vw; font-size: 2.3438vw; color: #555;}
+	#user_delivershistory .view_date {display: flex; align-content: center; justify-content: space-between;  padding: 2.6042vw 1.3021vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_delivershistory .view_date p {font-size: 2.6042vw;}
+	#user_delivershistory .view_date a  {padding: 0.3906vw 1.3021vw; border: 0.1302vw solid #006241; border-radius: 3.2552vw; font-size: 2.3438vw}
+	#user_delivershistory .history_list > li:nth-child(odd) {background-color: #f6f5ef;}
+
+	#user_delivershistory .history_list .history_item {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_delivershistory .history_list .history_item.nolist {justify-content: center; border-bottom: 0.1302vw solid #ccc;}
+	#user_delivershistory .history_list .history_item .img_box {width: 13.0208vw; height: 13.0208vw;}
+
+	#user_delivershistory .history_list .history_item .img_box.menu_status {position: relative;}
+	#user_delivershistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}
+	#user_delivershistory .history_list .history_item .img_box.menu_status::after {content: ''; position: absolute; top: 0; right: 0; display: block; width: 3.9063vw; height: 3.9063vw; border-radius: 50%; background-color: #006241;}
+
+	#user_delivershistory .history_list .history_item .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_delivershistory .history_list .history_item .txt_box .txt_desc {margin-top: 0.7813vw; display: flex; align-items: center; gap: 2.0833vw; font-size: 2.0833vw;}
+
+	/* user_alarm */
+	#user_alarm .select_box {padding: 2.6042vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_alarm .select_box label {width: 100%;}
+	#user_alarm .select_box select {width: 100%; height: 4.6875vw; font-size: 2.3438vw; color: #555;}
+
+	#user_alarm .history_list, 
+	#user_alarm .history_list li + li {border-top: 0.1302vw solid #ccc;}
+
+	#user_alarm .history_list .history_item {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_alarm .history_list .history_item .img_box {width: 10.4167vw;}
+	#user_alarm .history_list .history_item .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_alarm .history_list .history_item .txt_box .txt_date {margin-top: 0.7813vw; font-size: 2.0833vw;}
+
+	#user_store.content {padding: 0 0 10.4167vw;}
+	#user_store .top_box {position: fixed; top: 0; width: 100.0000vw; padding: 5.2083vw 0 2.6042vw; background-color: #fff; border-bottom: 0.1302vw solid #ccc;}
+	#user_store .top_box .tit_box {margin-bottom: 2.6042vw; font-size: 4.1667vw;}
+	#user_store .search_box form {display: flex; align-items: center; justify-content: space-between; padding:  0 2.6042vw;}
+	#user_store .search_box form label {width: 84.6354vw; height: 4.1667vw;}
+	#user_store .search_box form input {width: 100%; height: 100%; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_store .search_box form button {height: 4.4271vw; line-height: 4.4271vw; padding: 0 1.3021vw; border-radius: 0.5208vw; border: 0.1302vw solid #006241; font-size: 2.3438vw; color: #006241;}
+
+	#user_store .store_list {padding-top: 20.8333vw;}
+	#user_store .store_list li + li {border-top: 0.1302vw solid #ccc;}
+	#user_store .store_list .nostore {padding: 1.5625vw 0; font-size: 2.3438vw; text-align: center;}
+	#user_store .store_list .store_item a {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_store .store_list .store_item .img_box {width: 13.0208vw; height: 13.0208vw;}
+	#user_store .store_list .store_item .txt_box p + p {margin-top: 0.7813vw;}
+	#user_store .store_list .store_item .txt_box .txt_store {font-size: 2.3438vw;}
+	#user_store .store_list .store_item .txt_box .txt_location {font-size: 2.0833vw; color: #555;}
+	#user_store .store_list .store_item .txt_box .txt_time {font-size: 1.8229vw; color: #999;}
+
+	#user_store .pickup_box {width: 52.0833vw;}
+	#user_store .pickup_box .tit_box {margin-bottom: 2.6042vw; font-size: 2.8646vw; text-align: center;}
+	#user_store .pickup_box .select_box {display: flex; justify-content: space-between;}
+	#user_store .pickup_box .select_box .select_btn {padding: 2.6042vw 3.9063vw; border: 0.1302vw solid #ccc; border-radius: 0.5208vw; text-align: center;}
+	#user_store .pickup_box .select_box .select_btn .img_box {width: 4.5573vw; height: 4.5573vw; margin: 0 auto; filter: brightness(0) saturate(100%) invert(24%) sepia(96%) saturate(3%) hue-rotate(338deg) brightness(102%) contrast(84%);}
+	#user_store .pickup_box .select_box .select_btn .txt_box {margin-top: 1.3021vw;}
+	#user_store .pickup_box .select_box .select_btn .txt_box p + p {margin-top: 0.5208vw;}
+	#user_store .pickup_box .select_box .select_btn .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_store .pickup_box .select_box .select_btn .txt_box .txt_desc {font-size: 2.0833vw; color: #555;}
+
+	#user_store .pickup_box .btn_box {margin-top: 1.3021vw; text-align: center;}
+	#user_store .pickup_box .btn_box button {border-bottom: 0.1302vw solid #555; font-size: 2.0833vw; color: #555;}
+
+	/* user_order */
+	#user_order {padding: 0 0 19.9219vw 0;}
+	#user_order .search_box form {display: flex; align-items: center; justify-content: space-between;}
+	#user_order .search_box form label {width: 89.8438vw; height: 4.1667vw;}
+	#user_order .search_box form input {width: 100%; height: 100%; padding: 0 0.7813vw; font-size: 2.3438vw;}
+	#user_order .search_box form button {height: 4.4271vw; line-height: 4.4271vw; padding: 0 1.3021vw; border-radius: 0.5208vw; border: 0.1302vw solid #006241; font-size: 2.3438vw; color: #006241;}
+
+	#user_order .cate_list {margin-top: 2.6042vw; display: flex;}
+	#user_order .cate_list li {width: 9.1146vw; padding: 0.7813vw 0; font-size: 2.6042vw; text-align: center;}
+	#user_order .cate_list li a.s_active {width: 100%; height: 100%; border-bottom: 0.2604vw solid #006241; color: #006241;}
+	#user_order .menu_list {margin-top: 2.6042vw;}
+	#user_order .menu_list li + li {border-top: 0.1302vw solid #ccc;}
+
+	#user_order .menu_list .menu_item a {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	#user_order .menu_list .menu_item .img_box {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; overflow: hidden;}
+	#user_order .menu_list .menu_item .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_order .menu_list .menu_item .txt_box .txt_price {margin-top: 0.7813vw; font-size: 2.0833vw; color: #555;}
+
+	#user_order .cart_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 10.4167vw; display: flex; align-items: center; justify-content: space-between; width: 100.0000vw; padding: 1.8229vw 0; background-color: #222; z-index: 20;}
+	#user_order .cart_box .select_store {position: relative; left: 1.5625vw; width: 88.5417vw; height: 5.8594vw; border-bottom: 0.1302vw solid #ccc; font-size: 2.3438vw; line-height: 5.8594vw; color: #fefefe; text-align: center;}
+	#user_order .cart_box .select_store::before, #user_order .cart_box .select_store::after {content: ''; position: absolute; top: 50%; right: 2.0833vw; display: block; width: 1.5625vw; height: 1.5625vw; border-top: 0.2604vw solid #ccc;}
+	#user_order .cart_box .select_store::before {transform: translateY(-50%) rotate(45deg);}
+	#user_order .cart_box .select_store::after {transform: translateY(-50%) rotate(135deg);}
+	#user_order .cart_box .cart_btn {position: relative; right: 1.5625vw; width: 7.1615vw; height: 5.8594vw;}
+	#user_order .cart_box .cart_btn .img_box {width: 100%; height: 100%; filter: brightness(0) saturate(100%) invert(97%) sepia(91%) saturate(1%) hue-rotate(9deg) brightness(108%) contrast(99%);}
+	#user_order .cart_box .cart_btn .cart_count {position: absolute; bottom: 0.5208vw; left: 50%; transform: translate(-50%); font-size: 2.0833vw; color: #fefefeba;}
+
+	/* user_menudetail */
+	#user_menudetail {padding: 0 0 18.2292vw;}
+	#user_menudetail .menu_img {width: 52.0833vw; height: 52.0833vw; margin: 0 auto;}
+	#user_menudetail .txt_box {position: relative; margin-top: 2.6042vw;}
+	#user_menudetail .txt_box .txt_tit {font-size: 3.1250vw; font-weight: 700;}
+	#user_menudetail .txt_box .txt_price {margin-top: 1.3021vw; font-size: 2.8646vw; font-weight: 700;}
+	#user_menudetail .txt_box .txt_desc {margin-top: 1.3021vw; font-size: 2.3438vw;}
+	#user_menudetail .addlike {position: absolute; top: 0; right: 1.3021vw; width: 5.9896vw; height: 5.9896vw; filter: brightness(0) saturate(100%) invert(27%) sepia(20%) saturate(2279%) hue-rotate(115deg) brightness(99%) contrast(101%);}
+	#user_menudetail .addlike::after {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.3021vw; white-space:pre; z-index: 10;}
+	#user_menudetail .addlike::after {content: 'Click \AMe!';}
+
+	#user_menudetail .opt_wrap__tit {margin-top: 2.6042vw; font-size: 2.6042vw;}
+
+	#user_menudetail .opt_wrap .opt_box + .opt_box {border-top: 0.1302vw solid #ccc;}
+	#user_menudetail .opt_wrap .opt_box {padding: 1.3021vw 0;}
+	#user_menudetail .opt_wrap .opt_box .opt_tit {margin-bottom: 1.3021vw; font-size: 2.3438vw;}
+	#user_menudetail .opt_wrap .opt_box .click_icon {width: 2.6042vw; height: 2.6042vw; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%); cursor: pointer;}
+
+	#user_menudetail .opt_wrap .opt_box .opt_rows + .opt_rows {margin-top: 1.3021vw;}
+	#user_menudetail .opt_wrap .opt_box .opt_rows {display: flex; align-items: center; justify-content: space-between; padding: 0 2.6042vw; font-size: 2.0833vw;}
+
+
+	#user_menudetail .opt_wrap .opt_box .count_box {display: flex; align-items: center;}
+	#user_menudetail .opt_wrap .opt_box .count_box input {margin: 0 0.7813vw; width: 3.9063vw; border: none; font-size: 2.0833vw; text-align: center; color: #555;}
+
+	#user_menudetail .opt_wrap .opt_box .select_box label + label {margin-left: 0.7813vw;}
+	#user_menudetail .opt_wrap .opt_box .select_box label {position: relative; width: 13.0208vw; height: 4.6875vw;}
+	#user_menudetail .opt_wrap .opt_box .select_box input {width: 100%; height: 100%; background-color: transparent;}
+	#user_menudetail .opt_wrap .opt_box .select_box input[type="button"] {cursor: pointer;}
+	#user_menudetail .opt_wrap .opt_box .select_box input[type="button"].btn.active {border: 0.2604vw solid #006241;}
+	#user_menudetail .opt_wrap .opt_box .select_box span {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center; z-index: -1;}
+
+	#user_menudetail .order_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 10.4167vw; display: flex; align-items: center; width: 100.0000vw; height: 7.8125vw; background-color: #333;}
+	#user_menudetail .order_box .count_box {margin-left: 3.9063vw; display: flex; align-items: center; justify-content: center;}
+	#user_menudetail .order_box .count_box input[type="text"] {width: 3.9063vw; border: none; background: transparent; font-size: 2.6042vw; text-align: center; color: #fefefe;}
+	#user_menudetail .order_box .count_box .click_icon {width: 3.3854vw; height: 3.3854vw; filter: brightness(0) saturate(100%) invert(100%) sepia(20%) saturate(2%) hue-rotate(351deg) brightness(113%) contrast(100%); cursor: pointer;}
+	#user_menudetail .order_box .btn_box {position: absolute; right: 3.9063vw;}
+	#user_menudetail .order_box button {padding: 0.2604vw 3.2552vw; border-radius: 3.2552vw; background-color: #fefefe; font-size: 2.6042vw; font-weight: 700; color: #006241;}
+	#user_menudetail .order_box .orderBtn {margin-left: 0.7813vw; background: #008659; color: #fefefe; border: none;}
+
+	#user_menudetail .cart_popup .tit_box {font-size: 2.2135vw;}
+	#user_menudetail .cart_popup .close_btn {position: absolute; right: 0; top: 0; width: 3.9063vw; height: 3.9063vw;}
+	#user_menudetail .cart_popup .select_box {margin-top: 1.3021vw; display: flex; align-items: center; justify-content: center;}
+	#user_menudetail .cart_popup .select_box .select_btn {display: inline-block; color: #555; border-bottom: 0.1302vw solid #555;}
+	#user_menudetail .cart_popup .select_box .select_btn:hover {border-color: #006241; color: #006241;}
+	#user_menudetail .cart_popup .select_box a + a {margin-left: 1.3021vw;}
+
+
+
+	/* user_cart */
+	#user_cart.content {padding: 0 0 23.9583vw 0;}
+	#user_cart .toolbar_box {display: flex; align-items: center; justify-content: space-between; padding:  1.3021vw 2.6042vw 2.6042vw; border-bottom: 0.1302vw solid #ccc;}
+	#user_cart .toolbar_box label {font-size: 2.3438vw;}
+	#user_cart .toolbar_box input {margin-right: 0.5208vw; width: 2.0833vw; height: 2.0833vw;}
+	#user_cart .toolbar_box .btn_box {display: flex; gap: 2.0833vw;}
+	#user_cart .toolbar_box .btn_box button {font-size: 2.0833vw;}
+	#user_cart .toolbar_box .btn_box button:last-child {position: relative;}
+	#user_cart .toolbar_box .btn_box button:last-child::before {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -0.7813vw; width: 0.1302vw; height: 1.8229vw; background-color: #555;}
+
+	#user_cart .cart_list {padding-top: 2.6042vw;}
+	#user_cart .cart_list .nolist {font-size: 2.2135vw; line-height: 3.1250vw; text-align: center;}
+	#user_cart .cart_list .nolist button {margin-top: 1.0417vw; border-bottom: 0.1302vw solid #006241; font-size: 2.0833vw;}
+	#user_cart .cart_list > li + li {border-top: 0.1302vw solid #ccc;}
+	#user_cart .cart_list .cart_item {padding: 1.3021vw 2.6042vw;}
+	#user_cart .cart_list .cart_item .top_box {display: flex; align-items: center; justify-content: space-between;}
+	#user_cart .cart_list .cart_item .top_box input {width: 2.0833vw; height: 2.0833vw;}
+
+	#user_cart .cart_list .cart_item .menu_info {display: flex; align-items: flex-start; gap: 2.6042vw;}
+	#user_cart .cart_list .cart_item .menu_info .menu_img {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; border: 0.1302vw solid #ccc;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box {width: 78.1250vw;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box .txt_tit {font-size: 2.3438vw;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box .txt_opt {margin-top: 0.7813vw; font-size: 2.0833vw;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box .opt_list li + li {margin-top: 0.5208vw;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box .opt_list {margin-top: 1.3021vw; font-size: 1.8229vw;}
+	#user_cart .cart_list .cart_item .menu_info .txt_box .opt_list .opt_item {display: flex; align-items: center; justify-content: space-between;}
+
+	#user_cart .cart_list .cart_item .menu_info .txt_box .price_box {margin-top: 1.3021vw; display: flex; align-items: center; justify-content: space-between;}
+
+
+
+	#user_cart .cart_list .cart_item .top_box .img_box {width: 3.9063vw; height: 3.9063vw;}
+
+	#user_cart .cart_list .cart_item .count_box {display: flex; align-items: center; gap: 0.3906vw;}
+	#user_cart .cart_list .cart_item .count_box .img_box {width: 2.6042vw; height: 2.6042vw; filter: brightness(0) saturate(100%) invert(34%) sepia(4%) saturate(14%) hue-rotate(327deg) brightness(90%) contrast(88%);}
+	#user_cart .cart_list .cart_item .count_box input {width: 3.9063vw; border: none; font-size: 2.3438vw; text-align: center;}
+
+	#user_cart .order_box {position: fixed; bottom: 10.4167vw; left: 50%; transform: translateX(-50%); width: 100.0000vw; padding: 1.3021vw 0; background-color: #fefefe;}
+	#user_cart .order_box .txt_box {display: flex; align-items: center; justify-content: space-between; padding: 0 2.6042vw;}
+	#user_cart .order_box .txt_box .txt_count {font-size: 2.3438vw;}
+	#user_cart .order_box .txt_box .txt_total {font-size: 3.6458vw;}
+	#user_cart .order_box .btn_box {margin-top: 1.3021vw; padding: 0 2.6042vw; text-align: center;}
+	#user_cart .order_box .btn_box button {width: 100%; border-radius: 3.2552vw; padding: 0.7813vw 0; background-color: #006241; font-size: 2.3438vw; color: #fefefe;}
+
+
+	/* user_paynow, user_paycharge */
+	.pay_cont .store_confirm {border-top: 0.1302vw solid #ccc; padding: 2.6042vw 0;}
+	.pay_cont .store_confirm li:first-child {font-size: 2.3438vw; line-height: 3.6458vw;}
+	.pay_cont .store_confirm li span {margin-left: 1.3021vw; display: inline-block; font-size: 2.0833vw;}
+	.pay_cont .store_confirm li:not(:first-child) {font-size: 2.0833vw; line-height: 3.3854vw;}
+
+	.pay_cont .btn_box button {position: relative; width: 100%; padding: 1.3021vw 0; font-size: 2.6042vw; text-align: left;}
+	.pay_cont .btn_box button::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%) rotate(45deg); right: 0; display: block; width: 2.0833vw; height: 2.0833vw; border-bottom: 0.2604vw solid #555; border-right: 0.2604vw solid #555;}
+
+	.pay_cont .btn_box .toggle_btn.t_active::after {transform: rotate(-135deg);}
+
+	.pay_cont .pay_list {padding: 2.6042vw 0;}
+	.pay_cont .pay_list .pay_item {display: flex; align-items: flex-start; justify-content: space-between; padding:  1.3021vw 2.6042vw;}
+	.pay_cont .pay_list .pay_item .img_box {width: 13.0208vw; height: 13.0208vw; border-radius: 50%; border: 0.1302vw solid #ccc;}
+
+	.pay_cont .pay_list .pay_item .img_box.cpn_icon {width: 6.5104vw; height: 6.5104vw; filter: brightness(0) saturate(100%) invert(32%) sepia(3%) saturate(8%) hue-rotate(339deg) brightness(96%) contrast(87%); border-radius: 0; border: none;}
+
+	.pay_cont .pay_list .pay_item .txt_box {width: 78.1250vw;}
+	.pay_cont .pay_list .pay_item .txt_box dl:first-child {font-size: 2.0833vw;}
+	.pay_cont .pay_list .pay_item .txt_box dl:not(:first-child) {margin-top: 0.7813vw; font-size: 1.8229vw;}
+	.pay_cont .pay_list .pay_item .txt_box dl {display: flex; align-items: center; justify-content: space-between;}
+
+	.pay_cont #howtopay input[type="radio"] {margin-right: 1.3021vw; width: 2.6042vw; height: 2.6042vw;}
+	.pay_cont #howtopay > li {padding: 1.5625vw 0;}
+	.pay_cont #howtopay .cardlist {overflow: visible; margin-top: 2.6042vw; width: 54.6875vw; height: 48.1771vw;}
+	.pay_cont #howtopay .cardlist li +li {margin-left: 3.9063vw;}
+	.pay_cont #howtopay .cardlist .card_slide {width: 54.6875vw;}
+	.pay_cont #howtopay .cardlist .card_slide a {display: inline-block; width: 100%; height: 34.3750vw;}
+	.pay_cont #howtopay .cardlist .card_slide .txt_box {margin-top: 0.7813vw;}
+	.pay_cont #howtopay .cardlist .card_slide .txt_box .txt_name {font-size: 2.0833vw;}
+	.pay_cont #howtopay .cardlist .card_slide .txt_box .txt_price {margin-top: 0.5208vw; font-size: 2.0833vw; color: #555;}
+	.pay_cont #howtopay .cardlist .add_slide {height: 34.3750vw; border: 0.1302vw solid #ccc; border-radius: 1.0417vw;}
+	.pay_cont #howtopay .cardlist .add_slide a {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6042vw;}
+	.pay_cont #howtopay .cardlist .add_slide .add_icon {width: 3.9063vw; height: 3.9063vw; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+
+	.pay_cont .cpn_box {border-top: 0.1302vw solid #ccc;}
+	.pay_cont .cpn_box a {display: flex; align-items: center; gap: 2.6042vw; padding: 2.6042vw;}
+	.pay_cont .cpn_box .img_box {width: 3.9063vw; height: 3.9063vw;}
+
+	.pay_cont .cpnpop {width: 52.0833vw; padding: 3.9063vw 2.6042vw 0;}
+	.pay_cont .cpnpop .tit_box {font-size: 2.3438vw;}
+	.pay_cont .cpnpop form {margin-top: 2.0833vw;}
+	.pay_cont .cpnpop .cpn_list li + li {border-top: 0.1302vw solid #ccc;}
+	.pay_cont .cpnpop .cpn_list li a {display: flex; align-items: center; gap: 2.6042vw; padding: 1.3021vw 0;}
+	.pay_cont .cpnpop .cpn_list li .img_box {width: 5.9896vw; height: 5.9896vw; border: 0.1302vw solid #ccc;}
+	.pay_cont .cpnpop .cpn_list li .txt_box .txt_tit {font-size: 2.0833vw;}
+	.pay_cont .cpnpop .cpn_list li .txt_box .txt_date {margin-top: 0.7813vw; font-size: 1.8229vw; color: #555;}
+
+	.pay_cont .cpnpop .pbtn_box {width: 100%; display: flex; align-items: center; justify-content: center; border-top: 0.1302vw solid #ccc;}
+	.pay_cont .cpnpop .pbtn_box button {position: relative; width: 50%; padding: 2.6042vw 0;}
+	.pay_cont .cpnpop .pbtn_box button:first-child {border-right: 0.1302vw solid #ccc;}
+
+	.pay_cont .pricecheck_box {padding: 2.6042vw; background-color: #eee;}
+	.pay_cont .pricecheck_box dl {display: flex; align-items: center; justify-content: space-between;}
+	.pay_cont .pricecheck_box dl:not(:nth-child(3)) {margin-top: 1.3021vw; font-size: 2.3438vw;}
+	.pay_cont .pricecheck_box dl:nth-child(3) {margin-top: 2.0833vw; font-size: 2.6042vw; font-weight: 700;}
+	.pay_cont .pricecheck_box .pay_btn {margin-top: 2.0833vw; width: 100%; height: 4.4271vw; line-height: 4.4271vw; padding: 0 1.3021vw; border-radius: 3.2552vw; background-color: #006241; font-size: 2.3438vw; color: #fefefe;}
+
+	/* user_paycharge */
+	#user_paycharge .price_box {margin-bottom: 2.6042vw;}
+	#user_paycharge .price_box p {padding: 1.3021vw 0; font-size: 2.6042vw;}
+	#user_paycharge .price_box button:not(:first-child) {margin-left: 1.3021vw;}
+	#user_paycharge .price_box button {width: 11.7188vw; padding: 0.5208vw 0; border-radius: 0.5208vw; border: 0.1302vw solid #ccc; font-size: 2.3438vw;}
+	#user_paycharge .price_box button.p_active {background-color: #006241; border-color: #006241; color: #fefefe;}
+	#user_paycharge .pricecheck_box dl {margin-top: 0; font-size: 2.6042vw; font-weight: 700;}
+}
