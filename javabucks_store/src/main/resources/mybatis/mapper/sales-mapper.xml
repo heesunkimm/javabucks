@@ -151,17 +151,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		
 		<select id="getselectCateList" parameterType="map" resultType="PayhistoryDTO">
-		    SELECT *
-			    FROM (
-			        SELECT 
-			            p.*, 
-			            o.orderList, 
-			            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) AS rnum
-			        FROM javabucks_Payhistory p
-			        JOIN javabucks_Order o ON p.orderCode = o.orderCode
-			        WHERE p.bucksId = #{bucksId}
-			    ) subquery
-			    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		     SELECT *
+		    FROM (
+		        SELECT 
+		            p.*, 
+		            o.orderList, 
+		            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) rnum
+		        FROM javabucks_Payhistory p
+		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
+		        WHERE p.bucksId = #{bucksId}
+		    )
 		    
 		</select>
 		
