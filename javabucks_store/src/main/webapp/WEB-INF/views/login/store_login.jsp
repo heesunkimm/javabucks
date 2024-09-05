@@ -62,9 +62,9 @@
         <div class="login_box">
             <div class="top_box">
                 <div class="img_box">
-                    <img src="../images/logo/starbucks_logo.png" alt="">
+                    <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>
-            <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
+            <p style="font-family: 'Santana_bold';">JAVABUCKS STORE</p>
             </div>
             <form name="f" action="store_index" method="POST">
                 <div class="input_box">
