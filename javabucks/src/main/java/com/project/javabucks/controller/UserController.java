@@ -1720,7 +1720,7 @@ public class UserController {
 
 				String[] orderCordParts = orderCode.split("_");
 
-				adto.setAlarmCont(orderCordParts[1] + "로 주문이 되었습니다. 전자영수증이 발행되었습니다");
+				adto.setAlarmCont(orderCordParts[1] + "로 주문이 되었습니다. 전자영수증이 발행되었습니다.");
 				userMapper.insertOrderAlarm(adto);
 
 				userMapper.processFrequencyAndUserUpdate(userId, quantity);
@@ -1831,7 +1831,7 @@ public class UserController {
 			AlarmDTO adto = new AlarmDTO();
 			adto.setUserId(userId);
 			adto.setAlarmCate("order");
-			adto.setAlarmCont(orderCordParts[1] + "로 주문이 되었습니다. 전자영수증이 발행되었습니다");
+			adto.setAlarmCont(orderCordParts[1] + "로 주문이 되었습니다. 전자영수증이 발행되었습니다.");
 			userMapper.insertOrderAlarm(adto);
 
 			userMapper.processFrequencyAndUserUpdate(userId, quantity);
