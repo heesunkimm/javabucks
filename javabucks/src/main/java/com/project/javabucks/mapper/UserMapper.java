@@ -376,6 +376,10 @@ public class UserMapper {
 	public int updateCart(Map<String, Object> params) {
 		return sqlSession.update("updateCart", params);
 	}
+	
+	public int CartManyByUserid(Map<String, String> params) {
+		return sqlSession.selectOne("CartManyByUserid", params);
+	}
 
 	public CartDTO CartinfoByCartNum(Map<String, Object> params) {
 		return sqlSession.selectOne("CartinfoByCartNum", params);

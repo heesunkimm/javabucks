@@ -34,7 +34,7 @@
 						<li class="cart_item">
 							<div class="top_box">
 								<label> 
-									<input type="checkbox" class="item-checkbox" onclick="updateTotalPrice(); updateCheckedCount(); OrderButton()" name="${dto.cartNum}" value="">
+									<input type="checkbox" class="item-checkbox" onclick="updateTotalPrice(); updateCheckedCount(); updateCheckboxesState(); OrderButton()" name="${dto.cartNum}" value="">
 								</label>
 								<div class="img_box">
 									<img src="../images/icons/close.png" alt="" name="delete-${dto.cartNum}" onclick="deleteCheck('xbox', this)">
@@ -292,8 +292,24 @@
        updateCheckedCount();
     	// 총합 가격 업데이트
        updateTotalPrice()
+    	// 전체 선택 체크박스 상태 업데이트
+       updateCheckboxesState();
     }
    
+   	//모든 메뉴 체크박스의 상태를 감시하고, 전체 선택 체크박스의 상태를 업데이트
+    function updateCheckboxesState() {
+        // 모든 메뉴 체크박스와 전체 선택 체크박스 요소를 선택합니다.
+        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+        const selectAllCheckbox = document.querySelector('input[type="checkbox"][onclick*="toggleCheckboxes(this)"]');
+
+        // 모든 메뉴 체크박스 중 하나라도 체크가 해제된 경우, 전체 선택 체크박스도 해제합니다.
+        const allChecked = Array.from(itemCheckboxes).every(checkbox => checkbox.checked);
+
+        // 전체 선택 체크박스의 상태를 업데이트합니다.
+        selectAllCheckbox.checked = allChecked;
+    }
+   
+   	
    function updateCheckedCount() {
        // 모든 체크박스를 선택
        const checkboxes = document.querySelectorAll('.item-checkbox');

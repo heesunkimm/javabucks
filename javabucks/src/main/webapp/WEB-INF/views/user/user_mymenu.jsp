@@ -68,12 +68,12 @@
 	        var menuCodeValue = hiddenInput ? hiddenInput.value : menuCode;
 	        
 	        var hiddenInput2 = document.getElementById('bucksId');
-	        var bucksIdValue  = hiddenInput2 ? hiddenInput.value2 : bucksId;
+	        var bucksIdValue  = hiddenInput2 ? hiddenInput2.value : bucksId;
 
 	        
 	        // URL에 menuCode를 포함하여 이동합니다.
 	        var url = "/user_menudetail?menuCode=" + encodeURIComponent(menuCodeValue) + 
-	        			"&bucksId=" + encodeURIComponent(bucksIdValue ) + 
+	        			"&bucksId=" + encodeURIComponent(bucksIdValue) + 
 	        			"&pickup=" + encodeURIComponent(pickupInput.value);
 	        window.location.href = url;
 	    }

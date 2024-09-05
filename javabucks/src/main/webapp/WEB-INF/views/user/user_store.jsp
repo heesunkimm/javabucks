@@ -111,15 +111,6 @@
     <!-- e: content -->
 <%@ include file="user_bottom.jsp" %>
 <script type="text/javascript">
-		function searchCheck(){
-			var searchInput = document.getElementById("storeSearch").value;
-	        if (searchInput.trim() === "") {
-	            alert("검색어를 입력해주세요.");
-	            return false;  // 폼 제출을 막음
-	        }
-	        return true;  // 폼 제출을 허용
-	    }
-
 		$(function() {
 		    // 매장 정보를 클릭했을 때 팝업 표시
 		    $(".popup_btn").on('click', function(e) {
