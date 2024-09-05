@@ -103,62 +103,62 @@
                     </table>
                     <!-- 페이징 -->
                     <c:if test="${not empty startPage and not empty endPage}">
-    <div class="pagination pagination">
-        <c:if test="${startPage > pageBlock}"> 
-            <a class="page_btn prev_btn" href="bucksSalesD.do?pageNum=${startPage-3}">
-                <img src="../../images/icons/arrow.png">
-            </a>
-        </c:if>
-        
-        <c:forEach var="i" begin="${startPage}" end="${endPage}">
-            <c:set var="activeClass" value=""/>
-            <c:choose>
-                <c:when test="${empty param.pageNum and i == 1}">
-                    <c:set var="activeClass" value="page_active"/>
-                </c:when>
-                <c:when test="${param.pageNum == i}">
-                    <c:set var="activeClass" value="page_active"/>
-                </c:when>
-            </c:choose>
-            <a href="bucksSalesD.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
-        </c:forEach>
-        
-        <c:if test="${pageCount > endPage}">
-            <a class="page_btn next_btn" href="bucksSalesD.do?pageNum=${startPage+3}">
-                <img src="../../images/icons/arrow.png">
-            </a>
-        </c:if>
-    </div>
-</c:if>
-
-<c:if test="${not empty startPage2 and not empty endPage2}">
-    <div class="pagination pagination">
-    <c:if test="${startPage2 > pageBlock2}">
-        <a class="page_btn prev_btn" href="searchDailySales.do?pageNum=${startPage2-3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
-            <img src="../../images/icons/arrow.png">
-        </a>
-    </c:if>
-    
-    <c:forEach var="i" begin="${startPage2}" end="${endPage2}">
-        <c:set var="activeClass" value=""/>
-        <c:choose>
-            <c:when test="${empty param.pageNum and i == 1}">
-                <c:set var="activeClass" value="page_active"/>
-            </c:when>
-            <c:when test="${param.pageNum == i}">
-                <c:set var="activeClass" value="page_active"/>
-            </c:when>
-        </c:choose>
-        <a href="searchDailySales.do?pageNum=${i}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}" class="${activeClass} page_num">${i}</a>
-    </c:forEach>
-    
-    <c:if test="${pageCount2 > endPage2}">
-        <a class="page_btn next_btn" href="searchDailySales.do?pageNum=${startPage2+3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
-            <img src="../../images/icons/arrow.png">
-        </a>
-    </c:if>
-</div>
-</c:if>
+					    <div class="pagination pagination">
+					        <c:if test="${startPage > pageBlock}"> 
+					            <a class="page_btn prev_btn" href="bucksSalesD.do?pageNum=${startPage-3}">
+					                <img src="../../images/icons/arrow.png">
+					            </a>
+					        </c:if>
+					        
+					        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+					            <c:set var="activeClass" value=""/>
+					            <c:choose>
+					                <c:when test="${empty param.pageNum and i == 1}">
+					                    <c:set var="activeClass" value="page_active"/>
+					                </c:when>
+					                <c:when test="${param.pageNum == i}">
+					                    <c:set var="activeClass" value="page_active"/>
+					                </c:when>
+					            </c:choose>
+					            <a href="bucksSalesD.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+					        </c:forEach>
+					        
+					        <c:if test="${pageCount > endPage}">
+					            <a class="page_btn next_btn" href="bucksSalesD.do?pageNum=${startPage+3}">
+					                <img src="../../images/icons/arrow.png">
+					            </a>
+					        </c:if>
+					    </div>
+					</c:if>
+					
+					<c:if test="${not empty startPage2 and not empty endPage2}">
+					    <div class="pagination pagination">
+					    <c:if test="${startPage2 > pageBlock2}">
+					        <a class="page_btn prev_btn" href="searchDailySales.do?pageNum=${startPage2-3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
+					            <img src="../../images/icons/arrow.png">
+					        </a>
+					    </c:if>
+					    
+					    <c:forEach var="i" begin="${startPage2}" end="${endPage2}">
+					        <c:set var="activeClass" value=""/>
+					        <c:choose>
+					            <c:when test="${empty param.pageNum and i == 1}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					            <c:when test="${param.pageNum == i}">
+					                <c:set var="activeClass" value="page_active"/>
+					            </c:when>
+					        </c:choose>
+					        <a href="searchDailySales.do?pageNum=${i}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}" class="${activeClass} page_num">${i}</a>
+					    </c:forEach>
+					    
+					    <c:if test="${pageCount2 > endPage2}">
+					        <a class="page_btn next_btn" href="searchDailySales.do?pageNum=${startPage2+3}&startDate=${startDate}&endDate=${endDate}&bucksName=${bucksName}&category=${category}">
+					            <img src="../../images/icons/arrow.png">
+					        </a>
+					    </c:if>
+					</div>
+					</c:if>
         <!-- e:페이징 -->   
                 </div>
             </div>
