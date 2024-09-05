@@ -6,14 +6,13 @@ body {max-width: 768px!important;}
 .addcontent {padding: 0 0 140px;}
 .inner_wrap > .tit_box {padding: 20px 0; font-size: 32px;}
 
-#user_nav {position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 768px; background-color: #f6f5ef;}
-#user_nav .nav_list {display: flex; align-items: center;}
-#user_nav .nav_list li {width: calc(100%/5); padding: 10px; text-align: center;}
-#user_nav .nav_list li .nav_icon {width: 36px; height: 36px; margin: 0 auto; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
-#user_nav .nav_list li .nav_tit {font-size: 18px; color: #555;}
-
 .content .popup_box.period_date {width: 440px; padding-top: 20px; border-top: 1px solid #ccc;}
 .content .popup_box.period_date .tit_box {margin-bottom: 20px; font-size: 22px; text-align: center;}
+
+/* 상품 주문불가 딤처리 */
+.pdt_dimm {position: relative;}
+.pdt_dimm::before {content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);}
+.pdt_dimm::after {content: '주문불가'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #fefefe; font-size: 20px; color: #fefefe;}
 
 .content .popup_box.period_date .date_box {display: flex; flex-direction: column;}
 .content .popup_box.period_date .date_box label {display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-top: 1px solid #ccc; font-size: 18px;}
@@ -25,10 +24,16 @@ body {max-width: 768px!important;}
 .content .popup_box.period_date .pbtn_box button:first-child {border: 1px solid #006241; color: #006241;}
 .content .popup_box.period_date .pbtn_box button:last-child {background-color: #006241; color: #fefefe;}
 
+#user_nav {position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 768px; background-color: #f6f5ef; z-index: 99;}
+#user_nav .nav_list {display: flex; align-items: center;}
+#user_nav .nav_list li {width: calc(100%/5); padding: 10px; text-align: center;}
+#user_nav .nav_list li .nav_icon {width: 36px; height: 36px; margin: 0 auto; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+#user_nav .nav_list li .nav_tit {font-size: 18px; color: #555;}
+
 /* user_login */
 #user_login {display: grid; place-items: center; min-height: 100dvh;}
 #user_login input {border: 1px solid #ccc; border-radius: 2px;}
-#user_login input[type="text"]:focus {border-color: #006241;}
+#user_login input[type="text"]:focus, #user_login input[type="password"]:focus {border-color: #006241;}
 #user_login .login_box .input_box label + label, 
 #user_login .popup_box .input_box > label + label {margin-top: 6px;}
 #user_login .login_box .input_box input {width: 312px; height: 36px; padding: 0 6px; font-size: 18px;}
@@ -36,11 +41,11 @@ body {max-width: 768px!important;}
 #user_login .login_box {padding: 30px 20px; border: 1px solid #eee; border-radius: 4px; box-shadow: 0 3px 7px #ccc;}
 #user_login .login_box .top_box {display: flex; align-items: center; justify-content: center; gap: 20px;}
 #user_login .login_box .top_box .img_box {width: 50px; height: 50px;}
-#user_login .login_box .top_box p {font-size: 24px; font-family: 'Santana_bold'; text-align: center;}
+#user_login .login_box .top_box p {font-size: 30px; font-family: 'Santana_bold'; text-align: center;}
 #user_login .login_box form {margin-top: 10px;}
 #user_login .login_box .input_box, #user_login .login_box .input_box label {width: 326px;}
 
-#user_login .login_box .login_btn {margin-top: 10px; width: 100%; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
+#user_login .login_box .login_btn {margin-top: 10px; width: 326px; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
 
 #user_login .login_box .find_box {margin-top: 14px; text-align: center;}
 #user_login .login_box .find_box label {margin-right: 16px; font-size: 14px;}
@@ -48,24 +53,26 @@ body {max-width: 768px!important;}
 
 #user_login .popup_box > p {font-size: 20px; font-weight: 700; color: #006241; text-align: left;}
 #user_login .popup_box .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
-#user_login .popup_box .input_box {width: 326px;}
 
-#user_login .popup_box .input_box > label {margin-bottom: 10px; width: 312px; height: 38px;}
+#user_login .popup_box .input_box > label {margin-bottom: 10px; width: 328px; height: 38px;}
 #user_login .popup_box .input_box > label input {width: 100%; height: 100%; padding: 0 6px; font-size: 16px;}
-#user_login .popup_box .email_box {width: 326px; display: flex; align-items: center; justify-content: space-between;}
-#user_login .popup_box .email_box label {width: 160px; display: flex; align-items: center;}
+#user_login .popup_box .email_box {display: flex; align-items: center; justify-content: space-between;}
+#user_login .popup_box .email_box label {margin-right: 6px; width: 160px; display: flex; align-items: center;}
 #user_login .popup_box .email_box input {width: 100%; height: 36px; padding: 0 6px; font-size: 16px;}
 #user_login .popup_box .email_box select {width: 100%; height: 38px; font-size: 16px;}
-#user_login .popup_box .submit_btn {width: 80px; height: 32px; border-radius: 2px; background-color: #006241; font-size: 18px; color: #fff;}
 
 #user_login .popup_box .confirm_box {margin-top: 10px;}
 #user_login .popup_box .confirm_box label {position: relative;}
-#user_login .popup_box .confirm_box input { width: 200px; height: 36px; padding: 0 6px; font-size: 14px;}
-#user_login .popup_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;}
-#user_login .popup_box .confirm_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
+#user_login .popup_box .confirm_box input {width: 312px; height: 36px; padding: 0 6px; font-size: 14px;}
+
 #user_login .popup_box .btn_box {text-align: center;}
+#user_login .popup_box button {padding: 7px 10px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#user_login .popup_box button.confirm_btn {width: 137px;}
+#user_login .popup_box .submit_btn {width: 80px;}
 #user_login .popup_box .btn_box .setting_btn {position: relative; font-size: 14px; line-height: 18px; color: #555;}
 #user_login .popup_box .btn_box .setting_btn::after {content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background-color: #555;}
+
+#user_login #findbypw .confirm_box input {width: 327px;}
 
 /* user_join */
 #user_join {display: grid; place-items: center; min-height: 100dvh;}
@@ -75,7 +82,8 @@ body {max-width: 768px!important;}
 #user_join .join_box .input_box .pw_box label, 
 #user_join .join_box .input_box .hp_box, 
 #user_join .join_box .input_box .email_box {margin-top: 6px;}
-#user_join .join_box .input_box input {width: 100%; height: 36px; padding: 0 6px;}
+#user_join .join_box .input_box input[type="text"], 
+#user_join .join_box .input_box input[type="password"] {width: 100%; height: 36px; padding: 0 6px;}
 
 #user_join .join_box {padding: 30px 20px; border: 1px solid #eee; border-radius: 4px; box-shadow: 0 3px 7px #ccc;}
 #user_join .join_box .top_box {display: flex; align-items: center; justify-content: center; gap: 20px;}
@@ -83,36 +91,36 @@ body {max-width: 768px!important;}
 #user_join .join_box .top_box p {font-size: 24px; font-family: 'Santana_bold'; text-align: center;}
 #user_join .join_box form {margin-top: 10px;}
 #user_join .join_box .input_box {width: 326px;}
-#user_join .join_box .input_box label, #user_join .join_box .input_box .pw_box input {width: 312px;}
+#user_join .join_box .input_box > label, #user_join .join_box .input_box .pw_box input {width: 312px;}
 
 #user_join .join_box .input_box .gender_box {margin-top: 6px; display: flex; align-items: center;}
-#user_join .join_box .input_box .gender_box label {margin-top: 0; width: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;}
-#user_join .join_box .input_box .gender_box input[type="checkbox"] {margin-right: 10px; width: 14px; height: 14px;}
-
+#user_join .join_box .input_box .gender_box label {width: 50%; padding-left: 20px; font-size: 14px;}
+#user_join .join_box .input_box .gender_box input[type="radio"] {margin-right: 10px; width: 16px; height: 16px;}
 
 #user_join .join_box .input_box .hp_box {width: 324px; display: flex; align-items: center; justify-content: space-between;}
 #user_join .join_box .input_box .hp_box label {width: 100px; height: 36px;}
 #user_join .join_box .input_box .hp_box input, #user_join .join_box .input_box .hp_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
 
-#user_join .join_box .input_box .email_box {width: 326px; display: flex; align-items: center; justify-content: space-between;}
-#user_join .join_box .input_box .email_box label {width: 106px; height: 36px;}
+#user_join .join_box .input_box .email_box label {width: 123px; height: 36px;}
 #user_join .join_box .input_box .email_box input, #user_join .join_box .input_box .email_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
 #user_join .join_box .input_box .email_box button {padding: 0 6px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
 
 #user_join .join_box .input_box .confirm_box, #user_join .join_box .input_box .id_box {margin-top: 6px; display: flex; align-items: center; justify-content: space-between;}
-#user_join .join_box .input_box .confirm_box label, #user_join .join_box .input_box .id_box label {position: relative; width: 230px;}
-#user_join .join_box .input_box .confirm_box input, #user_join .join_box .input_box .id_box input {width: 100%; height: 36px; padding: 0 6px; font-size: 14px;}
-#user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;}
+#user_join .join_box .input_box .id_box {position: relative; margin-bottom: 22px;}
+#user_join .join_box .input_box .id_box .tooltip {position: absolute; bottom: -22px; font-size: 12px; color: #666;}
+#user_join .join_box .input_box .id_box label, #user_join .join_box .input_box .confirm_box label {position: relative;}
+#user_join .join_box .input_box .id_box input, #user_join .join_box .input_box .confirm_box input {width: 230px; height: 36px; padding: 0 6px; font-size: 14px;}
+#user_login .popup_box .confirm_box .timer, #user_join .join_box .input_box .confirm_box .timer {position: absolute; top: 50%; transform: translateY(-50%); right: 6px; font-size: 14px; color: #006241; margin-right:4px;}
 #user_join .join_box .input_box .confirm_box button, #user_join .join_box .input_box .id_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
 
 #user_join .join_box .join_btn {margin-top: 10px; width: 100%; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
+
 
 /* home */
 #user_main .star_icon {display: inline-block; background: url('../images/icons/star.png')no-repeat center center/contain; filter: brightness(0) saturate(100%) invert(27%) sepia(33%) saturate(1900%) hue-rotate(122deg) brightness(92%) contrast(101%);}
 #user_main .star_icon--01 {margin: 0 10px; width: 20px; height: 20px;}
 #user_main .star_icon--02 {margin-left: 6px; width: 24px; height: 24px;}
-#user_main {width: 740px; margin: 0 auto;}
-#user_main .top_box {padding-top: 20px;}
+#user_main {width: 740px; margin: 30px auto 0;}
 #user_main .top_box .random_box p {font-size: 32px; line-height: 46px;}
 #user_main .top_box .reward_box .remain_count {display: flex; align-items: center; font-size: 28px;}
 #user_main .top_box .reward_box .progress_box {margin-top: 14px; display: flex; align-items: center; justify-content: space-between;}
@@ -126,13 +134,11 @@ body {max-width: 768px!important;}
 #user_main .summary_box .summary_list {display: flex; align-items: center; gap: 30px;}
 #user_main .summary_box .summary_list li .link_btn {display: flex; align-items: center; gap: 14px;}
 #user_main .summary_box .summary_list li .link_btn span {font-size: 20px;}
-#user_main .summary_box .summary_list li .link_btn .img_box, 
+#user_main .summary_box .summary_list li .link_btn .img_box, #user_main .summary_box .alarm_box .img_box {width: 40px; height: 40px;}
 
 #user_main .summary_box .alarm_box {position: relative;}
-#user_main .summary_box .alarm_box .noReadNum {position: absolute; display: inline-flex; 
-	bottom: 0; left: 0; z-index: 99; width: 20px; height: 20px; background: #006241; border-radius: 50%; justify-content: center; font-size: 13px; line-height: 20px; color: #fefefe;}
-#user_main .summary_box .alarm_box .img_box {width: 40px; height: 40px;}
-
+#user_main .summary_box .alarm_box:hover {cursor: pointer;}
+#user_main .summary_box .alarm_box .noReadNum {position: absolute; display: inline-flex; bottom: 0; left: 0; z-index: 99; width: 20px; height: 20px; background: #006241; border-radius: 50%; justify-content: center; font-size: 13px; line-height: 20px; color: #fefefe;}
 
 #user_main .whats_new .tit_box {display: flex; align-items: center; justify-content: space-between;}
 #user_main .whats_new .tit_box p {font-size: 26px;}
@@ -141,9 +147,9 @@ body {max-width: 768px!important;}
 #user_main .whats_new .news_box .img_box {height: 300px;}
 
 #user_main .recommend_menu .tit_box {font-size: 26px;}
-#user_main .recommend_menu .recommend_list {margin-top: 20px; display: flex; align-items: center; justify-content: space-between;}
-#user_main .recommend_menu .recommend_list li .img_box {width: 220px; height: 220px; border-radius: 50%; overflow: hidden; border: 1px solid #ccc;}
-#user_main .recommend_menu .recommend_list li p {margin-top: 14px; font-size: 20px; text-align: center; color: #555;}
+#user_main .recommend_menu .recommend_list {margin-top: 20px; display: flex; align-items: center; justify-content: flex-start; padding: 0 20px; gap: 20px;}
+#user_main .recommend_menu .recommend_list li .img_box {width: 220px; height: 220px; margin: 0 auto; border-radius: 50%; overflow: hidden;}
+#user_main .recommend_menu .recommend_list li p {margin-top: 14px; font-size: 16px; text-align: center; color: #555;}
 
 /* pay */
 #user_pay .card_box > p {font-size: 22px;}
@@ -151,17 +157,19 @@ body {max-width: 768px!important;}
 #user_pay .card_box .card_list li {height: 300px; border-radius: 4px;}
 #user_pay .card_box .card_list li .img_box {height: 300px;}
 
-#user_pay .addcard_box {height: 300px; background-color: #eee; border: 1px solid #ccc;}
+#user_pay .addcard_box {height: 300px; background-color: #eee; border: 1px solid #ccc; border-radius: 20px;}
 #user_pay .addcard_box a {display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 20px;}
 #user_pay .addcard_box p {font-size: 18px; line-height: 24px; text-align: center; color: #555;}
 #user_pay .addcard_box .add_icon {width: 24px; height: 24px; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
 
 #user_pay .pay_card, 
 #user_pay .edit_card {width: 440px; padding: 30px 0 0 0;}
-#user_pay .pay_card .tit_box {margin-top: 20px; font-size: 22px; text-align: center;}
+#user_pay .pay_card .tit_box {margin-top: 20px; text-align: center;}
+#user_pay .pay_card .tit_box .txt_tit {font-size: 22px; color: #006241;}
+#user_pay .pay_card .tit_box .card_num {margin-top: 10px; font-size: 20px; color: #555;}
 #user_pay .pay_card .tit_box .popup_btn {position: absolute; top: 51px; right: 24px;  width: 20px; height: 20px;}
-#user_pay .pay_card .card_price {margin-top: 20px; font-size: 18px; text-align: center; color: #555;}
-#user_pay .pay_card .card_img {margin: 20px auto 0; width: 400px; height: 150px;}
+#user_pay .pay_card .card_price {margin-top: 1px; font-size: 18px; text-align: center; color: #555;}
+#user_pay .pay_card .card_img {margin: 16px auto 0; width: 400px; height: 150px;}
 
 #user_pay .edit_card .insert_box{padding: 0 20px;}
 #user_pay .edit_card .insert_box p {font-size: 20px;}
@@ -174,27 +182,91 @@ body {max-width: 768px!important;}
 /* 카드결제 팝업 */
 #user_pay .popup_box.pay_card .pbtn_box button:first-child:before {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: 50px; display: block; width: 20px; height: 20px; background: url('../images/icons/pay_card.png')no-repeat center center/contain;}
 
-/* order */
+/* user_paynow */
+#user_paynow .store_confirm {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 30px 20px 20px;}
+#user_paynow .store_confirm {position: relative; font-size: 17px; line-height: 28px;}
+#user_paynow .store_confirm::after {content: 'Check!'; position: absolute; top: 10px; left: 0; transform:rotate(-18deg); font-size: 18px; font-weight: 700; color: #006241;}
+
+#user_paynow .sec_tit {padding: 10px 0; font-size: 20px;}
+
+#user_paynow .pay_list {padding: 20px 0;}
+#user_paynow .pay_list .pay_item {display: flex; align-items: flex-start; justify-content: space-between; padding:  10px 20px;}
+#user_paynow .pay_list .pay_item .img_box {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
+
+#user_paynow .pay_list .pay_item .img_box.cpn_icon {width: 50px; height: 50px; filter: brightness(0) saturate(100%) invert(32%) sepia(3%) saturate(8%) hue-rotate(339deg) brightness(96%) contrast(87%); border-radius: 0; border: none;}
+
+#user_paynow .pay_list .pay_item .txt_box {width: 600px;}
+#user_paynow .pay_list .pay_item .txt_box dl:first-child {font-size: 16px;}
+#user_paynow .pay_list .pay_item .txt_box dl:not(:first-child) {margin-top: 6px; font-size: 14px;}
+#user_paynow .pay_list .pay_item .txt_box dl {display: flex; align-items: center; justify-content: space-between;}
+
+#user_paynow #howtopay input[type="radio"] {margin-right: 10px; width: 20px; height: 20px;}
+#user_paynow #howtopay > li {padding: 12px 0;}
+#user_paynow #howtopay .cardlist_wrap {width: 768px; overflow: hidden;}
+#user_paynow #howtopay .cardlist {overflow: visible; margin: 20px 0 0 0; width: 420px; height: 370px;}
+#user_paynow #howtopay .cardlist li +li {margin-left: 20px;}
+#user_paynow #howtopay .cardlist .card_slide {width: 420px;}
+#user_paynow #howtopay .cardlist .card_slide a {display: inline-block; width: 100%; height: 264px;}
+#user_paynow #howtopay .cardlist .card_slide .txt_box {margin-top: 6px; text-align: center;}
+#user_paynow #howtopay .cardlist .card_slide .txt_box .txt_name {height: 21px; font-size: 16px;}
+#user_paynow #howtopay .cardlist .card_slide .txt_box .txt_price {margin-top: 4px; font-size: 16px; color: #555;}
+#user_paynow #howtopay .cardlist .add_slide {height: 264px; border: 1px solid #ccc; border-radius: 8px;}
+#user_paynow #howtopay .cardlist .add_slide a {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;}
+#user_paynow #howtopay .cardlist .add_slide .add_icon {width: 30px; height: 30px; filter: brightness(0) saturate(100%) invert(34%) sepia(0%) saturate(1425%) hue-rotate(280deg) brightness(92%) contrast(87%);}
+
+#user_paynow .cpn_box {border-top: 1px solid #ccc;}
+#user_paynow .cpn_box a {display: flex; align-items: center; gap: 20px; padding: 20px;}
+#user_paynow .cpn_box .img_box {width: 30px; height: 30px;}
+
+#user_paynow .cpnpop {width: 400px; padding: 30px 20px 0;}
+#user_paynow .cpnpop .tit_box {font-size: 18px;}
+#user_paynow .cpnpop form {margin-top: 16px;}
+#user_paynow .cpnpop .cpn_list li + li {border-top: 1px solid #ccc;}
+#user_paynow .cpnpop .cpn_list li a {display: flex; align-items: center; gap: 20px; padding: 10px 16px;}
+#user_paynow .cpnpop .cpn_list li a.cpn-no {height: 67px; padding: 0 16px; border-bottom: 1px solid #ccc;}
+#user_paynow .cpnpop .cpn_list li a.selected {position: relative;}
+#user_paynow .cpnpop .cpn_list li a.selected::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; display: block; width: 20px; height: 20px; background: url('../images/icons/check.png')no-repeat center center/contain; filter: brightness(0) saturate(100%) invert(13%) sepia(94%) saturate(4306%) hue-rotate(163deg) brightness(90%) contrast(105%);}
+
+#user_paynow .cpnpop .cpn_list li .img_box {width: 80px;}
+#user_paynow .cpnpop .cpn_list li .txt_box .txt_tit {font-size: 16px;}
+#user_paynow .cpnpop .cpn_list li .txt_box .txt_date {margin-top: 6px; font-size: 14px; color: #555;}
+
+#user_paynow .cpnpop .cpn_list li .img_box.nocpn_img {position: relative;}
+#user_paynow .cpnpop .cpn_list li .img_box.nocpn_img::after {content: 'NO!'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-18deg); display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #006241; background: rgba(255, 255, 255, 0.6); font-size: 16px; font-weight: 700; color: #006241;}
+
+
+#user_paynow .cpnpop .pbtn_box {width: 100%; display: flex; align-items: center; justify-content: center; border-top: 1px solid #ccc;}
+#user_paynow .cpnpop .pbtn_box button {position: relative; width: 50%; padding: 20px 0;}
+#user_paynow .cpnpop .pbtn_box button:first-child {border-right: 1px solid #ccc;}
+
+#user_paynow .pricecheck_box {padding: 20px; background-color: #eee;}
+#user_paynow .pricecheck_box dl {display: flex; align-items: center; justify-content: space-between;}
+#user_paynow .pricecheck_box dl:not(:nth-child(3)) {margin-top: 10px; font-size: 18px;}
+#user_paynow .pricecheck_box dl:nth-child(3) {margin-top: 16px; font-size: 20px; font-weight: 700;}
+#user_paynow .pricecheck_box .pay_btn {margin-top: 16px; width: 100%; height: 40px; padding: 0 10px; border-radius: 25px; background-color: #006241; font-size: 20px; color: #fefefe;}
 
 /* user_delivers */
-#user_delivers .top_box {width: 768px; padding: 40px 0 20px; background-color: #fff; border-bottom: 1px solid #ccc;}
+#user_delivers.content {padding: 0 0 80px;}
+#user_delivers .top_box {position: fixed; top:0; left:50%; transform: translateX(-50%); width: 768px; padding: 40px 0 20px; background-color: #fff; border-bottom: 1px solid #ccc;}
 #user_delivers .top_box .tit_box {margin-bottom: 20px; font-size: 32px;}
 
-#user_delivers .search_box form {display: flex; flex-direction: column; align-items: center; justify-content: space-between;}
-#user_delivers .search_box form label {margin-top: 10px; width: 690px; height: 32px;}
-#user_delivers .search_box form input {width: 100%; height: 100%; padding: 0 6px; font-size: 18px;}
-#user_delivers .search_box form button {margin-top: 10px; padding: 2px 10px; border-radius: 4px; border: 1px solid #006241; font-size: 18px; color: #006241;}
+#user_delivers .search_box form {display: flex; flex-direction: column;}
+#user_delivers .search_box .store_location {margin-top: 10px;}
+#user_delivers .search_box .loca_box input {width: 650px; height: 32px; padding: 0 6px; font-size: 18px;}
+#user_delivers .search_box .loca_box button {width: 94px; height: 34px; border-radius: 4px; border: 1px solid #006241; font-size: 17px; color: #006241;}
 
 #user_delivers .cate_list {margin-top: 20px; display: flex;}
 #user_delivers .cate_list li {width: 70px; padding: 6px 0; font-size: 20px; text-align: center;}
 #user_delivers .cate_list li a.s_active {width: 100%; height: 100%; border-bottom: 2px solid #006241; color: #006241;}
 
-#user_delivers .menu_list {margin-top: 20px;}
-#user_delivers .menu_list li + li {border-top: 1px solid #ccc;}
-#user_delivers .menu_list .menu_item a {display: flex; align-items: center; gap: 20px; padding: 20px;}
-#user_delivers .menu_list .menu_item .img_box {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
-#user_delivers .menu_list .menu_item .txt_box .txt_tit {font-size: 18px;}
-#user_delivers .menu_list .menu_item .txt_box .txt_price {margin-top: 6px; font-size: 16px; color: #555;}
+#user_delivers .store_list {margin-top: 203px;}
+#user_delivers .store_list li + li {border-top: 1px solid #ccc;}
+#user_delivers .store_list .store_item a {display: flex; align-items: center; gap: 20px; padding: 20px;}
+#user_delivers .store_list .store_item .img_box {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
+#user_delivers .store_list .store_item .txt_box p + p {margin-top: 6px;}
+#user_delivers .store_list .store_item .txt_box .txt_store {font-size: 18px;}
+#user_delivers .store_list .store_item .txt_box .txt_location {font-size: 16px; color: #555;}
+#user_delivers .store_list .store_item .txt_box .txt_time {font-size: 14px; color: #999;}
 
 #user_delivers .pickup_box .txt_tit {margin-bottom: 8px; font-size: 18px;}
 #user_delivers .pickup_box form .select_box {display: flex; align-items: center; gap: 16px;}
@@ -202,9 +274,14 @@ body {max-width: 768px!important;}
 #user_delivers .pickup_box form .select_box label + label {margin-top: 8px;}
 #user_delivers .pickup_box form .select_box label {height: 30px;}
 #user_delivers .pickup_box form .select_box label input {width: 500px; height: 100%; padding: 0 6px; font-size: 16px;}
-#user_delivers .pickup_box form .select_box input[type="button"] {width: 70px; height: 70px;}
+#user_delivers .pickup_box form .select_box input[type="button"], #user_delivers .pickup_box form .btn_box button {padding: 2px 10px; background: #006241; border-radius: 4px; font-size: 18px; color: #fefefe;}
 
-/* other */
+#user_delivers .pickup_box form .btn_box {margin-top: 10px; text-align: center;}
+#user_delivers .pickup_box form .btn_box .close_btn {border: 1px solid #006241; background:transparent; color: #006241;}
+
+/* user_other */
+#user_other.content {padding: 0 0 80px 0;}
+#user_other .inner_wrap {padding: 0 20px;}
 #user_other .div_tit {margin-bottom: 20px; font-size: 26px;}
 #user_other .div_box {padding-bottom: 20px;}
 #user_other .top_box .btn_list {display: flex; align-items: center; justify-content: end; gap: 14px;}
@@ -228,7 +305,7 @@ body {max-width: 768px!important;}
 #user_other .logout_box {text-align: center;}
 #user_other .logout_box a {border-bottom: 1px solid #555; padding-bottom: 2px; font-size: 18px; color: #555;}
 
-/* starhistory */
+/* user_starhistory */
 #user_starhistory .star_count dl {display: flex; justify-content: space-between; font-size: 20px;}
 #user_starhistory .star_count .star_noti {margin-top: 20px; font-size: 16px; color: #ccc;}
 
@@ -238,7 +315,7 @@ body {max-width: 768px!important;}
 
 #user_starhistory .add_list > li {display: flex; gap: 40px; padding: 20px;}
 #user_starhistory .add_list > li + li {border-top: 1px solid #ccc;}
-#user_starhistory .add_list > li .add_box {padding-top: 10px; display: flex; align-items: center; gap: 10px;}
+#user_starhistory .add_list > li .add_box {width: 70px; padding-top: 10px; display: flex; align-items: center; gap: 10px;}
 #user_starhistory .add_list > li .add_box .img_box {width: 20px; height: 20px;}
 #user_starhistory .add_list > li .add_box p, #user_starhistory .add_list .txt_box .txt_tit {font-size: 20px;}
 #user_starhistory .add_list .txt_box .txt_desc {margin-top: 6px; font-size: 16px; line-height: 24px; color: #555;}
@@ -257,7 +334,8 @@ body {max-width: 768px!important;}
 #user_recepit .period_date .pbtn_box {display: flex; align-items: center; justify-content: center; gap: 10px;}
 #user_recepit .period_date .date_box label, 
 #user_recepit .period_date .select_pay label {width: 50%;}
-#user_recepit .period_date .select_period button {width: calc(100%/3); padding: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 18px; color: #555;}
+#user_recepit .period_date .select_period button {width: calc(100%/3); padding: 10px 0; border: 2px solid #ccc; border-radius: 4px; font-size: 18px; color: #555;}
+#user_recepit .period_date .select_period button.active {border: 2px solid #006241;}
 
 #user_recepit .period_date .date_box {margin-top: 10px;}
 #user_recepit .period_date .date_box input {width: 100%; padding: 10px 0; border: none; background-color: #eee; font-size: 18px; color: #555;}
@@ -275,6 +353,7 @@ body {max-width: 768px!important;}
 #user_recepit .list_box .count_box {display: flex; align-items: center; justify-content: space-between; padding: 10px 0; font-size: 20px;}
 #user_recepit .list_box .add_list {padding-top: 16px; border-bottom: 1px solid #ccc;}
 #user_recepit .list_box .add_list li {display: flex; align-items: center; justify-content: space-between; padding: 16px 0;}
+#user_recepit .list_box .add_list li.nolist {justify-content: center; font-size: 18px;}
 #user_recepit .list_box .add_list li + li {border-top: 1px solid #ccc;}
 #user_recepit .list_box .add_list li .txt_box .txt_store {font-size: 20px;}
 #user_recepit .list_box .add_list li .txt_box div {margin-top: 6px; display: flex; font-size: 18px;}
@@ -341,16 +420,17 @@ body {max-width: 768px!important;}
 #user_info .edit_form .mail_box label {width: 360px;}
 
 #user_info .edit_form .btn_box {text-align: center;}
-#user_info .edit_form .btn_box button {width: 300px; padding: 6px 0; border-radius: 4px; font-size: 20px; text-align: center;}
-#user_info .edit_form .btn_box button:first-child {border: 1px solid #006241; color: #006241;}
-#user_info .edit_form .btn_box button:last-child {border: 1px solid #555; color: #555;}
+#user_info .edit_form .btn_box button {width: 300px; padding: 6px 0; background: #006241; border-radius: 4px; font-size: 20px; text-align: center; color: #fefefe;}
+#user_info .del_box {margin-top: 10px; text-align: center;}
+#user_info .del_box button {width: 300px; padding: 6px 0; border: 1px solid #555; border-radius: 4px; font-size: 20px; text-align: center; color: #555;}
 
 /* user_mymenu */
 #user_mymenu .menu_list {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
 #user_mymenu .menu_list li + li {border-top: 1px solid #ccc;}
 #user_mymenu .menu_list li {position: relative; display: flex; align-items: center; gap: 20px; padding: 20px;}
+#user_mymenu .menu_list .nolist {justify-content: center; text-align: center;}
 #user_mymenu .menu_list .close_icon {position: absolute; right: 0; top: 0; width: 30px; height: 30px;}
-#user_mymenu .menu_list li .menu_icon {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_mymenu .menu_list li .menu_icon {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
 #user_mymenu .menu_list li .txt_box .txt_tit {font-size: 18px;}
 #user_mymenu .menu_list li .txt_box .txt_price {margin-top: 6px; font-size: 16px; color: #555;}
 #user_mymenu .menu_list li .btn_box {position: absolute; right: 20px; bottom: 20px;}
@@ -362,7 +442,7 @@ body {max-width: 768px!important;}
 #user_addcard .addcard_box label + label {margin-top: 10px;}
 #user_addcard .addcard_box input {margin-top: 4px; width: 100%; height: 36px; border-left: none; border-top: none; border-right: none; border-bottom: 1px solid #ccc; padding: 0 6px; font-size: 18px;}
 #user_addcard .addcard_box form .btn_box {margin-top: 20px; text-align: center;}
-#user_addcard .addcard_box form .btn_box button {width: 100%; padding: 10px 0; background-color: #ddd; border-radius: 25px; font-size: 20px; color: #fefefe;}
+#user_addcard .addcard_box form .btn_box .submitBtn {width: 100%; padding: 10px 0; background-color: #006241; border-radius: 25px; font-size: 20px; color: #fefefe;}
 
 /* user_cpnhistory */
 #user_cpnhistory .cpn_list {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
@@ -370,19 +450,19 @@ body {max-width: 768px!important;}
 #user_cpnhistory .cpn_list .cpn_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
 /* 쿠폰사용완료 딤처리 */
 #user_cpnhistory .cpn_list .cpn_item.use_complete {position: relative;}
-#user_cpnhistory .cpn_list .cpn_item.use_complete::after {content: ''; position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background-color: #fff; opacity: 0.6;}
+#user_cpnhistory .cpn_list .cpn_item.use_complete::before {content: ''; position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background-color: rgba(255,255,255, 0.6);}
+#user_cpnhistory .cpn_list .cpn_item.use_complete::after {content: '사용완료'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-15deg); display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #006241; font-size: 18px; font-weight: 700; color: #006241;}
 
 #user_cpnhistory .cpn_list .cpn_item .img_box {width: 100px; height: 60px;}
 
-#user_cpnhistory .cpn_list .cpn_item .txt_box p + p, 
-#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc {margin-top: 6px;}
 #user_cpnhistory .cpn_list .cpn_item .txt_box .txt_sub, 
 #user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc li {font-size: 16px;}
 
 #user_cpnhistory .cpn_list .cpn_item .txt_box .txt_tit {font-size: 18px;}
-#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc {display: flex; align-items: center; gap: 16px; color: #555;}
-#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc li:last-child {position: relative;}
-#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc li:last-child::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -8px; width: 1px; height: 14px; background-color: #555;}
+#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_desc {font-size: 17px; color: #555;}
+#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti {margin-top: 6px; display: flex; align-items: center; gap: 16px; color: #555;}
+#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti li:last-child {position: relative;}
+#user_cpnhistory .cpn_list .cpn_item .txt_box .txt_noti li:last-child::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -8px; width: 1px; height: 14px; background-color: #555;}
 
 /* user_orderhistory */
 #user_orderhistory .period_box {padding: 20px; border-bottom: 1px solid #ccc;}
@@ -394,7 +474,8 @@ body {max-width: 768px!important;}
 #user_orderhistory .history_list > li:nth-child(odd) {background-color: #f6f5ef;}
 
 #user_orderhistory .history_list .history_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
-#user_orderhistory .history_list .history_item .img_box {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_orderhistory .history_list .history_item.nolist {justify-content: center; border-bottom: 1px solid #ccc;}
+#user_orderhistory .history_list .history_item .img_box {width: 100px; height: 100px;}
 
 #user_orderhistory .history_list .history_item .img_box.menu_status {position: relative;}
 #user_orderhistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}
@@ -413,7 +494,8 @@ body {max-width: 768px!important;}
 #user_delivershistory .history_list > li:nth-child(odd) {background-color: #f6f5ef;}
 
 #user_delivershistory .history_list .history_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
-#user_delivershistory .history_list .history_item .img_box {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_delivershistory .history_list .history_item.nolist {justify-content: center; border-bottom: 1px solid #ccc;}
+#user_delivershistory .history_list .history_item .img_box {width: 100px; height: 100px;}
 
 #user_delivershistory .history_list .history_item .img_box.menu_status {position: relative;}
 #user_delivershistory .history_list .history_item .img_box.menu_status::before {content: ''; position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; border-radius: 50%; background-color: #000; opacity: 0.4;}
@@ -431,11 +513,11 @@ body {max-width: 768px!important;}
 #user_alarm .history_list li + li {border-top: 1px solid #ccc;}
 
 #user_alarm .history_list .history_item {display: flex; align-items: center; gap: 20px; padding: 20px;}
-#user_alarm .history_list .history_item .img_box {width: 100px; height: 100px; border-radius: 50%; border: 1px solid #ccc;}
+#user_alarm .history_list .history_item .img_box {width: 80px;}
 #user_alarm .history_list .history_item .txt_box .txt_tit {font-size: 18px;}
 #user_alarm .history_list .history_item .txt_box .txt_date {margin-top: 6px; font-size: 16px;}
 
-#user_store.content {padding: 0 20px 80px;}
+#user_store.content {padding: 0 0 80px;}
 #user_store .top_box {position: fixed; top: 0; width: 768px; padding: 40px 0 20px; background-color: #fff; border-bottom: 1px solid #ccc;}
 #user_store .top_box .tit_box {margin-bottom: 20px; font-size: 32px;}
 #user_store .search_box form {display: flex; align-items: center; justify-content: space-between; padding:  0 20px;}
@@ -443,13 +525,15 @@ body {max-width: 768px!important;}
 #user_store .search_box form input {width: 100%; height: 100%; padding: 0 6px; font-size: 18px;}
 #user_store .search_box form button {height: 34px; line-height: 34px; padding: 0 10px; border-radius: 4px; border: 1px solid #006241; font-size: 18px; color: #006241;}
 
-#user_store .store_list {padding: 160px 0 20px;}
+#user_store .store_list {padding-top: 160px;}
 #user_store .store_list li + li {border-top: 1px solid #ccc;}
 #user_store .store_list .nostore {padding: 12px 0; font-size: 18px; text-align: center;}
 #user_store .store_list .store_item a {display: flex; align-items: center; gap: 20px; padding: 20px;}
-#user_store .store_list .store_item .img_box {width: 100px; height: 100px; border-radius: 4px; border: 1px solid #ccc;}
+#user_store .store_list .store_item .img_box {width: 100px; height: 100px;}
+#user_store .store_list .store_item .txt_box p + p {margin-top: 6px;}
 #user_store .store_list .store_item .txt_box .txt_store {font-size: 18px;}
-#user_store .store_list .store_item .txt_box .txt_location {margin-top: 10px; font-size: 16px; color: #555;}
+#user_store .store_list .store_item .txt_box .txt_location {font-size: 16px; color: #555;}
+#user_store .store_list .store_item .txt_box .txt_time {font-size: 14px; color: #999;}
 
 #user_store .pickup_box {width: 400px;}
 #user_store .pickup_box .tit_box {margin-bottom: 20px; font-size: 22px; text-align: center;}
@@ -465,6 +549,7 @@ body {max-width: 768px!important;}
 #user_store .pickup_box .btn_box button {border-bottom: 1px solid #555; font-size: 16px; color: #555;}
 
 /* user_order */
+#user_order {padding: 0 0 153px 0;}
 #user_order .search_box form {display: flex; align-items: center; justify-content: space-between;}
 #user_order .search_box form label {width: 690px; height: 32px;}
 #user_order .search_box form input {width: 100%; height: 100%; padding: 0 6px; font-size: 18px;}
@@ -473,31 +558,35 @@ body {max-width: 768px!important;}
 #user_order .cate_list {margin-top: 20px; display: flex;}
 #user_order .cate_list li {width: 70px; padding: 6px 0; font-size: 20px; text-align: center;}
 #user_order .cate_list li a.s_active {width: 100%; height: 100%; border-bottom: 2px solid #006241; color: #006241;}
-
 #user_order .menu_list {margin-top: 20px;}
 #user_order .menu_list li + li {border-top: 1px solid #ccc;}
+
 #user_order .menu_list .menu_item a {display: flex; align-items: center; gap: 20px; padding: 20px;}
 #user_order .menu_list .menu_item .img_box {width: 100px; height: 100px; border-radius: 50%; overflow: hidden;}
 #user_order .menu_list .menu_item .txt_box .txt_tit {font-size: 18px;}
 #user_order .menu_list .menu_item .txt_box .txt_price {margin-top: 6px; font-size: 16px; color: #555;}
 
-#user_order .cart_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 87px; display: flex; align-items: center; justify-content: space-between; width: 768px; padding: 14px 20px; background-color: #222; z-index: 20;}
-#user_order .cart_box .select_store {position: relative; width: 680px; height: 45px; border-bottom: 1px solid #ccc; font-size: 18px; line-height: 45px; color: #fefefe; text-align: center;}
-#user_order .cart_box .select_store::before {content: ''; position: absolute; top: 50%; transform: translateY(-50%) rotate(45deg); right: 16px; display: block; width: 12px; height: 12px; border-top: 1px solid #ccc;}
-#user_order .cart_box .select_store::after {content: ''; position: absolute; top: 50%; transform: translateY(-50%) rotate(135deg); right: 16px; display: block; width: 12px; height: 12px; border-top: 1px solid #ccc;}
-#user_order .cart_box .cart_btn {position: relative; width: 55px; height: 45px;}
+#user_order .cart_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 80px; display: flex; align-items: center; justify-content: space-between; width: 768px; padding: 14px 0; background-color: #222; z-index: 20;}
+#user_order .cart_box .select_store {position: relative; left: 12px; width: 680px; height: 45px; border-bottom: 1px solid #ccc; font-size: 18px; line-height: 45px; color: #fefefe; text-align: center;}
+#user_order .cart_box .select_store::before, #user_order .cart_box .select_store::after {content: ''; position: absolute; top: 50%; right: 16px; display: block; width: 12px; height: 12px; border-top: 2px solid #ccc;}
+#user_order .cart_box .select_store::before {transform: translateY(-50%) rotate(45deg);}
+#user_order .cart_box .select_store::after {transform: translateY(-50%) rotate(135deg);}
+#user_order .cart_box .cart_btn {position: relative; right: 12px; width: 55px; height: 45px;}
 #user_order .cart_box .cart_btn .img_box {width: 100%; height: 100%; filter: brightness(0) saturate(100%) invert(97%) sepia(91%) saturate(1%) hue-rotate(9deg) brightness(108%) contrast(99%);}
 #user_order .cart_box .cart_btn .cart_count {position: absolute; bottom: 4px; left: 50%; transform: translate(-50%); font-size: 16px; color: #fefefeba;}
 
 /* user_menudetail */
-#user_menudetail {padding: 0 0 160px;}
-#user_menudetail .menu_img {height: 400px; border: 1px solid #ccc;}
-#user_menudetail .txt_box {margin-top: 20px;}
+#user_menudetail {padding: 0 0 140px;}
+#user_menudetail .menu_img {width: 400px; height: 400px; margin: 0 auto;}
+#user_menudetail .txt_box {position: relative; margin-top: 20px;}
 #user_menudetail .txt_box .txt_tit {font-size: 24px; font-weight: 700;}
-#user_menudetail .txt_box .txt_desc {margin-top: 10px; font-size: 16px;}
-#user_menudetail .txt_box .txt_price {margin-top: 10px; font-size: 20px; font-weight: 700;}
+#user_menudetail .txt_box .txt_price {margin-top: 10px; font-size: 22px; font-weight: 700;}
+#user_menudetail .txt_box .txt_desc {margin-top: 10px; font-size: 18px;}
+#user_menudetail .addlike {position: absolute; top: 0; right: 10px; width: 46px; height: 46px; filter: brightness(0) saturate(100%) invert(27%) sepia(20%) saturate(2279%) hue-rotate(115deg) brightness(99%) contrast(101%);}
+#user_menudetail .addlike::after {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; white-space:pre; z-index: 10;}
+#user_menudetail .addlike::after {content: 'Click \AMe!';}
 
-#user_menudetail .btn_box button {margin-top: 20px; font-size: 20px;}
+#user_menudetail .opt_wrap__tit {margin-top: 20px; font-size: 20px;}
 
 #user_menudetail .opt_wrap .opt_box + .opt_box {border-top: 1px solid #ccc;}
 #user_menudetail .opt_wrap .opt_box {padding: 10px 0;}
@@ -518,14 +607,25 @@ body {max-width: 768px!important;}
 #user_menudetail .opt_wrap .opt_box .select_box input[type="button"].btn.active {border: 2px solid #006241;}
 #user_menudetail .opt_wrap .opt_box .select_box span {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center; z-index: -1;}
 
-#user_menudetail .order_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 80px; display: flex; align-items: center; justify-content: space-between; width: 768px; height: 60px; background-color: #333;}
-#user_menudetail .order_box button:not(:last-child) {margin-left: 30px; padding: 2px 25px; border-radius: 25px; background-color: #fefefe; font-size: 18px; color: #006241;}
-#user_menudetail .order_box .count_box {display: flex; align-items: center; justify-content: center;}
+#user_menudetail .order_box {position: fixed; left: 50%; transform: translateX(-50%); bottom: 80px; display: flex; align-items: center; width: 768px; height: 60px; background-color: #333;}
+#user_menudetail .order_box .count_box {margin-left: 30px; display: flex; align-items: center; justify-content: center;}
 #user_menudetail .order_box .count_box input[type="text"] {width: 30px; border: none; background: transparent; font-size: 20px; text-align: center; color: #fefefe;}
 #user_menudetail .order_box .count_box .click_icon {width: 26px; height: 26px; filter: brightness(0) saturate(100%) invert(100%) sepia(20%) saturate(2%) hue-rotate(351deg) brightness(113%) contrast(100%); cursor: pointer;}
-#user_menudetail .order_box .addlike {margin-right: 30px; width: 30px; height: 30px; filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(1%) hue-rotate(13deg) brightness(104%) contrast(99%);}
+#user_menudetail .order_box .btn_box {position: absolute; right: 30px;}
+#user_menudetail .order_box button {padding: 2px 25px; border-radius: 25px; background-color: #fefefe; font-size: 20px; font-weight: 700; color: #006241;}
+#user_menudetail .order_box .orderBtn {margin-left: 6px; background: #008659; color: #fefefe; border: none;}
+
+#user_menudetail .cart_popup .tit_box {font-size: 17px;}
+#user_menudetail .cart_popup .close_btn {position: absolute; right: 0; top: 0; width: 30px; height: 30px;}
+#user_menudetail .cart_popup .select_box {margin-top: 10px; display: flex; align-items: center; justify-content: center;}
+#user_menudetail .cart_popup .select_box .select_btn {display: inline-block; color: #555; border-bottom: 1px solid #555;}
+#user_menudetail .cart_popup .select_box .select_btn:hover {border-color: #006241; color: #006241;}
+#user_menudetail .cart_popup .select_box a + a {margin-left: 10px;}
+
+
 
 /* user_cart */
+#user_cart.content {padding: 0 0 184px 0;}
 #user_cart .toolbar_box {display: flex; align-items: center; justify-content: space-between; padding:  10px 20px 20px; border-bottom: 1px solid #ccc;}
 #user_cart .toolbar_box label {font-size: 18px;}
 #user_cart .toolbar_box input {margin-right: 4px; width: 16px; height: 16px;}
@@ -564,8 +664,7 @@ body {max-width: 768px!important;}
 #user_cart .order_box .txt_box .txt_count {font-size: 18px;}
 #user_cart .order_box .txt_box .txt_total {font-size: 28px;}
 #user_cart .order_box .btn_box {margin-top: 10px; padding: 0 20px; text-align: center;}
-#user_cart .order_box .btn_box button {width: 100%; border-radius: 25px; padding: 6px 0;
- background-color: #ccc; font-size: 18px; color: #fefefe;}
+#user_cart .order_box .btn_box button {width: 100%; border-radius: 25px; padding: 6px 0; background-color: #006241; font-size: 18px; color: #fefefe;}
 
 
 /* user_paynow, user_paycharge */

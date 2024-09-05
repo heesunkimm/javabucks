@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp" %>
     <!-- s: content -->
     <section id="user_store" class="content">
         <div class="inner_wrap">
@@ -23,7 +12,7 @@
                 <div class="search_box">
                     <form name="" action="user_store?mode=store" method="post" onsubmit="return searchCheck()">
                         <label>
-                            <input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="검색">
+                            <input type="text" id ="storeSearch" name="storeSearch" value="${storeSearch}" placeholder="지점 검색">
 							<input type="hidden" name="menuCode" value="${menuCode}">
                         </label>
                         <button type="submit">검색</button>
@@ -48,7 +37,7 @@
 				                        <div class="txt_box">
 			                         	  <p class="txt_store">${dto.bucksName}</p>
 			             				  <p class="txt_location">${dto.bucksLocation}</p>
-										  <p class="txt_location">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
+										  <p class="txt_time">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 				                        </div>
 				                    </a>
 	               		 		</li>
@@ -61,13 +50,13 @@
 							<c:when test="${dto.orderEnalbe eq 'N'}">
 								<c:set var="activeClass" value="pdt_dimm" />
 	                			<li class="store_item">
-				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}" 
+				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}"
 											data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-orderEnable="${dto.orderEnalbe}">
 				                        <div class="img_box">
 				                           <img src="../images/logo/starbucks_logo_black.png" alt="">
 				                        </div>                                              
 				                        <div class="txt_box">
-			                         	  <p class="txt_store">${dto.bucksName} [주문불가]</p>
+			                         	  <p class="txt_store">${dto.bucksName}</p>
 			             				  <p class="txt_location">${dto.bucksLocation}</p>
 										  <p class="txt_location">운영시간 ${dto.bucksStart} - ${dto.bucksEnd}</p>
 				                        </div>
@@ -112,7 +101,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="btn_boxz">
+                <div class="btn_box">
                     <button class="close_btn" type="button" data-popup="pickupselect">닫기</button>
                 </div>
                 <!-- e: 내용 작성 -->

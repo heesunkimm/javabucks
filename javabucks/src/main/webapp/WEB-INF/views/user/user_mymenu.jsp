@@ -2,18 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>         
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="../css/reset.css">
-        <link rel="stylesheet" href="../css/user.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_mymenu" class="content">
         <div class="inner_wrap">
@@ -22,10 +11,9 @@
             </div>
             <ul class="menu_list">
             	<c:if test="${empty mymenu}">
-            	<li class="menu_item">
-	            	<p class="txt_tit">등록된 나만의 메뉴가 없습니다.</p>
-	            	<p class="txt_price">즐겨 찾는 음료나 푸드를 나만의 메뉴로 등록하고 빠르게 주문해 보세요.<br>
-	            	 아래 화면에서 ♥를 눌러 등록할 수 있습니다.</p>
+            	<li class="menu_item nolist">
+	            	등록된 나만의 메뉴가 없습니다. <br/>
+	            	즐겨 찾는 음료나 푸드를 나만의 메뉴로 등록하고 빠르게 주문해 보세요.
             	 </li>
             	</c:if>
             	<c:if test="${not empty mymenu}">

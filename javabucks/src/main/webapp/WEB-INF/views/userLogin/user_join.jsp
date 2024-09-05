@@ -7,51 +7,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <link rel="stylesheet" href="../css/reset.css">
+        <link rel="stylesheet" href="../css/user.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script src="../js/user.js"></script>
-        <style>
-            #user_join {display: grid; place-items: center; min-height: 100dvh;}
-            #user_join input {border: 1px solid #ccc; border-radius: 2px;}
-            #user_join input[type="text"]:focus {border-color: #006241;}
-            #user_join .join_box .input_box > label + label, 
-            #user_join .join_box .input_box .pw_box label, 
-            #user_join .join_box .input_box .hp_box, 
-            #user_join .join_box .input_box .email_box {margin-top: 6px;}
-            #user_join .join_box .input_box input {width: 100%; height: 36px; padding: 0 6px;}
-
-            #user_join .join_box {padding: 30px 20px; border: 1px solid #eee; border-radius: 4px; box-shadow: 0 3px 7px #ccc;}
-            #user_join .join_box .top_box {display: flex; align-items: center; justify-content: center; gap: 20px;}
-            #user_join .join_box .top_box .img_box {width: 50px; height: 50px;}
-            #user_join .join_box .top_box p {font-size: 24px; font-family: 'Santana_bold'; text-align: center;}
-            #user_join .join_box form {margin-top: 10px;}
-            #user_join .join_box .input_box {width: 326px;}
-            #user_join .join_box .input_box label, #user_join .join_box .input_box .pw_box input {width: 312px;}
-
-            #user_join .join_box .input_box .gender_box {margin-top: 6px; display: flex; align-items: center;}
-            #user_join .join_box .input_box .gender_box label {margin-top: 0; width: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;}
-            #user_join .join_box .input_box .gender_box input[type="checkbox"] {margin-right: 10px; width: 14px; height: 14px;}
-
-
-            #user_join .join_box .input_box .hp_box {width: 324px; display: flex; align-items: center; justify-content: space-between;}
-            #user_join .join_box .input_box .hp_box label {width: 100px; height: 36px;}
-            #user_join .join_box .input_box .hp_box input, #user_join .join_box .input_box .hp_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
-
-            #user_join .join_box .input_box .email_box {width: 326px; display: flex; align-items: center; justify-content: space-between;}
-            #user_join .join_box .input_box .email_box label {width: 106px; height: 36px;}
-            #user_join .join_box .input_box .email_box input, #user_join .join_box .input_box .email_box select {width: 100%; height: 100%; padding: 0; text-align: center;}
-            #user_join .join_box .input_box .email_box button {padding: 0 6px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
-
-            #user_join .join_box .input_box .confirm_box, #user_join .join_box .input_box .id_box {margin-top: 6px; display: flex; align-items: center; justify-content: space-between;}
-            #user_join .join_box .input_box .confirm_box label, #user_join .join_box .input_box .id_box label {position: relative; width: 230px;}
-            #user_join .join_box .input_box .confirm_box input, #user_join .join_box .input_box .id_box input {width: 76%; height: 36px; padding: 0 6px; font-size: 14px;}
-            /* #user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241;} */
-            #user_join .join_box .input_box .confirm_box span {position: absolute; top: 50%; transform: translateY(-50%); right: 8px; font-size: 14px; color: #006241; margin-right:4px; margin-top: 2px; position:static; } /* 타이머에서 분과 초가 겹쳐지게 나와서 margin-right, margin-top, position을 추가하였습니다! */
-            #user_join .join_box .input_box .confirm_box button, #user_join .join_box .input_box .id_box button {padding: 0 10px; height: 36px; background: #006241; border-radius: 2px; font-size: 14px; color: #fefefe;}
-
-            #user_join .join_box .join_btn {margin-top: 10px; width: 100%; height: 36px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fefefe;}
-        </style>
     </head>
 <body>
     <!-- s: content -->
@@ -83,8 +43,8 @@
                     <div class="id_box">
                         <label>
                             <input type="text" class="id" name="userId" value="" placeholder="아이디 입력" maxlength="10" oninput="validateId(this)" required onfocus="showTooltip(this)" onblur="hideTooltip(this)" required>
-                        	<div class="tooltip">아이디는 영문자와 숫자로 10자 이내로만 가능합니다.</div>
                         </label>
+                       	<span class="tooltip">* 아이디는 영문자와 숫자로 10자 이내로만 가능합니다.</span>
                         <button type="button" onclick="idCheck()">중복확인</button>
                     </div>
                     <div class="pw_box">
@@ -112,12 +72,11 @@
                         <label>
                             <input type="text" class="userEmail1" name="userEmail1" value="" placeholder="이메일 입력" oninput="validateEmail(this)" required>
                         </label>
-                        @
                         <label>
                             <select name="userEmail2" class="userEmail2">
-                                <option value="naver.com">naver.com</option>
-                                <option value="nate.com">nate.com</option>
-                                <option value="gmail.com">gmail.com</option>
+                                <option value="naver.com">@naver.com</option>
+                                <option value="nate.com">@nate.com</option>
+                                <option value="gmail.com">@gmail.com</option>
                             </select>
                         </label>
                         <button type="button" class="dupcate_btn" onclick="emailCheck()">중복확인</button>
@@ -126,7 +85,7 @@
                     <div class="confirm_box" style="display: none;"> 
                         <label>
                        		<input type="text" class="code" name="code" value="" placeholder="인증번호 입력" >
-                            <span id="timerMin">3</span>:<span id="timerSec">00</span> 
+                       		<p class="timer"><span id="timerMin">3</span>:<span id="timerSec">00</span></p>
                         </label>
                         <button type="button" onclick="codeCheck()">인증확인</button>
                     </div>

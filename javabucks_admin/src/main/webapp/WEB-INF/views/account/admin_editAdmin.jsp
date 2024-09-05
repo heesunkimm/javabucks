@@ -13,7 +13,7 @@
                     <div class="info_wrap">
                         <div class="info_box">
                             <label><span>아이디</span>
-                                <input type="text" name="adminId" value="${jadmin.adminId}" readonly>
+                                <input type="text" name="userId" value="${jadmin.adminId}" readonly>
                             </label>
                             <p class="id_noti">* 아이디 수정 불가</p>
                         </div>
@@ -45,7 +45,7 @@
  function checkAdminEmail() {
      var email1 = document.querySelector('input[name="adminEmail1"]').value;
      var email2 = document.querySelector('input[name="adminEmail2"]').value;
-     var adminId = document.querySelector('input[name="adminId"]').value;
+     var adminId = document.querySelector('input[name="userId"]').value;
      var email = email1 + email2;
 
      // AJAX 요청 생성
@@ -62,7 +62,7 @@
                  alert("사용 가능한 이메일입니다.");
                  isEmailChecked = true;
                  document.querySelector('input[name="adminEmail1"]').readOnly = true;
-                 document.querySelector('select[name="adminEmail2"]').readOnly = true;
+                 document.querySelector('input[name="adminEmail2"]').readOnly = true;
                  enableSubmitButton();
              }
          }

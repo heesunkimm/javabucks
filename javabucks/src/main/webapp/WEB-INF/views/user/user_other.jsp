@@ -1,34 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_other" class="content">
         <div class="inner_wrap">
-            <div class="top_box">
-                <ul class="btn_list">
-                    <li>
-                        <a href="user_alarm">
-                            <div class="alarm_icon img_box">
-                                <img src="../images/icons/alarm.png" alt="">
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tit_box div_box">
-                    <p class="font_bold">Other</p>
-                </div>
+            <div class="tit_box">
+                <p class="font_bold">Other</p>
             </div>
 
             <div class="user_box div_box">

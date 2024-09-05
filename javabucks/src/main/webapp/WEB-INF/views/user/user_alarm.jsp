@@ -2,18 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/user.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/user.js"></script>
-</head>
-<body>
+<%@ include file="user_top.jsp"%>
     <!-- s: content -->
     <section id="user_alarm" class="content">
         <div class="inner_wrap">
@@ -42,7 +31,7 @@
                 <li class="history_item">
                 	<c:if test="${alarm.alarmCate =='cpn'}">
                     <div class="img_box">
-                        <img src="../images/icons/pay_coupon.png" alt="">
+                        <img src="../images/icons/javabucks_cupon.png" alt="">
                     </div>
                     </c:if>
                     <c:if test="${alarm.alarmCate =='order'}">
@@ -57,12 +46,12 @@
                     </c:if>
                     <c:if test="${alarm.alarmCate =='grade'}">
                     <div class="img_box">
-                        <img src="../images/logo/starbucks_logo.png" alt="">
+                        <img src="../images/icons/gradeup.png" alt="">
                     </div>
                     </c:if>
                     <c:if test="${alarm.alarmCate =='charge'}">
                     <div class="img_box">
-                        <img src="../images/icons/menu_pay.png" alt="">
+                        <img src="../images/icons/pay_card.png" alt="">
                     </div>
                     </c:if>
                     <div class="txt_box">
@@ -104,7 +93,7 @@
 		                    	 var imageUrl = '';
 		                         switch (alarm.alarmCate) {
 		                             case 'cpn':
-		                                 imageUrl = '../images/icons/pay_coupon.png';
+		                                 imageUrl = '../images/icons/javabucks_cupon.png';
 		                                 break;
 		                             case 'order':
 		                                 imageUrl = '../images/icons/receipt.png';
