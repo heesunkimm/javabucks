@@ -11,12 +11,12 @@ img {width: 100%; height: 100%;}
 ul li {list-style: none;}
 table {border-collapse: collapse;}
 button {border: none; background-color: transparent; cursor: pointer;}
-select {border: 1px solid #ccc; border-radius: 2px; -webkit-appearance: none; -moz-appearance: none; appearance: none; text-align-last: center; text-align: center; -ms-text-align-last: center; -moz-text-align-last: center; outline: none;}
+select {border: 0.0694vw solid #ccc; border-radius: 0.1389vw; -webkit-appearance: none; -moz-appearance: none; appearance: none; text-align-last: center; text-align: center; -ms-text-align-last: center; -moz-text-align-last: center; outline: none;}
 label {display: inline-block;}
-input {border: 1px solid #ccc; border-radius: 2px; outline: none;}
-textarea {border: 1px solid #ccc; border-radius: 2px; padding: 3px; outline: none; resize: none;}
+input {border: 0.0694vw solid #ccc; border-radius: 0.1389vw; outline: none;}
+textarea {border: 0.0694vw solid #ccc; border-radius: 0.1389vw; padding: 0.2083vw; outline: none; resize: none;}
 
-body {max-width: 1440px; margin: 0 auto;}
+body {max-width: 100.0000vw; margin: 0 auto;}
 .content {width: 100%;}
 
 .font_bold {font-weight: 700;}
@@ -34,31 +34,27 @@ body {max-width: 1440px; margin: 0 auto;}
 .s_active {display: block!important;}
 
 /* 팝업처리 */
-.popup_box {position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px 20px; border-radius: 8px; background-color: #fefefe; overflow: hidden; box-shadow: 0 3px 7px #ccc; z-index: 150;}
-.popup_box .popup_title {margin-bottom: 10px; font-size: 16px; text-align: center;}
-/* .popup_box .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;} */
-.popup_box .pbtn_box {margin-top: 20px; text-align: center;}
-.popup_box .pbtn_box button {position: relative; font-size: 14px; line-height: 18px; color: #555;}
-/* .popup_box .pbtn_box button::after {content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background-color: #555;} */
+.popup_box {position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 2.0833vw 1.3889vw; border-radius: 0.5556vw; background-color: #fefefe; overflow: hidden; box-shadow: 0 0.2083vw 0.4861vw #ccc; z-index: 150;}
+.popup_box .popup_title {margin-bottom: 0.6944vw; font-size: 1.1111vw; text-align: center;}
+.popup_box .pbtn_box {margin-top: 1.3889vw; text-align: center;}
+.popup_box .pbtn_box button {position: relative; font-size: 0.9722vw; line-height: 1.2500vw; color: #555;}
 .dimm {display:none; position: fixed; top: 0; left:0; width: 100%; height: 100%; background: #000; opacity: 0.3; z-index:100;}
 
 /* 페이징 처리 */
-.pagination {margin: 30px 0; font-size: 20px; text-align: center;}
-/* .pagination a {display: inline-block; margin: 0 2px;} */
+.pagination {margin: 2.0833vw 0; font-size: 1.3889vw; text-align: center;}
 /* e: 공통 클래스 사용 정리 */
 
 /* 공통 테이블 처리  */
 .s_table {width: 100%; border-collapse: collapse;}
-.s_table thead tr th {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 4px 0; font-size: 16px; text-align: center; font-weight: 400;}
-.s_table tr {border-bottom: 1px solid #ccc;}
-.s_table tr td {font-size: 16px; line-height: 32px; text-align: center;}
+.s_table thead tr th {border-top: 0.0694vw solid #ccc; border-bottom: 0.0694vw solid #ccc; padding: 0.2778vw 0; font-size: 1.1111vw; text-align: center; font-weight: 400;}
+.s_table tr {border-bottom: 0.0694vw solid #ccc;}
+.s_table tr td {font-size: 1.1111vw; line-height: 2.2222vw; text-align: center;}
 .s_table tbody tr a {display: inline-block; width: 100%; height: 100%;}
 
 /* 공통 페이징 처리 */
-.pagination {margin: 20px 0; display: flex; justify-content: center; align-items: center;}
-.pagination .page_num {margin: 0 4px; display: inline-block; font-size: 18px; line-height: 18px;}
-.pagination .p_active {position: relative;}
-.pagination .p_active::after {content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); display: block; width: 100%; height: 1px;}
-.pagination .page_btn {display: inline-flex; margin: 0 2px; width: 16px; height: 16px;}
+.pagination {margin: 1.3889vw 0; display: flex; justify-content: center; align-items: center;}
+.pagination .page_num {margin: 0 0.2778vw; display: inline-block; font-size: 1.2500vw; line-height: 1.2500vw;}
+.pagination .page_active, .pagination .page_num:hover {color: #006241;}
+.pagination .page_btn {display: inline-flex; margin: 0 0.1389vw; width: 1.1111vw; height: 1.1111vw;}
 .pagination .page_btn img {width: 100%; height: 100%;}
 .pagination .prev_btn {transform: rotate(-180deg);}
