@@ -40,8 +40,8 @@
                             	<div class="loca_details" style="display: flex;">
 		                            <input type="text" name="postcode" class="postcode" placeholder="우편번호" title="우편번호" >
 		            				<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기" >
-	                                <input type="text" name="location" class="address" value="" required>
-	                                <input type="text" name="detailaddress" class="detailAddress" placeholder="상세주소" title="상세주소" >
+	                                <input type="text" name="location" class="address" value="" placeholder="상세주소1" required style="text-align: left;">
+	                                <input type="text" name="detailaddress" class="detailAddress" placeholder="상세주소2" title="상세주소" style="text-align: left;">
                             	</div>
                             </label>
                         </div>

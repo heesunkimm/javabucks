@@ -135,8 +135,13 @@ header .setting_box li:hover {background: #f1f1f1;}
 .accountmanage .select_box .search_box input[type="text"] {padding: 0 6px;}
 .accountmanage .select_box .search_box .email_box {margin-left: 8px;}
 
-.accountmanage .select_box .list_box {margin-top: 20px;}
+.accountmanage .select_box .list_box .btn_box {margin: 20px 0; text-align: right;}
+.accountmanage .select_box .list_box .btn_box button {padding: 0 10px; height: 27px; border-radius: 2px; font-size: 16px; background-color: #006241; color: #fff;}
 .accountmanage .select_box .list_box thead {background-color: #006241; color: #fff;}
+
+.accountmanage .select_box .search_list .editBtn, 
+.accountmanage .select_box .search_list .delBtn {width: 52px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
+.accountmanage .select_box .search_list .delBtn  {border: 1px solid #006241; background: transparent;     box-sizing: border-box; color: #006241;}
 
 /* admin_storelist, admin_storemanage */
 .managelist .search_box {border: 1px solid #ccc; border-radius: 4px; padding: 20px;}
@@ -166,16 +171,15 @@ header .setting_box li:hover {background: #f1f1f1;}
 .store_info .insert_box {margin-top: 20px;}
 .store_info .insert_box form {padding: 0 20px 20px;}
 .store_info .insert_box form > p {margin-bottom: 20px; padding: 20px 0; border-bottom: 1px solid #ccc; font-size: 22px;}
-.store_info .insert_box form .info_wrap {display: flex; align-items: flex-start; gap: 20px;}
-.store_info .insert_box form .info_wrap button {margin-top: 20px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.store_info .insert_box form .info_wrap {display: flex; align-items: center; gap: 20px;}
 .store_info .insert_box form .info_box {display: flex; flex-direction: column;}
 .store_info .insert_box form .info_box div, 
 .store_info .insert_box form .info_box > label:not(:first-child) {margin-top: 10px;}
-.store_info .insert_box form .info_box input {padding: 0 6px;}
+.store_info .insert_box form .info_box input {padding: 0 6px; text-align: center;}
 .store_info .insert_box form .info_box select {width: 200px;}
 .store_info .insert_box form .info_box span {display: inline-block; width: 100px;}
 .store_info .insert_box form .info_box > p {margin-top: 6px; padding-left: 110px; font-size: 14px; color: #555;}
-.store_info .insert_box form .info_box button {margin-top: 10px; width: 80px; padding: 3px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+.store_info .insert_box form .info_wrap button, .store_info .insert_box form .info_box button {padding: 3px 10px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 
 .store_info .insert_box form .btn_box {margin-top: 20px; text-align: center;}
 .store_info .insert_box form .add_btn {width: 100px; padding: 4px 0; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
@@ -184,6 +188,16 @@ header .setting_box li:hover {background: #f1f1f1;}
 .store_info .insert_box form .info_box input[name="bucksLocation"] {width: 400px;}
 .store_info .insert_box form .info_box input[name="bucksEmail1"] {width: 140px; text-align: center;}
 .store_info .insert_box form .info_box .tel {text-align: center;}
+
+.store_info .insert_box form .email_box input {width: 180px;}
+
+.store_info .insert_box form .operating_hours {display: flex; flex-direction: column;}
+.store_info .insert_box form .operating_hours span {display: inline-block; width: 130px;}
+.store_info .insert_box form .operating_hours label + label {margin-top: 10px;}
+.store_info .insert_box form .operating_hours input {}
+
+#admin_addstore .insert_box form .info_box input[name="bucksId"]:focus , 
+#admin_addstore .insert_box form .info_box input[name="bucksPasswd"]:focus {border-color: #ccc;}
 
 #admin_editstore .insert_box form .info_box input[name="bucksId"], 
 #admin_editstore .insert_box form .info_box input[name="bucksLocation"] {border: none; background: #ccc;}
@@ -268,12 +282,12 @@ header .setting_box li:hover {background: #f1f1f1;}
 
 /* admin_cpnmange */
 #admin_cpnmange .btn_box {margin-bottom: 20px; text-align: right;}
-#admin_cpnmange .btn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#admin_cpnmange .btn_box button {width: 90px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 #admin_cpnmange .btn_box button:first-child {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
 
-#listcpn {width: 400px;}
+#listcpn {width: 410px;}
 #listcpn .input_box label:not(:nth-child(3)) {justify-content: space-between;}
-#listcpn.cpn_popup .input_box input {width: 286px;}
+#listcpn.cpn_popup .input_box input {width: 320px;}
 .cpn_popup .popup_title {font-size: 20px;}
 .cpn_popup .close_btn {position: absolute; top: 6px; right: 6px; display: inline-block; width: 30px; height: 30px;}
 .cpn_popup .input_box {display: flex; flex-direction: column;}
@@ -282,7 +296,7 @@ header .setting_box li:hover {background: #f1f1f1;}
 .cpn_popup .input_box label:nth-child(3) {height: 100px; display: flex; flex-direction: column;}
 .cpn_popup .input_box input {margin-left: 6px; padding: 0 6px;}
 .cpn_popup .input_box textarea {margin-top: 4px; padding: 3px 6px; font-size: 18px;}
-.cpn_popup .input_box select {margin-left: 6px; width: 300px;}
+.cpn_popup .input_box select {margin-left: 6px; width: 340px;}
 .cpn_popup .pbtn_box button {width: 80px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; line-height: 27px; color: #fff;}
 .cpn_popup .pbtn_box button.delBtn {background-color: #fefefe; border: 1px solid #006241; color: #006241;}
 

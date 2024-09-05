@@ -540,7 +540,11 @@ public class SalesController {
 				params.put("endRow", pagingMap.get("endRow"));
 				
 				List<PayhistoryDTO> orderList = salesMapper.dailyBucksSales(params);
-				int priceList = salesMapper.dailyBucksSalesPrice();
+				Integer priceList = salesMapper.dailyBucksSalesPrice();
+			    if (priceList == null) {
+			        priceList = 0;  // null일 경우 기본값 0 설정
+			    }
+				
 
 				// 지점별로 카테고리별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
@@ -599,7 +603,7 @@ public class SalesController {
 
 			            // 메뉴 가격 조회
 			            int menuPrice = salesMapper.getMenuPrice(menuCode);
-
+//			            System.out.println(menuPrice);
 			            // 옵션 가격 조회
 			            int optionPrice = salesMapper.getOptPrice(optionId);
 //			            System.out.println(optionPrice);
@@ -619,7 +623,9 @@ public class SalesController {
 			            int currentTotal = totalSalesByCategory.getOrDefault(category, 0);
 			            totalSalesByCategory.put(category, currentTotal + totalPrice);
 
+			            // 지점별 총 매출 합산 시 null 체크 후 처리
 			            branchTotalSalesMap.put(branchId, branchTotalSalesMap.getOrDefault(branchId, 0) + totalPrice);
+			            
 			            
 			            // 각 주문 항목에 카테고리와 계산된 가격을 추가
 			            order.setCategory(category); // 카테고리 설정
@@ -660,10 +666,6 @@ public class SalesController {
 		            						@RequestParam("category") String category,
 		            						@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
 		            						HttpServletRequest req) {
-//				System.out.println(startDate);
-//				System.out.println(endDate);
-//				System.out.println(bucksName);
-//				System.out.println(category);
 			
 				Map<String, Object> params = new HashMap<>();
 			    params.put("startDate", startDate);
@@ -671,14 +673,13 @@ public class SalesController {
 			    params.put("bucksName", bucksName);
 				
 			    int totalCount = salesMapper.searchDSalesCount(params);
-			    System.out.println(totalCount);
+			   // System.out.println(totalCount);
 			    Map<String, Object> pagingMap = paging(totalCount, pageNum);
 			    params.put("startRow", pagingMap.get("startRow"));
 				params.put("endRow", pagingMap.get("endRow"));
 			    
 			    List<PayhistoryDTO> orderList = salesMapper.searchDailySales(params);
 				//System.out.println(orderList);
-				
 			    
 			 /// 지점별로 일자별 매출을 저장할 Map 생성
 			    Map<String, Map<String, Integer>> branchSalesMap = new HashMap<>();
@@ -778,7 +779,17 @@ public class SalesController {
 			        }
 			    }
 			    
+			    try {
+			        int startPage2 = (int) pagingMap.get("startPage");
+			        req.setAttribute("startPage2", startPage2);
+			    } catch (NullPointerException e) {
+			        //System.err.println("startPage is null");
+			        req.setAttribute("startPage2", 0); // 기본값 설정
+			    }
 			    
+			    for (Map.Entry<String, Object> entry : pagingMap.entrySet()) {
+			       // System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+			    }
 
 			    // 지점별 카테고리별 총 매출 데이터를 모델에 추가
 			    req.setAttribute("branchSalesMap", branchSalesMap);
@@ -801,6 +812,12 @@ public class SalesController {
 				req.setAttribute("endPage2", (int)pagingMap.get("endPage"));
 				req.setAttribute("pageCount2", (int)pagingMap.get("pageCount"));
 				req.setAttribute("pageBlock2", (int)pagingMap.get("pageBlock"));
+				
+				// NullPointerException 방지용 null 체크 및 기본값 설정
+			    req.setAttribute("startPage2", pagingMap.getOrDefault("startPage", 0));
+			    req.setAttribute("endPage2", pagingMap.getOrDefault("endPage", 0));
+			    req.setAttribute("pageCount2", pagingMap.getOrDefault("pageCount", 0));
+			    req.setAttribute("pageBlock2", pagingMap.getOrDefault("pageBlock", 0));
 
 			    // 결과 페이지로 이동
 			    return "sales/admin_dailysales";

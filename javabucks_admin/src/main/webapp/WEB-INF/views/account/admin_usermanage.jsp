@@ -159,7 +159,7 @@ $(document).ready(function() {
                 itemsPerPage: 5 // 페이지당 항목 수를 서버로 전달
             },
             success: function(response) {
-                console.log("Received response: ", response);  // response 구조를 확인하세요.
+           //     console.log("Received response: ", response);  // response 구조를 확인하세요.
                 updateSearchResults(response);  // 응답 데이터를 기반으로 검색 결과와 페이징 갱신
             },
             error: function(xhr, status, error) {
@@ -216,16 +216,19 @@ $(document).ready(function() {
      var $pagination = $('.pagination');
      $pagination.empty(); // 기존 페이징 요소를 모두 제거
 
-     if (response && response.pageCount > 1) {
+     if (response && response.pageCount > 0) {
          var currentPage = response.currentPage ; // 현재 페이지 번호
          var totalPages = response.pageCount; // 전체 페이지 수
          var startPage =  response.startPage; // 현재 페이지 블록의 시작 페이지
          var endPage = response.endPage; // 현재 페이지 블록의 끝 페이지
 
          // 이전 페이지 블록으로 이동하는 버튼
-         if (startPage > 1) {
-             $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
-         }
+          if (totalPages <= 1) {
+            $pagination.append('<a href="javascript:;" class="page_active" data-page="1">1</a>');
+        } else {
+	         if (startPage > 1) {
+	             $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
+	         }
 
          // 페이지 번호 링크 생성
          for (var i = startPage; i <= endPage; i++) {
@@ -240,6 +243,7 @@ $(document).ready(function() {
          if (endPage < totalPages) {
              $pagination.append('<a class="page_btn next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
          }
+        }
 
          // 페이지 클릭 이벤트 추가
          $('.page-link').on('click', function() {
