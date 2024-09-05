@@ -239,7 +239,7 @@ function emailCheck() {
             console.error(err);
         }
     });
-    document.querySelector('.confirm_btn').style.display = 'block';
+    document.querySelector('.confirm_btn').style.display = 'inline-block';
     document.querySelector('.dupcate_btn').style.display = 'none';
 }
 
@@ -252,7 +252,7 @@ function sendEmail() {
         return $('.userEmail1').focus();
     }
 
-    document.querySelector('.confirm_box').style.display = 'block';
+    document.querySelector('.confirm_box').style.display = 'inline-block';
     timeRemaining = 180;
     startTimer();
 
