@@ -25,9 +25,7 @@
         <div class="list_box">
         	<c:if test="${empty deliversOrderInfoList}">
 	        	<ul class="search_list bg_beige">
-	        		<li class="search_item">
-	        			<p> 주문내역이 없습니다. </p>
-	        		</li>
+	        		<li class="search_item nolist">주문내역이 없습니다.</li>
 	        	</ul>
         	</c:if>
         	<c:if test="${not empty deliversOrderInfoList}">

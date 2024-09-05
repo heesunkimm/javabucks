@@ -12,13 +12,26 @@ header .logo_box span {display: inline-block; font-size: 38px; font-family: 'San
 header .nav_list {display: flex;}
 header .nav_list .nav_item {position: relative;}
 header .nav_list .nav_item a {display: block; text-align: center; padding: 14px 20px; text-decoration: none;}
-header .nav_list .nav_item a:hover {color: #006241;}
+header .nav_list .nav_item a:hover {color: rgb(0, 98, 65);}
 header .nav_list .nav_item .dropdown_content {display: none; position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px;}
 header .nav_list .nav_item .dropdown_content a {color: #555; padding: 12px 16px; text-decoration: none; display: block; text-align: left;}
 header .nav_list .nav_item .dropdown_content a:hover {background-color: #f1f1f1;}
 header .nav_item:hover .dropdown_content {display: block;}
 
-header .store_box {font-size: 16px;}
+header .store_box {position: relative; display:flex; align-items: center; gap: 10px;}
+header .store_box .setBtn {display:inline-block; width: 20px; height: 20px;}
+header .setting_box {display: none; position: absolute; top: 40px; right: 10px; width: 140px; background: #f9f9f9; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 120;}
+header .setting_box li a {display: inline-block; width: 100%; padding: 10px 0; font-size: 15px; text-align: center; color: #555;}
+header .setting_box li:hover {background: #f1f1f1;}
+
+#passwdEdit {width: 360px;}
+#passwdEdit .popup_title {font-size: 20px;}
+#passwdEdit .input_box {display: flex; flex-direction: column;}
+#passwdEdit .input_box label + label {margin-top:10px;}
+#passwdEdit .input_box label {display: flex; align-items: center; justify-content: space-between;}
+#passwdEdit .input_box input {height: 27px; padding: 0 6px; font-size: 16px;}
+#passwdEdit .pbtn_box button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#passwdEdit .pbtn_box button.close_btn {background:transparent; border: 1px solid #006241; color: #006241;}
 
 .tit_box {margin: 20px 0;}
 
@@ -68,25 +81,28 @@ header .store_box {font-size: 16px;}
 #store_index .top_box {margin-top: 20px; display: flex; justify-content: space-between;}
 #store_index .top3_box {width: 70%;}
 #store_index .top3_box .top_list {display: flex; justify-content: flex-start; gap: 30px; text-align: center; padding: 0 10px;}
+#store_index .top3_box .top_list li {width: 245px;}
 #store_index .top3_box .top_item .top_bedge {font-size: 20px;}
-#store_index .top3_box .top_item .img_box {margin: 10px auto; width: 160px; height: 160px; border-radius: 50%; border: 1px solid #ccc;}
+#store_index .top3_box .top_item .img_box {margin: 10px auto; width: 160px; height: 160px; border-radius: 50%; overflow: hidden;}
 #store_index .top3_box .top_item .txt_box .txt_tit {font-size: 14px;}
-#store_index .top3_box .top_item .txt_box .txt_count {margin-top: 6px; font-size: 14px;}
+#store_index .top3_box .top_item .txt_box .txt_count {margin-top: 6px; font-size: 14px; color: #555;}
 
-#store_index .news_box {width: 30%;}
+#store_index .news_box {width: 28%;}
 #store_index .news_box .news_container .news_pagination span.swiper-pagination-bullet-active {background-color: #006241;}
 
 #store_index .annualsales_box {margin-top: 20px;}
 #store_index .annualsales_box .sales_chart {position:relative;}
 #store_index .annualsales_box .sales_chart .chart_inner {position:relative; margin-bottom:45px; padding-left:20px; box-sizing:border-box; height:200px;}
-#store_index .annualsales_box .sales_chart .chart_inner .chart_statistic {display:-webkit-flex; display:-ms-flex; display:-o-flex; display:flex; flex-direction:column-reverse; align-items:center; justify-content:space-between; position:absolute; top:0; left:0; margin:0; padding:0; width:20px; height:100%; font-size:12px; color:#4a4a4a;}
+#store_index .annualsales_box .sales_chart .chart_inner .chart_statistic {display:-webkit-flex; display:-ms-flex; display:-o-flex; display:flex; flex-direction:column-reverse; align-items:center; justify-content:space-between; position:absolute; top:0; left:-80px; margin:0; padding:0; width:100px; height:100%; font-size:12px; color:#4a4a4a;}
 #store_index .annualsales_box .sales_chart .chart_inner .chart_statistic:before {content:''; position:absolute; top:5px; bottom:0; right:0; width:1px; background:#d3d3d3;}
+#store_index .annualsales_box .sales_chart .chart_inner .chart_statistic .statistic_item {width: 100%; padding-right: 20px; text-align: right;}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list {display:-webkit-flex; display:-ms-flex; display:-o-flex; display:flex; justify-content:center; position:relative; padding:0; box-sizing:border-box; height:100%; border-bottom:1px solid #d3d3d3;}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item {flex:1; position:relative;}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item .txt_box {position:absolute; bottom:-43px; left:50%; text-align:center; -webkit-transform:translate(-50%,0); -ms-transform:translate(-50%,0); -o-transform:translate(-50%,0); transform:translate(-50%,0);}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item .txt_box .txt_month {display:block; font-size:14px; line-height:19px; color:#4a4a4a;}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item .chart_graph {display:-webkit-flex; display:-ms-flex; display:-o-flex; display:flex; flex-direction:column-reverse; position:relative; margin:0 auto; padding:0; width:35px; height:100%; background:#e8e8e8; border-radius:3px 3px 0 0; overflow:hidden;}
 #store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item .chart_graph .sales {display:block; position:relative; margin: 3px 0 -4px 0; padding-top:4px; box-sizing:content-box; width:100%; border-radius:3px 3px 0 0; background:#006241;}
+#store_index .annualsales_box .sales_chart .chart_inner .monthly_list .monthly_item .sales_amount {margin-top: 4px; font-size: 14px; text-align: center; color: #555;}
 
 /* store_adddrink, store_adddessert, store_addmd */
 .addmenu .mixed_box, 
@@ -186,7 +202,8 @@ header .store_box {font-size: 16px;}
 #store_stocks .select_box .tab-content .stocks_list .stocks_item {display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 20px; border-bottom: 1px solid #ccc;}
 #store_stocks .select_box .tab-content .stocks_list .stocks_item > .img_box {width: 100px; height: 100px;}
 #store_stocks .select_box .tab-content .stocks_list .stocks_item > .img_box.order_dimm {position: relative;}
-#store_stocks .select_box .tab-content .stocks_list .stocks_item > .img_box.order_dimm::after {content: '주문불가'; position: absolute; left: 0; top: 0; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); font-size: 17px; color: #fefefe; text-align: center;}
+#store_stocks .select_box .tab-content .stocks_list .stocks_item > .img_box.order_dimm::before {content: ''; position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);}
+#store_stocks .select_box .tab-content .stocks_list .stocks_item > .img_box.order_dimm::after {content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block; width: 80px; height: 80px; background: url('../images/icons/soldout.png')no-repeat center center/contain; filter: brightness(0) saturate(100%) invert(97%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(103%) contrast(100%);}
 #store_stocks .select_box #stocks_cup .stocks_list .stocks_item > .img_box {height: 137px;}
 
 #store_stocks .select_box .tab-content .stocks_list .stocks_item .txt_box {width: 1000px; display: flex; justify-content: space-between;}
@@ -250,8 +267,8 @@ header .store_box {font-size: 16px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list {width: 500px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list:last-child {margin-top: 20px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item {display: flex; align-items: center; justify-content: space-between;}
+#store_ordermanage .order_box .order_wrap .orders .order_list .order_item.nolist {justify-content: center;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item dl, 
-#store_ordermanage .order_box .making_box .making_item .txt_box dl {display: flex; font-size: 18px;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item dl dt, 
 #store_ordermanage .order_box .making_box .making_item .txt_box dl dt {margin-right: 10px;}
 
@@ -264,7 +281,10 @@ header .store_box {font-size: 16px;}
 
 #store_ordermanage .order_box .making_box .making_item + .making_item {margin-top: 10px;}
 #store_ordermanage .order_box .making_box .making_item {display: flex; align-items: center; justify-content: space-between;}
+#store_ordermanage .order_box .making_box .making_item.nolist {justify-content: center;}
 #store_ordermanage .order_box .making_box .making_item .txt_box {width: 400px;}
+#store_ordermanage .order_box .making_box .making_item .txt_box dl {display: flex; font-size: 18px;}
+#store_ordermanage .order_box .making_box .making_item .orderSubmit {width: 100px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 
 /* store_orderhistory, store_delivershistory */
 .orderhistory button {margin-left: 10px; width: 60px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
@@ -277,6 +297,8 @@ header .store_box {font-size: 16px;}
 .orderhistory .list_box .search_list {padding: 20px;}
 .orderhistory .list_box .search_list > li + li {margin-top: 12px;}
 .orderhistory .list_box .search_list .search_item {display: flex; flex-wrap: wrap; align-items: center; padding: 10px 0; border-radius: 2px; border: 1px solid #ccc; background-color: #fefefe;}
+.orderhistory .list_box .search_list .search_item.nolist, 
+.orderhistory .list_box .search_list .search_item.nolist {justify-content: center;}
 .orderhistory .list_box .search_list .search_item .search_toolbar {width: 100%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ccc; padding-bottom: 10px;}
 .orderhistory .list_box .search_list .search_item .search_toolbar p {font-size: 18px; text-align: center;}
 .orderhistory .list_box .search_list .search_item .order_num, 

@@ -823,7 +823,9 @@ public class OrderController {
 			List<OrderDTO> deliversReady = mapper.getDeliversReady();
 			if(!deliversReady.isEmpty()) {
 				for(int i=0; i<deliversReady.size(); i++) {
-					String alarmCont = deliversReady.get(i).getOrderCode() +"번 배달이 완료되었습니다.";
+					String orginOrderCode = deliversReady.get(i).getOrderCode();
+					String alarmOrderCode = orginOrderCode.substring(7, 12); 
+					String alarmCont = alarmOrderCode +"번 배달이 완료되었습니다.";
 					paramsAlarm.put("alarmCont", alarmCont);
 					paramsAlarm.put("userId", deliversReady.get(i).getUserId());
 					int insertDeliversFinishAlarm = mapper.insertDeliversFinishAlarm(paramsAlarm);

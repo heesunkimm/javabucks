@@ -87,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        FROM javabucks_Payhistory p
 		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
 		        WHERE p.bucksId = #{bucksId}
+		        	AND TRUNC(payhistoryDate) = TRUNC(SYSDATE)
 		    )
 		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
 		</select>
@@ -116,7 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    SELECT COUNT(*)
 		    FROM javabucks_Payhistory
 		    WHERE bucksId = #{bucksId}
-		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND
 		</select>
 		
 		<!-- 기간 필터링된 전체 매출액 합계 가져오기 -->
@@ -124,7 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    SELECT NVL(SUM(payhistoryPrice), 0)
 		    FROM javabucks_Payhistory
 		    WHERE bucksId = #{bucksId}
-		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		    AND TRUNC(payhistoryDate) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND
 		</select>
 		
 		<!-- 기간 필터링된 매출 리스트 가져오기 -->
@@ -151,15 +152,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<select id="getselectCateList" parameterType="map" resultType="PayhistoryDTO">
 		    SELECT *
-		    FROM (
-		        SELECT 
-		            p.*, 
-		            o.orderList, 
-		            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) rnum
-		        FROM javabucks_Payhistory p
-		        JOIN javabucks_Order o ON p.orderCode = o.orderCode
-		        WHERE p.bucksId = #{bucksId}
-		    )
+			    FROM (
+			        SELECT 
+			            p.*, 
+			            o.orderList, 
+			            ROW_NUMBER() OVER (ORDER BY p.Payhistorydate DESC) AS rnum
+			        FROM javabucks_Payhistory p
+			        JOIN javabucks_Order o ON p.orderCode = o.orderCode
+			        WHERE p.bucksId = #{bucksId}
+			    ) subquery
+			    WHERE rnum BETWEEN #{startRow} AND #{endRow}
 		    
 		</select>
 		
@@ -173,7 +175,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<select id="getOptionPriceByCode" parameterType="string" resultType="int">
 		   SELECT
 	        NVL(i.icePrice, 0) + NVL(w.whipPrice, 0) + NVL(m.milkPrice, 0) + 
-	        NVL(c.cupPrice, 0) + NVL(s.shotPrice * o.optShotCount, 0) + NVL(sr.syrupPrice, 0) AS optionPrice
+	        NVL(c.cupPrice, 0) + NVL(s.shotPrice * o.optShotCount, 0) + NVL(sr.syrupPrice * o.optSyrupCount, 0) AS optionPrice
 	    FROM
 	        javabucks_order_opt o
 	    LEFT JOIN javabucks_menuopt_ice i ON o.iceNum = i.iceNum
@@ -192,6 +194,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    JOIN javabucks_coupon c ON cl.cpnCode = c.cpnCode
 	    WHERE cl.cpnListNum = #{coupon}
 	</select>
+	
+	<select id="CateSearchSalesCount" parameterType="map" resultType="int">
+    SELECT COUNT(*)
+    FROM javabucks_Payhistory p
+    JOIN javabucks_Order o ON p.orderCode = o.orderCode
+    WHERE p.bucksId = #{bucksId}
+</select>
 				
 		
 </mapper>
