@@ -286,7 +286,7 @@ public class AccountController {
 					 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 					 HttpServletRequest req) {
 				
-				System.out.println(startDate);
+//				System.out.println(startDate);
 				
 			    
 			    
@@ -306,7 +306,7 @@ public class AccountController {
 				params.put("endIndex", pagingMap.get("endRow"));		  
 			    
 			    List<UserDTO> list = accountMapper.searchUserList(params); 
-			    System.out.println("list : "+list);
+//			    System.out.println("list : "+list);
 			    for (UserDTO user : list) {
 			        // 이메일을 합침
 			        String fullEmail = user.getUserEmail1() + "@" + user.getUserEmail2();

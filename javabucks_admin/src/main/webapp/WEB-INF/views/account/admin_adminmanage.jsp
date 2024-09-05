@@ -160,7 +160,7 @@ $(document).ready(function() {
                 itemsPerPage: 5 // 페이지당 항목 수를 서버로 전달
             },
             success: function(response) {
-                console.log("Received response: ", response);  // response 구조를 확인하세요.
+              //  console.log("Received response: ", response);  // response 구조를 확인하세요.
                 updateSearchResults(response);  // 응답 데이터를 기반으로 검색 결과와 페이징 갱신
             },
             error: function(xhr, status, error) {
