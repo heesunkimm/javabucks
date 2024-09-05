@@ -214,7 +214,7 @@ public class SalesController {
 		
 	    // 총 매출 항목 수 계산
 	    int totalSalesCount = salesMapper.getSalesCount(bucksId);
-	    System.out.println(totalSalesCount);
+	    //System.out.println(totalSalesCount);
 	    Map<String, Object> params = new HashMap<>();
 	    Map<String, Object> pagingMap = paging(totalSalesCount, pageNum);
 		params.put("startRow", pagingMap.get("startRow"));
@@ -368,7 +368,7 @@ public class SalesController {
 	        @RequestParam(value = "menu_cate", required = false) String menuCate,
 	        @RequestParam(value = "disert_cate", required = false) String disertCate,
 	        @RequestParam(value = "Md_cate", required = false) String mdCate,
-	        @RequestParam(value = "pageNum", defaultValue = "1") int pageNum){
+	        @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum){
 
 	    String selectedCate = null;
 	    if (menuCate != null && !menuCate.trim().isEmpty()) {
@@ -386,7 +386,14 @@ public class SalesController {
 	    // 전체 매출 데이터 가져오기
 	    Map<String, Object> searchParams = new HashMap<>();
 	    searchParams.put("bucksId", bucksId);
+	    int totalSalesCount = salesMapper.CateSearchSalesCount(searchParams);
+	//    System.out.println("카테총갯수"+totalSalesCount);
+		Map<String, Object> pagingMap = paging(totalSalesCount, pageNum);
+		searchParams.put("startRow", pagingMap.get("startRow"));
+		searchParams.put("endRow", pagingMap.get("endRow"));
 	    List<PayhistoryDTO> salesList = salesMapper.getselectCateList(searchParams);
+	    
+	    //총금액 
 
 	    int totalSalesAmount = 0;
 	    List<PayhistoryDTO> filteredSalesList = new ArrayList<>();
@@ -409,6 +416,7 @@ public class SalesController {
 	            String extractedCode = parts[1];
 	            order.setExtractedOrderCode(extractedCode); // 추출한 값을 DTO에 설정
 	        }
+//	        System.out.println("추출한거 : " + order);
 
 	        if (orderListJson != null && !orderListJson.isEmpty()) {
 	            orderListJson = orderListJson.substring(1, orderListJson.length() - 1);
@@ -453,7 +461,7 @@ public class SalesController {
 	            }
 	            
 	            // 최종적으로 한번만 리스트에 추가
-	            if (totalItemPrice > 0) {
+	            if (totalItemPrice >= 0) {
 	                order.setMenuName(menuNames.toString().trim());
 	                totalSalesAmount += totalItemPrice;
 	                order.setTotalItemPrice(totalItemPrice);
@@ -465,6 +473,16 @@ public class SalesController {
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("salesList", filteredSalesList); // 모든 필터링된 데이터 반환
 	    result.put("totalSalesAmount", totalSalesAmount); // 총 매출 금액
+	    
+	    
+		    result.put("startPage", (int)pagingMap.get("startPage"));
+		    result.put("endPage", (int)pagingMap.get("endPage"));
+		    result.put("pageCount", (int)pagingMap.get("pageCount"));
+		    result.put("pageBlock", (int)pagingMap.get("pageBlock"));
+	    
+		    System.out.println("result : "+ result);
+	    
+	    
 	    return result;
 	}
 

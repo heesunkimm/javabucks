@@ -104,4 +104,8 @@ public class SalesMapper {
 		return sqlSession.selectList("searchBaljooPriceList",params);
 	}
 	
+	public int CateSearchSalesCount(Map<String, Object> searchParams){
+		return sqlSession.selectOne("CateSearchSalesCount", searchParams);
+	}
+	
 }
