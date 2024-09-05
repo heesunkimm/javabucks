@@ -18,7 +18,7 @@
 		                    <li>
 		                        <a class="popup_btn" href="javascript:;" data-popup="cardpay" data-cardregnum="${card.cardRegNum}" data-cardname="${card.cardName}" data-cardprice="${card.cardPrice}" >
 		                            <div class="img_box">
-		                                <img src="../images/icons/starbucksCard.png" alt="">
+		                                <img src="../images/icons/buckscard.png" alt="">
 		                            </div>
 		                        </a>
 		                    </li>
@@ -50,7 +50,7 @@
             </div>
             <p class="card_price">잔액: <span>0</span>원</p>
             <div class="card_img img_box">
-                <img src="../images/icons/starbucksCard.png" alt="">
+                <img src="../images/icons/buckscard.png" alt="">
             </div>
             <form name="f" action="user_paycharge" method="post">
             	<input type="hidden" name="cardRegNum" value="">

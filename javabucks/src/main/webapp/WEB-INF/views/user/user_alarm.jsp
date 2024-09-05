@@ -36,12 +36,12 @@
                     </c:if>
                     <c:if test="${alarm.alarmCate =='order'}">
                     <div class="img_box">
-                        <img src="../images/icons/receipt.png" alt="">
+                        <img src="../images/icons/receipt2.png" alt="">
                     </div>
                     </c:if>
                     <c:if test="${alarm.alarmCate =='pickUp'}">
                     <div class="img_box">
-                        <img src="../images/icons/menu_order.png" alt="">
+                        <img src="../images/icons/order.png" alt="">
                     </div>
                     </c:if>
                     <c:if test="${alarm.alarmCate =='grade'}">
@@ -51,7 +51,7 @@
                     </c:if>
                     <c:if test="${alarm.alarmCate =='charge'}">
                     <div class="img_box">
-                        <img src="../images/icons/pay_card.png" alt="">
+                        <img src="../images/icons/charge.png" alt="">
                     </div>
                     </c:if>
                     <div class="txt_box">
@@ -96,16 +96,16 @@
 		                                 imageUrl = '../images/icons/javabucks_cupon.png';
 		                                 break;
 		                             case 'order':
-		                                 imageUrl = '../images/icons/receipt.png';
+		                                 imageUrl = '../images/icons/receipt2.png';
 		                                 break;
 		                             case 'pickUp':
-		                                 imageUrl = '../images/icons/menu_order.png';
+		                                 imageUrl = '../images/icons/order.png';
 		                                 break;
 		                             case 'grade':
 		                                 imageUrl = '../images/logo/starbucks_logo.png';
 		                                 break;
 		                             case 'charge':
-		                                 imageUrl = '../images/icons/menu_pay.png';
+		                                 imageUrl = '../images/icons/charge.png';
 		                                 break;
 		                             default:
 		                                 break;
