@@ -27,9 +27,7 @@
         
         	<c:if test="${empty orderInfoList}">
 	        	<ul class="search_list bg_beige">
-	        		<li class="search_item">
-	        			<p> 주문내역이 없습니다. </p>
-	        		</li>
+	        		<li class="search_item nolist">주문내역이 없습니다.</li>
 	        	</ul>
         	</c:if>
         	

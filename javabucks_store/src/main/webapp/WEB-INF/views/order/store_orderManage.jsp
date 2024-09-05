@@ -29,12 +29,8 @@
                         <p class="orders_tit">매장 신규주문</p>
                        	<c:if test="${empty storeOrderList}">
                        		<ul class="order_list">
-		                            <li class="order_item list_item bg_beige">
-		                                <div class="txt_box">
-		                                	매장 신규주문이 없습니다.
-		                                </div>
-		                            </li>
-		                        </ul>
+	                            <li class="order_item list_item nolist bg_beige">매장 신규주문이 없습니다.</li>
+	                        </ul>
                        	</c:if>
                        	<c:if test="${not empty storeOrderList}">
                        		<c:forEach var="order" items="${storeOrderList}">
@@ -81,12 +77,8 @@
                         <p class="orders_tit">배달 신규주문</p>
                         <c:if test="${empty deliverOrderList}">
                         	<ul class="order_list">
-		                            <li class="order_item list_item bg_beige">
-		                                <div class="txt_box">
-		                                    배달 신규주문이 없습니다.
-		                                </div>                               
-		                            </li>
-		                        </ul>
+	                            <li class="order_item list_item nolist bg_beige">배달 신규주문이 없습니다.</li>
+	                        </ul>
                         </c:if>
                         <c:if test="${not empty deliverOrderList}">
                         	<c:forEach var="deliver" items="${deliverOrderList}">
@@ -134,12 +126,8 @@
                     <p class="orders_tit">제조중</p>
                     <c:if test="${empty makingList}">
                     	<ul class="making_list list_box">
-		                        <li class="making_item list_item bg_beige">
-		                            <div class="txt_box">
-		                                제조중인 주문이 없습니다.
-		                            </div>		                            
-		                        </li>
-		                    </ul>
+	                        <li class="making_item list_item nolist bg_beige">제조중인 주문이 없습니다.</li>
+	                    </ul>
                     </c:if>
                     <c:if test="${not empty makingList}">
 		            	<ul class="making_list list_box">
@@ -162,7 +150,7 @@
 			                                </c:forEach>
 		                                </ul>
 		                            </div>
-		                            <button type="button" name="orderButton" onclick="orderFinish(this)" data-orderCode="${making.orderCode}">제조완료</button>
+		                            <button class="orderSubmit" type="button" name="orderButton" onclick="orderFinish(this)" data-orderCode="${making.orderCode}">제조완료</button>
 		                        </li>
 		                	</c:forEach>
 		                </ul>

@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="store_top.jsp"%>
-
     <!-- s: content -->
     <section id="store_index" class="content">
         <div class="inner_wrap">
@@ -60,11 +59,12 @@
 			                        <div class="txt_box">
 			                            <strong class="txt_month">${status.index + 1}월</strong>
 			                        </div>
-			                        <button class="chart_graph" type="button">
-                            <span class="sales" style="height: ${maxSales > 0 ? (sales / maxSales * 100) : 0}%;"></span>
-                        </button>
+			                        <div class="chart_graph">
+			                            <span class="sales" style="height: ${maxSales > 0 ? (sales / maxSales * 100) : 0}%;"></span>
+			                        </div>
 			                        <div class="sales_amount">
-			                        <fmt:formatNumber value="${sales}" type="number" groupingUsed="true"/>원</div>
+			                        	<p><fmt:formatNumber value="${sales}" type="number" groupingUsed="true"/>원</p>
+			                        </div>
 			                    </li>
 			                </c:forEach>
 			            </ul>

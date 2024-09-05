@@ -1,4 +1,18 @@
 $(function() {
+	// store_top 설정 토글
+	$("header .setBtn").on('click', function(e){
+	    e.stopPropagation();
+	    $(".setting_box, .dimm").toggle();
+	});
+	$(document).on('click', function(e){
+	    if(!$(e.target).closest('.setting_box, .setBtn').length){
+	        $(".setting_box, .dimm").hide();
+	    }
+	});
+	$("header .setting_box li:first-child").on('click', function() {
+	    $(".setting_box, .dimm").hide();
+	});
+	
     // 비밀번호 찾기 창 열기
     $(".passwd_set").on('click', function () {
         $(".popup_box, .dimm").show();
@@ -39,8 +53,8 @@ $(function() {
 
 			$('#' + popupId).removeClass('s_active');
             $('.dimm').removeClass('s_active');
-			$("input").val("");
-			$("textarea").val("");
+			$(".popup_box input").val("");
+			$(".popup_box textarea").val("");
 		});
     });
 });
