@@ -28,8 +28,8 @@ $(function() {
 
 			$('#' + popupId).removeClass('s_active');
             $('.dimm').removeClass('s_active');
-			$("input").val("");
-			$("textarea").val("");
+			$(".popup_box input").val("");
+			$(".popup_box textarea").val("");
 		});
     });
 });

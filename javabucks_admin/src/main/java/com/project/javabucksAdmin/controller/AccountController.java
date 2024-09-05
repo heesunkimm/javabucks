@@ -412,7 +412,7 @@ public class AccountController {
 
 			// 페이징 처리 메서드
 			public Map<String, Object> paging(int count, int pageNum) {
-				int pageSize = 5; // 한 페이지에 보여질 게시글 수
+				int pageSize = 10; // 한 페이지에 보여질 게시글 수
 				int startRow = (pageNum-1) * pageSize + 1; // 페이지별 시작 넘버
 				int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
 				if (endRow > count) endRow = count;		

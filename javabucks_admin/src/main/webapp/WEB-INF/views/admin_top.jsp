@@ -31,7 +31,7 @@
 <body>
     <header class="bg_beige">
         <div class="logo_box">
-            <a href="admin_adminmanage">
+            <a href="/admin_adminmanage.do">
             	<div class="img_box">
                     <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>

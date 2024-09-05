@@ -35,8 +35,7 @@
 			                    </li>
 		                    </c:when>
 		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
-		                    	<c:set var="activeClass" value="pdt_dimm" />
-			                    	<li class="menu_item">
+			                    	<li class="menu_item pdt_dimm">
 		                    			<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">
@@ -57,7 +56,7 @@
                 <ul class="menu_list">
                 	<c:forEach var ="dto" items="${foodList}">
 	                   	<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y'}"> 
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}"> 
 		                   		<li class="menu_item">
 			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
 			                            <div class="img_box">
@@ -71,8 +70,7 @@
 		                        </li>
 	                      	</c:when>
 	                      	<c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
-	                      		<c:set var="activeClass" value="pdt_dimm" />
-	                      			<li class="menu_item">
+	                      			<li class="menu_item pdt_dimm">
 	                      				<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                                <img src="upload_menuImages/${dto.menuImages}" alt="">
@@ -108,8 +106,7 @@
 			                    </li>
 		                    </c:when>
 		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
-		                   		<c:set var="activeClass" value="pdt_dimm" />
-			                    <li class="menu_item">
+			                    <li class="menu_item pdt_dimm">
 			                    	<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
 			                               <img src="upload_menuImages/${dto.menuImages}" alt="">

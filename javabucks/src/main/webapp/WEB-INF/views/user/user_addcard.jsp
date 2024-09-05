@@ -18,7 +18,7 @@
                         <input type="text" id="cardRegNum" name="cardRegNum" value="" placeholder="JAVABUCKS 카드번호 16자리 (필수)" maxlength="19">
                     </label>
                     <div class="btn_box">
-                        <button class="submitBtn" type="submit" disabled>등록하기</button>
+                        <button class="submitBtn" type="submit">등록하기</button>
                     </div>
                 </form>
             </div>
@@ -31,7 +31,6 @@
 		function cardCheck(){
 			let cardRegNum = $("#cardRegNum").val();
 			let userId = '${inUser.userId}';
-			
 			if (cardRegNum == ""){
 				alert("카드번호를 입력해 주세요");
 				$("#cardRegNum").focus();

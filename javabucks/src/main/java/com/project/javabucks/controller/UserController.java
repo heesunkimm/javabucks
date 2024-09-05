@@ -1884,7 +1884,6 @@ public class UserController {
 					if (now.isBefore(start) || now.isAfter(end)) {
 						dto.setOrderEnalbe("N");
 					}
-					dto.setOrderEnalbe("Y");
 					dto.setBucksStart(st);
 					dto.setBucksEnd(ed);
 				}

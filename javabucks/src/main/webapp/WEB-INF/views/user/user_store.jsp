@@ -48,8 +48,7 @@
 	                <c:forEach var ="dto" items="${storeList}">
 	                	<c:choose>
 							<c:when test="${dto.orderEnalbe eq 'N'}">
-								<c:set var="activeClass" value="pdt_dimm" />
-	                			<li class="store_item">
+	                			<li class="store_item pdt_dimm">
 				                    <a class="popup_btn2" href="javascript:;" data-bucksId="${dto.bucksId}"
 											data-bucksName="${dto.bucksName}" data-bucksLocation="${dto.bucksLocation}" data-orderEnable="${dto.orderEnalbe}">
 				                        <div class="img_box">

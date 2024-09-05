@@ -273,23 +273,23 @@
 	
 	//'사용하기' 버튼 클릭 시 쿠폰 적용 및 팝업 닫기
 	document.getElementById('applyCouponBtn').addEventListener('click', function() {
-	 if (selectedCouponPrice > 0) {
-	     // 할인 금액을 업데이트 (이 부분은 실제 금액 업데이트에 맞게 수정 필요)
-	     document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
-	     updateTotalAmount();
-	     // 팝업 닫기
-	     $('#cpnpay').removeClass('s_active');
-         $('.dimm').removeClass('s_active');
-	 } else if (selectedCouponPrice == 0) {
-		 let selectedCouponPrice = 0;
-		 document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
-		 updateTotalAmount();
-		 // 팝업 닫기
-	     $('#cpnpay').removeClass('s_active');
-         $('.dimm').removeClass('s_active');
-	 } else {
-	     alert("쿠폰을 선택해 주세요.");
-	 }
+		 if (selectedCouponPrice > 0) {
+		     // 할인 금액을 업데이트 (이 부분은 실제 금액 업데이트에 맞게 수정 필요)
+		     document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
+		     updateTotalAmount();
+		     // 팝업 닫기
+		     $('#cpnpay').removeClass('s_active');
+	         $('.dimm').removeClass('s_active');
+		 } else if (selectedCouponPrice == 0) {
+			 let selectedCouponPrice = 0;
+			 document.getElementById("discountAmount").innerText = selectedCouponPrice.toLocaleString() + "원";
+			 updateTotalAmount();
+			 // 팝업 닫기
+		     $('#cpnpay').removeClass('s_active');
+	         $('.dimm').removeClass('s_active');
+		 } else {
+		     alert("쿠폰을 선택해 주세요.");
+		 }
 	});
 	
 	// 쿠폰 적용 시 호출되는 함수

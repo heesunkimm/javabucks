@@ -42,8 +42,8 @@ $(function() {
 
 			$('#' + popupId).removeClass('s_active');
             $('.dimm').removeClass('s_active');
-			$("input").val("");
-			$("textarea").val("");
+			$(".popup_btn input").val("");
+			$(".popup_btn textarea").val("");
 		});
     });
 });
