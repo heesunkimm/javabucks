@@ -326,7 +326,7 @@ public class OrderController {
 
 	// 주문접수 처리
 	@PostMapping("/orderStart.ajax")
-	public ResponseEntity<Map<String, String>> startOrder(HttpServletRequest req, String orderCode) {
+	public ResponseEntity<Map<Object, Object>> startOrder(HttpServletRequest req, String orderCode) {
 		// 파라미터 확인
 		//System.out.println("orderCode:" + orderCode);
 
@@ -527,6 +527,10 @@ public class OrderController {
 
 		// 3. 결과 처리
 		boolean orderResult = false;
+		
+		// 부족한 재고
+		Map<String, Object> notEnoughStocksMap = new HashMap<>();
+		
 		Iterator<String> resultIterator = mater.keySet().iterator();
 		while (resultIterator.hasNext()) {
 			String code = resultIterator.next();
@@ -537,11 +541,17 @@ public class OrderController {
 			if (needCount <= remainCount) {
 				orderResult = true;
 			} else {
+				int notEnoughQuantity = needCount - remainCount;
+				String stockListName = mapper.getStocksName(code);
+				notEnoughStocksMap.put("stockListName", stockListName);
+				notEnoughStocksMap.put("notEnoughQuantity", notEnoughQuantity);
+			}
+			
+			if(!notEnoughStocksMap.isEmpty()) {
 				orderResult = false;
-				break;
 			}
 		}
-
+		//System.out.println(notEnoughStocksMap);
 		//System.out.println("재고수량 비교 결과:" + orderResult); // true 또는 false
 		
 		boolean minusResult = false;
@@ -595,7 +605,8 @@ public class OrderController {
 			}
 		}
 		
-		Map<String, String> response = new HashMap<>();
+		Map<Object, Object> response = new HashMap<>();
+		response.put("notEnoughStocksMap", notEnoughStocksMap);
 
 		if (orderResult && minusResult && updateResult && alarmResult) {
 			response.put("response", "success");

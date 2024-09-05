@@ -141,7 +141,7 @@
                 <div class="tit_box">
                     <p class="txt_tit">비밀번호를 입력해주세요.</p>
                 </div>
-                <form name="f" action="userInfo.do" method="POST" onsubmit="return checkPasswd(this)">
+                <form name="f" action="userInfo.do" method="GET" onsubmit="return checkPasswd(this)">
                     <!-- s: 내용 작성 -->
                     <div class="date_box">
                         <label>

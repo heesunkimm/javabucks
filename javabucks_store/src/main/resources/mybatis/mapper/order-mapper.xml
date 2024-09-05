@@ -136,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where bucksId = #{bucksId}
 			and orderStatus = '주문완료'
 			and TO_CHAR(orderDate, 'YYYY-MM-DD') = #{today}
+			and (orderType = 'order' OR orderType = 'togo')
 	</select>
 	
 	<select id="getStoreOrderList" parameterType="java.util.Map" resultType="OrderDTO">
@@ -297,6 +298,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getDeliversReady" resultType="OrderDTO">
 		select userId, orderCode from javabucks_order
 		where orderStatus = '배달준비'
+	</select>
+	
+	<select id="getStocksName" parameterType="String" resultType="String">
+		select stockListName from javabucks_stockList
+		where stockListCode = #{stockListCode}
 	</select>
 	
 	

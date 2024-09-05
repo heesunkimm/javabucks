@@ -222,4 +222,8 @@ public class OrderMapper {
 	public List<OrderDTO> getDeliversReady(){
 		return sqlSession.selectList("getDeliversReady");
 	}
+	
+	public String getStocksName(String stockListCode) {
+		return sqlSession.selectOne("getStocksName", stockListCode);
+	}
 }
