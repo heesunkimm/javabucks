@@ -42,12 +42,12 @@
 		                 <!-- 옵션: 컵 -->
 		                <c:if test="${not empty cup}">
 		                <div class="opt_box">
-		                    <p class="opt_tit">사이즈 (필수) : 기본 가격은 Tall (size up +500원) </p>
+		                    <p class="opt_tit">사이즈 : 기본 가격은 Tall (size up +500원) </p>
 		                    <div class="opt_rows">
 		                        <div class="select_box">
 		                        	<c:forEach var ="cup" items="${cup}">
 		                        	<label>
-		                                <input type="button" class ="btn" name="cupType" data-cupNum="${cup.cupNum}">
+		                                <input type="button" class ="btn" name="cupType" data-cupNum="${cup.cupNum}" data-cupType="${cup.cupType}">
 		                                <span>${cup.cupType}</span>
 		                            </label>
 		                            </c:forEach>                                                    
@@ -110,7 +110,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="ice" items="${ice}">
 		                            <label>
-		                                <input type="button" class ="btn" name="iceType" data-iceNum="${ice.iceNum}">
+		                                <input type="button" class ="btn" name="iceType" data-iceNum="${ice.iceNum}" data-iceType="${ice.iceType}">
 		                                <span>${ice.iceType}</span>
 		                            </label>
 		                            </c:forEach>                                      
@@ -127,7 +127,7 @@
 		                        <div class="select_box">
 		                        	<c:forEach var ="milk" items="${milk}">
 		                            <label>
-		                                <input type="button" class ="btn" name="milkType" data-milkNum="${milk.milkNum}">
+		                                <input type="button" class ="btn" name="milkType" data-milkNum="${milk.milkNum}" data-milkType="${milk.milkType}">
 		                                <span>${milk.milkType}</span>
 		                            </label>
 		                            </c:forEach>                            
@@ -210,6 +210,37 @@
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
 <script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', (event) => {
+	    // 서버에서 전달받은 기본값을 사용하여 버튼 선택
+	    const defaultCupType = "Tall";
+	    const defaultIceType = "보통";
+	    const defaultMilkType = "일반 우유";
+	
+	    // 컵 사이즈 기본값 설정
+	    document.querySelectorAll('.opt_box .btn[data-cupType]').forEach(button => {
+	        if (button.getAttribute('data-cupType') === defaultCupType) {
+	            button.classList.add('active');
+	            button.click();
+	        }
+	    });
+	
+	    // 얼음량 기본값 설정
+	    document.querySelectorAll('.opt_box .btn[data-iceType]').forEach(button => {
+	        if (button.getAttribute('data-iceType') === defaultIceType) {
+	            button.classList.add('active');
+	            button.click();
+	        }
+	    });
+	
+	    // 우유 기본값 설정
+	    document.querySelectorAll('.opt_box .btn[data-milkType]').forEach(button => {
+	        if (button.getAttribute('data-milkType') === defaultMilkType) {
+	            button.classList.add('active');
+	            button.click();
+	        }
+	    });
+	});
+
 	document.querySelectorAll('.opt_box .btn').forEach(button => {
 	    button.addEventListener('click', function() {
 	        // 현재 버튼이 속한 .opt_box의 모든 버튼에서 active 클래스 제거

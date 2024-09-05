@@ -207,6 +207,8 @@ body {max-width: 768px!important;}
 #user_paynow #howtopay .cardlist li +li {margin-left: 20px;}
 #user_paynow #howtopay .cardlist .card_slide {width: 420px;}
 #user_paynow #howtopay .cardlist .card_slide a {display: inline-block; width: 100%; height: 264px;}
+#user_paynow #howtopay .cardlist .card_slide .img_box {border: 1px solid transparent; padding: 3px; box-sizing: border-box;}
+#user_paynow #howtopay .cardlist .card_slide .img_box.active {border: 2px solid #006241;}
 #user_paynow #howtopay .cardlist .card_slide .txt_box {margin-top: 6px; text-align: center;}
 #user_paynow #howtopay .cardlist .card_slide .txt_box .txt_name {height: 21px; font-size: 16px;}
 #user_paynow #howtopay .cardlist .card_slide .txt_box .txt_price {margin-top: 4px; font-size: 16px; color: #555;}

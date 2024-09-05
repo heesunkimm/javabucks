@@ -349,6 +349,12 @@
 	$(document).ready(function(){
 	    // 카드 이미지 클릭 이벤트
 	    $('.card_slide').on('click', function(){
+	    	// 먼저 모든 카드의 img_box에서 active 클래스를 제거하여 보더 스타일을 초기화
+	        $('.card_slide .img_box').removeClass('active');
+
+	        // 클릭한 카드의 img_box에 active 클래스를 추가하여 보더 스타일 적용
+	        $(this).find('.img_box').addClass('active');
+
 	        // 클릭된 카드 슬라이드에서 카드 번호와 관련된 정보를 선택
 	        var cardRegNum = $(this).find('.txt_cardNum').text();
 	        var cardName = $(this).find('.txt_name').text();
@@ -372,7 +378,7 @@
 	
 	function confirmAndRedirect() {
 	    // 확인 창을 띄우고 사용자의 선택을 받습니다.
-	    var userConfirmed = window.confirm("단일 결제라면 주문하신 내역은 사라집니다. 카드등록 페이지로 이동하시겠습니까?");
+	    var userConfirmed = window.confirm("단일 결제라면 주문하신 내역은 사라집니다.\n카드등록 페이지로 이동하시겠습니까?");
 	    
 	    if (userConfirmed) {
 	        window.location.href = "/user_addcard";
