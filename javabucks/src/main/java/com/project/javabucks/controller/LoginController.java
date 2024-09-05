@@ -455,7 +455,7 @@ public class LoginController {
 
 		
 	// 개인정보 수정 화면
-	@GetMapping("/userInfo.do")
+	@PostMapping("/userInfo.do")
 	public String userInfo(HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		UserDTO dto = (UserDTO)session.getAttribute("inUser");
@@ -467,6 +467,26 @@ public class LoginController {
 
 		return "/user/user_info";
 	}
+	
+	
+	// 비밀번호 체크
+	@ResponseBody
+	@PostMapping("/passWdCheck.ajax")
+	public Boolean passWdCheck(HttpServletRequest req, String inputPasswd) {
+		HttpSession session = req.getSession();
+		UserDTO dto = (UserDTO)session.getAttribute("inUser");
+		String userId = dto.getUserId();
+		
+		Boolean result = false;
+		String passWd = loginMapper.getUserPassWd(userId);
+		
+		if(passWd.equals(inputPasswd)) {
+			result = true;
+		}
+		return result;
+	}
+	
+	
 	
 	// 개인정보 수정 처리
 	@PostMapping("/updateUserInfo.do")
