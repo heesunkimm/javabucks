@@ -34,7 +34,7 @@
     <header class="bg_beige">
         <div class="logo_box img_box">
             <a href="/store_index.do">
-                <img src="../images/icons/starbucks_logo.png" alt="">
+                <img src="../../images/icons/starbucks_logo.png" alt="">
                 <span>JAVABUCKS</span>
             </a>
         </div>
@@ -79,7 +79,7 @@
 		<div class="store_box">
         	<p><em class="font_green">${inBucks.bucksId}님</em> 환영합니다.</p>
             <a class="setBtn" href="javascript:;"><img src="../images/icons/setting.png" alt=""></a>
-	        <ul class="setting_box">
+	        <ul class="setting_box" style="display:none;">
 	        	<li><a class="popup_btn" href="javascript:;" data-popup="passwdEdit">비밀번호 변경</a></li>
 	        	<li><a href="user_logout.do">로그아웃</a></li>
 	        </ul>
@@ -105,3 +105,4 @@
             </div>
         </form>
     </div>
+    <div class="dimm"></div>
