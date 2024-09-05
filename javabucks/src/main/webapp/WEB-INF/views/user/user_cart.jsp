@@ -25,9 +25,11 @@
 				</div>
 				</c:if>
 				<ul class="cart_list">
-					<c:if test="${empty cart}">	
-					음료/푸드 장바구니가 비어있습니다.<br>	
-					<button class="font_green" type="button" onclick="window.location.href='/user_store'">메뉴 담으러 가기</button>					
+					<c:if test="${empty cart}">
+					<li class=nolist>
+						음료/푸드 장바구니가 비어있습니다.<br>
+						<button class="font_green" type="button" onclick="window.location.href='/user_store'">메뉴 담으러 가기</button>
+					</li>
 					</c:if>
 					<c:if test="${not empty cart}">
 					<c:forEach var="dto" items="${cart}">

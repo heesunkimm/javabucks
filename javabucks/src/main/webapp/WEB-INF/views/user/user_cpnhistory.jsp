@@ -36,11 +36,10 @@
            		<c:choose>
 		            <c:when test="${dto.cpnListStatus eq '사용완료' || dto.cpnListStatus eq '기간만료'}">
 		            	<ul class="cpn_list">
-		            		<!-- 기간만료 클래스 추가 예정!!!!!!!!!!!!!!!!!!!!!! -->
 		            		<c:if test="${dto.cpnListStatus eq '기간만료'}">
-		                		<li class="cpn_item use_complete">
+		                		<li class="cpn_item use_dimm use_end">
 			                </c:if>
-			                	<li class="cpn_item use_complete">
+			                	<li class="cpn_item use_dimm use_complete">
 			                    <div class="img_box">
 			                        <img src="../images/icons/javabucks_cupon.png" alt="">
 			                    </div>

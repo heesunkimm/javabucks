@@ -2,19 +2,25 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="user_top.jsp" %>
+	<style>
+		#user_nav .nav_list li:nth-child(1) .nav_icon {filter: brightness(0) saturate(100%) invert(24%) sepia(60%) saturate(1080%) hue-rotate(122deg) brightness(98%) contrast(103%);}
+	</style>
     <!-- s: content -->
     <section id="user_main" class="content">
         <div class="inner_wrap">
             <div class="top_box">
                 <div class="random_box">
+                	<div class="random_img img_box">
+	                	<img src="" alt="">
+                	</div>
                     <p class="random_txt">
-	                    <c:if test="${not empty inUser.userNickname}">
+	                    <%-- <c:if test="${not empty inUser.userNickname}">
 	                    ${inUser.userNickname}님,
 	                    </c:if>
 	                    <c:if test="${empty inUser.userNickname}">
 	                    ${inUser.userId}님,
 	                    </c:if>
-	                    <br/> 오늘도 힘찬 하루★ 반가워요!
+	                    <br/> 오늘도 힘찬 하루★ 반가워요! --%>
                     </p>
                 </div>
                 <div class="reward_box div_box"> 
@@ -117,6 +123,24 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script>
 		$(document).ready(function() {
+			let UserNickname = '${inUser.userNickname != null ? inUser.userNickname : ""}';
+		    let UserId = '${inUser.userId != null ? inUser.userId : ""}';
+			let Users = UserNickname === "" || UserNickname === null ? UserId : UserNickname;
+			
+			let Data = [
+			    {"phrase": Users + "님 \n오늘도 힘찬하루★ 반가워요!", "images":"../images/banner/banner01.jpg"},
+			    {"phrase": "자바벅스에서 하루를 시작하세요. \n환영합니다.", "images":"../images/banner/banner02.jpg"},
+			    {"phrase": "좋은 하루 되세요", "images":"../images/banner/banner03.jpg"},
+			    {"phrase": "자바벅스의 \n따듯한 환영을 받으세요!", "images":"../images/banner/banner04.webp"},
+			    {"phrase": "당신의 순간을 더욱 \n특별하게 만들어 드립니다.", "images":"../images/banner/banner05.jpg"},
+			    {"phrase": "오늘의 커피가 \n" + Users + "님을 기다리고 있습니다.", "images":"../images/banner/banner06.jpg"}
+			];
+			
+            let randomIndex = Math.floor(Math.random() * Data.length); // 랜덤 인덱스 생성
+            let randomData = Data[randomIndex]; // 랜덤 데이터 추출
+            $(".random_img img").attr("src", randomData.images);
+            $(".random_txt").text(randomData.phrase);
+			
 			let userId = `${inUser.userId}`;
 			
 			let swiper = new Swiper(".news_box", {

@@ -2,6 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="user_top.jsp" %>
+	<style>
+		#user_nav .nav_list li:nth-child(3) .nav_icon {filter: brightness(0) saturate(100%) invert(24%) sepia(60%) saturate(1080%) hue-rotate(122deg) brightness(98%) contrast(103%);}
+	</style>
     <!-- s: content -->
     <section id="user_store" class="content">
         <div class="inner_wrap">

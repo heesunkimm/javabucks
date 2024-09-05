@@ -273,7 +273,7 @@ header .setting_box li:hover {background: #f1f1f1;}
 #store_ordermanage .order_box .making_box .making_item .txt_box dl dt {margin-right: 10px;}
 
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item .btn_box {display: flex; flex-direction: column; gap: 10px;}
-#store_ordermanage .order_box .order_wrap .orders .order_list .order_item .btn_box button {padding: 0 10px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
+#store_ordermanage .order_box .order_wrap .orders .order_list .order_item .btn_box button {width: 90px; height: 27px; border-radius: 2px; background-color: #006241; font-size: 16px; color: #fff;}
 #store_ordermanage .order_box .order_wrap .orders .order_list .order_item .btn_box .orderDel {background: transparent; border: 1px solid #006241; color: #006241;}
 
 #store_ordermanage .order_box .making_box {position: relative; max-height: 474px;}
