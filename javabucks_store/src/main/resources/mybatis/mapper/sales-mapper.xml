@@ -5,14 +5,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="mybatis.mapper.salesMapper">
 
-		<select id="baljooList" parameterType="String" resultType="BaljooDTO">
+		<select id="baljooList" parameterType="map" resultType="BaljooDTO">
+			SELECT * FROM (
+			    SELECT 
+			        a.*, 
+			        ROW_NUMBER() OVER (ORDER BY a.baljooDate DESC) AS rnum
+			    FROM javabucks_baljoo a
+			    WHERE TO_CHAR(a.baljooDate, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+			      AND a.bucksId = #{bucksId}
+			) 
+			WHERE rnum BETWEEN #{startRow} AND #{endRow}
+		          	
+		</select>
+		
+		<select id="baljooPriceList" parameterType="String" resultType="BaljooDTO">
 			SELECT * 
         	FROM javabucks_baljoo 
         	WHERE TO_CHAR(baljooDate, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
           	AND bucksId = #{bucksId}
           	order by baljooDate desc
-          	
+		          	
 		</select>
+		
+		<select id="searchBaljooPriceList" parameterType="map" resultType="BaljooDTO">
+		SELECT *
+		    FROM javabucks_baljoo
+		    WHERE bucksId = #{userId}
+		      AND EXTRACT(YEAR FROM baljooDate) = #{year}
+		      AND EXTRACT(MONTH FROM baljooDate) = #{month}
+	      </select>
+		
+		<select id="baljooCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) 
+    FROM javabucks_baljoo 
+    WHERE TO_CHAR(baljooDate, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+      AND bucksId = #{bucksId}
+		</select>
+		
+		
 		
 		 <!-- 재고 정보 조회 -->
 	    <select id="getStockInfo" parameterType="string" resultType="map">
@@ -26,12 +56,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    </select>
 	    
 	    <select id="searchBaljooList" parameterType="map" resultType="BaljooDTO">
-	        SELECT *
+	        SELECT * FROM (
+		        SELECT 
+		            a.*, 
+		            ROW_NUMBER() OVER (ORDER BY a.baljooDate DESC) AS rnum
+		        FROM javabucks_baljoo a
+		        WHERE a.bucksId = #{userId}
+		          AND EXTRACT(YEAR FROM a.baljooDate) = #{year}
+		          AND EXTRACT(MONTH FROM a.baljooDate) = #{month}
+		    ) 
+		    WHERE rnum BETWEEN #{startRow} AND #{endRow}
+	    </select>
+	    
+	    <select id="searchBaljooCount" parameterType="map" resultType="int">
+		    SELECT COUNT(*) 
 		    FROM javabucks_baljoo
 		    WHERE bucksId = #{userId}
 		      AND EXTRACT(YEAR FROM baljooDate) = #{year}
 		      AND EXTRACT(MONTH FROM baljooDate) = #{month}
-	    </select>
+		      
+		</select>
 	    
 	    <select id="getSalesList" parameterType="map" resultType="PayhistoryDTO">
 		    SELECT * 
@@ -49,8 +93,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<select id="getSalesCount" parameterType="string" resultType="int">
 		    SELECT COUNT(*)
-		    FROM javabucks_Payhistory
-		    WHERE bucksId = #{bucksId}
+			FROM javabucks_Payhistory
+			WHERE bucksId = #{bucksId}
+			  AND TRUNC(payhistoryDate) = TRUNC(SYSDATE)
 		</select>
 		
 		<select id="MenuName" parameterType="String" resultType="String">
@@ -61,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    SELECT SUM(payhistoryPrice)
 		    FROM javabucks_Payhistory
 		    WHERE bucksId = #{bucksId}
+		    AND TRUNC(payhistoryDate) = TRUNC(SYSDATE)
 		</select>
 		
 		

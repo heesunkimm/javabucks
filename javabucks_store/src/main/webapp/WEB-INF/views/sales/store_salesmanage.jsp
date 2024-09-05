@@ -67,54 +67,32 @@
                             </tbody>
                         </table>
                         <!-- 페이징 -->
-                       <c:set var="startPageInt" value="${startPage}" />
-						<c:set var="totalPageCountInt" value="${totalPageCount}" />
-						
-						<c:set var="endPage" value="${startPageInt + 2}"/>
-						
-						<!-- 현재 페이지가 endPage를 넘어가는 경우 -->
-						<c:if test="${currentPage > endPage}">
-						    <c:set var="startPage" value="${currentPage}"/>
-						    <c:set var="endPage" value="${currentPage + 2}"/>
-						</c:if>
-						
-						<!-- endPage가 totalPageCount를 넘는 경우 -->
-						<c:if test="${endPage > totalPageCountInt}">
-						    <c:set var="endPage" value="${totalPageCountInt}"/>
-						</c:if>
-						
-						<!-- 마지막 페이지 범위 조정 -->
-						<c:if test="${endPage == totalPageCountInt}">
-						    <c:set var="startPage" value="${totalPageCountInt}"/>
-						</c:if>
-						
-						<div class="pagination">
-						    <!-- 이전 페이지로 이동 -->
-						    <c:if test="${startPage > 1}">
-						        <a class="page_btn prev_btn" href="?page=${startPage - 1}">
-						            <img src="../../images/icons/arrow.png">
-						        </a>
-						    </c:if>
-						
-						    <!-- 페이지 번호 링크 -->
-						    <c:forEach var="i" begin="${startPage}" end="${endPage}">
-						        <c:choose>
-						            <c:when test="${i == currentPage}">
-						                <a href="javascript:void(0);" class="page_active">${i}</a>
-						            </c:when>
-						            <c:otherwise>
-						                <a href="?page=${i}" class="page">${i}</a>
-						            </c:otherwise>
-						        </c:choose>
-						    </c:forEach>
-						
-						    <!-- 다음 페이지로 이동 -->
-						    <c:if test="${endPage < totalPageCountInt}">
-						        <a class="page_btn next_btn" href="?page=${endPage + 1}">
-						            <img src="../../images/icons/arrow.png">
-						        </a>
-						    </c:if>
-						</div>
+                      <div class="pagination pagination">
+			        <c:if test="${startPage > pageBlock}"> 
+			            <a class="page_btn prev_btn" href="store_sales.do?pageNum=${startPage-3}">
+			                <img src="../../images/icons/arrow.png">
+			            </a>
+			        </c:if>
+			        
+			        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+			            <c:set var="activeClass" value=""/>
+			            <c:choose>
+			                <c:when test="${empty param.pageNum and i == 1}">
+			                    <c:set var="activeClass" value="page_active"/>
+			                </c:when>
+			                <c:when test="${param.pageNum == i}">
+			                    <c:set var="activeClass" value="page_active"/>
+			                </c:when>
+			            </c:choose>
+			            <a href="store_sales.do?pageNum=${i}" class="${activeClass} page_num">${i}</a>
+			        </c:forEach>
+			        
+			        <c:if test="${pageCount > endPage}">
+			            <a class="page_btn next_btn" href="store_sales.do?pageNum=${startPage+3}">
+			                <img src="../../images/icons/arrow.png">
+			            </a>
+			        </c:if>
+			    </div>
                     </div>
                 </div>
                 <div id="cate_drink" class="tab-content">
@@ -249,14 +227,19 @@
   <%@ include file="../store_bottom.jsp"%>
   
  <script>
-$(document).ready(function() {
-    // 현재 날짜 가져오기
-    let today = new Date();
-    let formattedDate = today.toISOString().split('T')[0];
+ $(document).ready(function() {
+	    // 현재 로컬 날짜 가져오기
+	    let today = new Date();
+	    let year = today.getFullYear();
+	    let month = ('0' + (today.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1 필요
+	    let day = ('0' + today.getDate()).slice(-2);
 
-    // 시작일과 종료일을 현재 날짜로 설정
-    $(".startDate").val(formattedDate);
-    $(".endDate").val(formattedDate);
+	    // 포맷된 날짜 문자열
+	    let formattedDate = year + '-' + month + '-' + day;
+
+	    // 시작일과 종료일을 현재 날짜로 설정
+	    $(".startDate").val(formattedDate);
+	    $(".endDate").val(formattedDate);
 
     let bucksId = $("input[name='bucksId']").val();
 
@@ -265,7 +248,7 @@ $(document).ready(function() {
         searchSalesData(); // 페이지 넘버 없이 호출할 경우 기본 1페이지로 설정됨
     });
 
-    function searchSalesData(pageNum = 1) {
+    function searchSalesData(pageNum=1) {
         let startDate = $(".startDate").val();
         let endDate = $(".endDate").val();
 
@@ -308,7 +291,7 @@ $(document).ready(function() {
                 $('.totalSalesAmount').text(res.totalSalesAmount.toLocaleString() + '원');
 
                 // 페이징 처리 갱신
-                updatePagination(res.totalPageCount, res.currentPage);
+                updatePagination(res);
             },
             error: function(err) {
                 console.error("Error: ", err);
@@ -316,58 +299,51 @@ $(document).ready(function() {
         });
     }
 
-    function updatePagination(totalPageCount, currentPage) {
-        let pagination = document.querySelector(".pagination");
-        pagination.innerHTML = ""; // 기존 페이지네이션 요소를 모두 삭제
+ // 페이지네이션을 업데이트하는 함수
+    function updatePagination(response) {
+     var $pagination = $('.pagination');
+     $pagination.empty(); // 기존 페이징 요소를 모두 제거
 
-        if (currentPage <= 3) {
-            // 1, 2, 3 페이지 중 하나인 경우
-            for (let i = 1; i <= Math.min(3, totalPageCount); i++) {
-                let pageLink = document.createElement("a");
-                if (i === currentPage) {
-                    pageLink.className = "page_active";
-                    pageLink.href = "javascript:void(0);";
-                    pageLink.textContent = i;
-                } else {
-                    pageLink.className = "page";
-                    pageLink.href = "javascript:void(0);";
-                    pageLink.textContent = i;
-                    pageLink.addEventListener("click", function() {
-                        searchSalesData(i);
-                    });
-                }
-                pagination.appendChild(pageLink);
-            }
+     if (response && response.pageCount > 1) {
+         var currentPage = response.currentPage ; // 현재 페이지 번호
+         var totalPages = response.pageCount; // 전체 페이지 수
+         var startPage =  response.startPage; // 현재 페이지 블록의 시작 페이지
+         var endPage = response.endPage; // 현재 페이지 블록의 끝 페이지
 
-            // 다음 페이지 버튼 추가
-            if (totalPageCount > 3) {
-                let nextBtn = document.createElement("a");
-                nextBtn.className = "page_btn next_btn";
-                nextBtn.href = "javascript:void(0);";
-                nextBtn.innerHTML = '>';
-                nextBtn.addEventListener("click", function() {
-                    searchSalesData(4); // 4번째 페이지로 이동
-                });
-                pagination.appendChild(nextBtn);
-            }
-        } else if (currentPage === 4 && totalPageCount > 3) {
-            // 4번째 페이지인 경우
-            let prevBtn = document.createElement("a");
-            prevBtn.className = "page_btn prev_btn";
-            prevBtn.href = "javascript:void(0);";
-            prevBtn.innerHTML = '&lt;';
-            prevBtn.addEventListener("click", function() {
-                searchSalesData(3); // 3번째 페이지로 이동
-            });
-            pagination.appendChild(prevBtn);
+         // 이전 페이지 블록으로 이동하는 버튼
+         if (startPage > 1) {
+             $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
+         }
 
-            let pageLink = document.createElement("a");
-            pageLink.className = "page_active";
-            pageLink.href = "javascript:void(0);";
-            pageLink.textContent = 4;
-            pagination.appendChild(pageLink);
-        }
-    }
+         // 페이지 번호 링크 생성
+         for (var i = startPage; i <= endPage; i++) {
+             if (i == currentPage) {
+                 $pagination.append('<a href="javascript:;" class="page_active" data-page="' + i + '">' + i + '</a>');
+             } else {
+                 $pagination.append('<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>');
+             }
+         }
+
+         // 다음 페이지 블록으로 이동하는 버튼
+         if (endPage < totalPages) {
+             $pagination.append('<a class="page_btn next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+         }
+
+         // 페이지 클릭 이벤트 추가
+         $('.page-link').on('click', function() {
+             var pageNum = $(this).data('page'); // pageNum으로 이름 변경
+             searchSalesData(pageNum); // 페이지 데이터를 비동기적으로 로드
+         });
+
+         $('.prev_btn, .next_btn').on('click', function() {
+             var pageNum = $(this).data('page'); // pageNum으로 이름 변경
+             searchSalesData(pageNum); // 페이지 데이터를 비동기적으로 로드
+         });
+     }
+ 
+ };
+ 
+
 
     // 카테고리 선택에 따른 데이터 로드 함수
     function selectCate(pageNum = 1) {

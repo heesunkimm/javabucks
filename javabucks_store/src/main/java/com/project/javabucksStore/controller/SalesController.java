@@ -33,36 +33,38 @@ public class SalesController {
 	
 	//발주관리
 	@GetMapping("/store_baljooManage.do")
-	public String baljooManage(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size, Model model, HttpServletRequest req) {
+	public String baljooManage(@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+             HttpServletRequest req) {
 		 
 		  HttpSession session = req.getSession();
 	      BucksDTO bdto = (BucksDTO)session.getAttribute("inBucks");
 	      String bucksId = bdto.getBucksId();
 	      
+		int totalCount = salesMapper.baljooCount(bucksId);
+		Map<String, Object> pagingMap = paging(totalCount, pageNum);
 		
-		List<BaljooDTO> list = salesMapper.baljooList(bucksId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("startRow", pagingMap.get("startRow"));
+		params.put("endRow", pagingMap.get("endRow"));
+		params.put("bucksId", bucksId);
+		
+		List<BaljooDTO> list = salesMapper.baljooList(params);
+		List<BaljooDTO> PriceList = salesMapper.baljooPriceList(bucksId);
 				
 		// 총 발주 금액 계산 (전체 리스트의 합계)
 	    double totalBaljooPrice = 0;
-	    for (BaljooDTO dto : list) {
+	    for (BaljooDTO dto : PriceList) {
 	        if ("접수완료".equals(dto.getBaljooStatus()) && dto.getBaljooPrice() != 0) { 
 	            totalBaljooPrice += dto.getBaljooPrice();
 	        }
 	    }
 		
-		// 페이징 처리
-        int total = list.size(); // 전체 데이터 개수
-        int start = (page - 1) * size; // 시작 인덱스
-        int end = Math.min(start + size, total); // 종료 인덱스
-
-        // 시작 인덱스가 전체 리스트의 크기보다 크면 빈 리스트 반환 (예: 잘못된 페이지 번호 요청 시)
-        List<BaljooDTO> paginatedDetails = start > total ? Collections.emptyList() : list.subList(start, end);
+		
 		
 		List<Map<String, Object>> updateOrderList = new ArrayList<>();
 		
 
-        for (BaljooDTO dto : paginatedDetails) {
+        for (BaljooDTO dto : list) {
             Map<String, Object> baljooOrder = new HashMap<>();
             baljooOrder.put("baljooNum", dto.getBaljooNum());  
             baljooOrder.put("baljooDate", dto.getBaljooDate());  
@@ -100,11 +102,18 @@ public class SalesController {
 
             updateOrderList.add(baljooOrder);
         }
+        
+        
+        ///totalBaljooPrice 구하기 
+        
+        
 
-        model.addAttribute("updateOrderList", updateOrderList);
-        model.addAttribute("totalBaljooPrice", totalBaljooPrice);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", (total + size - 1) / size);
+        req.setAttribute("updateOrderList", updateOrderList);
+        req.setAttribute("totalBaljooPrice", totalBaljooPrice); //
+        req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+		req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+		req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+		req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
 
         return "sales/store_baljooManage";
     }
@@ -112,8 +121,9 @@ public class SalesController {
 	
 	@RequestMapping("/searchBaljoo.do")
 	public String searchBaljoo(@RequestParam("year") int year,
-            @RequestParam("month") int month , @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size, Model model, HttpServletRequest req) {
+            @RequestParam("month") int month , 
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+            HttpServletRequest req) {
 			
 		
 		HttpSession session = req.getSession();
@@ -121,35 +131,34 @@ public class SalesController {
 	      String bucksId = bdto.getBucksId();
 	     // System.out.println(bucksId);
 		//System.out.println(year);
+	      
 		
 		Map<String, Object> params = new HashMap<>();
         params.put("userId", bucksId);
         params.put("year", year);
         params.put("month", month);
+        int totalCount = salesMapper.searchBaljooCount(params);
+		Map<String, Object> pagingMap = paging(totalCount, pageNum);
+		params.put("startRow", pagingMap.get("startRow"));
+		params.put("endRow", pagingMap.get("endRow"));
 
 		
 		List<BaljooDTO> list = salesMapper.searchBaljooList(params);
+		List<BaljooDTO> PriceList = salesMapper.searchBaljooPriceList(params);
 		
 		// 총 발주 금액 계산 (전체 리스트의 합계)
 	    double totalBaljooPrice = 0;
-	    for (BaljooDTO dto : list) {
+	    for (BaljooDTO dto : PriceList) {
 	    	if ("접수완료".equals(dto.getBaljooStatus())) { 
 	            totalBaljooPrice += dto.getBaljooPrice();
 	        }
 	    }
 		
-		// 페이징 처리
-        int total = list.size(); // 전체 데이터 개수
-        int start = (page - 1) * size; // 시작 인덱스
-        int end = Math.min(start + size, total); // 종료 인덱스
-
-        // 시작 인덱스가 전체 리스트의 크기보다 크면 빈 리스트 반환 (예: 잘못된 페이지 번호 요청 시)
-        List<BaljooDTO> paginatedDetails = start > total ? Collections.emptyList() : list.subList(start, end);
-
+		
 		List<Map<String, Object>> updateOrderList = new ArrayList<>();
 		
 
-       for (BaljooDTO dto : paginatedDetails) {
+       for (BaljooDTO dto : list) {
            Map<String, Object> baljooOrder = new HashMap<>();
            baljooOrder.put("baljooNum", dto.getBaljooNum());  
            baljooOrder.put("baljooDate", dto.getBaljooDate());  
@@ -176,13 +185,18 @@ public class SalesController {
 
            updateOrderList.add(baljooOrder);
        }
-       model.addAttribute("updateOrderList", updateOrderList);
        //System.out.println(updateOrderList);
        
-       model.addAttribute("totalBaljooPrice", totalBaljooPrice);
        
-       model.addAttribute("currentPage", page);
-       model.addAttribute("totalPages", (total + size - 1) / size);
+       
+       req.setAttribute("updateOrderList", updateOrderList);
+       req.setAttribute("totalBaljooPrice", totalBaljooPrice);
+       req.setAttribute("startPage2", (int)pagingMap.get("startPage"));
+		req.setAttribute("endPage2", (int)pagingMap.get("endPage"));
+		req.setAttribute("pageCount2", (int)pagingMap.get("pageCount"));
+		req.setAttribute("pageBlock2", (int)pagingMap.get("pageBlock"));
+		req.setAttribute("year", year);
+		req.setAttribute("month", month);
 		
 		return "sales/store_baljooManage";
 	}
@@ -191,31 +205,26 @@ public class SalesController {
 	
 	
 	@RequestMapping("/store_sales.do")
-	public String allStoreSales(Model model, HttpServletRequest req, 
-			@RequestParam(value = "page", required = false, defaultValue = "1") int pageNum) {
+	public String allStoreSales(@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+            HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		BucksDTO dto = (BucksDTO)session.getAttribute("inBucks");
 		String bucksId = dto.getBucksId();
 		
-		 // 페이징 처리 변수 설정
-		int pageSize = 5; 
-	    int startRow = (pageNum - 1) * pageSize + 1;  // 1부터 시작하는 행 번호
-	    int endRow = pageNum * pageSize;  // 마지막 행 번호
-	    
+		
 	    // 총 매출 항목 수 계산
 	    int totalSalesCount = salesMapper.getSalesCount(bucksId);
-	    int totalSalesAmount = salesMapper.getTotalSalesAmount(bucksId);
-	    int totalPageCount = (totalSalesCount / pageSize) + (totalSalesCount % pageSize == 0 ? 0 : 1);
-	    int startPage = Math.max(1, pageNum - 2);
-	    int endPage = Math.min(totalPageCount, startPage + 2);
-
-	    // 현재 페이지에 해당하는 매출 데이터 조회
-	    Map<String, Object> searchParams = new HashMap<>();
-	    searchParams.put("bucksId", bucksId);
-	    searchParams.put("startRow", startRow);
-	    searchParams.put("endRow", endRow);
+	    System.out.println(totalSalesCount);
+	    Map<String, Object> params = new HashMap<>();
+	    Map<String, Object> pagingMap = paging(totalSalesCount, pageNum);
+		params.put("startRow", pagingMap.get("startRow"));
+		params.put("endRow", pagingMap.get("endRow"));
+		params.put("bucksId", bucksId);
 	    
-	    List<PayhistoryDTO> salesList = salesMapper.getSalesList(searchParams);
+	    int totalSalesAmount = salesMapper.getTotalSalesAmount(bucksId);
+
+	    
+	    List<PayhistoryDTO> salesList = salesMapper.getSalesList(params);
 //        System.out.println("StartRow: " + startRow);
 //        System.out.println("EndRow: " + endRow);
 //        System.out.println("BucksId: " + bucksId);
@@ -263,34 +272,28 @@ public class SalesController {
             }
         }
 
-        model.addAttribute("salesList", salesList);
-        model.addAttribute("totalSalesCount", totalSalesCount);
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPageCount", totalPageCount);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("totalSalesAmount", totalSalesAmount);
+        req.setAttribute("startPage", (int)pagingMap.get("startPage"));
+		req.setAttribute("endPage", (int)pagingMap.get("endPage"));
+		req.setAttribute("pageCount", (int)pagingMap.get("pageCount"));
+		req.setAttribute("pageBlock", (int)pagingMap.get("pageBlock"));
+		req.setAttribute("salesList", salesList);
+		req.setAttribute("totalSalesAmount", totalSalesAmount);
 
         return "sales/store_salesmanage";
     }
 	
 	@RequestMapping("/store_searchSales.ajax")
 	@ResponseBody
-	public Map<String, Object> filterStoreSales(HttpServletRequest req, 
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+	public Map<String, Object> filterStoreSales(
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
+			HttpServletRequest req,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate) {
 			HttpSession session = req.getSession();
 			BucksDTO dto = (BucksDTO) session.getAttribute("inBucks");
 			String bucksId = dto.getBucksId();
 			
-//			System.out.println(startDate);
-//			System.out.println(endDate);
 			
-			// 페이징 처리 변수 설정
-			int pageSize = 5;
-			int startRow = (pageNum - 1) * pageSize + 1;
-			int endRow = pageNum * pageSize;
 			
 			// 총 매출 항목 수 계산 (기간 필터링 추가)
 			Map<String, Object> countParams = new HashMap<>();
@@ -298,6 +301,9 @@ public class SalesController {
 			countParams.put("startDate", startDate);
 			countParams.put("endDate", endDate);
 			int totalSalesCount = salesMapper.searchSalesCount(countParams);
+			Map<String, Object> pagingMap = paging(totalSalesCount, pageNum);
+			countParams.put("startRow", pagingMap.get("startRow"));
+			countParams.put("endRow", pagingMap.get("endRow"));
 			
 			// 전체 매출액 합계 계산 (기간 필터링 추가)
 			Integer totalSalesAmount = salesMapper.searchTotalSalesAmount(countParams);
@@ -305,14 +311,9 @@ public class SalesController {
 			    totalSalesAmount = 0;  // 기본값 0으로 설정
 			}
 			//System.out.println("totalSalesAmount : "+totalSalesAmount);
-			// 페이징에 필요한 추가 정보 계산
-			int totalPageCount = (totalSalesCount / pageSize) + (totalSalesCount % pageSize == 0 ? 0 : 1);
-			int startPage = Math.max(1, pageNum - 2);
-	        int endPage = Math.min(totalPageCount, startPage + 4);
+			
 			
 			// 현재 페이지에 해당하는 매출 데이터 조회
-			countParams.put("startRow", startRow);
-			countParams.put("endRow", endRow);
 			List<PayhistoryDTO> salesList = salesMapper.getFilteredSalesList(countParams);
 			
 			for (PayhistoryDTO order : salesList) {
@@ -349,12 +350,13 @@ public class SalesController {
 		    
 		    Map<String, Object> result = new HashMap<>();
 		    result.put("salesList", salesList);
-		    result.put("totalSalesCount", totalSalesCount);
+		   // result.put("totalSalesCount", totalSalesCount);
 		    result.put("totalSalesAmount", totalSalesAmount);
-		    result.put("currentPage", pageNum);
-		    result.put("totalPageCount", totalPageCount);
-		    result.put("startPage", startPage);
-		    result.put("endPage", endPage);
+		    result.put("startPage", (int)pagingMap.get("startPage"));
+		    result.put("endPage", (int)pagingMap.get("endPage"));
+		    result.put("pageCount", (int)pagingMap.get("pageCount"));
+		    result.put("pageBlock", (int)pagingMap.get("pageBlock"));
+
 		    //System.out.println("result : " + result);
 		    
 		    return result;
@@ -466,6 +468,31 @@ public class SalesController {
 	    return result;
 	}
 
+	
+	public Map<String, Object> paging(int count, int pageNum) {
+		int pageSize = 5; // 한 페이지에 보여질 게시글 수
+		int startRow = (pageNum-1) * pageSize + 1; // 페이지별 시작 넘버
+		int endRow = startRow + pageSize - 1; // 페이지별 끝 넘버
+		if (endRow > count) endRow = count;		
+		int no = count-startRow + 1; // 넘버링		
+		int pageBlock = 3; //페이지별 보여줄 페이징번호 개수
+		int pageCount = count/pageSize + (count%pageSize == 0 ? 0 : 1); //총 페이징번호 개수		
+		int startPage = (pageNum-1)/pageBlock * pageBlock +1; // 페이지별 시작 페이징번호
+		int endPage = startPage + pageBlock -1;	// 페이지별 끝 페이징번호
+		if(endPage > pageCount) endPage = pageCount;
+		
+		Map<String, Object> pagingMap = new HashMap<>();
+		pagingMap.put("pageSize", pageSize);
+		pagingMap.put("no", no);
+		pagingMap.put("startRow", startRow);
+		pagingMap.put("endRow", endRow);
+		pagingMap.put("pageBlock", pageBlock);
+		pagingMap.put("pageCount", pageCount);
+		pagingMap.put("startPage", startPage);
+		pagingMap.put("endPage", endPage);
+		
+		return pagingMap;
+	}
 				
 				
 }
