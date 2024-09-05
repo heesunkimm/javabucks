@@ -184,7 +184,8 @@ public class SalesMapper {
     	return sqlSession.selectList("dailyBucksSales", params);
     }
     public int dailyBucksSalesPrice() {
-    	return sqlSession.selectOne("dailyBucksSalesPrice");
+    	Integer price =  sqlSession.selectOne("dailyBucksSalesPrice");
+    	 return (price != null) ? price : 0;
     }
     
     
@@ -195,7 +196,7 @@ public class SalesMapper {
  			    } else if (menuCode.startsWith("C")) {
  			        return "디저트";
  			    } else if (menuCode.startsWith("M")) {
- 			        return "MD 상품";
+ 			        return "MD상품";
  			    } else {
  			        return "Unknown";
  			    }
