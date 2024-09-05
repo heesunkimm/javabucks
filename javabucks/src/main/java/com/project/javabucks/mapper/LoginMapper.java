@@ -85,6 +85,11 @@ public class LoginMapper {
 	public UserDTO getUserInfo(String userId) {
 		return sqlSession.selectOne("getUserInfo", userId);
 	}
+	
+	// 유저 비밀번호 가져오기
+	public String getUserPassWd(String userId) {
+		return sqlSession.selectOne("getUserPassWd", userId);
+	}
 		
 	// 정보수정
 	public int updateUserInfo(Map<String, Object> params) {

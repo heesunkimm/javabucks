@@ -37,7 +37,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="userInfo.do">
+                        <a href="javascript:;" data-popup="pwbox" class="popup_btn">
                             <div class="img_box">
                                 <img src="../images/icons/other_mypageManage.png" alt="">
                             </div>
@@ -138,17 +138,17 @@
                 <div class="tit_box">
                     <p class="txt_tit">비밀번호를 입력해주세요.</p>
                 </div>
-                <form name="f" action="" method="post">
+                <form name="f" action="userInfo.do" method="POST" onsubmit="return checkPasswd(this)">
                     <!-- s: 내용 작성 -->
                     <div class="date_box">
                         <label>
-                            <input type="password" name="" value="">
+                            <input type="password" name="inputPassWd" value="">
                         </label>
                     </div>
                     <!-- e: 내용 작성 -->
                     <div class="pbtn_box">
                         <button class="close_btn" type="button" data-popup="pwbox">취소</button>
-                        <button class="submit_btn" type="submit">완료</button>
+                        <button class="submit_btn" type="submit">확인</button>
                     </div>
                 </form>
             </div>
@@ -157,3 +157,38 @@
     </section>
     <!-- e: content -->
 <%@ include file="user_bottom.jsp"%>
+
+<script>
+
+	function checkPasswd(event){
+		let inputPasswd = document.getElementsByName('inputPassWd')[0].value;
+		$.ajax({
+			type : "POST",
+			url : "passWdCheck.ajax",
+			data : {
+				inputPasswd : inputPasswd
+			},
+			success : function(response){
+				if(response){
+					alert("인증되었습니다. 개인정보수정 페이지로 이동합니다.");
+					document.forms['f'].submit();
+				}else{
+					alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+				}
+			},
+			error : function(error){
+				console.log(error);
+			}
+		})
+		return false;
+	}
+	
+</script>
+
+
+
+
+
+
+
+

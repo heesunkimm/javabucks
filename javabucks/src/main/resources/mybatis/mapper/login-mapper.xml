@@ -64,6 +64,11 @@
 		where userId = #{userId}
 	</select>
 	
+	<select id="getUserPassWd" parameterType="String" resultType="String">
+		select userPassWd from javabucks_user
+		where userId = #{userId}
+	</select>
+	
 	<update id="updateUserInfo" parameterType="java.util.Map">
 		update javabucks_user set
 			userNickname = #{userNickname},
