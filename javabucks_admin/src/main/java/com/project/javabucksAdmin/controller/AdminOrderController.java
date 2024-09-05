@@ -534,26 +534,28 @@ public class AdminOrderController {
 		
 		boolean minusResult = false;
 		boolean updateResult = false;
+		boolean stockResult = false;
 		
 		// 4. 수량 충분하면 OK처리
 		Iterator<String> countMinusIterator = baljooItem.keySet().iterator();
+		Map<String, Object> paramsCountMinus = new HashMap<>();
+		
 		if (baljooResult) {
 			while (countMinusIterator.hasNext()) {
 				String code = countMinusIterator.next(); // 발주한 재고코드
 				int value = baljooItem.get(code); // 발주수량
-				Map<String, Object> paramsCountMinus = new HashMap<>();
 				paramsCountMinus.put("stockListCode", code);
 				paramsCountMinus.put("value", value);
-				
-				
-				// 재고 차감
-				int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
-				if (countMinusResult > 0) {
-					minusResult = true;
-				} else {
-					minusResult = false;
-				}
 			}
+			
+			// 재고 차감
+			int countMinusResult = mapper.updateCountMinus(paramsCountMinus);
+			if (countMinusResult > 0) {
+				minusResult = true;
+			} else {
+				minusResult = false;
+			}
+			
 			// 상태 업데이트
 			int StatusUpdateResult = mapper.baljooStatusUpdateOk(baljooNum);
 			if (StatusUpdateResult > 0) {
@@ -561,22 +563,21 @@ public class AdminOrderController {
 			} else {
 				updateResult = false;
 			}
-		}
-		
-		// 5. 스토어 재고 추가해주기
-		// 발주번호 가지고 지점아이디 가져오기
-		String bucksId = mapper.getBucksId(baljooNum);
-		boolean stockResult = false;
-		Iterator<String> stocksIterator = baljooItem.keySet().iterator();
-		while (stocksIterator.hasNext()) {
-			String stockListCode = stocksIterator.next(); // 발주품목
-			int quantity = baljooItem.get(stockListCode); // 발주수량
 			
+			// 스토어 재고 추가해주기
+			String bucksId = mapper.getBucksId(baljooNum);
 			Map<String, Object> paramsStocks = new HashMap<>();
 			paramsStocks.put("bucksId", bucksId);
-			paramsStocks.put("stockListCode", stockListCode);
-			paramsStocks.put("quantity", quantity);
 			
+			Iterator<String> stocksIterator = baljooItem.keySet().iterator();
+			while (stocksIterator.hasNext()) {
+				String stockListCode = stocksIterator.next(); // 발주품목
+				int quantity = baljooItem.get(stockListCode); // 발주수량
+
+				paramsStocks.put("stockListCode", stockListCode);
+				paramsStocks.put("quantity", quantity);
+			}
+
 			// 스토어 재고 업데이트
 			int storeStocksUpdateResult = mapper.storeStocksUpdate(paramsStocks);
 			if (storeStocksUpdateResult > 0) {
@@ -585,6 +586,7 @@ public class AdminOrderController {
 				stockResult = false;
 			}
 		}
+		
 		
 		Map<String, String> response = new HashMap<>();
 		if (baljooResult && minusResult && updateResult && stockResult) {
