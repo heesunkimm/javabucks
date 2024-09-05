@@ -419,7 +419,7 @@
  	<select id="getCouponListById" parameterType="String" resultType="CouponListDTO"> 
  		SELECT cl.*, cc.cpnName, cc.cpnDesc, cc.cpnPrice
  		FROM javabucks_couponList cl join javabucks_coupon cc on cl.cpncode = cc.cpncode
- 		WHERE cl.userId = #{userId} and cl.cpnListStatus = '발급완료'
+ 		WHERE cl.userId = #{userId}
  		ORDER by cpnListStartDate desc
  	</select>
  	
@@ -490,6 +490,13 @@
  		 SELECT storemenuStatus
    		 FROM javabucks_storemenu	   		    
    		 WHERE menuCode = #{menuCode}
+   		 AND bucksId = #{bucksId} 
+ 	</select>
+ 	
+ 	<select id="getStoreEnable"  parameterType="String" resultType="String"> 
+ 		 SELECT storeEnable
+   		 FROM javabucks_storemenu	   		    
+   		 WHERE menuCode = #{menuCode} 
    		 AND bucksId = #{bucksId} 
  	</select>
  	

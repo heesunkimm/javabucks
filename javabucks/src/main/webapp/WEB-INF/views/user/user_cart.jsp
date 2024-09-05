@@ -34,7 +34,7 @@
 						<li class="cart_item">
 							<div class="top_box">
 								<label> 
-									<input type="checkbox" class="item-checkbox" onclick="updateCheckedCount(); OrderButton()" name="${dto.cartNum}" value="">
+									<input type="checkbox" class="item-checkbox" onclick="updateTotalPrice(); updateCheckedCount(); OrderButton()" name="${dto.cartNum}" value="">
 								</label>
 								<div class="img_box">
 									<img src="../images/icons/close.png" alt="" name="delete-${dto.cartNum}" onclick="deleteCheck('xbox', this)">
@@ -137,8 +137,8 @@
 	    // 페이지 로드 시 총합 계산
 	    calculateTotalPrice();
 	    
-	 // 모든 체크박스를 가져옵니다.
-	    const checkboxes = document.querySelectorAll('input[type="checkbox"].item-checkbox');
+	 	// 모든 체크박스를 가져옵니다.
+	    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 	    
 	    // 모든 체크박스를 체크된 상태로 설정합니다.
 	    checkboxes.forEach(function(checkbox) {
@@ -162,6 +162,30 @@
        // 가격 업데이트
        updatePrice(fieldId, value, unitPrice);
        calculateTotalPrice();
+       
+       // input 요소의 value에서 값을 가져옵니다.
+	   var cartCnt = value; // cartCnt는 감소된 수량
+	   var cartNum = fieldId; // cartNum은 fieldId를 그대로 사용
+       
+       //ajax로 처리(실시간 db 업데이트)
+       $.ajax({
+           url: 'cartCountUpdate.ajax',
+           type: 'POST',
+           contentType: 'application/json',
+           data: JSON.stringify({
+        	   cartCnt: cartCnt, // 전송할 cartCnt 값
+               cartNum: cartNum // 전송할 cartNum 값
+           }),
+           success: function(response) {
+           	if (response > 0) {
+               }
+           },
+           
+           error: function(error) {
+               console.error('AJAX 요청 중 오류 발생:', error);
+               alert('요청 처리 중 오류가 발생했습니다.');
+           }
+       });
    }
    
    // 증가 버튼 클릭 시 호출되는 함수
@@ -194,6 +218,30 @@
            // 총 수량이 최대값에 도달한 경우 경고 메시지 표시
            alert('최대 20개까지 주문이 가능합니다.');
        }
+       
+    	// input 요소의 value에서 값을 가져옵니다.
+	   var cartCnt = value; // cartCnt는 감소된 수량
+	   var cartNum = fieldId; // cartNum은 fieldId를 그대로 사용
+       
+       //ajax로 처리(실시간 db 업데이트)
+       $.ajax({
+           url: 'cartCountUpdate.ajax',
+           type: 'POST',
+           contentType: 'application/json',
+           data: JSON.stringify({
+        	   cartCnt: cartCnt, // 전송할 cartCnt 값
+               cartNum: cartNum // 전송할 cartNum 값
+           }),
+           success: function(response) {
+           	if (response > 0) {
+               }
+           },
+           
+           error: function(error) {
+               console.error('AJAX 요청 중 오류 발생:', error);
+               alert('요청 처리 중 오류가 발생했습니다.');
+           }
+       });
        
        // 가격 업데이트
        updatePrice(fieldId, value, unitPrice);
@@ -240,8 +288,10 @@
         checkboxes.forEach(function(checkbox) {
             checkbox.checked = source.checked;
         });      
-      // 체크된 개수를 업데이트
+       // 체크된 개수를 업데이트
        updateCheckedCount();
+    	// 총합 가격 업데이트
+       updateTotalPrice()
     }
    
    function updateCheckedCount() {
@@ -253,6 +303,29 @@
        
        // 체크된 개수를 표시할 요소에 반영
        document.getElementById('checkedCount').textContent = checkedCount;
+   }
+   
+   
+   // 체크박스 체크한 것만 가격합산!
+   function updateTotalPrice() {
+	   var checkboxes = document.getElementsByClassName('item-checkbox');
+       var totalCheckedPrice = 0;
+       
+       // 체크된 항목들의 가격을 합산
+       for (var i = 0; i < checkboxes.length; i++) {
+           if (checkboxes[i].checked) {
+               var fieldId = checkboxes[i].getAttribute('name'); // cartNum 가져오기
+               var priceElement = document.getElementById('price_' + fieldId); // 해당 항목의 가격 요소
+               var priceText = priceElement.innerText.replace(/[^0-9]/g, ''); // 숫자만 추출
+               var price = parseInt(priceText, 10); // 정수로 변환
+
+               totalCheckedPrice += price; // 총합에 더하기
+           }
+       }
+
+       // 합산된 총 금액을 천 단위 콤마 포함하여 출력
+       var totalPriceElement = document.getElementById('totalPrice');
+       totalPriceElement.innerText = new Intl.NumberFormat().format(totalCheckedPrice) + " 원";
    }
    
    function deleteCheck(AllorEach, element) {
@@ -344,7 +417,7 @@
 
        // 체크된 항목이 없으면 경고창을 띄우고 폼 제출을 막습니다.
        if (checkboxes.length === 0) {
-           alert("메뉴를 선택해주세요.");
+           alert("주문하실 메뉴를 선택해주세요.");
            event.preventDefault(); // 폼 제출을 막습니다.
            return; // 함수 종료
        }
@@ -390,16 +463,13 @@
 	    // 주문하기 버튼 요소 선택
 	    const orderButton = document.getElementById('orderButton');
 	    
-	    // 체크된 체크박스가 있으면 'visible' 클래스를 추가하고, 그렇지 않으면 'hidden' 클래스를 유지
+	    // 체크된 체크박스가 있으면 'active' 클래스를 추가
 	    if (isAnyChecked) {
-	    	
-// 	        orderButton.classList.remove('hidden');
-// 	        orderButton.classList.add('visible');
-	    } else {
-	    	
-// 	        orderButton.classList.remove('visible');
-// 	        orderButton.classList.add('hidden');
-	    }
+        orderButton.classList.add('active');
+        
+    	} else {
+        orderButton.classList.remove('active');
+    	}
 	}
 
 </script>

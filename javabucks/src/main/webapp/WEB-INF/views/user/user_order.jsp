@@ -20,7 +20,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${drinkList}">
                 		<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}">
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y' && dto.storeEnable eq 'N'}">
 			                    <li class="menu_item">
 			                        <a href="user_menudetail?mode=origin&storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}
 																					&menuoptCode=${dto.menuoptCode}&drink=drink&pickup=${pickup}">
@@ -34,7 +34,7 @@
 			                        </a>
 			                    </li>
 		                    </c:when>
-		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
+		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N' || dto.storeEnable eq 'Y'}">
 			                    	<li class="menu_item pdt_dimm">
 		                    			<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
@@ -56,7 +56,7 @@
                 <ul class="menu_list">
                 	<c:forEach var ="dto" items="${foodList}">
 	                   	<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}"> 
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y' && dto.storeEnable eq 'N'}"> 
 		                   		<li class="menu_item">
 			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=food&pickup=${pickup}">
 			                            <div class="img_box">
@@ -69,7 +69,7 @@
 			                        </a>
 		                        </li>
 	                      	</c:when>
-	                      	<c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
+	                      	<c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N' || dto.storeEnable eq 'Y'}">
 	                      			<li class="menu_item pdt_dimm">
 	                      				<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">
@@ -92,7 +92,7 @@
                 <ul class="menu_list">
                 	<c:forEach var = "dto" items="${productList}">
                 		<c:choose>
-							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y'}">
+							<c:when test="${dto.storemenuStatus eq 'Y' && dto.menuStatus eq 'Y' && dto.storeEnable eq 'N'}">
 			                    <li class="menu_item">
 			                        <a href="user_menudetail?storeName=${storeName}&bucksId=${bucksId}&menuCode=${dto.menuCode}&menuoptCode=${dto.menuoptCode}&drink=product&pickup=${pickup}">
 			                            <div class="img_box">
@@ -105,7 +105,7 @@
 			                        </a>
 			                    </li>
 		                    </c:when>
-		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N'}">
+		                    <c:when test="${dto.storemenuStatus eq 'N' || dto.menuStatus eq 'N' || dto.storeEnable eq 'Y'}">
 			                    <li class="menu_item pdt_dimm">
 			                    	<a href="javascript:;" onclick="alert('해당 메뉴는 주문이 불가합니다.');">
 			                            <div class="img_box">

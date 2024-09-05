@@ -65,6 +65,7 @@ public class MenuDTO {
 	private String storemenuStatus;
 	private String menuStatus;
 	private String bucksId;
+	private String storeEnable;
 	
 	public String getStoremenuStatus() {
 		return storemenuStatus;
@@ -89,6 +90,15 @@ public class MenuDTO {
 	public void setBucksId(String bucksId) {
 		this.bucksId = bucksId;
 	}
+	
+	public String getStoreEnable() {
+		return storeEnable;
+	}
+	
+	public void setStoreEnable(String storeEnable) {
+		this.storeEnable = storeEnable;
+	}
+	
 	
 }
 

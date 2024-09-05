@@ -351,33 +351,42 @@ public class UserController {
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
 		Map<String, String> params = new HashMap<>();
 		for (MenuDTO md : list) {
+			
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
+			String storeEnable = userMapper.getStoreEnable(params);
 			String storemenuStatus = userMapper.getMenuStatus(params);
 			String menuStatus = userMapper.getMenuStatus2(params);
 			md.setStoremenuStatus(storemenuStatus);
-			md.setMenuStatus(menuStatus);
+			md.setMenuStatus(menuStatus); 
+			md.setStoreEnable(storeEnable); 
 		} 
 
 		// [음식] 정보, 주문가능한지
 		List<MenuDTO> list2 = userMapper.getStoreFoodList(storeName);
 		for (MenuDTO md : list2) {
+			
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
+			String storeEnable = userMapper.getStoreEnable(params);
 			String storemenuStatus = userMapper.getMenuStatus(params);
 			String menuStatus = userMapper.getMenuStatus2(params);
 			md.setStoremenuStatus(storemenuStatus);
 			md.setMenuStatus(menuStatus);
+			md.setStoreEnable(storeEnable);
 		}
 		// [상품] 정보, 주문가능한지
 		List<MenuDTO> list3 = userMapper.getStoreProdcutList(storeName);
 		for (MenuDTO md : list3) {
+			
 			params.put("menuCode", md.getMenuCode());
 			params.put("bucksId", bucksId);
+			String storeEnable = userMapper.getStoreEnable(params);
 			String storemenuStatus = userMapper.getMenuStatus(params);
 			String menuStatus = userMapper.getMenuStatus2(params);
 			md.setStoremenuStatus(storemenuStatus);
 			md.setMenuStatus(menuStatus);
+			md.setStoreEnable(storeEnable);
 		}
 
 		req.setAttribute("drinkList", list);
@@ -852,7 +861,7 @@ public class UserController {
 			response.put("bucksOwner", dto.getBucksOwner());
 			response.put("bucksCode", bucksId);
 			response.put("payhistoryDate", dto2.getPayhistoryDate());
-			response.put("payhistoryPayWay", dto2.getPayhistoryPayWay());
+			response.put("payhistoryPayWay", dto2.getPayhistoryPayWay());			
 
 			// 닉네임, 주문번호
 			response.put("userNickname", userNickname);
@@ -860,7 +869,6 @@ public class UserController {
 			response.put("orderCode", ordercode);
 			// 주문내역
 			response.put("items", menuList);
-
 			// 결제금액
 			response.put("payhistoryPrice", dto2.getPayhistoryPrice());
 			// 결제카드
@@ -1041,6 +1049,14 @@ public class UserController {
 		int res = userMapper.insertCart(params);
 
 		return res;
+	}
+	
+	@ResponseBody
+	@PostMapping("/cartCountUpdate.ajax")
+	public int cartCountUpdate(@RequestBody Map<String, Integer> params) {
+	
+		int cardCount = userMapper.updateCartCount(params);
+		return cardCount;
 	}
 
 	@ResponseBody

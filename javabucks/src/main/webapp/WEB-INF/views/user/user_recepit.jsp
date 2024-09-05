@@ -48,7 +48,7 @@
                         <label>
                             결제 수단
                             <select name="payway">
-                                <option value="card">스타벅스 카드</option>
+                                <option value="card">자바벅스 카드</option>
                                 <option value="kakao">카카오페이</option>
                             </select>
                         </label>
@@ -161,7 +161,6 @@
 	$(".cancel_btn").on("click", function(){
 		$(".period_date").hide();
 	})
-	// 버튼 클릭시 클래스 먹이기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//버튼 클릭 이벤트 설정
 	document.querySelectorAll('.btn').forEach(button => {
 	    button.addEventListener('click', function() {
@@ -231,92 +230,110 @@
 	        }
 	    });
 	}
-	
 	function updatePopup(data) {
 	    // 서버에서 받은 JSON 데이터를 사용해 팝업 내용을 업데이트합니다.
-	    // 지점명
-		document.querySelector("#recepitbox .store_info li:nth-child(1) span:first-child").textContent = data.bucksName;
-		// 지점전화번호
-		document.querySelector("#recepitbox .store_info li:nth-child(1) span:last-child").textContent = 'T: ' + data.bucksTel1 + '-' + data.bucksTel2 + '-' + data.bucksTel3;
-		// 지점위치
-		document.querySelector("#recepitbox .store_info li:nth-child(2)").textContent = data.bucksLocation;
-		// 대표: 점주명
-		document.querySelector("#recepitbox .store_info li:nth-child(3) span:first-child").textContent = '대표: ' + data.bucksOwner;
-		// 지점코드
-		document.querySelector("#recepitbox .store_info li:nth-child(3) span:last-child").textContent = data.bucksCode;
-		// 결제시간
-		document.querySelector("#recepitbox .store_info li:nth-child(4)").textContent = data.payhistoryDate;
-		// 닉네임 설정
-		document.querySelector("#recepitbox .user_info .order_num p:first-child").textContent = data.userNickname;
-		// 주문번호 설정
-		document.querySelector("#recepitbox .user_info .order_num p:last-child").textContent = data.orderCode;
+	// 지점명
+    const bucksNameElement = document.querySelector("#recepitbox .store_info li:nth-child(1) span:first-child");
+    if (bucksNameElement) {
+        bucksNameElement.textContent = data.bucksName;
+    }
+    // 지점전화번호
+    const bucksTelElement = document.querySelector("#recepitbox .store_info li:nth-child(1) span:last-child");
+    if (bucksTelElement) {
+        bucksTelElement.textContent = 'T: ' + data.bucksTel1 + '-' + data.bucksTel2 + '-' + data.bucksTel3;
+    }
+    // 지점위치
+    const bucksLocationElement = document.querySelector("#recepitbox .store_info li:nth-child(2)");
+    if (bucksLocationElement) {
+        bucksLocationElement.textContent = data.bucksLocation;
+    }
+    // 대표: 점주명
+    const bucksOwnerElement = document.querySelector("#recepitbox .store_info li:nth-child(3) span:first-child");
+    if (bucksOwnerElement) {
+        bucksOwnerElement.textContent = '대표: ' + data.bucksOwner;
+    }
+    // 지점코드
+    const bucksCodeElement = document.querySelector("#recepitbox .store_info li:nth-child(3) span:last-child");
+    if (bucksCodeElement) {
+        bucksCodeElement.textContent = data.bucksCode;
+    }
+    // 결제시간
+    const payhistoryDateElement = document.querySelector("#recepitbox .store_info li:nth-child(4)");
+    if (payhistoryDateElement) {
+        payhistoryDateElement.textContent = data.payhistoryDate;
+    }
+    // 닉네임 설정
+    const userNicknameElement = document.querySelector("#recepitbox .user_info .order_num p:first-child");
+    if (userNicknameElement) {
+        userNicknameElement.textContent = data.userNickname;
+    }
+    // 주문번호 설정
+    const orderCodeElement = document.querySelector("#recepitbox .user_info .order_num p:last-child");
+    if (orderCodeElement) {
+        orderCodeElement.textContent = data.orderCode;
+    }
+    // 합계 및 결제 정보 업데이트
+    const totalPriceElement = document.querySelector("#recepitbox .total_box span:last-child");
+    if (totalPriceElement) {
+        totalPriceElement.textContent = data.payhistoryPrice.toLocaleString() + '원';
+    }
+    const addVatElement = document.querySelector("#recepitbox .addvat_box em:last-child");
+    if (addVatElement) {
+        addVatElement.textContent = data.payhistoryPrice.toLocaleString() + '원';
+    }
+    const payPriceElement = document.querySelector("#recepitbox .pay_box dl:nth-child(1) dd");
+    if (payPriceElement) {
+        payPriceElement.textContent = data.payhistoryPrice.toLocaleString() + '원';
+    }
+    const cardRegNumElement = document.querySelector("#recepitbox .pay_box dl:nth-child(2) dd");
+    if (cardRegNumElement) {
+        cardRegNumElement.textContent = data.cardRegNum;
+    }
+    const cardPriceElement = document.querySelector("#recepitbox .pay_box dl:nth-child(3) dd");
+    if (cardPriceElement) {
+        cardPriceElement.textContent = data.cardPrice.toLocaleString() + '원';
+    }
+		
+	 	// <dl> 요소가 없는 경우, 직접 생성하여 추가
+	    const payBoxElement = document.querySelector('.pay_box');
+
+	    // dl, dt, dd를 생성하여 추가하는 함수
+	    const createDlElement = (dtText, ddText) => {
+	        const dl = document.createElement('dl');
+	        const dt = document.createElement('dt');
+	        const dd = document.createElement('dd');
+	        
+	        dt.textContent = dtText;
+	        dd.textContent = ddText;
+
+	        dl.appendChild(dt);
+	        dl.appendChild(dd);
+
+	        return dl;
+	    };
+
+	    // 기존 pay_box 내부 내용 제거 (필요에 따라 사용)
+	    payBoxElement.innerHTML = '';
+
+	    // 첫 번째 항목: 결제수단과 결제금액
+	    if (data.payhistoryPayWay === '카카오페이') {
+	        payBoxElement.appendChild(createDlElement(data.payhistoryPayWay, data.payhistoryPrice.toLocaleString() + '원'));
+	    } else {
+	    	// 첫 번째 항목: 결제유형
+	        payBoxElement.appendChild(createDlElement('스타벅스카드', data.payhistoryPrice.toLocaleString() + '원'));
+	   
+	    	 // 카드번호에 4자리마다 '-'를 추가하는 함수
+	        const formatCardNumber = (cardNumber) => {
+	            if (!cardNumber) return '카드번호'; // cardNumber가 없을 경우 기본값 반환
+	            return cardNumber.replace(/(\d{4})(?=\d)/g, '$1-'); // 4자리마다 '-' 추가
+	        };
+	        
+		    // 두 번째 항목: 카드번호
+		    payBoxElement.appendChild(createDlElement('카드번호', formatCardNumber(data.cardRegNum) || '카드번호'));
 	
-		data.payhistoryPayWay
-	    // 합계 및 결제 정보 업데이트
-	    document.querySelector("#recepitbox .total_box span:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원';
-	    document.querySelector("#recepitbox .addvat_box em:last-child").textContent = data.payhistoryPrice.toLocaleString() + '원'; // 부가세 포함 금액
-	    document.querySelector("#recepitbox .pay_box dl:nth-child(1) dd").textContent = data.payhistoryPrice.toLocaleString() + '원';
-	    document.querySelector("#recepitbox .pay_box dl:nth-child(2) dd").textContent = data.cardRegNum;
-	    document.querySelector("#recepitbox .pay_box dl:nth-child(3) dd").textContent = data.cardPrice.toLocaleString() + '원';
-		
-		// <dt>와 <dd> 요소를 선택합니다.
-		    const payWayDtElements = document.querySelectorAll('.pay_box dl dt');
-		    const payWayDdElements = document.querySelectorAll('.pay_box dl dd');
-		    
-		    // <dt>와 <dd> 요소가 있는 경우
-		    if (payWayDtElements.length > 0) {
-		        // 각 <dt> 요소에 대해
-		        payWayDtElements.forEach((dtElement, index) => {
-		            if (index === 0) {
-		                // 첫 번째 <dt>에 payhistoryPayWay 값 설정
-		                if (data.payhistoryPayWay === '카카오페이') {
-		                    dtElement.textContent = data.payhistoryPayWay;
-		                } else {
-		                    dtElement.textContent = '스타벅스카드'; // 기본값
-		                }
-		            } else if (index === 1) {
-		                // 두 번째 <dt>에 카드번호 값 설정
-		                dtElement.textContent = data.cardRegNum || '카드번호';
-		            } else if (index === 2) {
-		                // 세 번째 <dt>에 카드잔액 값 설정
-		                dtElement.textContent = data.cardPrice || '카드잔액';
-		            }
-		        });
-
-		        // <dd> 요소에 값 설정
-		        payWayDdElements.forEach((ddElement, index) => {
-		            if (index === 0) {
-		                // 첫 번째 <dd>에 payhistoryPayWay 값 설정
-		                if (data.payhistoryPayWay === '카카오페이') {
-		                    ddElement.textContent = '카카오페이'; // 두 번째 <dt> 값과 일치
-		                } else {
-		                    ddElement.textContent = '스타벅스카드'; // 기본값
-		                }
-		            } else if (index === 1) {
-		                // 두 번째 <dd>에 카드번호 값 설정
-		                ddElement.textContent = data.cardRegNum || '카드번호';
-		            } else if (index === 2) {
-		                // 세 번째 <dd>에 카드잔액 값 설정
-		                ddElement.textContent = data.cardPrice || '카드잔액';
-		            }
-		        });
-
-		        // 카카오페이인 경우 특정 <dl> 요소 숨기기
-		        if (data.payhistoryPayWay === '카카오페이') {
-		            // 카드번호와 카드잔액 정보가 있는 <dl> 요소 숨기기
-		            const cardInfoDlElements = document.querySelectorAll('.pay_box dl:nth-child(2), .pay_box dl:nth-child(3)');
-		            cardInfoDlElements.forEach(dlElement => {
-		                dlElement.style.display = 'none';
-		            });
-		        } else {
-		            // 카카오페이가 아닌 경우 숨겨진 요소를 표시
-		            const cardInfoDlElements = document.querySelectorAll('.pay_box dl:nth-child(2), .pay_box dl:nth-child(3)');
-		            cardInfoDlElements.forEach(dlElement => {
-		                dlElement.style.display = 'block';
-		            });
-		        }
-		    }
-		
+		    // 세 번째 항목: 카드잔액
+		    payBoxElement.appendChild(createDlElement('카드잔액', data.cardPrice.toLocaleString() + '원'));
+	    }
 		
 		const orderList = document.querySelector("#recepitbox .order_list");
 		// 기존의 주문 목록을 초기화

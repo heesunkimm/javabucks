@@ -272,7 +272,11 @@ public class UserMapper {
 	public String getOrderEnableBybucksId(String bucksId) {
 		return sqlSession.selectOne("getOrderEnableBybucksId", bucksId);
 	}
-
+	
+	public String getStoreEnable(Map<String, String> params) {
+		return sqlSession.selectOne("getStoreEnable", params);
+	}
+	
 	public List<MenuDTO> getStoreDrinkList(String storeName) {
 		return sqlSession.selectList("getStoreDrinkList", storeName);
 	}

@@ -34,7 +34,7 @@
                         <p class="txt_tit">${menu.menuName}</p>
                         <p class="txt_price"><fmt:formatNumber value="${menu.menuPrice}" pattern="#,###"/> 원</p>
                         <div class="btn_box">
-                            <button id="store" type="button" onclick="ToOrder('${menu.menuCode}', '매장이용', this)">매장 이용</button>
+                            <button id="store" type="button" onclick="ToOrder('${menu.menuCode}', '매장이용', this)">Store</button>
                             <button id="togo" type="button" onclick="ToOrder('${menu.menuCode}', 'To-go', this)">To-go</button>
                             <button id="delivers" type="button" onclick="ToOrder('${menu.menuCode}', 'Delivers', this)">Delivers</button>
                         </div>
@@ -52,15 +52,6 @@
 		
 		// 버튼들에 대한 ID를 설정합니다.
         var buttons = document.querySelectorAll('.btn_box button');
-
-		// 희선님 여기입니다(버튼 클릭 시 클래스 추가)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // 모든 버튼에서 active 클래스를 제거합니다.
-        buttons.forEach(function(button) {
-            button.classList.remove('active');
-        });
-
-        // 클릭된 버튼에 active 클래스를 추가합니다.
-        clickedButton.classList.add('active');
     	
         // hidden input 요소의 값을 가져옵니다.
         var pickupInput = document.getElementById('pickup');

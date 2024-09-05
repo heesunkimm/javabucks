@@ -158,7 +158,7 @@
                     </dl>
                     <input type="hidden" name="cardRegNum">
                     <input type="hidden" name="payhistoryPayWay" id="payhistoryPayWay">
-                    <input type="hidden" name="payhistoryPayType" value=${pickup}>
+                    <input type="hidden" name="payhistoryPayType" value="${pickup}">
                     <input type="hidden" name="selectedCouponPrice" value="0">
 					<input type="hidden" name="selectedCouponListNum" value="">
                     <button class="pay_btn" type="button" onclick="requestPay()">결제하기</button>

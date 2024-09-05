@@ -12,25 +12,51 @@
            	 사용 가능한 쿠폰이 없어요
             </c:if>
 			<c:forEach var ="dto" items="${couponlist}">
-            <ul class="cpn_list">
-                <!-- 쿠폰 사용완료시 <li class="cpn_item">에 use_complete 클래스 추가하면 딤처리됨 -->
-                <li class="cpn_item">
-                    <div class="img_box">
-                        <img src="../images/icons/javabucks_cupon.png" alt="">
-                    </div>
-                    <div class="txt_box">
-                        <p class="txt_sub">JavaBucks</p>
-                        <p class="txt_tit">${dto.cpnName}</p>
-                        <p class="txt_desc">${dto.cpnDesc}</p>
-                        <ul class="txt_noti">
-                            <li>${dto.cpnListEndDate}까지</li>
-                            <li>${dto.cpnListStatus}</li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
+				<c:choose>
+					<c:when test="${dto.cpnListStatus eq '발급완료'}">
+			            <ul class="cpn_list">
+			                <li class="cpn_item">
+			                    <div class="img_box">
+			                        <img src="../images/icons/javabucks_cupon.png" alt="">
+			                    </div>
+			                    <div class="txt_box">
+			                        <p class="txt_sub">JavaBucks</p>
+			                        <p class="txt_tit">${dto.cpnName}</p>
+			                        <p class="txt_desc">${dto.cpnDesc}</p>
+			                        <ul class="txt_noti">
+			                            <li>${dto.cpnListEndDate}까지</li>
+			                        </ul>
+			                    </div>
+			                </li>
+			            </ul>
+		            </c:when>
+	            </c:choose>
             </c:forEach>
-           
+           	<c:forEach var ="dto" items="${couponlist}">
+           		<c:choose>
+		            <c:when test="${dto.cpnListStatus eq '사용완료' || dto.cpnListStatus eq '기간만료'}">
+		            	<ul class="cpn_list">
+		            		<!-- 기간만료 클래스 추가 예정!!!!!!!!!!!!!!!!!!!!!! -->
+		            		<c:if test="${dto.cpnListStatus eq '기간만료'}">
+		                		<li class="cpn_item use_complete">
+			                </c:if>
+			                	<li class="cpn_item use_complete">
+			                    <div class="img_box">
+			                        <img src="../images/icons/javabucks_cupon.png" alt="">
+			                    </div>
+			                    <div class="txt_box">
+			                        <p class="txt_sub">JavaBucks</p>
+			                        <p class="txt_tit">${dto.cpnName}</p>
+			                        <p class="txt_desc">${dto.cpnDesc}</p>
+			                        <ul class="txt_noti">
+			                            <li>${dto.cpnListEndDate}까지</li>
+			                        </ul>
+			                    </div>
+			                </li>
+			            </ul>
+		            </c:when>
+	            </c:choose>
+            </c:forEach>
         </div>
     </section>
     <!-- e: content -->
