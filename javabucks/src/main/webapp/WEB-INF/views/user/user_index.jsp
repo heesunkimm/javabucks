@@ -11,7 +11,7 @@
             <div class="top_box">
                 <div class="random_box">
                 	<div class="random_img img_box">
-	                	<img src="" alt="">
+	                	<img src="" alt="" style="opacity: 0.8;">
                 	</div>
                     <p class="random_txt">
 	                    <%-- <c:if test="${not empty inUser.userNickname}">
@@ -128,12 +128,14 @@
 			let Users = UserNickname === "" || UserNickname === null ? UserId : UserNickname;
 			
 			let Data = [
-			    {"phrase": Users + "님 \n오늘도 힘찬하루★ 반가워요!", "images":"../images/banner/banner01.jpg"},
-			    {"phrase": "자바벅스에서 하루를 시작하세요. \n환영합니다.", "images":"../images/banner/banner02.jpg"},
-			    {"phrase": "좋은 하루 되세요", "images":"../images/banner/banner03.jpg"},
-			    {"phrase": "자바벅스의 \n따듯한 환영을 받으세요!", "images":"../images/banner/banner04.webp"},
-			    {"phrase": "당신의 순간을 더욱 \n특별하게 만들어 드립니다.", "images":"../images/banner/banner05.jpg"},
-			    {"phrase": "오늘의 커피가 \n" + Users + "님을 기다리고 있습니다.", "images":"../images/banner/banner06.jpg"}
+				{"phrase": Users + "님 \n오늘도 힘찬하루★ 반가워요!", "images":"../images/banner/banner01.jpg"},
+	            {"phrase": "진주경님의 \nSQLD 합격을 기원합니다★", "images":"../images/banner/banner02.jpg"},
+	            {"phrase": "자바벅스에서 하루를 시작하세요. \n환영합니다.", "images":"../images/banner/banner03.jpg"},
+				{"phrase": "좋은 하루 되세요", "images":"../images/banner/banner01.jpg"},
+	            {"phrase": "자바벅스의 \n따듯한 환영을 받으세요!", "images":"../images/banner/banner02.jpg"},
+	            {"phrase": "핑복님의 \nSQLD 합격을 기원합니다★", "images":"../images/banner/banner02.jpg"},
+	            {"phrase": "경주 공주님의 \nSQLD 합격을 기원합니다★", "images":"../images/banner/banner02.jpg"},
+	            {"phrase": "오늘의 커피가 \n" + Users + "님을 기다리고 있습니다.", "images":"../images/banner/banner03.jpg"}
 			];
 			
             let randomIndex = Math.floor(Math.random() * Data.length); // 랜덤 인덱스 생성

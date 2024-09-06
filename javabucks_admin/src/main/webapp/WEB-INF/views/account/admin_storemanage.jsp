@@ -36,7 +36,7 @@
                         <li style="width: 12%;">지점명</li>
                         <li style="width: 13%;">등록번호</li>
                         <li style="width: 10%;">점주명</li>
-                        <li style="width: 30%;">위치</li>
+                        <li style="width: 25%;">위치</li>
                         <li style="width: 15%;">전화번호</li>
                         <li style="width: 15%;">운영시간</li> 
                         <li style="width: 5%;">운영여부</li>
@@ -47,10 +47,10 @@
                        <li class="store_name" style="width: 12%; text-align: center;">${bucks.bucksName}</li>
                         <li class="store_code" style="width: 13%; text-align: center;">${bucks.bucksId}</li>
                         <li class="store_owner" style="width: 10%; text-align: center;">${bucks.bucksOwner}</li>
-                        <li class="store_location" style="width: 30%; text-align: center;">${bucks.bucksLocation}</li>
+                        <li class="store_location" style="width: 25%; text-align: center;">${bucks.bucksLocation}</li>
                         <li class="store_tel" style="width: 15%; text-align: center;">${bucks.bucksTel1}-${bucks.bucksTel2}-${bucks.bucksTel3}</li>
                         <li class="store_start_time" style="width: 15%; text-align: center;">${fn:substring(bucks.bucksStart, 11, 16)} - ${fn:substring(bucks.bucksEnd, 11, 16)}</li>
-                        <li class="store_tel" style="width: 3%; text-align: center;">${bucks.bucksEnable}</li>
+                        <li class="store_tel" style="width: 5%; text-align: center;">${bucks.bucksEnable}</li>
                         <li style="width: 12%; text-align: center;">
                         <c:choose>
                             <c:when test="${bucks.bucksEnable == 'Y'}">
