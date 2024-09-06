@@ -3,49 +3,67 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="mybatis.mapper.account-mapper">
-<select id="adminList" parameterType="map" resultType="AdminDTO">
-<![CDATA[ SELECT * FROM ( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_admin ORDER BY adminJoindate DESC, adminId ASC ) R WHERE ROWNUM <= #{endIndex} ) WHERE rnum >= #{startIndex} ]]>
-</select>
-<select id="adminListCount" parameterType="int" resultType="int"> SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_admin </select>
-<!--  관리자 검색 쿼리  -->
-<select id="searchAdminList" parameterType="map" resultType="AdminDTO"> SELECT * FROM ( SELECT ROWNUM AS rnum, a.* FROM ( SELECT adminId, adminPasswd, adminEmail, adminAuthority, adminJoindate, adminEnable FROM javabucks_admin WHERE adminId LIKE '%' || COALESCE(#{adminId}, '') || '%' AND COALESCE(adminAuthority, '') LIKE '%' || #{authority} || '%' AND COALESCE(adminEnable, '') LIKE '%' || #{enable} || '%' AND adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE) ORDER BY adminJoindate DESC, adminId ASC ) a WHERE ROWNUM &lt;= #{endIndex} ) WHERE rnum &gt;= #{startIndex} </select>
-<!--  관리자 총 카운트 쿼리  -->
-<select id="searchAdminCount" parameterType="map" resultType="int"> SELECT COUNT(*) FROM javabucks_admin WHERE (#{adminId} IS NULL OR #{adminId} = '' OR adminId LIKE '%' || #{adminId} || '%') AND (#{authority} IS NULL OR #{authority} = '' OR adminAuthority = #{authority}) AND (#{enable} IS NULL OR #{enable} = '' OR adminEnable = #{enable}) AND (adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE)) </select>
-<update id="deleteAdmin" parameterType="String"> UPDATE javabucks_admin SET adminEnable = 'N' WHERE adminId = #{adminId} </update>
-<!--  이메일 중복 확인 쿼리  -->
-<select id="checkAdminEmail" parameterType="AdminDTO" resultType="int"> SELECT COUNT(*) FROM javabucks_admin WHERE AdminEmail = #{adminEmail} AND adminId != #{adminId} </select>
-<!--  아이디 중복 확인 쿼리  -->
-<select id="checkAdminId" parameterType="AdminDTO" resultType="int"> SELECT COUNT(*) FROM javabucks_admin WHERE AdminId = #{adminId} </select>
-<!--  지점 등록  -->
-<insert id="addAdmin" parameterType="AdminDTO"> INSERT INTO javabucks_admin ( adminId, adminPasswd, adminEmail, adminAuthority, adminJoindate, adminEnable ) VALUES ( #{adminId}, #{adminPasswd}, #{adminEmail}, 'admin', SYSDATE, DEFAULT ) </insert>
-<select id="editAdmin" parameterType="String" resultType="AdminDTO"> Select * FROM javabucks_admin WHERE adminId = #{adminId} </select>
-<!--   수정 이메일 중복 확인 쿼리   -->
-<select id="editCheckAdminEmail" parameterType="AdminDTO" resultType="int"> SELECT COUNT(*) FROM javabucks_admin WHERE adminEmail = #{adminEmail} AND adminId != #{adminId} </select>
-<!--  지점 수정 등록  -->
-<update id="editUpdateAdmin" parameterType="AdminDTO"> UPDATE javabucks_admin SET adminEmail = #{adminEmail} WHERE adminId = #{adminId} </update>
-<!--  USER  -->
-<select id="userList" parameterType="map" resultType="UserDTO">
-<![CDATA[ SELECT * FROM ( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_user ORDER BY userJoindate DESC, userId ASC ) R WHERE ROWNUM <= #{endIndex} ) WHERE rnum >= #{startIndex} ]]>
-</select>
-<select id="userListCount" parameterType="int" resultType="int"> SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_user </select>
-<update id="deleteUser" parameterType="String"> UPDATE javabucks_user SET userEnable = 'N' WHERE userId = #{userId} </update>
-<select id="editUser" parameterType="String" resultType="UserDTO"> SELECT userId, userPasswd, userName, userNickname, userGender, TO_CHAR(userBirth, 'YYYY-MM-DD') AS userBirth, userEmail1, userEmail2, userTel1, userTel2, userTel3, gradeCode, userGradedate, userJoindate, userEnable, userFrequencyCount FROM javabucks_user WHERE userId = #{userId} </select>
-<!--   수정 이메일 중복 확인 쿼리   -->
-<select id="editCheckUserEmail" parameterType="UserDTO" resultType="int"> SELECT COUNT(*) FROM javabucks_user WHERE userEmail1 = #{userEmail1} AND userEmail2 = #{userEmail2} AND userId != #{userId} </select>
-<!--  지점 수정 등록  -->
-<update id="editUpdateUser" parameterType="UserDTO"> UPDATE javabucks_user SET userName = #{userName}, userNickname = #{userNickname}, userBirth = #{userBirth}, userTel1 = #{userTel1}, userTel2 = #{userTel2}, userTel3 = #{userTel3}, userEmail1 = #{userEmail1}, userEmail2 = #{userEmail2}, gradeCode = #{gradeCode} WHERE userId = #{userId} </update>
-<!--  user 검색 쿼리  -->
-<select id="searchUserList" parameterType="map" resultType="UserDTO">
-SELECT * FROM ( SELECT ROW_NUMBER() OVER (ORDER BY userJoindate DESC) AS rn, u.* FROM javabucks_user u WHERE 1=1
-<if test="userId != null and userId != ''"> AND userId LIKE '%' || #{userId} || '%' </if>
-<if test="userNickname != null and userNickname != ''"> AND userNickname LIKE '%' || #{userNickname} || '%' </if>
-<!--  여기서 gradeCode가 null이 아닐 때에만 필터를 적용  -->
-<if test="gradeCode != null and gradeCode != ''"> AND gradeCode = #{gradeCode} </if>
-<if test="enable != null and enable != ''"> AND userEnable = #{enable} </if>
-<if test="startDate != null and startDate != ''"> AND userJoindate >= TO_DATE(#{startDate}, 'YYYY-MM-DD') </if>
-<if test="endDate != null and endDate != ''"> AND userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND </if>
-) u WHERE rn BETWEEN #{startIndex} AND #{endIndex}
-</select>
-<!--  user 총 카운트 쿼리  -->
-<select id="searchUserCount" parameterType="map" resultType="int"> SELECT COUNT(*) FROM javabucks_user WHERE userId LIKE '%' || COALESCE(#{userId}, '') || '%' AND userNickname LIKE '%' || COALESCE(#{userNickname}, '') || '%' AND gradeCode = COALESCE(#{gradeCode}, gradeCode) AND userEnable = COALESCE(#{enable}, userEnable) AND userJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE) </select>
+			<select id="adminList" parameterType="map" resultType="AdminDTO">
+						<![CDATA[ SELECT * FROM ( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_admin where adminEnable = 'Y' ORDER BY adminJoindate DESC, adminId ASC ) R WHERE ROWNUM <= #{endIndex} ) WHERE rnum >= #{startIndex} ]]>
+			</select>
+			<select id="adminListCount" parameterType="int" resultType="int"> 
+			SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_admin 
+			</select>
+			<!--  관리자 검색 쿼리  -->
+			<select id="searchAdminList" parameterType="map" resultType="AdminDTO"> 
+				SELECT * FROM ( SELECT ROWNUM AS rnum, a.* FROM ( SELECT adminId, adminPasswd, adminEmail, adminAuthority, adminJoindate, adminEnable FROM javabucks_admin WHERE adminId LIKE '%' || COALESCE(#{adminId}, '') || '%' AND COALESCE(adminAuthority, '') LIKE '%' || #{authority} || '%' AND COALESCE(adminEnable, '') LIKE '%' || #{enable} || '%' AND adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE) ORDER BY adminJoindate DESC, adminId ASC ) a WHERE ROWNUM &lt;= #{endIndex} ) WHERE rnum &gt;= #{startIndex} 
+			</select>
+			<!--  관리자 총 카운트 쿼리  -->
+			<select id="searchAdminCount" parameterType="map" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_admin WHERE (#{adminId} IS NULL OR #{adminId} = '' OR adminId LIKE '%' || #{adminId} || '%') AND (#{authority} IS NULL OR #{authority} = '' OR adminAuthority = #{authority}) AND (#{enable} IS NULL OR #{enable} = '' OR adminEnable = #{enable}) AND (adminJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE)) </select>
+			<update id="deleteAdmin" parameterType="String"> 
+				UPDATE javabucks_admin SET adminEnable = 'N' WHERE adminId = #{adminId} </update>
+			<!--  이메일 중복 확인 쿼리  -->
+			<select id="checkAdminEmail" parameterType="AdminDTO" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_admin WHERE AdminEmail = #{adminEmail} AND adminId != #{adminId} </select>
+			<!--  아이디 중복 확인 쿼리  -->
+			<select id="checkAdminId" parameterType="AdminDTO" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_admin WHERE AdminId = #{adminId} </select>
+			<!--  지점 등록  -->
+			<insert id="addAdmin" parameterType="AdminDTO"> 
+				INSERT INTO javabucks_admin ( adminId, adminPasswd, adminEmail, adminAuthority, adminJoindate, adminEnable ) VALUES ( #{adminId}, #{adminPasswd}, #{adminEmail}, 'admin', SYSDATE, DEFAULT ) </insert>
+			<select id="editAdmin" parameterType="String" resultType="AdminDTO"> 
+				Select * FROM javabucks_admin WHERE adminId = #{adminId} </select>
+			<!--   수정 이메일 중복 확인 쿼리   -->
+			<select id="editCheckAdminEmail" parameterType="AdminDTO" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_admin WHERE adminEmail = #{adminEmail} AND adminId != #{adminId} </select>
+			<!--  지점 수정 등록  -->
+			<update id="editUpdateAdmin" parameterType="AdminDTO"> 
+				UPDATE javabucks_admin SET adminEmail = #{adminEmail} WHERE adminId = #{adminId} </update>
+			<!--  USER  -->
+			<select id="userList" parameterType="map" resultType="UserDTO">
+				<![CDATA[ SELECT * FROM ( SELECT ROWNUM AS rnum, R.* FROM ( SELECT * FROM javabucks_user where userEnable='Y' ORDER BY userJoindate DESC, userId ASC ) R WHERE ROWNUM <= #{endIndex} ) WHERE rnum >= #{startIndex} ]]>
+			</select>
+			<select id="userListCount" parameterType="int" resultType="int"> 
+				SELECT COUNT(*) AS TOTAL_COUNT FROM javabucks_user </select>
+			<update id="deleteUser" parameterType="String"> 
+				UPDATE javabucks_user SET userEnable = 'N' WHERE userId = #{userId} </update>
+			<select id="editUser" parameterType="String" resultType="UserDTO"> 
+				SELECT userId, userPasswd, userName, userNickname, userGender, TO_CHAR(userBirth, 'YYYY-MM-DD') AS userBirth, userEmail1, userEmail2, userTel1, userTel2, userTel3, gradeCode, userGradedate, userJoindate, userEnable, userFrequencyCount FROM javabucks_user WHERE userId = #{userId} </select>
+			<!--   수정 이메일 중복 확인 쿼리   -->
+			<select id="editCheckUserEmail" parameterType="UserDTO" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_user WHERE userEmail1 = #{userEmail1} AND userEmail2 = #{userEmail2} AND userId != #{userId} </select>
+			<!--  지점 수정 등록  -->
+			<update id="editUpdateUser" parameterType="UserDTO"> 
+				UPDATE javabucks_user SET userName = #{userName}, userNickname = #{userNickname}, userBirth = #{userBirth}, userTel1 = #{userTel1}, userTel2 = #{userTel2}, userTel3 = #{userTel3}, userEmail1 = #{userEmail1}, userEmail2 = #{userEmail2}, gradeCode = #{gradeCode} WHERE userId = #{userId} </update>
+			<!--  user 검색 쿼리  -->
+			<select id="searchUserList" parameterType="map" resultType="UserDTO">
+					SELECT * FROM ( SELECT ROW_NUMBER() OVER (ORDER BY userJoindate DESC) AS rn, u.* FROM javabucks_user u WHERE 1=1
+					<if test="userId != null and userId != ''"> AND userId LIKE '%' || #{userId} || '%' </if>
+					<if test="userNickname != null and userNickname != ''"> AND userNickname LIKE '%' || #{userNickname} || '%' </if>
+					<!--  여기서 gradeCode가 null이 아닐 때에만 필터를 적용  -->
+					<if test="gradeCode != null and gradeCode != ''"> AND gradeCode = #{gradeCode} </if>
+					<if test="enable != null and enable != ''"> AND userEnable = #{enable} </if>
+					<if test="startDate != null and startDate != ''"> AND userJoindate >= TO_DATE(#{startDate}, 'YYYY-MM-DD') </if>
+					<if test="endDate != null and endDate != ''"> AND userJoindate &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND </if>
+					) u WHERE rn BETWEEN #{startIndex} AND #{endIndex}
+			</select>
+			<!--  user 총 카운트 쿼리  -->
+			<select id="searchUserCount" parameterType="map" resultType="int"> 
+				SELECT COUNT(*) FROM javabucks_user WHERE userId LIKE '%' || COALESCE(#{userId}, '') || '%' AND userNickname LIKE '%' || COALESCE(#{userNickname}, '') || '%' AND gradeCode = COALESCE(#{gradeCode}, gradeCode) AND userEnable = COALESCE(#{enable}, userEnable) AND userJoindate BETWEEN COALESCE(TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE('1900-01-01', 'YYYY-MM-DD')) AND COALESCE(TO_DATE(#{endDate}, 'YYYY-MM-DD')+ INTERVAL '1' DAY - INTERVAL '1' SECOND, SYSDATE) </select>
 </mapper>

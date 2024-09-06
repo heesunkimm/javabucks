@@ -289,11 +289,34 @@ public class UserController {
 
 			// 상위 3개의 메뉴 정보를 DB에서 조회
 			List<MenuDTO> top3MenuNames = userMapper.top3MenuNames(top3MenuCodes);
+			
+			// 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+		    for(int i=0; i<top3MenuNames.size(); i++) {
+		    	//System.out.println(top3MenuNames.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+		    	String imageName = top3MenuNames.get(i).getMenuImages();;
+		    	//System.out.println(imageName.length());
+		    	if(imageName.length() != 12) {
+		    		String imageName2 = imageName.substring(9, 21);
+		    		top3MenuNames.get(i).setMenuImages(imageName2);
+		    	}
+		    }
 			req.setAttribute("top3MenuNames", top3MenuNames);
-
+			
 		} else {
 			// 결제 내역이 없을 경우 최신 메뉴 3개를 가져옴
 			List<MenuDTO> top3MenuNames = userMapper.getLatestMenus();
+			
+			// 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+		    for(int i=0; i<top3MenuNames.size(); i++) {
+		    	System.out.println(top3MenuNames.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+		    	String imageName = top3MenuNames.get(i).getMenuImages();;
+		    	System.out.println(imageName.length());
+		    	if(imageName.length() != 12) {
+		    		String imageName2 = imageName.substring(9, 21);
+		    		top3MenuNames.get(i).setMenuImages(imageName2);
+		    	}
+		    }
+			
 			req.setAttribute("top3MenuNames", top3MenuNames);
 		}
 		// e: 핑복코드
@@ -479,6 +502,13 @@ public class UserController {
 		if (mm != null) {
 			req.setAttribute("mymenuCheck", "mymenuCheck");
 		}
+		
+		// mymenu페이지에서 넘어왔으면
+        if(params.get("storeName") == null) {
+        	BucksDTO bk = userMapper.getBucksinfoById(params.get("bucksId"));
+        	String storeName = bk.getBucksName();
+        	params.put("storeName", storeName);
+        }
 
 		MenuDTO dto = userMapper.getMenuInfoByCode(menuCode);
 		req.setAttribute("menu", dto);

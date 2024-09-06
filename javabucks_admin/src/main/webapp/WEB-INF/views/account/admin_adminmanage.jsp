@@ -89,7 +89,7 @@
 			                            <a class="delBtn" href="/deleteAdmin.do?adminId=${admin.adminId}" onclick="return confirm('정말로 이 계정을 탈퇴하시겠습니까?');">삭제</a>
 			                        </c:when>
 			                        <c:otherwise>
-			                            <button class="delBtn" type="button" disabled>탈퇴</button>
+			                            <button class="delBtn disabled_btn" type="button" disabled>탈퇴</button>
 			                        </c:otherwise>
 			                    </c:choose>
 			                </td>
@@ -191,7 +191,7 @@ $(document).ready(function() {
                               '</td>' +
                               '<td>' +
                                   (admin.adminEnable === 'Y' 
-                                  ? '<a href="/deleteAdmin.do?adminId=' + admin.adminId + '" onclick="return confirm(\'정말로 이 계정을 탈퇴하시겠습니까?\');">삭제</a>'
+                                  ? '<a class="delBtn" href="/deleteAdmin.do?adminId=' + admin.adminId + '" onclick="return confirm(\'정말로 이 계정을 탈퇴하시겠습니까?\');">삭제</a>'
                                   : '<button class="delBtn disabled_btn" type="button" disabled>탈퇴</button>') +
                               '</td>' +
                               '</tr>';

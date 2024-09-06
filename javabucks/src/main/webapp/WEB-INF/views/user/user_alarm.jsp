@@ -36,7 +36,7 @@
                     </c:if>
                     <c:if test="${alarm.alarmCate =='order'}">
                     <div class="img_box">
-                        <img src="../images/icons/receipt2.png" alt="">
+                        <img src="../images/icons/receipt.png" alt="">
                     </div>
                     </c:if>
                     <c:if test="${alarm.alarmCate =='pickUp'}">

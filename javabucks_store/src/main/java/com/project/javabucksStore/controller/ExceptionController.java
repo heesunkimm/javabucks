@@ -13,9 +13,6 @@ public class ExceptionController {
 		if (req.getSession().getAttribute("inBucks") != null) {
 			req.setAttribute("msg", "세션이 만료되었거나 잘못된 접근입니다. 이전 페이지로 이동합니다.");
 			req.setAttribute("url", "store_login");
-		} else {
-			req.setAttribute("msg", "잘못된 접근입니다. 로그인 후 이용해주세요.");
-			req.setAttribute("url", "store_login");
 		}
 		return "message"; 
 	}

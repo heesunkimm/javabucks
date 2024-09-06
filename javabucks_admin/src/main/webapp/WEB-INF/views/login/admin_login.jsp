@@ -22,7 +22,7 @@
                 <div class="img_box">
                     <img src="../images/icons/starbucks_logo.png" alt="">
                 </div>
-            <p style="font-family: 'Santana_bold';">JAVABUCKS</p>
+            <p style="font-family: 'Santana_bold';">JAVABUCKS ADMIN</p>
             </div>
             <form name="f" action="adminLogin.do" method="post">
                 <div class="input_box">

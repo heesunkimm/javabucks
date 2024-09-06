@@ -92,7 +92,7 @@
                               <td>
 			                    <c:choose>
 			                        <c:when test="${user.userEnable == 'Y'}">
-			                            <a href="/deleteUser.do?userId=${user.userId}" onclick="return confirm('정말로 이 계정을 탈퇴하시겠습니까?');">삭제</a>
+			                            <a href="/deleteUser.do?userId=${user.userId}" onclick="return confirm('정말로 이 계정을 탈퇴하시겠습니까?');">탈퇴</a>
 			                        </c:when>
 			                        <c:otherwise>
 			                            <button type="button" disabled>탈퇴</button>
@@ -229,7 +229,6 @@ $(document).ready(function() {
 	         if (startPage > 1) {
 	             $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
 	         }
-
          // 페이지 번호 링크 생성
          for (var i = startPage; i <= endPage; i++) {
              if (i == currentPage) {

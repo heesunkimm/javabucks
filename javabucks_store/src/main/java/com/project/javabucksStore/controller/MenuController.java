@@ -52,7 +52,18 @@ public class MenuController {
 	    String selectedOpt = params.get("menuoptCode");
 
 	    List<MenuDTO> selectedList = menuMapper.getSelectMenu(selectedOpt);
-
+	    
+	    // 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+	    for(int i=0; i<selectedList.size(); i++) {
+	    	//System.out.println(selectedList.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+	    	String imageName = selectedList.get(i).getMenuImages();;
+	    	//System.out.println(imageName.length());
+	    	if(imageName.length() != 12) {
+	    		String imageName2 = imageName.substring(9, 21);
+	    		selectedList.get(i).setMenuImages(imageName2);
+	    	}
+	    }
+	    
 	    return selectedList;
 	}
 	

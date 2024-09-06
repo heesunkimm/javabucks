@@ -31,7 +31,7 @@
 			                </button>
 						</c:if>
 		            </div>
-					<c:if test="${not empty drink}">
+					<c:if test="${drink eq 'drink'}">
 		            	<p class="opt_wrap__tit">퍼스널옵션</p>
 		            </c:if>
 		            <div class="opt_wrap">
