@@ -25,34 +25,34 @@
                             <input type="checkbox" name="menu_cate" value="" checked>전체
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="ES">에스프레소
+                            <input type="checkbox" name="menu_cate" value="ES">[ES] 에스프레소
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="CB">콜드브루
+                            <input type="checkbox" name="menu_cate" value="CB">[CB] 콜드브루
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="BD">블론드
+                            <input type="checkbox" name="menu_cate" value="BD">[BD] 블론드
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="DC">디카페인
+                            <input type="checkbox" name="menu_cate" value="DC">[DC] 디카페인
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="PJ">피지오
+                            <input type="checkbox" name="menu_cate" value="PJ">[PJ] 피지오
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="RF">리프레셔
+                            <input type="checkbox" name="menu_cate" value="RF">[RF] 리프레셔
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="FP">프라푸치노
+                            <input type="checkbox" name="menu_cate" value="FP">[FP] 프라푸치노
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="BL">블렌디드
+                            <input type="checkbox" name="menu_cate" value="BL">[BL] 블렌디드
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="BR">브루드
+                            <input type="checkbox" name="menu_cate" value="BR">[BR] 브루드
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="ET">기타
+                            <input type="checkbox" name="menu_cate" value="ET">[ET] 기타
                         </label>
                     </div>
                     <input type="hidden" name="menuoptCode" value="">
@@ -73,25 +73,25 @@
                             <input type="checkbox" name="menu_base" value="" checked>전체
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="W">물
+                            <input type="checkbox" name="menu_base" value="W">[W] 물
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="M">우유
+                            <input type="checkbox" name="menu_base" value="M">[M] 우유
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="N">에스프레소
+                            <input type="checkbox" name="menu_base" value="N">[N] 에스프레소
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="B">바닐라 크림
+                            <input type="checkbox" name="menu_base" value="B">[B] 바닐라 크림
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="Y">요거트
+                            <input type="checkbox" name="menu_base" value="Y">[Y] 요거트
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="F">과일
+                            <input type="checkbox" name="menu_base" value="F">[F] 과일
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_base" value="C">기타
+                            <input type="checkbox" name="menu_base" value="C">[C] 기타
                         </label>
                     </div>
                     <input type="hidden" name="menu_base" value="D">

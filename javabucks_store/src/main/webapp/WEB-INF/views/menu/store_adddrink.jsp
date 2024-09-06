@@ -17,33 +17,33 @@
 	                <label>
 	                    <span>구분 코드</span>
 	                    <select name="menu_divide">
-	                        <option value="BD">BD</option>
-	                        <option value="BL">BL</option>
-	                        <option value="BR">BR</option>
-	                        <option value="CB">CB</option>
-	                        <option value="DC">DC</option>
-	                        <option value="ES">ES</option>
-	                        <option value="ET">ET</option>
-	                        <option value="FP">FP</option>
-	                        <option value="PJ">PJ</option>
-	                        <option value="RF">RF</option>
+	                        <option value="BD">[BD] 블론드</option>
+	                        <option value="BL">[BL] 블렌디드</option>
+	                        <option value="BR">[BR] 브루드</option>
+	                        <option value="CB">[CB] 콜드브루</option>
+	                        <option value="DC">[DC] 디카페인</option>
+	                        <option value="ES">[ES] 에스프레소</option>
+	                        <option value="FP">[FP] 프라푸치노</option>
+	                        <option value="PJ">[PJ] 피지오</option>
+	                        <option value="RF">[RF] 리프레셔</option>
+	                        <option value="ET">[ET] 기타</option>
 	                    </select>
 	                </label>
 	                <label>
 	                    <span>베이스 코드</span>
 	                    <select name="menu_base">
-	                        <option value="B">B</option>
-	                        <option value="C">C</option>
-	                        <option value="D">D</option>
-	                        <option value="E">E</option>
-	                        <option value="F">F</option>
-	                        <option value="J">J</option>
-	                        <option value="L">L</option>
-	                        <option value="M">M</option>
-	                        <option value="N">N</option>
-	                        <option value="P">P</option>
-	                        <option value="W">W</option>
-	                        <option value="Y">Y</option>
+	                        <option value="B">[B] 바닐라 크림</option>
+	                        <option value="D">[D] 딸기</option>
+	                        <option value="E">[E] 멜론</option>
+	                        <option value="F">[F] 과일</option>
+	                        <option value="J">[J] 자몽</option>
+	                        <option value="L">[L] 라임</option>
+	                        <option value="M">[M] 우유</option>
+	                        <option value="N">[N] 에스프레소</option>
+	                        <option value="P">[P] 복숭아</option>
+	                        <option value="W">[W] 물</option>
+	                        <option value="Y">[Y] 요거트</option>
+	                        <option value="C">[C] 기타</option>
 	                    </select>
 	                </label>
 	                <div class="temp_box">

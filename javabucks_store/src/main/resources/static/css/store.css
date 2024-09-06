@@ -120,7 +120,7 @@ header .setting_box li:hover {background: #f1f1f1;}
 .addmenu .mixed_box > label + label {margin-top: 0.6944vw;}
 .addmenu .mixed_box > label, .addmenu .code_box p {width: 100%; font-size: 1.2500vw;}
 .addmenu .temp_box > span, .addmenu .mixed_box > label span {display: inline-block; width: 6.9444vw;}
-.addmenu .mixed_box select {width: 6.9444vw; padding: 0.2083vw 0;}
+.addmenu .mixed_box select {width: 10.9444vw; padding: 0.2083vw 0;}
 
 .addmenu .mixed_box .temp_box {margin-top: 0.6944vw;}
 .addmenu .mixed_box .temp_box label + label {margin-left: 0.4167vw;}

@@ -36,7 +36,7 @@ public class HomeController {
 	      String bucksId = bdto.getBucksId();
 	      
 	      List<PayhistoryDTO> orderList = homeMapper.topMenuOrderList(bucksId);
-	     
+	      
 	      Map<String, Integer> menuCountMap = new HashMap<>();
 	      
 	      if (orderList != null) {
@@ -71,6 +71,8 @@ public class HomeController {
 	            }
 	        }
 	      }
+	      
+	      
 
 	        // 메뉴별 수량을 내림차순으로 정렬하여 상위 3개 추출
 	        List<Map.Entry<String, Integer>> sortedMenuList = new ArrayList<>(menuCountMap.entrySet());
@@ -89,7 +91,7 @@ public class HomeController {
 	        if (!top3MenuCodes.isEmpty()) {
 	            top3MenuDetails = homeMapper.getMenuDetails(top3MenuCodes);
 	        }
-	       
+	        
 	        
 	        // 상위 3개 메뉴 정보를 원래 순서대로 정렬
 	        Map<String, MenuDTO> menuMap = new LinkedHashMap<>();
@@ -105,7 +107,16 @@ public class HomeController {
 	        for (String code : top3MenuCodes) {
 	            orderedMenuDetails.add(menuMap.get(code));
 	        }
-	       
+	        
+	        // 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+		    for(int i=0; i<orderedMenuDetails.size(); i++) {
+		    	String imageName = orderedMenuDetails.get(i).getMenuImages();;
+		    	if(imageName.length() != 12) {
+		    		String imageName2 = imageName.substring(9, 21);
+		    		orderedMenuDetails.get(i).setMenuImages(imageName2);
+		    	}
+		    }
+	        
 	        model.addAttribute("top3MenuDetails", orderedMenuDetails);
 	       // System.out.println(orderedMenuDetails);
 ///////////////////

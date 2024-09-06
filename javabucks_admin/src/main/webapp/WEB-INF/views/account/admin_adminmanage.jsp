@@ -218,30 +218,30 @@ $(document).ready(function() {
 
         // 이전 페이지 블록으로 이동하는 버튼
          if (totalPages <= 1) {
-            $pagination.append('<a href="javascript:;" class="page_active" data-page="1">1</a>');
+            $pagination.append('<a href="javascript:;" class="page_num" data-page="1">1</a>');
         } else {
             // 이전 페이지 블록으로 이동하는 버튼
             if (startPage > 1) {
-                $pagination.append('<a class="page_btn prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
+                $pagination.append('<a class="page_num prev_btn" href="javascript:;" data-page="' + (startPage - 3) + '"><img src="../../images/icons/arrow.png"></a>');
             }
 
         // 페이지 번호 링크 생성
         for (var i = startPage; i <= endPage; i++) {
             if (i == currentPage) {
-                $pagination.append('<a href="javascript:;" class="page_active" data-page="' + i + '">' + i + '</a>');
+                $pagination.append('<a href="javascript:;" class="page_active page_num" data-page="' + i + '">'+ i + '</a>');
             } else {
-                $pagination.append('<a href="javascript:;" class="page-link" data-page="' + i + '">' + i + '</a>');
+                $pagination.append('<a href="javascript:;" class="page_num" data-page="' + i + '">' + i + '</a>');
             }
         }
 
         // 다음 페이지 블록으로 이동하는 버튼
         if (endPage < totalPages) {
-            $pagination.append('<a class="page_btn next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
+            $pagination.append('<a class="page_num next_btn" href="javascript:;" data-page="' + (startPage + 3) + '"><img src="../../images/icons/arrow.png"></a>');
         }
         }
 
         // 페이지 클릭 이벤트 추가
-        $('.page-link').on('click', function() {
+        $('.page_num	').on('click', function() {
             var pageNum = $(this).data('page'); // pageNum으로 이름 변경
             fetchPageData(pageNum); // 페이지 데이터를 비동기적으로 로드
         });

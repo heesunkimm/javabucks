@@ -32,10 +32,12 @@
     </head>
 <body>
     <header class="bg_beige">
-        <div class="logo_box img_box">
+	    <div class="logo_box">
             <a href="/store_index.do">
-                <img src="../../images/icons/starbucks_logo.png" alt="">
-                <span>JAVABUCKS</span>
+            	<div class="img_box">
+                    <img src="../images/icons/starbucks_logo.png" alt="">
+                </div>
+                <span>JAVABUCKS STORE</span>
             </a>
         </div>
 

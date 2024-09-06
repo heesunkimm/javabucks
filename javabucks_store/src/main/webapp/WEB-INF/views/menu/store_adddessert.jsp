@@ -17,8 +17,8 @@
 	                <label>
 	                    <span>구분 코드</span>
 	                    <select name="menu_divide">
-	                        <option value="CK">CK</option>
-	                        <option value="SD">SD</option>
+	                        <option value="CK">[CK] 케이크</option>
+	                        <option value="SD">[SD] 샌드위치</option>
 	                    </select>
 	                </label>
 	            </div>

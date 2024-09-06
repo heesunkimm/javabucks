@@ -17,8 +17,8 @@
 	                <label>
 	                    <span>구분 코드</span>
 	                    <select name="menu_divide">
-	                        <option value="TB">TB</option>
-	                        <option value="WD">WD</option>
+	                        <option value="TB">[TB] 텀블러</option>
+	                        <option value="WD">[WD] 원두</option>
 	                    </select>
 	                </label>
 	            </div>

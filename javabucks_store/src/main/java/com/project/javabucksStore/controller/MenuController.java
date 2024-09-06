@@ -179,6 +179,20 @@ public class MenuController {
 //	        System.out.println("3. id" + drink.getBucksId());
 //	    }
 	    
+	    
+	    // 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+	    for(int i=0; i<drinkList.size(); i++) {
+	    	//System.out.println(top3MenuNames.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+	    	String imageName = drinkList.get(i).getMenuImages();;
+	    	//System.out.println(imageName.length());
+	    	if(imageName.length() != 12) {
+	    		String imageName2 = imageName.substring(9, 21);
+	    		drinkList.get(i).setMenuImages(imageName2);
+	    	}
+	    }
+	    
+	    
+	    
 	    req.setAttribute("drinkList", drinkList);
 	    return drinkList;
 	}
@@ -204,6 +218,17 @@ public class MenuController {
 	    params.put("menuStatus", "Y");
 	    
 	    List<StoreMenuDTO> filterList = menuMapper.searchDrinksList(searchParams);
+	    
+	    // 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+	    for(int i=0; i<filterList.size(); i++) {
+	    	//System.out.println(top3MenuNames.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+	    	String imageName = filterList.get(i).getMenuImages();;
+	    	//System.out.println(imageName.length());
+	    	if(imageName.length() != 12) {
+	    		String imageName2 = imageName.substring(9, 21);
+	    		filterList.get(i).setMenuImages(imageName2);
+	    	}
+	    }
 	    
 	    return filterList;
 	}

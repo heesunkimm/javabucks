@@ -14,12 +14,12 @@
                     <div class="info_box">
                         <label><span>구분코드</span>
                             <select name="menu_divide">
-                                <option value="TB">TB</option>
-                                <option value="WD">WD</option>
+                                <option value="TB">[TB] 텀블러</option>
+                                <option value="WD">[WD] 원두</option>
                             </select>
                         </label>
                         <label><span>메뉴코드</span>
-                            <input type="text" name="menu_namecode" value="" style="text-transform: uppercase;" required>
+                            <input type="text" name="menu_namecode" value="" style="text-transform: uppercase;" maxlength="3" required>
                         </label>
                         <label><span>메뉴명</span>
                             <input type="text" name=menuName value="" maxlength="30" required>

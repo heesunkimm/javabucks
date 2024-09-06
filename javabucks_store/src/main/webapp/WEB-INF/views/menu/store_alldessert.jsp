@@ -24,10 +24,10 @@
                             <input type="checkbox" name="menu_cate" value="" checked>전체
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="CK">케이크
+                            <input type="checkbox" name="menu_cate" value="CK">[CK] 케이크
                         </label>
                         <label>
-                            <input type="checkbox" name="menu_cate" value="SD">샌드위치
+                            <input type="checkbox" name="menu_cate" value="SD">[SD] 샌드위치
                         </label>
                     </div>
 

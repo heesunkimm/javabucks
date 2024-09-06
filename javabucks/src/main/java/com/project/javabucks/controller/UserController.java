@@ -409,6 +409,18 @@ public class UserController {
 
 		// [음료] 정보, 주문가능한지
 		List<MenuDTO> list = userMapper.getStoreDrinkList(storeName);
+		
+		// 신규 이미지 추가했을 때 뒤에꺼만 짤라서 SET
+	    for(int i=0; i<list.size(); i++) {
+	    	//System.out.println(top3MenuNames.get(i).getMenuImages()); // eefadab4_BESMIPIS.jpg
+	    	String imageName = list.get(i).getMenuImages();;
+	    	//System.out.println(imageName.length());
+	    	if(imageName.length() != 12) {
+	    		String imageName2 = imageName.substring(9, 21);
+	    		list.get(i).setMenuImages(imageName2);
+	    	}
+	    }
+		
 		Map<String, String> params = new HashMap<>();
 		for (MenuDTO md : list) {
 			

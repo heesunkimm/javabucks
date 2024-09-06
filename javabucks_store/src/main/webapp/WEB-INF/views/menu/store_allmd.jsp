@@ -25,10 +25,10 @@
                                 <input type="checkbox" name="menu_cate" value="" checked>전체
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_cate" value="TB">텀블러
+                                <input type="checkbox" name="menu_cate" value="TB">[TB] 텀블러
                             </label>
                             <label>
-                                <input type="checkbox" name="menu_cate" value="WD">원두
+                                <input type="checkbox" name="menu_cate" value="WD">[WD] 원두
                             </label>
                         </div>
                     </form>
