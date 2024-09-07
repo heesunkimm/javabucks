@@ -653,7 +653,8 @@
  	<select id="CardInfoByHistoryNum" parameterType="Integer" resultType="CardDTO"> 
  		 SELECT jc.*
  		 FROM javabucks_payhistory jp join javabucks_card jc
- 		 ON jp.userId = jc.userId		 
+ 		 ON jp.userId = jc.userId	
+ 		 AND jp.cardRegNum = jc.cardRegNum	 
  		 WHERE payhistoryNum = #{payhistoryNum}	 				 	  		 
  	</select>
  	

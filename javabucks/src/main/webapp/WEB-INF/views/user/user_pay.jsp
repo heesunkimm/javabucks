@@ -95,9 +95,9 @@
 	     }
      
          $(".popup_btn").on('click', function(e) {
- 			let cardName = $(".popup_btn").data('cardname');
- 			let cardPrice = $(".popup_btn").data('cardprice');
- 			let cardRegNum = $(".popup_btn").data('cardregnum');
+ 			let cardName = $(this).data('cardname');
+ 			let cardPrice = $(this).data('cardprice');
+ 			let cardRegNum = $(this).data('cardregnum');
 	
  			let formattedCardNum = String(cardRegNum).replace(/(\d{4})(?=\d)/g, '$1-');
  			

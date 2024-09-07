@@ -1315,6 +1315,10 @@ public class UserController {
 		UserDTO dto = (UserDTO) session.getAttribute("inUser");
 		String userId = dto.getUserId();
 		List<CardDTO> list = userMapper.listRegCardById(userId);
+		for(CardDTO tt : list) {
+			System.out.println(tt.getCardName());
+		}
+		
 		model.addAttribute("listCard", list);
 		model.addAttribute("listCardSize", list.size());
 		return "/user/user_pay";
