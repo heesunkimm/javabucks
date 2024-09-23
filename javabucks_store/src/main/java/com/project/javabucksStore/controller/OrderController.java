@@ -354,14 +354,16 @@ public class OrderController {
 		String day = null;
 		if (intDay < 10) {
 			day = "0" + StringDay;
+		} else {
+			day = StringDay;
 		}
-		// System.out.println(day); // 25
+		//System.out.println(day); // 25
 
 		String orderDate = year + month + day + "_";
-		// System.out.println(orderDate); // 240825_
+		//System.out.println(orderDate); // 240825_
 
 		String realOrderCode = orderDate + orderCode;
-		// System.out.println(realOrderCode);
+		//System.out.println(realOrderCode);
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("bucksId", bucksId);
@@ -383,7 +385,7 @@ public class OrderController {
 
 			for (MenuOrder order : orderList) {
 				String menuCode = order.getMenuCode();
-				// System.out.println("menuCode:"+menuCode); // BESWHAMC
+				//System.out.println("menuCode:"+menuCode); // BESWHAMC
 				String optionId = order.getOptionId();
 				// System.out.println("optionId:"+optionId); // 6
 				int quantity = order.getQuantity();
