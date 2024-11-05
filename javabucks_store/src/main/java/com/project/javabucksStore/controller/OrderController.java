@@ -346,6 +346,8 @@ public class OrderController {
 		String month = null;
 		if (intMonth < 10) {
 			month = "0" + StringMonth;
+		} else {
+			month = StringMonth;
 		}
 		// System.out.println(month); // 08
 
